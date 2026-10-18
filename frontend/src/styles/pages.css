@@ -1,0 +1,95 @@
+/* Page-level layout shared by screens. */
+.page {
+  display: grid;
+  gap: 16px;
+  padding-bottom: 96px; /* room for toasts */
+}
+.page h1 {
+  margin: 8px 0 0;
+}
+.muted {
+  margin: 0;
+  color: var(--muted);
+}
+.notice {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 4px solid var(--primary);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+}
+
+/* Home */
+.home__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.home__title {
+  font-size: 2rem;
+}
+.home__profile {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  max-width: 55%;
+  color: var(--text);
+  text-decoration: none;
+}
+.home__actions {
+  margin-top: 8px;
+}
+.home__join-title {
+  margin: 0;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+/* Profile pickers */
+.profile-preview {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.picker {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.picker__grid {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+.picker__grid--emoji {
+  grid-template-columns: repeat(6, 1fr);
+}
+.picker__grid--color {
+  grid-template-columns: repeat(5, 1fr);
+}
+.picker__item {
+  min-height: 44px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.picker__item[aria-pressed='true'] {
+  border-color: var(--text);
+  border-width: 3px;
+}
+.picker__swatch {
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 0 3px #000;
+}
