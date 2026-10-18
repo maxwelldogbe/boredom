@@ -66,6 +66,12 @@ class GameModule(ABC):
     def tick(self, state: Any, now: float) -> tuple[Any, list[GameEvent]]:
         """Advance timers: timeouts, auto-moves, phase changes due at or before `now`."""
 
+    def on_presence(
+        self, state: Any, player_id: str, online: bool, now: float
+    ) -> tuple[Any, list[GameEvent]]:
+        """A player went offline or came back. Default: ignore. Override for offline rules."""
+        return state, []
+
     @abstractmethod
     def get_view(self, state: Any, player_id: str) -> dict[str, Any]:
         """What `player_id` may see. Must never include secrets they are not entitled to."""

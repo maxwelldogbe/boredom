@@ -73,3 +73,8 @@ def test_game_ids_are_fixed() -> None:
     assert registry.GAME_IDS == (
         "rps", "guess_race", "hangman", "dots_and_boxes", "liars_dice", "name_it",
     )
+
+
+def test_on_presence_defaults_to_no_change() -> None:
+    state = {"players": ["a"]}
+    assert _Tiny().on_presence(state, "a", False, 0.0) == (state, [])
