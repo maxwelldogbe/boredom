@@ -1,0 +1,83 @@
+"""The contract every game module implements.
+
+Modules are pure: no Django, sockets, asyncio, wall clocks or global randomness.
+- Time arrives as `now`: epoch milliseconds (float), supplied by the room manager.
+- Randomness comes only from the `rng` passed to `init`; modules keep it in their state.
+- The room manager deep-copies state before `handle_action`/`tick`, so a module may
+  mutate the state it receives. On GameError the manager discards the copy, so a
+  failed action never changes anything.
+"""
+
+import random
+from abc import ABC, abstractmethod
+from typing import Any, ClassVar, TypedDict
+
+
+class GameError(Exception):
+    """An invalid action. `code` is a protocol error code such as INVALID_ACTION."""
+
+    def __init__(self, code: str, message: str) -> None:
+        super().__init__(message)
+        self.code = code
+        self.message = message
+
+
+class GameEvent(TypedDict):
+    """A transient moment pushed to clients as `game:event` (reveal, round over, ...)."""
+
+    kind: str
+    data: dict[str, Any]
+
+
+class GameResult(TypedDict):
+    """One player's final outcome. Placement 1 is best; tied players share a placement."""
+
+    player_id: str
+    placement: int
+    points: int
+
+
+class GameModule(ABC):
+    """Abstract game module. Subclasses set the class attributes and implement every method."""
+
+    id: ClassVar[str]
+    name: ClassVar[str]
+    min_players: ClassVar[int]
+    max_players: ClassVar[int]
+    default_settings: ClassVar[dict[str, Any]]
+
+    @abstractmethod
+    def validate_settings(self, settings: dict[str, Any]) -> dict[str, Any]:
+        """Return complete settings (defaults merged in), or raise GameError(INVALID_ACTION)."""
+
+    @abstractmethod
+    def init(
+        self, players: list[str], settings: dict[str, Any], rng: random.Random, now: float
+    ) -> Any:
+        """Create the initial state. `players` are player ids in seat (join) order."""
+
+    @abstractmethod
+    def handle_action(
+        self, state: Any, player_id: str, action: dict[str, Any], now: float
+    ) -> tuple[Any, list[GameEvent]]:
+        """Apply one player action. Raise GameError if it is not allowed."""
+
+    @abstractmethod
+    def tick(self, state: Any, now: float) -> tuple[Any, list[GameEvent]]:
+        """Advance timers: timeouts, auto-moves, phase changes due at or before `now`."""
+
+    @abstractmethod
+    def get_view(self, state: Any, player_id: str) -> dict[str, Any]:
+        """What `player_id` may see. Must never include secrets they are not entitled to."""
+
+    @abstractmethod
+    def next_deadline(self, state: Any) -> float | None:
+        """Earliest epoch-ms time at which `tick` has work to do, or None."""
+
+    @abstractmethod
+    def is_over(self, state: Any) -> bool:
+        """True once the game has finished."""
+
+    @abstractmethod
+    def get_results(self, state: Any) -> list[GameResult]:
+        """Final placement and points for every player. Only valid once `is_over`."""
