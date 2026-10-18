@@ -32,3 +32,13 @@ def get_game(game_id: str) -> GameModule | None:
 def all_games() -> dict[str, GameModule]:
     """A copy of the registry, keyed by game id."""
     return dict(_REGISTRY)
+
+
+def _register_builtin() -> None:
+    """Register the shipped game modules."""
+    from games.rps import RockPaperScissors
+
+    register(RockPaperScissors())
+
+
+_register_builtin()
