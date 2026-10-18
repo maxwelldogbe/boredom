@@ -1,5 +1,7 @@
-"""WebSocket URL routes. The single endpoint /ws/ is added with the consumer in B1."""
+"""WebSocket URL routes: the single /ws/ endpoint."""
 
-from django.urls import URLPattern
+from django.urls import URLPattern, path
 
-websocket_urlpatterns: list[URLPattern] = []
+from rooms.consumers import RoomConsumer
+
+websocket_urlpatterns: list[URLPattern] = [path("ws/", RoomConsumer.as_asgi())]
