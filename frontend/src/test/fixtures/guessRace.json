@@ -1,0 +1,229 @@
+{
+ "emojiWrongGuess": {
+  "me": "p_c81bc3224349",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "guess_race",
+   "settings": {
+    "content": "emoji",
+    "rounds": 5,
+    "difficulty": "mixed"
+   },
+   "scoreboard": {
+    "p_21437b202d37": 3,
+    "p_c81bc3224349": 15
+   },
+   "wins": {
+    "p_21437b202d37": 1,
+    "p_c81bc3224349": 1
+   }
+  },
+  "push": {
+   "gameId": "guess_race",
+   "view": {
+    "phase": "guessing",
+    "round": 1,
+    "total": 5,
+    "kind": "emoji",
+    "prompt": "⛄",
+    "hints": [],
+    "roundStartedAt": 1792324583757.098,
+    "roundEndsAt": 1792324613757.098,
+    "revealEndsAt": null,
+    "scores": {
+     "p_21437b202d37": 0,
+     "p_c81bc3224349": 0
+    },
+    "roundWinner": null,
+    "roundPoints": 0,
+    "answer": null,
+    "myLastGuess": {
+     "text": "definitely wrong",
+     "correct": false
+    }
+   },
+   "serverNow": 1792324583760.8225
+  }
+ },
+ "scrambleGuessing": {
+  "me": "p_8f6472a7964d",
+  "room": {
+   "code": "PKFH",
+   "hostId": "p_8f6472a7964d",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_8f6472a7964d",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792326043802.7166
+    },
+    {
+     "id": "p_0831c038aab2",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792326043807.6624
+    },
+    {
+     "id": "p_4f374e1154de",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "emoji": "🐼",
+     "color": "#2ECC71",
+     "online": true,
+     "joinedAt": 1792326043810.7554
+    }
+   ],
+   "selectedGame": "guess_race",
+   "settings": {
+    "content": "scramble",
+    "rounds": 5,
+    "difficulty": "easy"
+   },
+   "scoreboard": {
+    "p_4f374e1154de": 3,
+    "p_8f6472a7964d": 2,
+    "p_0831c038aab2": 1
+   },
+   "wins": {
+    "p_4f374e1154de": 1
+   }
+  },
+  "push": {
+   "gameId": "guess_race",
+   "view": {
+    "phase": "guessing",
+    "round": 1,
+    "total": 5,
+    "kind": "scramble",
+    "prompt": "ABRE",
+    "hints": [],
+    "roundStartedAt": 1792326056621.1897,
+    "roundEndsAt": 1792326086621.1897,
+    "revealEndsAt": null,
+    "scores": {
+     "p_8f6472a7964d": 0,
+     "p_0831c038aab2": 0,
+     "p_4f374e1154de": 0
+    },
+    "roundWinner": null,
+    "roundPoints": 0,
+    "answer": null,
+    "myLastGuess": null
+   },
+   "serverNow": 1792326056622.1099
+  }
+ },
+ "scrambleRoundOver": {
+  "me": "p_8f6472a7964d",
+  "room": {
+   "code": "PKFH",
+   "hostId": "p_8f6472a7964d",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_8f6472a7964d",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792326043802.7166
+    },
+    {
+     "id": "p_0831c038aab2",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792326043807.6624
+    },
+    {
+     "id": "p_4f374e1154de",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "emoji": "🐼",
+     "color": "#2ECC71",
+     "online": true,
+     "joinedAt": 1792326043810.7554
+    }
+   ],
+   "selectedGame": "guess_race",
+   "settings": {
+    "content": "scramble",
+    "rounds": 5,
+    "difficulty": "easy"
+   },
+   "scoreboard": {
+    "p_4f374e1154de": 3,
+    "p_8f6472a7964d": 2,
+    "p_0831c038aab2": 1
+   },
+   "wins": {
+    "p_4f374e1154de": 1
+   }
+  },
+  "push": {
+   "gameId": "guess_race",
+   "view": {
+    "phase": "roundOver",
+    "round": 1,
+    "total": 5,
+    "kind": "scramble",
+    "prompt": "ABRE",
+    "hints": [
+     {
+      "type": "length",
+      "value": 4
+     },
+     {
+      "type": "firstLetter",
+      "value": "B"
+     }
+    ],
+    "roundStartedAt": 1792326056621.1897,
+    "roundEndsAt": 1792326086621.1897,
+    "revealEndsAt": 1792326089622.8235,
+    "scores": {
+     "p_8f6472a7964d": 0,
+     "p_0831c038aab2": 0,
+     "p_4f374e1154de": 0
+    },
+    "roundWinner": null,
+    "roundPoints": 0,
+    "answer": "BEAR",
+    "myLastGuess": null
+   },
+   "serverNow": 1792326086622.8555
+  }
+ }
+}

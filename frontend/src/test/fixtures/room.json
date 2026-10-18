@@ -1,0 +1,208 @@
+{
+ "seatAck": {
+  "playerId": "p_21437b202d37",
+  "roomToken": "IcVxNbB5nUx4VDR7jCCvLg",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "lobby",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    }
+   ],
+   "selectedGame": null,
+   "settings": {},
+   "scoreboard": {},
+   "wins": {}
+  }
+ },
+ "peekExists": {
+  "exists": true,
+  "hostNickname": "Sam",
+  "playerCount": 1,
+  "status": "lobby"
+ },
+ "peekMissing": {
+  "exists": false,
+  "hostNickname": null,
+  "playerCount": 0,
+  "status": null
+ },
+ "roomLobby2": {
+  "code": "BPET",
+  "hostId": "p_21437b202d37",
+  "status": "lobby",
+  "players": [
+   {
+    "id": "p_21437b202d37",
+    "profileId": "prof-Sam",
+    "nickname": "Sam",
+    "emoji": "😀",
+    "color": "#E74C3C",
+    "online": true,
+    "joinedAt": 1792324569015.4731
+   },
+   {
+    "id": "p_c81bc3224349",
+    "profileId": "prof-Sam",
+    "nickname": "Sam2",
+    "emoji": "🦊",
+    "color": "#3498DB",
+    "online": true,
+    "joinedAt": 1792324569023.4224
+   }
+  ],
+  "selectedGame": null,
+  "settings": {},
+  "scoreboard": {},
+  "wins": {}
+ },
+ "roomLobby3Bracket": {
+  "code": "PKFH",
+  "hostId": "p_8f6472a7964d",
+  "status": "lobby",
+  "players": [
+   {
+    "id": "p_8f6472a7964d",
+    "profileId": "prof-Sam",
+    "nickname": "Sam",
+    "emoji": "😀",
+    "color": "#E74C3C",
+    "online": true,
+    "joinedAt": 1792326043802.7166
+   },
+   {
+    "id": "p_0831c038aab2",
+    "profileId": "prof-Ann",
+    "nickname": "Ann",
+    "emoji": "🦊",
+    "color": "#3498DB",
+    "online": true,
+    "joinedAt": 1792326043807.6624
+   },
+   {
+    "id": "p_4f374e1154de",
+    "profileId": "prof-Bob",
+    "nickname": "Bob",
+    "emoji": "🐼",
+    "color": "#2ECC71",
+    "online": true,
+    "joinedAt": 1792326043810.7554
+   }
+  ],
+  "selectedGame": "rps",
+  "settings": {
+   "bestOf": 3,
+   "mode": "bracket"
+  },
+  "scoreboard": {},
+  "wins": {}
+ },
+ "roomFinished": {
+  "code": "BPET",
+  "hostId": "p_21437b202d37",
+  "status": "finished",
+  "players": [
+   {
+    "id": "p_21437b202d37",
+    "profileId": "prof-Sam",
+    "nickname": "Sam",
+    "emoji": "😀",
+    "color": "#E74C3C",
+    "online": true,
+    "joinedAt": 1792324569015.4731
+   },
+   {
+    "id": "p_c81bc3224349",
+    "profileId": "prof-Sam",
+    "nickname": "Sam2",
+    "emoji": "🦊",
+    "color": "#3498DB",
+    "online": true,
+    "joinedAt": 1792324569023.4224
+   }
+  ],
+  "selectedGame": "rps",
+  "settings": {
+   "bestOf": 3,
+   "mode": "duel"
+  },
+  "scoreboard": {
+   "p_21437b202d37": 3,
+   "p_c81bc3224349": 2
+  },
+  "wins": {
+   "p_21437b202d37": 1
+  }
+ },
+ "roomPlayingWithLeaver": {
+  "code": "BPET",
+  "hostId": "p_21437b202d37",
+  "status": "playing",
+  "players": [
+   {
+    "id": "p_21437b202d37",
+    "profileId": "prof-Sam",
+    "nickname": "Sam",
+    "emoji": "😀",
+    "color": "#E74C3C",
+    "online": true,
+    "joinedAt": 1792324569015.4731
+   },
+   {
+    "id": "p_c81bc3224349",
+    "profileId": "prof-Sam",
+    "nickname": "Sam2",
+    "emoji": "🦊",
+    "color": "#3498DB",
+    "online": false,
+    "joinedAt": 1792324569023.4224
+   }
+  ],
+  "selectedGame": "guess_race",
+  "settings": {
+   "content": "emoji",
+   "rounds": 5,
+   "difficulty": "mixed"
+  },
+  "scoreboard": {
+   "p_21437b202d37": 3,
+   "p_c81bc3224349": 15
+  },
+  "wins": {
+   "p_21437b202d37": 1,
+   "p_c81bc3224349": 1
+  }
+ },
+ "gameOverEvent": {
+  "kind": "gameOver",
+  "data": {
+   "results": [
+    {
+     "playerId": "p_21437b202d37",
+     "placement": 1,
+     "points": 3
+    },
+    {
+     "playerId": "p_c81bc3224349",
+     "placement": 2,
+     "points": 2
+    }
+   ]
+  }
+ },
+ "errorPush": {
+  "type": "error",
+  "data": {
+   "code": "BAD_MESSAGE",
+   "message": "Message is not valid JSON."
+  }
+ }
+}

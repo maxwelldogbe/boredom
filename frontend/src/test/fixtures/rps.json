@@ -1,0 +1,672 @@
+{
+ "duelPickingOpponentPicked": {
+  "me": "p_c81bc3224349",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "rps",
+   "settings": {
+    "bestOf": 3,
+    "mode": "duel"
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "rps",
+   "view": {
+    "phase": "picking",
+    "mode": "duel",
+    "bestOf": 3,
+    "bracketRound": 1,
+    "myMatch": 0,
+    "myPick": null,
+    "matches": [
+     {
+      "a": "p_21437b202d37",
+      "b": "p_c81bc3224349",
+      "phase": "picking",
+      "round": 1,
+      "scores": {
+       "p_21437b202d37": 0,
+       "p_c81bc3224349": 0
+      },
+      "hasPicked": {
+       "p_21437b202d37": true,
+       "p_c81bc3224349": false
+      },
+      "deadline": 1792324579038.5552,
+      "winner": null,
+      "lastReveal": null
+     }
+    ],
+    "alive": [
+     "p_21437b202d37",
+     "p_c81bc3224349"
+    ],
+    "eliminated": [],
+    "champion": null
+   },
+   "serverNow": 1792324569044.9624
+  }
+ },
+ "duelPickedWaiting": {
+  "me": "p_21437b202d37",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "rps",
+   "settings": {
+    "bestOf": 3,
+    "mode": "duel"
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "rps",
+   "view": {
+    "phase": "picking",
+    "mode": "duel",
+    "bestOf": 3,
+    "bracketRound": 1,
+    "myMatch": 0,
+    "myPick": "paper",
+    "matches": [
+     {
+      "a": "p_21437b202d37",
+      "b": "p_c81bc3224349",
+      "phase": "picking",
+      "round": 1,
+      "scores": {
+       "p_21437b202d37": 0,
+       "p_c81bc3224349": 0
+      },
+      "hasPicked": {
+       "p_21437b202d37": true,
+       "p_c81bc3224349": false
+      },
+      "deadline": 1792324579038.5552,
+      "winner": null,
+      "lastReveal": null
+     }
+    ],
+    "alive": [
+     "p_21437b202d37",
+     "p_c81bc3224349"
+    ],
+    "eliminated": [],
+    "champion": null
+   },
+   "serverNow": 1792324569044.9624
+  }
+ },
+ "duelReveal": {
+  "me": "p_21437b202d37",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "rps",
+   "settings": {
+    "bestOf": 3,
+    "mode": "duel"
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "rps",
+   "view": {
+    "phase": "reveal",
+    "mode": "duel",
+    "bestOf": 3,
+    "bracketRound": 1,
+    "myMatch": 0,
+    "myPick": "paper",
+    "matches": [
+     {
+      "a": "p_21437b202d37",
+      "b": "p_c81bc3224349",
+      "phase": "reveal",
+      "round": 1,
+      "scores": {
+       "p_21437b202d37": 1,
+       "p_c81bc3224349": 0
+      },
+      "hasPicked": {
+       "p_21437b202d37": true,
+       "p_c81bc3224349": true
+      },
+      "deadline": 1792324572052.7908,
+      "winner": null,
+      "lastReveal": {
+       "round": 1,
+       "picks": {
+        "p_21437b202d37": "paper",
+        "p_c81bc3224349": "rock"
+       },
+       "roundWinner": "p_21437b202d37"
+      }
+     }
+    ],
+    "alive": [
+     "p_21437b202d37",
+     "p_c81bc3224349"
+    ],
+    "eliminated": [],
+    "champion": null
+   },
+   "serverNow": 1792324569052.8352
+  }
+ },
+ "duelDone": {
+  "me": "p_21437b202d37",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "rps",
+   "settings": {
+    "bestOf": 3,
+    "mode": "duel"
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "rps",
+   "view": {
+    "phase": "done",
+    "mode": "duel",
+    "bestOf": 3,
+    "bracketRound": 1,
+    "myMatch": 0,
+    "myPick": null,
+    "matches": [
+     {
+      "a": "p_21437b202d37",
+      "b": "p_c81bc3224349",
+      "phase": "over",
+      "round": 2,
+      "scores": {
+       "p_21437b202d37": 2,
+       "p_c81bc3224349": 0
+      },
+      "hasPicked": {
+       "p_21437b202d37": false,
+       "p_c81bc3224349": false
+      },
+      "deadline": null,
+      "winner": "p_21437b202d37",
+      "lastReveal": {
+       "round": 2,
+       "picks": {
+        "p_21437b202d37": "paper",
+        "p_c81bc3224349": "rock"
+       },
+       "roundWinner": "p_21437b202d37"
+      }
+     }
+    ],
+    "alive": [
+     "p_21437b202d37"
+    ],
+    "eliminated": [
+     "p_c81bc3224349"
+    ],
+    "champion": "p_21437b202d37"
+   },
+   "serverNow": 1792324575073.1465
+  }
+ },
+ "bracketPicking": {
+  "me": "p_8f6472a7964d",
+  "room": {
+   "code": "PKFH",
+   "hostId": "p_8f6472a7964d",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_8f6472a7964d",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792326043802.7166
+    },
+    {
+     "id": "p_0831c038aab2",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792326043807.6624
+    },
+    {
+     "id": "p_4f374e1154de",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "emoji": "🐼",
+     "color": "#2ECC71",
+     "online": true,
+     "joinedAt": 1792326043810.7554
+    }
+   ],
+   "selectedGame": "rps",
+   "settings": {
+    "bestOf": 3,
+    "mode": "bracket"
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "rps",
+   "view": {
+    "phase": "picking",
+    "mode": "bracket",
+    "bestOf": 3,
+    "bracketRound": 1,
+    "myMatch": 0,
+    "myPick": null,
+    "matches": [
+     {
+      "a": "p_8f6472a7964d",
+      "b": "p_0831c038aab2",
+      "phase": "picking",
+      "round": 1,
+      "scores": {
+       "p_8f6472a7964d": 0,
+       "p_0831c038aab2": 0
+      },
+      "hasPicked": {
+       "p_8f6472a7964d": false,
+       "p_0831c038aab2": false
+      },
+      "deadline": 1792326053816.1099,
+      "winner": null,
+      "lastReveal": null
+     },
+     {
+      "a": "p_4f374e1154de",
+      "b": null,
+      "phase": "over",
+      "round": 1,
+      "scores": {
+       "p_4f374e1154de": 0
+      },
+      "hasPicked": {
+       "p_4f374e1154de": false
+      },
+      "deadline": null,
+      "winner": "p_4f374e1154de",
+      "lastReveal": null
+     }
+    ],
+    "alive": [
+     "p_8f6472a7964d",
+     "p_0831c038aab2",
+     "p_4f374e1154de"
+    ],
+    "eliminated": [],
+    "champion": null
+   },
+   "serverNow": 1792326043816.3855
+  }
+ },
+ "bracketBye": {
+  "me": "p_4f374e1154de",
+  "room": {
+   "code": "PKFH",
+   "hostId": "p_8f6472a7964d",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_8f6472a7964d",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792326043802.7166
+    },
+    {
+     "id": "p_0831c038aab2",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792326043807.6624
+    },
+    {
+     "id": "p_4f374e1154de",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "emoji": "🐼",
+     "color": "#2ECC71",
+     "online": true,
+     "joinedAt": 1792326043810.7554
+    }
+   ],
+   "selectedGame": "rps",
+   "settings": {
+    "bestOf": 3,
+    "mode": "bracket"
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "rps",
+   "view": {
+    "phase": "matchOver",
+    "mode": "bracket",
+    "bestOf": 3,
+    "bracketRound": 1,
+    "myMatch": 1,
+    "myPick": null,
+    "matches": [
+     {
+      "a": "p_8f6472a7964d",
+      "b": "p_0831c038aab2",
+      "phase": "picking",
+      "round": 1,
+      "scores": {
+       "p_8f6472a7964d": 0,
+       "p_0831c038aab2": 0
+      },
+      "hasPicked": {
+       "p_8f6472a7964d": false,
+       "p_0831c038aab2": false
+      },
+      "deadline": 1792326053816.1099,
+      "winner": null,
+      "lastReveal": null
+     },
+     {
+      "a": "p_4f374e1154de",
+      "b": null,
+      "phase": "over",
+      "round": 1,
+      "scores": {
+       "p_4f374e1154de": 0
+      },
+      "hasPicked": {
+       "p_4f374e1154de": false
+      },
+      "deadline": null,
+      "winner": "p_4f374e1154de",
+      "lastReveal": null
+     }
+    ],
+    "alive": [
+     "p_8f6472a7964d",
+     "p_0831c038aab2",
+     "p_4f374e1154de"
+    ],
+    "eliminated": [],
+    "champion": null
+   },
+   "serverNow": 1792326043816.3855
+  }
+ },
+ "bracketEliminated": {
+  "me": "p_0831c038aab2",
+  "room": {
+   "code": "PKFH",
+   "hostId": "p_8f6472a7964d",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_8f6472a7964d",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792326043802.7166
+    },
+    {
+     "id": "p_0831c038aab2",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792326043807.6624
+    },
+    {
+     "id": "p_4f374e1154de",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "emoji": "🐼",
+     "color": "#2ECC71",
+     "online": true,
+     "joinedAt": 1792326043810.7554
+    }
+   ],
+   "selectedGame": "rps",
+   "settings": {
+    "bestOf": 3,
+    "mode": "bracket"
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "rps",
+   "view": {
+    "phase": "matchOver",
+    "mode": "bracket",
+    "bestOf": 3,
+    "bracketRound": 2,
+    "myMatch": null,
+    "myPick": null,
+    "matches": [
+     {
+      "a": "p_4f374e1154de",
+      "b": "p_8f6472a7964d",
+      "phase": "picking",
+      "round": 1,
+      "scores": {
+       "p_4f374e1154de": 0,
+       "p_8f6472a7964d": 0
+      },
+      "hasPicked": {
+       "p_4f374e1154de": false,
+       "p_8f6472a7964d": false
+      },
+      "deadline": 1792326060047.1228,
+      "winner": null,
+      "lastReveal": null
+     }
+    ],
+    "alive": [
+     "p_8f6472a7964d",
+     "p_4f374e1154de"
+    ],
+    "eliminated": [
+     "p_0831c038aab2"
+    ],
+    "champion": null
+   },
+   "serverNow": 1792326050047.2095
+  }
+ },
+ "bracketDone": {
+  "me": "p_8f6472a7964d",
+  "room": {
+   "code": "PKFH",
+   "hostId": "p_8f6472a7964d",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_8f6472a7964d",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792326043802.7166
+    },
+    {
+     "id": "p_0831c038aab2",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792326043807.6624
+    },
+    {
+     "id": "p_4f374e1154de",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "emoji": "🐼",
+     "color": "#2ECC71",
+     "online": true,
+     "joinedAt": 1792326043810.7554
+    }
+   ],
+   "selectedGame": "rps",
+   "settings": {
+    "bestOf": 3,
+    "mode": "bracket"
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "rps",
+   "view": {
+    "phase": "done",
+    "mode": "bracket",
+    "bestOf": 3,
+    "bracketRound": 2,
+    "myMatch": 0,
+    "myPick": null,
+    "matches": [
+     {
+      "a": "p_4f374e1154de",
+      "b": "p_8f6472a7964d",
+      "phase": "over",
+      "round": 2,
+      "scores": {
+       "p_4f374e1154de": 2,
+       "p_8f6472a7964d": 0
+      },
+      "hasPicked": {
+       "p_4f374e1154de": false,
+       "p_8f6472a7964d": false
+      },
+      "deadline": null,
+      "winner": "p_4f374e1154de",
+      "lastReveal": {
+       "round": 2,
+       "picks": {
+        "p_4f374e1154de": "rock",
+        "p_8f6472a7964d": "scissors"
+       },
+       "roundWinner": "p_4f374e1154de"
+      }
+     }
+    ],
+    "alive": [
+     "p_4f374e1154de"
+    ],
+    "eliminated": [
+     "p_8f6472a7964d",
+     "p_0831c038aab2"
+    ],
+    "champion": "p_4f374e1154de"
+   },
+   "serverNow": 1792326056093.156
+  }
+ }
+}

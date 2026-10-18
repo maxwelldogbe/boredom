@@ -1,0 +1,513 @@
+{
+ "settingSetter": {
+  "me": "p_21437b202d37",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "hangman",
+   "settings": {
+    "mode": "group"
+   },
+   "scoreboard": {
+    "p_21437b202d37": 3,
+    "p_c81bc3224349": 2
+   },
+   "wins": {
+    "p_21437b202d37": 1
+   }
+  },
+  "push": {
+   "gameId": "hangman",
+   "view": {
+    "phase": "setting",
+    "round": 1,
+    "total": 2,
+    "setterId": "p_21437b202d37",
+    "isSetter": true,
+    "mask": [],
+    "word": null,
+    "hint": null,
+    "guessed": [],
+    "wrong": [],
+    "wrongCount": 0,
+    "maxWrong": 6,
+    "deadline": 1792324635438.4949,
+    "result": null,
+    "scores": {
+     "p_21437b202d37": 0,
+     "p_c81bc3224349": 0
+    }
+   },
+   "serverNow": 1792324575438.733
+  }
+ },
+ "settingGuesser": {
+  "me": "p_c81bc3224349",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "hangman",
+   "settings": {
+    "mode": "group"
+   },
+   "scoreboard": {
+    "p_21437b202d37": 3,
+    "p_c81bc3224349": 2
+   },
+   "wins": {
+    "p_21437b202d37": 1
+   }
+  },
+  "push": {
+   "gameId": "hangman",
+   "view": {
+    "phase": "setting",
+    "round": 1,
+    "total": 2,
+    "setterId": "p_21437b202d37",
+    "isSetter": false,
+    "mask": [],
+    "word": null,
+    "hint": null,
+    "guessed": [],
+    "wrong": [],
+    "wrongCount": 0,
+    "maxWrong": 6,
+    "deadline": 1792324635438.4949,
+    "result": null,
+    "scores": {
+     "p_21437b202d37": 0,
+     "p_c81bc3224349": 0
+    }
+   },
+   "serverNow": 1792324575438.733
+  }
+ },
+ "guessingSetter": {
+  "me": "p_21437b202d37",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "hangman",
+   "settings": {
+    "mode": "group"
+   },
+   "scoreboard": {
+    "p_21437b202d37": 3,
+    "p_c81bc3224349": 2
+   },
+   "wins": {
+    "p_21437b202d37": 1
+   }
+  },
+  "push": {
+   "gameId": "hangman",
+   "view": {
+    "phase": "guessing",
+    "round": 1,
+    "total": 2,
+    "setterId": "p_21437b202d37",
+    "isSetter": true,
+    "mask": [
+     "L",
+     "L",
+     null,
+     null,
+     null
+    ],
+    "word": "LLAMA",
+    "hint": "An animal",
+    "guessed": [
+     "L"
+    ],
+    "wrong": [],
+    "wrongCount": 0,
+    "maxWrong": 6,
+    "deadline": null,
+    "result": null,
+    "scores": {
+     "p_21437b202d37": 0,
+     "p_c81bc3224349": 2
+    }
+   },
+   "serverNow": 1792324575452.9397
+  }
+ },
+ "guessingGuesser": {
+  "me": "p_c81bc3224349",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "hangman",
+   "settings": {
+    "mode": "group"
+   },
+   "scoreboard": {
+    "p_21437b202d37": 3,
+    "p_c81bc3224349": 2
+   },
+   "wins": {
+    "p_21437b202d37": 1
+   }
+  },
+  "push": {
+   "gameId": "hangman",
+   "view": {
+    "phase": "guessing",
+    "round": 1,
+    "total": 2,
+    "setterId": "p_21437b202d37",
+    "isSetter": false,
+    "mask": [
+     "L",
+     "L",
+     null,
+     null,
+     null
+    ],
+    "word": null,
+    "hint": "An animal",
+    "guessed": [
+     "L",
+     "Z"
+    ],
+    "wrong": [
+     "Z"
+    ],
+    "wrongCount": 1,
+    "maxWrong": 6,
+    "deadline": null,
+    "result": null,
+    "scores": {
+     "p_21437b202d37": 0,
+     "p_c81bc3224349": 2
+    }
+   },
+   "serverNow": 1792324575457.5652
+  }
+ },
+ "roundOverGuessers": {
+  "me": "p_21437b202d37",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "hangman",
+   "settings": {
+    "mode": "group"
+   },
+   "scoreboard": {
+    "p_21437b202d37": 3,
+    "p_c81bc3224349": 2
+   },
+   "wins": {
+    "p_21437b202d37": 1
+   }
+  },
+  "push": {
+   "gameId": "hangman",
+   "view": {
+    "phase": "roundOver",
+    "round": 1,
+    "total": 2,
+    "setterId": "p_21437b202d37",
+    "isSetter": true,
+    "mask": [
+     "L",
+     "L",
+     "A",
+     "M",
+     "A"
+    ],
+    "word": "LLAMA",
+    "hint": "An animal",
+    "guessed": [
+     "L",
+     "Z",
+     "A",
+     "M"
+    ],
+    "wrong": [
+     "Z"
+    ],
+    "wrongCount": 1,
+    "maxWrong": 6,
+    "deadline": 1792324579581.5435,
+    "result": "guessers",
+    "scores": {
+     "p_21437b202d37": 0,
+     "p_c81bc3224349": 8
+    }
+   },
+   "serverNow": 1792324576581.589
+  }
+ },
+ "roundOverSetterWins": {
+  "me": "p_21437b202d37",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "hangman",
+   "settings": {
+    "mode": "group"
+   },
+   "scoreboard": {
+    "p_21437b202d37": 3,
+    "p_c81bc3224349": 2
+   },
+   "wins": {
+    "p_21437b202d37": 1
+   }
+  },
+  "push": {
+   "gameId": "hangman",
+   "view": {
+    "phase": "roundOver",
+    "round": 2,
+    "total": 2,
+    "setterId": "p_c81bc3224349",
+    "isSetter": false,
+    "mask": [
+     "Q",
+     "U",
+     "I",
+     "Z"
+    ],
+    "word": "QUIZ",
+    "hint": null,
+    "guessed": [
+     "B",
+     "C",
+     "D",
+     "E",
+     "F",
+     "G"
+    ],
+    "wrong": [
+     "B",
+     "C",
+     "D",
+     "E",
+     "F",
+     "G"
+    ],
+    "wrongCount": 6,
+    "maxWrong": 6,
+    "deadline": 1792324583732.741,
+    "result": "setter",
+    "scores": {
+     "p_21437b202d37": 0,
+     "p_c81bc3224349": 13
+    }
+   },
+   "serverNow": 1792324580732.7747
+  }
+ },
+ "done": {
+  "me": "p_21437b202d37",
+  "room": {
+   "code": "BPET",
+   "hostId": "p_21437b202d37",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_21437b202d37",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "emoji": "😀",
+     "color": "#E74C3C",
+     "online": true,
+     "joinedAt": 1792324569015.4731
+    },
+    {
+     "id": "p_c81bc3224349",
+     "profileId": "prof-Sam",
+     "nickname": "Sam2",
+     "emoji": "🦊",
+     "color": "#3498DB",
+     "online": true,
+     "joinedAt": 1792324569023.4224
+    }
+   ],
+   "selectedGame": "hangman",
+   "settings": {
+    "mode": "group"
+   },
+   "scoreboard": {
+    "p_21437b202d37": 3,
+    "p_c81bc3224349": 2
+   },
+   "wins": {
+    "p_21437b202d37": 1
+   }
+  },
+  "push": {
+   "gameId": "hangman",
+   "view": {
+    "phase": "done",
+    "round": 2,
+    "total": 2,
+    "setterId": "p_c81bc3224349",
+    "isSetter": false,
+    "mask": [
+     "Q",
+     "U",
+     "I",
+     "Z"
+    ],
+    "word": "QUIZ",
+    "hint": null,
+    "guessed": [
+     "B",
+     "C",
+     "D",
+     "E",
+     "F",
+     "G"
+    ],
+    "wrong": [
+     "B",
+     "C",
+     "D",
+     "E",
+     "F",
+     "G"
+    ],
+    "wrongCount": 6,
+    "maxWrong": 6,
+    "deadline": null,
+    "result": "setter",
+    "scores": {
+     "p_21437b202d37": 0,
+     "p_c81bc3224349": 13
+    }
+   },
+   "serverNow": 1792324583734.492
+  }
+ }
+}
