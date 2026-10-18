@@ -45,7 +45,10 @@ class GameFlowMixin:
                 f"{module.name} needs {module.min_players} to {module.max_players} players.",
             )
         now = self.clock()
-        state = module.init([p.id for p in seated], dict(room.settings), self._rng(), now)
+        try:
+            state = module.init([p.id for p in seated], dict(room.settings), self._rng(), now)
+        except GameError as exc:
+            raise RoomError(exc.code, exc.message) from None
         events: list[GameEvent] = []
         for player in seated:
             if not player.online:

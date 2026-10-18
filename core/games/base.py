@@ -54,7 +54,10 @@ class GameModule(ABC):
     def init(
         self, players: list[str], settings: dict[str, Any], rng: random.Random, now: float
     ) -> Any:
-        """Create the initial state. `players` are player ids in seat (join) order."""
+        """Create the initial state. `players` are player ids in seat (join) order.
+
+        Raise GameError(INVALID_ACTION) if the game cannot start with these players/settings.
+        """
 
     @abstractmethod
     def handle_action(
@@ -87,3 +90,8 @@ class GameModule(ABC):
     @abstractmethod
     def get_results(self, state: Any) -> list[GameResult]:
         """Final placement and points for every player. Only valid once `is_over`."""
+
+
+def competition_placements(values: dict[str, float]) -> dict[str, int]:
+    """Rank players by value, higher is better; ties share a placement (1, 2, 2, 4)."""
+    return {pid: 1 + sum(1 for v in values.values() if v > value) for pid, value in values.items()}

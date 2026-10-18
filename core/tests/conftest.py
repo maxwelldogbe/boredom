@@ -127,5 +127,5 @@ async def connect(manager: RoomManager) -> AsyncIterator[Callable[[], Any]]:
     for client in clients:
         try:
             await client.close()
-        except Exception:
-            pass
+        except (Exception, asyncio.CancelledError):
+            pass  # a failed test may leave the app task already cancelled
