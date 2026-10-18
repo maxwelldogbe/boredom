@@ -1,6 +1,6 @@
 # Boredom WebSocket Protocol
 
-> **Status: rooms + RPS complete (phase B2).** The envelope, event names, error codes and room types
+> **Status: rooms, RPS, Guess Race complete (phase B3).** The envelope, event names, error codes and room types
 > are fixed. Game sections (**B2–B7**) are filled in as each game lands. This file is kept in sync
 > with the code; if they ever disagree, report it.
 >
@@ -371,3 +371,70 @@ type MatchPublic = {
 | Lost earlier | Shared by round lost; later rounds rank higher | 0 |
 
 In a duel the loser is runner-up (2 points).
+
+### 7.2 `guess_race`: Word Scramble and Emoji Guess
+
+**Players:** 2–10. **Settings** (defaults shown):
+
+```json
+{"content": "mixed", "rounds": 10, "difficulty": "mixed"}
+```
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| `content` | `"scramble"` \| `"emoji"` \| `"mixed"` | `mixed` picks scramble or emoji at random for each round. |
+| `rounds` | `5` \| `10` \| `15` | |
+| `difficulty` | `"easy"` \| `"medium"` \| `"hard"` \| `"mixed"` | Scramble words only (easy 4–5 letters, medium 6–7, hard 8–9). |
+
+**Action:** `{"type": "guess", "text": string}`. `text` is 1–`GUESS_TEXT_MAX` (40) characters
+and not blank. Wrong guesses are allowed without limit, apart from the rate limit, and are acked `ok: true`.
+
+| Error | When |
+| --- | --- |
+| `INVALID_ACTION` | Unknown `type`, bad `text`, or the round is no longer accepting guesses. |
+
+**Rules**
+- Content never repeats within a game. Everyone sees the same prompt.
+- A guess is correct if `normalize(text)` equals the normalized answer or one of its
+  alternatives. normalize: lowercase, trim, drop a leading "the ", then remove all punctuation and whitespace.
+- The first correct guess wins the round and scores
+  `max(20, 100 - 2 * floor(secondsElapsed))`.
+- Hint 1 at `GUESS_HINT1_MS` (10 s): the category (emoji) or the letter count (scramble).
+  Hint 2 at `GUESS_HINT2_MS` (20 s): the first letter of the answer, ignoring a leading "The".
+- The round ends at the first correct guess or at `GUESS_ROUND_MS` (30 s) with no winner. The
+  answer is then shown for `GUESS_REVEAL_MS` (3 s), and the next round starts.
+
+**View:**
+
+```ts
+type GuessRaceView = {
+  phase: 'guessing' | 'roundOver' | 'done';
+  round: number;                 // 1-based
+  total: number;                 // number of rounds
+  kind: 'scramble' | 'emoji';
+  prompt: string;                // scramble: UPPERCASE scrambled letters; emoji: the emoji string
+  hints: Hint[];                 // in order; all hints are included once the round is over
+  roundStartedAt: number;        // epoch ms
+  roundEndsAt: number;           // epoch ms: when guessing closes
+  revealEndsAt: number | null;   // epoch ms: when the next round starts (roundOver only)
+  scores: Record<string, number>;
+  roundWinner: string | null;
+  roundPoints: number;           // points the round winner earned (0 if none)
+  answer: string | null;         // null while guessing; set in roundOver/done
+  myLastGuess: { text: string; correct: boolean } | null;   // your own last guess this round
+};
+type Hint =
+  | { type: 'length'; value: number }        // scramble, hint 1
+  | { type: 'category'; value: string }      // emoji, hint 1
+  | { type: 'firstLetter'; value: string };  // hint 2, one uppercase character
+```
+
+**Events:**
+
+| kind | data |
+| --- | --- |
+| `roundOver` | `{round, answer, winnerId: string \| null, points}` |
+| `gameOver` | see 6.2 |
+
+**Results:** placement by total score (ties share). Each player's `points` is their total score,
+which is added directly to the session scoreboard.
