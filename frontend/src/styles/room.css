@@ -1,0 +1,158 @@
+/* Room shell: top bar, lobby, game cards, results. */
+.section-title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.topbar__code {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.topbar__score {
+  color: var(--muted);
+}
+
+.lobby__code {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  padding: 16px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.lobby__code-label,
+.lobby__code-hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.lobby__code-value {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  line-height: 1.1;
+}
+.invite__url {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+.invite__qr summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+.qr {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 8px auto 0;
+  border-radius: 8px;
+  background: #fff;
+}
+.player-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.player-list li {
+  min-width: 0;
+}
+.lobby__start {
+  display: grid;
+  gap: 6px;
+}
+.lobby__reason {
+  text-align: center;
+}
+.lobby__waiting {
+  margin: 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+.game-cards {
+  display: grid;
+  gap: 8px;
+}
+.game-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.game-card[aria-pressed='true'] {
+  border: 3px solid var(--primary);
+}
+.game-card__icon {
+  font-size: 2rem;
+}
+.game-card__text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.game-card__players,
+.game-card__desc {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.game-card__check {
+  color: var(--primary);
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.rank-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rank-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.rank-list li > .chip {
+  flex: 1;
+}
+.rank-list__place {
+  min-width: 4ch;
+  font-weight: 700;
+}
+.rank-list__points {
+  margin-left: auto;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.rank-list__me .chip__name,
+.rank-list__leader .chip__name {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

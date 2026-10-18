@@ -101,7 +101,8 @@ export function RoomProvider({ children, socket: given }: { children: ReactNode;
     const offOpen = socket.onOpen((isReconnect) => {
       const code = roomCode.current
       if (!isReconnect || !code || !getRoomToken(code)) return
-      actions.joinRoom(code).catch(() => {
+      actions.joinRoom(code).catch((err: unknown) => {
+        if (err instanceof RequestError && err.code === 'ROOM_NOT_FOUND') clearRoomToken(code)
         roomCode.current = null
         dispatch({ type: 'left' })
         actions.toast(`You were disconnected from room ${code}.`, 'error')
