@@ -1,0 +1,75 @@
+/* Boredom design tokens (implementation plan 1.6). Light and dark via prefers-color-scheme.
+   Color values are a PROPOSAL pending design approval. */
+
+:root {
+  --bg: #f7f5f2;
+  --surface: #ffffff;
+  --text: #1d1b20;
+  --muted: #5f5b66;
+  --primary: #5b3fd6;
+  --on-primary: #ffffff;
+  --danger: #b3261e;
+  --success: #1e6b2e;
+  --border: #d9d4de;
+  --radius: 14px;
+  --tap: 48px;
+  --font: system-ui, sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121016;
+    --surface: #1e1b24;
+    --text: #f2eff7;
+    --muted: #aca6b8;
+    --primary: #a896ff;
+    --on-primary: #121016;
+    --danger: #ff8a80;
+    --success: #6fd38a;
+    --border: #3a3542;
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1rem; /* 16px minimum body text */
+  line-height: 1.5;
+}
+
+#root {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+button {
+  min-height: var(--tap);
+  font: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
