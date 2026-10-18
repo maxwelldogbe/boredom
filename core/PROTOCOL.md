@@ -1,6 +1,6 @@
 # Boredom WebSocket Protocol
 
-> **Status: rooms complete (phase B1).** The envelope, event names, error codes and room types
+> **Status: rooms + RPS complete (phase B2).** The envelope, event names, error codes and room types
 > are fixed. Game sections (**B2–B7**) are filled in as each game lands. This file is kept in sync
 > with the code; if they ever disagree, report it.
 >
@@ -277,6 +277,8 @@ too). Excess actions get `RATE_LIMITED` and change nothing.
 ## 7. Games **(B2–B7)**
 
 Each game's settings, actions, view and events are documented here as it is built.
+`game:start` may also fail with `INVALID_ACTION` when a game rejects the player count or
+settings combination (for example an RPS duel with 3 players).
 
 | gameId | Phase |
 | --- | --- |
@@ -286,3 +288,86 @@ Each game's settings, actions, view and events are documented here as it is buil
 | `dots_and_boxes` | B5 |
 | `liars_dice` | B6 |
 | `name_it` | B7 |
+
+### 7.1 `rps`: Rock-Paper-Scissors
+
+**Players:** 2–10. **Settings** (defaults shown):
+
+```json
+{"bestOf": 3, "mode": "duel"}
+```
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| `bestOf` | `3` \| `5` | First to `bestOf // 2 + 1` round wins takes the match. |
+| `mode` | `"duel"` \| `"bracket"` | 2 players always play a duel. A duel with 3+ players is rejected at `game:start`. |
+
+**Action:** `{"type": "pick", "choice": "rock" | "paper" | "scissors"}`
+
+| Error | When |
+| --- | --- |
+| `INVALID_ACTION` | Unknown `type`, bad `choice`, or you already picked this round. |
+| `NOT_YOUR_TURN` | You have no live match (bye, eliminated, match over) or your match is in its reveal pause. |
+
+**Rules**
+- Matches in a bracket round run at the same time, each with its own timers. Players are paired
+  at random each bracket round. With an odd count, one random player gets a bye and advances.
+- Each round has `RPS_PICK_TIMEOUT_MS` (10 s). The round is revealed as soon as both have picked,
+  or at the deadline. Someone who did not pick loses the round. If neither picked, or both picked
+  the same, it's a tie: no point, and the round is replayed.
+- After each reveal there is a `RPS_REVEAL_MS` (3 s) pause. Then the match continues with a new
+  round, or ends if someone reached the majority.
+- When every match in a bracket round is over, the next bracket round starts at once.
+- **Offline:** a player offline for `OFFLINE_FORFEIT_MS` (30 s) forfeits their match. If both
+  players have been offline that long, the one who went offline **last** wins.
+
+**View** (`game:view` → `view`):
+
+```ts
+type RpsView = {
+  phase: 'picking' | 'reveal' | 'matchOver' | 'done';
+  // picking/reveal: your match's phase. matchOver: you have no live match (won and waiting,
+  // bye, or eliminated and spectating). done: the game is over.
+  mode: 'duel' | 'bracket';
+  bestOf: 3 | 5;
+  bracketRound: number;        // 1-based
+  myMatch: number | null;      // index into matches, null if you are not in this bracket round
+  myPick: Choice | null;       // your own pick this round (never anyone else's)
+  matches: MatchPublic[];      // every match of the current bracket round
+  alive: string[];             // player ids still in the competition
+  eliminated: string[];
+  champion: string | null;
+};
+type Choice = 'rock' | 'paper' | 'scissors';
+type MatchPublic = {
+  a: string;
+  b: string | null;            // null = bye
+  phase: 'picking' | 'reveal' | 'over';
+  round: number;               // round within the match, 1-based (ties count)
+  scores: Record<string, number>;
+  hasPicked: Record<string, boolean>;   // current round only; never the pick itself
+  deadline: number | null;     // epoch ms: pick deadline (picking) or end of reveal pause (reveal)
+  winner: string | null;       // set once the match is decided
+  lastReveal: { round: number; picks: Record<string, Choice | null>; roundWinner: string | null } | null;
+};
+```
+
+**Events** (`game:event` → `{kind, data}`):
+
+| kind | data |
+| --- | --- |
+| `reveal` | `{matchIndex, round, picks: {playerId: Choice \| null}, roundWinner: string \| null, scores}` |
+| `matchOver` | `{matchIndex, winnerId, loserId: string \| null, reason: 'score' \| 'forfeit' \| 'bye'}` |
+| `bracketRound` | `{bracketRound, pairs: [a, b \| null][]}`, sent when bracket round 2+ starts. Round 1 pairs (and its bye) are in the first `game:view`; no events are sent at game start. |
+| `gameOver` | see 6.2 |
+
+**Results:**
+
+| Who | Placement | Points |
+| --- | --- | --- |
+| Champion | 1 | 3 |
+| Runner-up (lost the final) | 2 | 2 |
+| Lost in the round before the final | 3 (shared) | 1 |
+| Lost earlier | Shared by round lost; later rounds rank higher | 0 |
+
+In a duel the loser is runner-up (2 points).
