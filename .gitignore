@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+myenv/
+.pytest_cache/
+.ruff_cache/
+
+# Django
+core/db.sqlite3
+
+# Local env
+.env

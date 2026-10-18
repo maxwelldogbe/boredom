@@ -1,0 +1,7 @@
+target-version = "py311"
+line-length = 100
+# accounts/ is a pre-existing empty startapp, not part of this backend (pending decision).
+extend-exclude = ["accounts"]
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP"]
