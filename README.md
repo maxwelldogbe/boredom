@@ -14,20 +14,26 @@ boredom/
 
 ## What you can see today
 
-The project is built in phases. **The game screens are not built yet**, so no game can be played
-in the browser at the moment. This is expected, not a setup problem.
+| Part | Status |
+| --- | --- |
+| Rooms: create, join by code or invite link, lobby, reconnect after refresh | **Playable** |
+| Rock-Paper-Scissors (duel or bracket) | **Playable** |
+| Guess Race (Word Scramble and Emoji Guess) | **Playable** |
+| Hangman Duel | **Playable** |
+| Dots and Boxes, Liar's Dice, Name It Survival | Not built yet (hidden from the game list) |
 
-| Part | Status | What you'll see |
-| --- | --- | --- |
-| Backend rooms and lobby logic | Done | Nothing visual. It is an API. |
-| Backend games: Rock-Paper-Scissors, Guess Race, Hangman | Done | Nothing visual. Tested by 271 automated tests. |
-| Backend games: Dots and Boxes, Liar's Dice, Name It | Not started | — |
-| Frontend F0: setup | Done | A **connection check** page at `/`. |
-| Frontend F1–F3: profiles, home, lobby, invites | Next | — |
-| Frontend F4+: game screens | After F3 | The games become playable here. |
+## How to play (once both servers are running, steps 4 and 6)
 
-When you follow this guide, success today means the connection check page shows
-**✓ Online** and **✓ Connected**.
+1. Open **http://localhost:5173** and set up your profile: a nickname, an emoji and a color.
+2. Press **Create room**. You land in the lobby with a big 4-letter room code.
+3. Add a second player. Every game needs at least 2.
+   - **On the same computer:** open a **private/incognito window** (or another browser) at
+     http://localhost:5173, set up a second profile, press **Join room** and type the code.
+     A normal second tab shares the first tab's profile and saved seat, so use a private window.
+   - **On a phone:** see step 7, then open the invite link or type the code.
+4. As the host, tap a game card, adjust its settings, and press **Start game**.
+5. When the game ends, the host picks **Play again** or **Back to lobby**. Scores add up
+   across games on the session scoreboard.
 
 ---
 
@@ -104,10 +110,8 @@ You should see something like:
   ➜  Network: http://192.168.1.5:5173/
 ```
 
-Open **http://localhost:5173**. The connection check page should show:
-
-- **Server: ✓ Online**: the frontend reached the backend's `/api/health`.
-- **Live connection: ✓ Connected**: the WebSocket to `/ws/` works.
+Open **http://localhost:5173**. You should see the **Boredom** home page with **Create room** and
+**Join room**. Then follow "How to play" at the top of this file.
 
 The frontend dev server forwards `/api` and `/ws` to the backend on port 8000, so both terminals
 must be running.
@@ -138,6 +142,9 @@ npm run lint
 npm run typecheck
 npm test
 npm run build
+
+# Optional: play real games through the UI against the running backend (step 4 must be running)
+LIVE_BACKEND=1 npx vitest run -c vitest.live.config.ts
 ```
 
 ---
@@ -148,8 +155,9 @@ npm run build
 | --- | --- |
 | `ImproperlyConfigured: DJANGO_SECRET_KEY must be set` | You skipped the two `export` lines in step 4. Run them in the same terminal, then start again. |
 | `Error: That port is already in use` (or `Address already in use`) | A backend is already running, maybe in another terminal. Use that one, or stop it with Ctrl+C there. |
-| Page shows **✕ Not reachable** / **✕ Disconnected** | The backend is not running. Start it (step 4), then press **Retry**. |
-| Works on the computer, but the phone shows **✕ Disconnected** | Add your computer's IP to `DJANGO_ALLOWED_HOSTS` (step 7). |
+| "Can't reach the server" when creating or joining | The backend is not running. Start it (step 4), then try again. |
+| Works on the computer, but the phone says it can't reach the server | Add your computer's IP to `DJANGO_ALLOWED_HOSTS` (step 7). |
+| A second tab on the same computer takes over your seat | Tabs share one profile and saved seat. Use a private/incognito window for a second player. |
 | `pip install` fails | Activate the venv first: `source myenv/bin/activate`. |
 | npm or Vitest crashes oddly (for example `Bus error` or `Cannot find module`) | The installed packages are damaged. Reinstall them: `cd frontend && rm -rf node_modules && npm ci`. |
 | `command not found: daphne` / `pytest` | The venv is not active in this terminal: `source ~/boredom/myenv/bin/activate`. |
