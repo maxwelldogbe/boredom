@@ -1,0 +1,104 @@
+.hangman__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 600;
+}
+.hangman__waiting {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.hangman__waiting p {
+  margin: 0;
+}
+.hangman__board {
+  display: grid;
+  justify-items: center;
+}
+.gallows {
+  width: 160px;
+  height: 160px;
+}
+.gallows line,
+.gallows circle {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+.gallows__frame {
+  stroke: var(--muted);
+}
+.gallows__body {
+  stroke: var(--danger);
+}
+.hangman__wrong {
+  margin: 0;
+  color: var(--muted);
+}
+.hangman__word {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+.hangman__cell {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 40px;
+  border-bottom: 3px solid var(--text);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.hangman__cell--hidden {
+  color: var(--muted);
+}
+.hangman__hint {
+  margin: 0;
+  text-align: center;
+}
+.hangman__result {
+  margin: 0;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-weight: 700;
+  text-align: center;
+}
+.keyboard {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(44px, 1fr));
+  gap: 4px;
+}
+.keyboard__key {
+  min-width: 44px;
+  min-height: 48px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.keyboard__key span {
+  display: block;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+.keyboard__key--wrong {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.keyboard__key--right {
+  border-color: var(--success);
+  color: var(--success);
+}
+.keyboard__key:disabled {
+  cursor: default;
+}
