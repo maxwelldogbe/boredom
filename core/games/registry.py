@@ -36,9 +36,11 @@ def all_games() -> dict[str, GameModule]:
 
 def _register_builtin() -> None:
     """Register the shipped game modules."""
+    from games.guess_race import GuessRace
     from games.rps import RockPaperScissors
 
     register(RockPaperScissors())
+    register(GuessRace())
 
 
 _register_builtin()
