@@ -1,8 +1,12 @@
 # Boredom WebSocket Protocol
 
-> **Status: DRAFT (phase B0).** The envelope, event names, error codes and room types below are
-> fixed. Sections marked **(B1)** or **(B2–B7)** are filled in as those phases land. This file is
-> kept in sync with the code; if they ever disagree, report it.
+> **Status: rooms complete (phase B1).** The envelope, event names, error codes and room types
+> are fixed. Game sections (**B2–B7**) are filled in as each game lands. This file is kept in sync
+> with the code; if they ever disagree, report it.
+>
+> **Changes approved after B0:** `RoomPublic.wins` added; `game:view` carries `serverNow`;
+> a game's end is announced with `game:event` kind `gameOver`; mid-game `room:leave` keeps the
+> seat (offline) until the game ends.
 
 ## 1. Transport
 
@@ -52,10 +56,23 @@ Failure:
 
 | `type` | Payload field | When |
 | --- | --- | --- |
-| `room:state` | `data: RoomPublic` | After every room change, to everyone in the room. |
-| `game:view` | `data: {gameId, view}` | After every game change, to each player separately (personalized). |
-| `game:event` | `data: {kind, data}` | Transient moments: reveal, round over, elimination, challenge opened. |
-| `error` | `data: {code, message}` | A problem not tied to a request, e.g. `BAD_MESSAGE` when the frame has no usable `id`. |
+| `room:state` | `data: RoomPublic` | After every room change, to everyone online in the room. |
+| `game:view` | `data: {gameId, view, serverNow}` | After every game change, to each online player separately (personalized). |
+| `game:event` | `data: {kind, data}` | Transient moments: reveal, round over, elimination, challenge opened, game over. Same for everyone. |
+| `error` | `data: {code, message}` | A problem not tied to a request (see below). |
+
+`serverNow` is the server's epoch-ms clock when the view was sent. Compute countdowns as
+`deadline - serverNow`, measured from when the view arrived, so a wrong phone clock doesn't matter.
+
+`error` pushes are sent when:
+- a frame has no usable `id` (not JSON, not an object, missing/non-integer `id`, binary frame):
+  `{"code": "BAD_MESSAGE", ...}`;
+- this socket lost its seat, because the room was closed by cleanup or the same seat was
+  reclaimed from another socket with its `roomToken`: `{"code": "NOT_IN_ROOM", ...}`. The socket
+  stays open and may create or join a room again.
+
+**Ordering:** pushes caused by a request may arrive **before** its ack (for example the
+`room:state` after `room:join`). Treat pushes as the source of truth for state.
 
 Example push:
 
@@ -72,10 +89,10 @@ Example push:
 | `NAME_TAKEN` | Reserved. Duplicate nicknames are auto-suffixed (`Sam`, `Sam2`, `Sam3`), so this is not normally sent. |
 | `NOT_HOST` | Host-only request sent by a non-host. |
 | `NOT_YOUR_TURN` | A game action out of turn. |
-| `INVALID_ACTION` | Invalid payload, profile, settings, or game move. |
+| `INVALID_ACTION` | Invalid payload, profile, settings, or game move. Also used for an unexpected server error ("Something went wrong."). |
 | `GAME_IN_PROGRESS` | Joining a room mid-game without a valid `roomToken` for a seat. |
 | `RATE_LIMITED` | More than `ACTION_RATE_LIMIT_PER_SEC` (5) game actions per second on this connection. |
-| `NOT_IN_ROOM` | Request needs a room but this connection has not joined one. |
+| `NOT_IN_ROOM` | Request needs a room but this connection has no seat (never joined, left, or was detached). |
 | `UNKNOWN_EVENT` | `type` is not a known request type. |
 | `BAD_MESSAGE` | Frame is not valid JSON, or the envelope is malformed. |
 
@@ -92,14 +109,27 @@ Ack data:
 ```
 
 Store `roomToken` per room code (e.g. localStorage); it reclaims the seat after a disconnect.
+`roomToken` is only ever sent to its owner.
+
+A socket holds at most one seat: `room:create`/`room:join` while already seated replies
+`INVALID_ACTION` ("Leave your current room first.").
 
 ### 4.2 `room:join`
 
 Payload: `{ "code": "ABCD", "profile": Profile, "roomToken"?: string }`
 
 - `code` is case-insensitive (uppercased by the server).
-- With a `roomToken` matching a seated player: reclaims that seat (same `playerId`), marks it online.
-- Without one: takes a new seat. Rejected with `GAME_IN_PROGRESS` unless the room status is `lobby`.
+- With a `roomToken` matching a seated player: reclaims that seat (same `playerId`, nickname,
+  emoji and color; the sent profile is validated but not applied), marks it online, and allowed in
+  any status, including mid-game. If another socket still held the seat, that socket gets an
+  `error` push `NOT_IN_ROOM`. A reconnecting player in a running game also receives a `game:view`.
+- Without a valid token: takes a new seat. Rejected with `GAME_IN_PROGRESS` while the room is
+  `playing`; allowed in `lobby` and `finished`. An unknown or stale token is simply ignored.
+- Nickname clashes (case-insensitive) get the lowest free suffix from 2: `Sam`, `Sam2`, `Sam3`.
+  The base is shortened if needed to stay within 12 characters (`Alexandrinas` → `Alexandrina2`).
+
+Check order: profile (`INVALID_ACTION`), room exists (`ROOM_NOT_FOUND`), token reclaim,
+`GAME_IN_PROGRESS`, `ROOM_FULL`.
 
 Ack data: same shape as `room:create`.
 
@@ -115,23 +145,34 @@ Ack data:
 {"exists": true, "hostNickname": "Sam", "playerCount": 3, "status": "lobby"}
 ```
 
-For an unknown code: `{"exists": false, "hostNickname": null, "playerCount": 0, "status": null}`.
+For an unknown or malformed code: `{"exists": false, "hostNickname": null, "playerCount": 0, "status": null}`.
+`playerCount` excludes players who left mid-game.
 
 ### 4.4 `room:leave`
 
 Payload: `{}`. Leaves the current room. Ack data: `{}`. Errors: `NOT_IN_ROOM`.
-Mid-game leave behaviour: **(B1)**.
+The `roomToken` stops working.
+
+- In `lobby`/`finished`: the seat and its scoreboard entries are removed.
+- In `playing`: the seat stays in `players` with `online: false` (the game treats the player as
+  offline for good) and is removed, with its scoreboard entries, when the game ends.
+- If the leaver was host, host passes immediately (see 6.3).
+- When the last player leaves, the room is deleted.
 
 ### 4.5 `room:selectGame` (host only)
 
-Payload: `{ "gameId": GameId, "settings": object }`. Settings are validated by the game module and
-completed with defaults; the stored result appears in `RoomPublic.settings`.
-Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `INVALID_ACTION`, `GAME_IN_PROGRESS`.
+Payload: `{ "gameId": GameId, "settings": object }`. Only in `lobby`. Settings are validated by the
+game module and completed with defaults; the stored result appears in `RoomPublic.settings`.
+Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `INVALID_ACTION` (unknown game, bad settings,
+room `finished`), `GAME_IN_PROGRESS`.
 
 ### 4.6 `game:start` (host only)
 
-Payload: `{}`. Requires a selected game and a player count within its min/max.
-Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `INVALID_ACTION`, `GAME_IN_PROGRESS`.
+Payload: `{}`. Only in `lobby`. Requires a selected game and a seated-player count within its
+min/max (offline players count and take part). Everyone receives `room:state` (status `playing`)
+then their first `game:view`.
+Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `INVALID_ACTION` (no game selected, wrong
+player count, room `finished`), `GAME_IN_PROGRESS`.
 
 ### 4.7 `game:action`
 
@@ -144,8 +185,9 @@ Ack data: `{}`.
 
 ### 4.8 `game:playAgain` (host only)
 
-Payload: `{}`. Returns the room to `lobby`, keeping the selected game, settings and scoreboard.
-Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `INVALID_ACTION`.
+Payload: `{}`. Returns a `finished` (or `lobby`) room to `lobby`, keeping the selected game,
+settings, scoreboard and wins.
+Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `GAME_IN_PROGRESS`.
 
 ## 5. Types
 
@@ -180,7 +222,8 @@ type RoomPublic = {
   players: Player[];        // seat (join) order
   selectedGame: GameId | null;
   settings: Record<string, unknown>;
-  scoreboard: Record<string, number>;   // playerId -> session points
+  scoreboard: Record<string, number>;   // playerId -> session points (only players with points recorded)
+  wins: Record<string, number>;         // playerId -> games won (placement 1) this session
 };
 
 type GameResult = { playerId: string; placement: number; points: number };
@@ -188,10 +231,48 @@ type GameResult = { playerId: string; placement: number; points: number };
 
 Constants (`shared/constants.json`) are shared by client and server.
 
-## 6. Room lifecycle **(B1)**
+## 6. Room lifecycle
 
-To be completed in B1: status transitions, host transfer, disconnect/reconnect, scoreboard
-updates, game-over event, idle cleanup.
+### 6.1 Status
+
+| Status | Meaning | Entered by |
+| --- | --- | --- |
+| `lobby` | Picking a game. | Room created; `game:playAgain`. |
+| `playing` | A game is running. | `game:start`. |
+| `finished` | Last game over; results on screen. | The game ends. |
+| `between_rounds` | Not used in v1. Rounds are phases inside each game's `game:view`. | — |
+
+### 6.2 Game over
+
+When a game ends the server sends, in order:
+1. the final `game:view` to each player;
+2. any `game:event`s from the final move;
+3. `game:event` `{"kind": "gameOver", "data": {"results": GameResult[]}}`, sorted as the game reports them;
+4. `room:state` with status `finished`, updated `scoreboard` (points added) and `wins`
+   (+1 for every placement-1 player, so ties share the win). Players who left mid-game are
+   removed at this point.
+
+### 6.3 Presence and host
+
+- Socket closes: the seat stays, `online: false`. The game is told and applies its own rules.
+- `room:join` with the `roomToken` reclaims the seat (`online: true`).
+- Host transfer goes to the **longest-seated online** player:
+  - immediately when the host sends `room:leave` (falls back to the longest-seated offline
+    player if nobody is online);
+  - when the host has been offline for more than `HOST_TRANSFER_MS` (15 s) and someone is online.
+  A host who returns within 15 s keeps the role. A former host does not get it back.
+
+### 6.4 Cleanup
+
+Every `ROOM_CLEANUP_INTERVAL_MS` (5 min) the server deletes rooms that have no seated players or
+no activity for `ROOM_IDLE_TTL_MS` (2 h). Activity is any successful room or game change.
+Connected sockets of a deleted room get an `error` push `NOT_IN_ROOM`.
+
+### 6.5 Rate limit
+
+`game:action` only: at most `ACTION_RATE_LIMIT_PER_SEC` (5) actions per rolling second per
+connection, counting every action that reaches the limiter (moves the game then rejects count
+too). Excess actions get `RATE_LIMITED` and change nothing.
 
 ## 7. Games **(B2–B7)**
 
