@@ -1,0 +1,28 @@
+{
+  "ROOM_CODE_LENGTH": 4,
+  "ROOM_CODE_ALPHABET": "ABCDEFGHJKLMNPQRSTUVWXYZ",
+  "MAX_PLAYERS": 10,
+  "NICKNAME_MIN": 1,
+  "NICKNAME_MAX": 12,
+  "ROOM_IDLE_TTL_MS": 7200000,
+  "OFFLINE_FORFEIT_MS": 30000,
+  "ACTION_RATE_LIMIT_PER_SEC": 5,
+  "RPS_PICK_TIMEOUT_MS": 10000,
+  "GUESS_ROUND_MS": 30000,
+  "GUESS_HINT1_MS": 10000,
+  "GUESS_HINT2_MS": 20000,
+  "DICE_TURN_MS": 30000,
+  "NAMEIT_TURN_MS": 10000,
+  "NAMEIT_CHALLENGE_WINDOW_MS": 5000,
+  "NAMEIT_VOTE_MS": 8000,
+  "NICKNAME_ALLOWED_PATTERN": "^[A-Za-z0-9 _.'!?&-]+$",
+  "EMOJI_PRESETS": [
+    "😀", "😎", "🤠", "🥳", "🤖", "👻", "👽", "🦊",
+    "🐱", "🐶", "🐼", "🐸", "🦁", "🐯", "🐵", "🦄",
+    "🐙", "🦖", "🐢", "🐝", "🍕", "🌮", "🚀", "⭐"
+  ],
+  "PLAYER_COLORS": [
+    "#E74C3C", "#E67E22", "#F1C40F", "#2ECC71", "#1ABC9C",
+    "#3498DB", "#9B59B6", "#E84393", "#795548", "#607D8B"
+  ]
+}
