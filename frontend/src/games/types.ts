@@ -13,7 +13,7 @@ export interface GameUiProps<V> {
 }
 
 export interface SettingOption {
-  value: string | number
+  value: string | number | boolean
   label: string
 }
 

@@ -6,6 +6,7 @@ import type { GameId } from '../types/protocol'
 import { DotsGame } from './dotsAndBoxes/DotsGame'
 import { GuessRaceGame } from './guessRace/GuessRaceGame'
 import { HangmanGame } from './hangman/HangmanGame'
+import { LiarsDiceGame } from './liarsDice/LiarsDiceGame'
 import { RpsGame } from './rps/RpsGame'
 import type { GameUi, ImplementedGameId } from './types'
 
@@ -93,6 +94,20 @@ export const GAME_UIS: Registry = {
       { key: 'size', label: 'Board size', options: [4, 5, 6, 7].map((n) => ({ value: n, label: `${n} × ${n} boxes` })) },
     ],
     Component: DotsGame,
+  },
+  liars_dice: {
+    id: 'liars_dice',
+    name: "Liar's Dice",
+    icon: '🎲',
+    description: 'Bid on everyone\'s hidden dice. Call a bluff, lose a die. Last one standing wins.',
+    minPlayers: 2,
+    maxPlayers: 6,
+    settings: [
+      { key: 'startingDice', label: 'Starting dice', options: [3, 4, 5, 6].map((n) => ({ value: n, label: `${n} dice` })) },
+      { key: 'wildOnes', label: 'Ones are wild', options: [{ value: false, label: 'Off' }, { value: true, label: 'On' }] },
+      { key: 'spotOn', label: 'Spot-on calls', options: [{ value: false, label: 'Off' }, { value: true, label: 'On' }] },
+    ],
+    Component: LiarsDiceGame,
   },
 }
 

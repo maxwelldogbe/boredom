@@ -89,9 +89,46 @@ export interface DotsView {
   turnDeadline: number | null
 }
 
+export interface DiceBid {
+  playerId: string
+  quantity: number
+  face: number
+}
+
+export interface DiceReveal {
+  round: number
+  call: 'liar' | 'spotOn'
+  callerId: string
+  bid: DiceBid
+  dice: Record<string, number[]>
+  actual: number
+  loserId: string | null
+  gainerId: string | null
+  eliminatedId: string | null
+  auto: boolean
+}
+
+export interface LiarsDiceView {
+  phase: 'bidding' | 'reveal' | 'done'
+  round: number
+  order: string[]
+  myDice: number[]
+  diceCounts: Record<string, number>
+  totalDice: number
+  eliminated: string[]
+  currentPlayerId: string | null
+  isYourTurn: boolean
+  currentBid: DiceBid | null
+  history: (DiceBid & { auto: boolean })[]
+  settings: { startingDice: number; wildOnes: boolean; spotOn: boolean }
+  deadline: number | null
+  lastReveal: DiceReveal | null
+}
+
 /** `game:view` push data, discriminated by gameId (games with a backend today). */
 export type GameViewPush =
   | { gameId: 'rps'; view: RpsView; serverNow: number }
   | { gameId: 'guess_race'; view: GuessRaceView; serverNow: number }
   | { gameId: 'hangman'; view: HangmanView; serverNow: number }
   | { gameId: 'dots_and_boxes'; view: DotsView; serverNow: number }
+  | { gameId: 'liars_dice'; view: LiarsDiceView; serverNow: number }

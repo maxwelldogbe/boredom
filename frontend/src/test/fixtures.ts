@@ -3,6 +3,7 @@ import type { GameEventPush, PeekData, ProtocolError, RoomPublic, SeatData } fro
 import type { GameViewPush } from '../types/views'
 import dotsJson from './fixtures/dotsAndBoxes.json'
 import guessRaceJson from './fixtures/guessRace.json'
+import liarsDiceJson from './fixtures/liarsDice.json'
 import hangmanJson from './fixtures/hangman.json'
 import roomJson from './fixtures/room.json'
 import rpsJson from './fixtures/rps.json'
@@ -32,3 +33,4 @@ export const rpsFx = rpsJson as unknown as Record<keyof typeof rpsJson, Of<'rps'
 export const guessRaceFx = guessRaceJson as unknown as Record<keyof typeof guessRaceJson, Of<'guess_race'>>
 export const hangmanFx = hangmanJson as unknown as Record<keyof typeof hangmanJson, Of<'hangman'>>
 export const dotsFx = dotsJson as unknown as Record<keyof typeof dotsJson, Of<'dots_and_boxes'>>
+export const liarsDiceFx = liarsDiceJson as unknown as Record<keyof typeof liarsDiceJson, Of<'liars_dice'>>
