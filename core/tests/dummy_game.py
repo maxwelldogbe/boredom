@@ -81,7 +81,7 @@ class DummyGame(GameModule):
     def get_results(self, state) -> list[GameResult]:
         ranked = sorted(set(state["scores"].values()), reverse=True)
         return [
-            {"player_id": pid, "placement": ranked.index(pts) + 1, "points": pts}
+            {"player_id": pid, "placement": ranked.index(pts) + 1, "score": pts}
             for pid, pts in state["scores"].items()
         ]
 

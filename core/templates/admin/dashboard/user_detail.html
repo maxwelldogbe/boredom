@@ -1,0 +1,66 @@
+{% extends "admin/base_site.html" %}
+{% load dashboard %}
+{% block content %}
+<div id="content-main">
+  {% with t=detail.totals %}
+  <p>
+    {% if account %}<span class="dash-badge registered">registered</span> username <strong>{{ account.username }}</strong>, joined {{ account.date_joined|date:"Y-m-d" }}{% if not account.is_active %} <span class="dash-badge">disabled</span>{% endif %}
+    {% else %}<span class="dash-badge">guest {{ actor.guest_key|slice:":8" }}</span> <span class="dash-muted">approximate (browser-based)</span>{% endif %}
+  </p>
+  {% if account %}
+  <div class="dash-actions dash-section">
+    {% if account.is_active %}
+      <form method="post" action="{% url 'admin:dashboard-user-action' account.pk 'disable' %}">{% csrf_token %}<input type="submit" value="Disable account"></form>
+    {% else %}
+      <form method="post" action="{% url 'admin:dashboard-user-action' account.pk 'enable' %}">{% csrf_token %}<input type="submit" value="Enable account"></form>
+    {% endif %}
+    <a class="deletelink" href="{% url 'admin:dashboard-user-action' account.pk 'delete' %}">Delete account</a>
+    <a href="{% url 'admin:auth_user_change' account.pk %}">Edit in admin</a>
+  </div>
+  {% endif %}
+  <div class="dash-tiles">
+    <div class="dash-tile"><div class="label">Games</div><div class="value">{{ t.games }}</div><div class="hint">completed; {{ t.abandoned }} abandoned</div></div>
+    <div class="dash-tile"><div class="label">Wins</div><div class="value">{{ t.wins }}</div></div>
+    <div class="dash-tile"><div class="label">Losses</div><div class="value">{{ t.losses }}</div></div>
+    <div class="dash-tile"><div class="label">Win rate</div><div class="value">{{ t.win_rate|pct }}</div>{% if t.win_rate is None %}<div class="hint">after {{ min_games }} games</div>{% endif %}</div>
+    <div class="dash-tile"><div class="label">Most played</div><div class="value">{{ detail.most_played.name|default:"—" }}</div></div>
+    <div class="dash-tile"><div class="label">Most won</div><div class="value">{{ detail.most_won.name|default:"—" }}</div></div>
+    <div class="dash-tile"><div class="label">Most lost</div><div class="value">{{ detail.most_lost.name|default:"—" }}</div></div>
+  </div>
+  {% endwith %}
+
+  <div class="dash-section"><h2>By game</h2>
+    {% if detail.per_game %}
+    <div class="dash-scroll"><table class="dash-table">
+      <thead><tr><th>Game</th><th class="n">Played</th><th class="n">Wins</th><th class="n">Losses</th><th class="n">Win rate</th><th class="n">Avg placement</th></tr></thead>
+      <tbody>{% for g in detail.per_game %}<tr><td><a href="{% url 'admin:dashboard-game' g.id %}">{{ g.name }}</a></td><td class="n">{{ g.played }}</td><td class="n">{{ g.wins }}</td><td class="n">{{ g.losses }}</td><td class="n">{{ g.win_rate|pct }}</td><td class="n">{{ g.avg_placement|num }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% else %}<p class="dash-muted">No completed games yet.</p>{% endif %}
+  </div>
+
+  <div class="dash-cols">
+    <div class="dash-section"><h2>Last 20 games</h2>
+      {% if detail.recent %}
+      <div class="dash-scroll"><table class="dash-table">
+        <thead><tr><th>When</th><th>Game</th><th class="n">Place</th><th>Opponents</th></tr></thead>
+        <tbody>{% for p in detail.recent %}<tr><td>{{ p.session.started_at|date:"Y-m-d H:i" }}</td><td>{{ p.session.game_id }}</td><td class="n">{% if p.placement %}{{ p.placement }}{% else %}<span class="dash-muted">{{ p.session.status }}</span>{% endif %}{% if p.left_early %} <span class="dash-badge">left</span>{% endif %}</td><td>{{ p.opponents|join:", " }}</td></tr>{% endfor %}</tbody>
+      </table></div>
+      {% else %}<p class="dash-muted">No games yet.</p>{% endif %}
+    </div>
+    <div class="dash-section"><h2>Top co-players</h2>
+      {% if detail.co_players %}
+      <div class="dash-scroll"><table class="dash-table">
+        <thead><tr><th>Player</th><th class="n">Shared games</th><th class="n">Finished ahead</th><th class="n">Finished behind</th></tr></thead>
+        <tbody>{% for row in detail.co_players %}<tr><td>{% include "admin/dashboard/_actor.html" %}</td><td class="n">{{ row.shared }}</td><td class="n">{{ row.ahead }}</td><td class="n">{{ row.behind }}</td></tr>{% endfor %}</tbody>
+      </table></div>
+      {% else %}<p class="dash-muted">Nobody yet.</p>{% endif %}
+    </div>
+  </div>
+
+  <div class="dash-section"><h2>Activity timeline</h2>
+    {% if detail.events %}
+    <ul>{% for e in detail.events %}<li>{{ e.occurred_at|date:"Y-m-d H:i" }}: {{ e.get_kind_display }}{% if e.room_code %} (room {{ e.room_code }}){% endif %}</li>{% endfor %}</ul>
+    {% else %}<p class="dash-muted">No recent activity (events are kept for a limited time).</p>{% endif %}
+  </div>
+</div>
+{% endblock %}

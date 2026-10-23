@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button } from '../../components/Button'
+import { Logo } from '../../components/Logo'
 import { Modal } from '../../components/Modal'
 import { friendlyError } from '../../lib/errors'
 import { formatPoints } from '../../lib/format'
@@ -34,8 +35,11 @@ export function TopBar({ room, me, onLeaving, onLeft }: TopBarProps) {
 
   return (
     <header className="topbar">
-      <span className="topbar__code" aria-label={`Room ${room.code}`}>
-        🏠 {room.code}
+      <span className="topbar__brand">
+        <Logo variant="mark" size={28} />
+        <span className="topbar__code" aria-label={`Room ${room.code}`}>
+          {room.code}
+        </span>
       </span>
       <span className="topbar__score">Score: {formatPoints(room.scoreboard[me] ?? 0)}</span>
       <Button variant="ghost" onClick={() => setConfirm(true)}>

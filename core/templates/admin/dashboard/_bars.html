@@ -1,0 +1,5 @@
+{% load dashboard %}
+<div class="dash-bars" role="img" aria-label="{{ bars_label }}">
+  {% for day, n in series %}<div class="bar" style="height: {{ n|bar_pct:peak }}%" title="{{ day|date:'D j M' }}: {{ n }}"></div>{% endfor %}
+</div>
+<div class="dash-bars-labels"><span>{{ series.0.0|date:"j M" }}</span><span>{{ series|last|first|date:"j M" }}</span></div>

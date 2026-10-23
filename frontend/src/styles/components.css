@@ -177,6 +177,49 @@ a {
 .chip--offline .chip__avatar {
   opacity: 0.45;
 }
+.chip__badge {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* Tabs (two-way switch, e.g. create account / log in) */
+.tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.tabs__tab {
+  min-height: 40px;
+  border: 0;
+  border-radius: calc(var(--radius) - 4px);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tabs__tab[aria-selected='true'] {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+}
+.tabs__tab:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
 
 /* Card */
 .card {
@@ -332,4 +375,33 @@ a {
   position: absolute;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+}
+
+/* Logo. Clear space and the mark-to-word gap equal one eye's width (22% of the mark). */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--logo-size) * 0.22);
+  padding: calc(var(--logo-size) * 0.22);
+  line-height: 1;
+}
+.logo picture {
+  display: contents;
+}
+.logo__mark {
+  display: block;
+  flex: none;
+  width: var(--logo-size);
+  height: var(--logo-size);
+}
+.logo__word {
+  font-family: 'Fredoka', var(--font);
+  font-weight: 600;
+  font-size: calc(var(--logo-size) * 0.8);
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+  color: var(--text);
+}
+.logo--on-dark .logo__word {
+  color: #ffffff;
 }

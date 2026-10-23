@@ -1,8 +1,10 @@
-"""End to end: a full Rock-Paper-Scissors duel over /ws/."""
+"""End to end: full Rock-Paper-Scissors games (duel and bracket) over /ws/."""
 
+import asyncio
 import json
 
 from games import rps as rps_module
+from rooms.validation import RateLimiter
 from tests.conftest import make_profile
 
 
@@ -57,7 +59,7 @@ async def test_rps_duel_end_to_end(connect, monkeypatch):
 
     over = await ann.wait_push("game:event", lambda d: d["kind"] == "gameOver")
     results = {r["playerId"]: r for r in over["data"]["results"]}
-    assert results[host.player_id]["points"] == 3 and results[ann.player_id]["points"] == 2
+    assert results[host.player_id]["points"] == 100 and results[ann.player_id]["points"] == 0
     state = await host.wait_push("room:state", lambda d: d["status"] == "finished")
     assert state["wins"] == {host.player_id: 1}
 
@@ -68,3 +70,34 @@ async def test_rps_duel_rejected_with_three_players(connect):
     ack = await host.request("game:start")
     assert ack["error"]["code"] == "INVALID_ACTION"
     assert (await host.request("room:peek", {"code": code}))["data"]["status"] == "lobby"
+
+
+async def test_rps_bracket_end_to_end_scoreboard(connect, manager, monkeypatch):
+    """4 players: champion 100, runner-up 66.67, both losing semifinalists tied 3rd (16.67)."""
+    monkeypatch.setattr(rps_module, "RPS_REVEAL_MS", 30)
+    monkeypatch.setattr(RateLimiter, "allow", lambda self: True)
+    code, clients = await seat(connect, ["Host", "Ann", "Bob", "Cat"])
+    by_id = {c.player_id: c for c in clients}
+    settings = {"mode": "bracket", "bestOf": 3}
+    assert (await clients[0].request("room:selectGame", {"gameId": "rps", "settings": settings}))[
+        "ok"
+    ]
+    assert (await clients[0].request("game:start"))["ok"]
+    room = manager.rooms[code]
+    for _ in range(400):  # the first-listed player of each match always wins
+        if room.status != "playing":
+            break
+        for match in list(room.game_state.matches):
+            if match.phase == "picking" and match.b is not None:
+                for pid, choice in ((match.a, "rock"), (match.b, "scissors")):
+                    if match.picks.get(pid) is None:
+                        await by_id[pid].request("game:action", {"type": "pick", "choice": choice})
+        await asyncio.sleep(0.01)
+    done = await clients[0].wait_push("game:event", lambda d: d["kind"] == "gameOver")
+    placements = sorted(r["placement"] for r in done["data"]["results"])
+    points = sorted((r["points"] for r in done["data"]["results"]), reverse=True)
+    assert placements == [1, 2, 3, 3] and points == [100, 66.67, 16.67, 16.67]
+    state = await clients[0].wait_push("room:state", lambda d: d["status"] == "finished")
+    assert sorted(state["scoreboard"].values(), reverse=True) == [100, 66.67, 16.67, 16.67]
+    champion = next(r["playerId"] for r in done["data"]["results"] if r["placement"] == 1)
+    assert state["wins"] == {champion: 1}

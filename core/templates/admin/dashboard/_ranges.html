@@ -1,0 +1,5 @@
+<div class="dash-ranges" role="group" aria-label="Date range">
+  {% for key, label in ranges.items %}
+    <a href="?range={{ key }}"{% if key == rng.key %} class="active" aria-current="true"{% endif %}>{{ label }}</a>
+  {% endfor %}
+</div>

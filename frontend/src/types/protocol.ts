@@ -35,12 +35,14 @@ export interface WireProfile {
   id: string
   nickname: string
   color: string
-  type: 'guest' | 'registered'
 }
+
+export type PlayerType = 'guest' | 'registered'
 
 export interface Player {
   id: string
-  profileId: string
+  /** "registered" seats belong to an account (show a badge); no account id is ever sent. */
+  type: PlayerType
   nickname: string
   color: string
   avatar: Avatar
@@ -75,6 +77,8 @@ export interface SeatData {
   playerId: string
   roomToken: string
   room: RoomPublic
+  /** Present when the sent authToken was invalid or expired: the seat is a guest seat. */
+  authStatus?: 'invalid'
 }
 
 export interface PeekData {
@@ -88,9 +92,9 @@ type Empty = Record<string, never>
 
 /** Every request type with its payload and its ack `data`. */
 export interface RequestMap {
-  'room:create': { payload: { profile: WireProfile }; data: SeatData }
+  'room:create': { payload: { profile: WireProfile; authToken?: string }; data: SeatData }
   'room:join': {
-    payload: { code: string; profile: WireProfile; roomToken?: string }
+    payload: { code: string; profile: WireProfile; roomToken?: string; authToken?: string }
     data: SeatData
   }
   'room:peek': { payload: { code: string }; data: PeekData }

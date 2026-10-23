@@ -33,7 +33,7 @@
   gap: 12px;
 }
 .home__title {
-  font-size: 2rem;
+  font-size: inherit;
 }
 .home__profile {
   display: inline-flex;
@@ -50,6 +50,11 @@
   margin: 0;
   font-size: 1.1rem;
   text-align: center;
+}
+
+/* Join */
+.join__logo {
+  justify-self: start;
 }
 
 /* Profile pickers */
@@ -89,4 +94,28 @@
   color: #fff;
   font-weight: 700;
   text-shadow: 0 0 3px #000;
+}
+
+/* Profile page: account */
+.account__who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0;
+}
+.account__stats {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.account__stats li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.home__account-link {
+  text-align: center;
 }

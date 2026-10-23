@@ -99,14 +99,16 @@ async def test_host_transfer_after_offline_timeout(connect, manager):
 
 
 async def test_host_keeps_role_if_back_in_time(connect, manager):
-    manager.host_transfer_ms = 300
+    manager.host_transfer_ms = 1000  # generous margin so a slow reconnect can't flake
     code, (host, ann) = await setup_room(connect)
     host_id, token = host.player_id, host.token
     await host.close()
     back = await connect()
     payload = {"code": code, "profile": make_profile("Host"), "roomToken": token}
     assert (await back.request("room:join", payload))["ok"]
-    await asyncio.sleep(0.4)
+    task = manager.rooms[code].host_task
+    assert task is not None
+    await asyncio.wait_for(task, timeout=3)  # the check runs, finds the host online
     assert manager.rooms[code].host_id == host_id
 
 
@@ -123,10 +125,13 @@ async def test_idle_and_empty_rooms_are_cleaned_up(connect, manager):
 
 
 async def test_cleanup_loop_runs_in_background(connect, manager):
-    manager.cleanup_interval_ms = 20
-    manager.idle_ttl_ms = 0
+    manager.cleanup_interval_ms = 20  # read by the loop, which starts on first connect
     code, _ = await setup_room(connect)
-    await asyncio.sleep(0.15)
+    manager.idle_ttl_ms = 0  # only now, so cleanup can't race the setup requests
+    for _ in range(200):  # up to ~2 s
+        if code not in manager.rooms:
+            break
+        await asyncio.sleep(0.01)
     assert code not in manager.rooms
 
 
@@ -175,12 +180,19 @@ async def test_full_game_loop_with_timer_scoreboard_and_hook(connect, manager, m
     assert (await host.request("game:action", {"type": "score"}))["ok"]
     over = await ann.wait_push("game:event", lambda d: d["kind"] == "gameOver")
     results = {r["playerId"]: r for r in over["data"]["results"]}
-    assert results[host.player_id] == {"playerId": host.player_id, "placement": 1, "points": 2}
-    assert results[ann.player_id]["placement"] == 2
+    assert results[host.player_id] == {
+        "playerId": host.player_id, "placement": 1, "score": 2, "points": 100
+    }
+    assert results[ann.player_id]["placement"] == 2 and results[ann.player_id]["points"] == 0
     state = await ann.wait_push("room:state", lambda d: d["status"] == "finished")
-    assert state["scoreboard"] == {host.player_id: 2, ann.player_id: 0}
+    assert state["scoreboard"] == {host.player_id: 100, ann.player_id: 0}
     assert state["wins"] == {host.player_id: 1}
-    assert finished and finished[0][0] == code and finished[0][2] == "dummy"
+    game = finished[0][0]
+    assert game.room_code == code and game.game_id == "dummy"
+    hook_results = {r["player_id"]: r for r in game.results}
+    assert hook_results[host.player_id] == {
+        "player_id": host.player_id, "placement": 1, "score": 2, "points": 100
+    }
     assert manager.rooms[code].timer_task is None
 
     assert (await ann.request("game:action", {"type": "score"}))["error"][
@@ -191,7 +203,7 @@ async def test_full_game_loop_with_timer_scoreboard_and_hook(connect, manager, m
     ann.pushes.clear()
     assert (await host.request("game:playAgain"))["ok"]
     state = await ann.wait_push("room:state", lambda d: d["status"] == "lobby")
-    assert state["selectedGame"] == "dummy" and state["scoreboard"][host.player_id] == 2
+    assert state["selectedGame"] == "dummy" and state["scoreboard"][host.player_id] == 100
 
     # A second game adds to the session scoreboard.
     await host.drain()
@@ -201,7 +213,8 @@ async def test_full_game_loop_with_timer_scoreboard_and_hook(connect, manager, m
         await host.request("game:action", {"type": "score"})
         await ann.request("game:action", {"type": "score"})
     state = await host.wait_push("room:state", lambda d: d["status"] == "finished")
-    assert state["scoreboard"] == {host.player_id: 4, ann.player_id: 1}
+    assert state["scoreboard"] == {host.player_id: 200, ann.player_id: 0}
+    assert state["wins"] == {host.player_id: 2}
 
 
 async def test_leave_mid_game_keeps_seat_until_game_ends(connect, manager):

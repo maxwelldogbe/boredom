@@ -1,0 +1,44 @@
+{% extends "admin/base_site.html" %}
+{% load dashboard %}
+{% block content %}
+<div id="content-main">
+  <form class="dash-filters" method="get">
+    <input type="search" name="q" value="{{ search }}" placeholder="Nickname or username" aria-label="Search">
+    <select name="type" aria-label="Type">
+      <option value="">Everyone</option>
+      <option value="registered"{% if kind == 'registered' %} selected{% endif %}>Registered</option>
+      <option value="guest"{% if kind == 'guest' %} selected{% endif %}>Guests</option>
+    </select>
+    <select name="sort" aria-label="Sort by">
+      {% for key in sorts %}<option value="{{ key }}"{% if key == sort %} selected{% endif %}>{{ key|cut:"_"|capfirst }}</option>{% endfor %}
+    </select>
+    <select name="dir" aria-label="Direction">
+      <option value="desc"{% if desc %} selected{% endif %}>High to low</option>
+      <option value="asc"{% if not desc %} selected{% endif %}>Low to high</option>
+    </select>
+    <input type="submit" value="Apply">
+    <a href="{% url 'admin:dashboard-export-users' %}">Export CSV</a>
+  </form>
+  <div class="dash-scroll"><table class="dash-table">
+    <thead><tr><th>Nickname</th><th>Username</th><th>Type</th><th>First seen</th><th>Last seen</th><th class="n">Games</th><th class="n">Wins</th><th class="n">Losses</th><th class="n">Win rate</th><th>Favorite game</th></tr></thead>
+    <tbody>
+    {% for r in page.object_list %}
+      <tr>
+        <td>{% if r.is_guest %}<a href="{% url 'admin:dashboard-guest' r.row_key %}">{{ r.row_nickname|default:"Guest" }}</a>{% else %}<a href="{% url 'admin:dashboard-user' r.row_user_id %}">{{ r.row_nickname }}</a>{% endif %}</td>
+        <td>{{ r.row_username|default:"—" }}</td>
+        <td>{% if r.is_guest %}<span class="dash-badge" title="approximate (browser-based)">guest {{ r.short_key }}</span>{% else %}<span class="dash-badge registered">registered</span>{% endif %}</td>
+        <td>{{ r.first_seen|date:"Y-m-d"|default:"—" }}</td>
+        <td>{{ r.last_seen|date:"Y-m-d H:i"|default:"—" }}</td>
+        <td class="n">{{ r.games }}</td><td class="n">{{ r.wins }}</td><td class="n">{{ r.losses }}</td>
+        <td class="n">{{ r.win_rate|pct }}</td>
+        <td>{{ r.favorite_name|default:"—" }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="10" class="dash-muted">No players yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% include "admin/dashboard/_pager.html" %}
+  <p class="dash-muted">Win rate appears after {{ min_games }} completed games. Guests are approximate (browser-based): one browser profile = one guest. Guests are listed once they finish or abandon a game.</p>
+</div>
+{% endblock %}

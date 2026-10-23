@@ -1,7 +1,8 @@
 import { act, render } from '@testing-library/react'
 import { useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { createProfile, saveProfile } from '../lib/profileStore'
+import { getAuthToken, setAuthToken } from '../lib/account'
+import { createProfile, getProfile, saveProfile } from '../lib/profileStore'
 import { getRoomToken } from '../lib/roomTokens'
 import { GameSocket } from '../lib/socket'
 import { clearMemoryStorage } from '../lib/storage'
@@ -9,7 +10,7 @@ import { asWebSocket, FakeWebSocket } from '../test/fakeWebSocket'
 import { roomFx } from '../test/fixtures'
 import { useRoomActions, useRoomState, type RoomActions } from './context'
 import type { RoomState } from './roomReducer'
-import { RoomProvider } from './RoomProvider'
+import { EXPIRED_LOGIN_MESSAGE, RoomProvider } from './RoomProvider'
 
 const probe: { actions?: RoomActions; state?: RoomState } = {}
 
@@ -56,8 +57,9 @@ async function createSeat(ws: FakeWebSocket) {
     created = actions().createRoom()
   })
   expect(ws.lastFrame().type).toBe('room:create')
-  expect(ws.lastFrame().payload.profile).toMatchObject({ nickname: 'Sam', type: 'guest' })
+  expect(ws.lastFrame().payload.profile).toMatchObject({ nickname: 'Sam' })
   expect(ws.lastFrame().payload.profile).not.toHaveProperty('stats')
+  expect(ws.lastFrame().payload.profile).not.toHaveProperty('type')
   await act(async () => {
     ws.ack(seat)
     await created
@@ -135,5 +137,58 @@ describe('RoomProvider', () => {
       void actions().joinRoom(code.toLowerCase()).catch(() => {})
     })
     expect(ws.lastFrame()).toMatchObject({ type: 'room:join', payload: { code, roomToken: 'tok' } })
+  })
+
+  it('a guest sends no authToken and remembers the avatar the room gave them', async () => {
+    const ws = mount()
+    await createSeat(ws)
+    expect(ws.sent.map((f) => JSON.parse(f).payload)).not.toContainEqual(
+      expect.objectContaining({ authToken: expect.anything() }),
+    )
+    const mine = seat.room.players.find((p) => p.id === seat.playerId)
+    expect(getProfile()?.avatar).toEqual(mine?.avatar)
+  })
+
+  it('a registered profile sends its authToken on create and join', async () => {
+    saveProfile({
+      ...createProfile({ nickname: 'Sam', color: '#E74C3C' }),
+      type: 'registered',
+      username: 'sam_1',
+      avatar: { style: 'cutouts', seed: 'saved1' },
+    })
+    setAuthToken('jwt-123')
+    const ws = mount()
+    act(() => {
+      void actions().createRoom().catch(() => {})
+    })
+    expect(ws.lastFrame()).toMatchObject({ type: 'room:create', payload: { authToken: 'jwt-123' } })
+    expect(ws.lastFrame().payload.profile).toMatchObject({ nickname: 'Sam' })
+    act(() => {
+      void actions().joinRoom(code).catch(() => {})
+    })
+    expect(ws.lastFrame()).toMatchObject({ type: 'room:join', payload: { code, authToken: 'jwt-123' } })
+  })
+
+  it('authStatus "invalid" logs out on this device and says so', async () => {
+    saveProfile({
+      ...createProfile({ nickname: 'Sam', color: '#E74C3C' }),
+      type: 'registered',
+      username: 'sam_1',
+    })
+    setAuthToken('expired-jwt')
+    const ws = mount()
+    let created: Promise<string> = Promise.resolve('')
+    act(() => {
+      created = actions().createRoom()
+    })
+    await act(async () => {
+      ws.ack({ ...seat, authStatus: 'invalid' })
+      await created
+    })
+    expect(getAuthToken()).toBeNull()
+    expect(getProfile()).toMatchObject({ type: 'guest', nickname: 'Sam' })
+    expect(getProfile()).not.toHaveProperty('username')
+    expect(current().toasts.map((t) => t.message)).toContain(EXPIRED_LOGIN_MESSAGE)
+    expect(current().room?.code).toBe(code) // still seated, as a guest
   })
 })

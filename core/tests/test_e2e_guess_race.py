@@ -32,14 +32,27 @@ async def test_guess_race_end_to_end(connect, manager, monkeypatch):
         assert answer.lower() not in json.dumps(view, ensure_ascii=False).lower()
         wrong = await ann.request("game:action", {"type": "guess", "text": "zzz nope"})
         assert wrong["ok"]
-        winner = host if round_no % 2 else ann
-        assert (await winner.request("game:action", {"type": "guess", "text": answer}))["ok"]
+        first, second = (host, ann) if round_no % 2 else (ann, host)
+        assert (await first.request("game:action", {"type": "guess", "text": answer}))["ok"]
+        solved = await second.wait_push(
+            "game:view", lambda d, r=round_no: d["view"]["round"] == r and d["view"]["solvers"]
+        )
+        assert answer.lower() not in json.dumps(solved, ensure_ascii=False).lower()
+        # Both players solve, so the round ends at once, without waiting for the timer.
+        assert (await second.request("game:action", {"type": "guess", "text": answer}))["ok"]
         over = await ann.wait_push("game:event", lambda d: d["kind"] == "roundOver")
-        assert over["data"]["answer"] == answer and over["data"]["winnerId"] == winner.player_id
+        assert over["data"]["answer"] == answer
+        assert over["data"]["solvers"] == [
+            {"playerId": first.player_id, "rank": 1, "points": 100},
+            {"playerId": second.player_id, "rank": 2, "points": 80},
+        ]
 
     done = await host.wait_push("game:event", lambda d: d["kind"] == "gameOver")
     results = {r["playerId"]: r for r in done["data"]["results"]}
     assert results[host.player_id]["placement"] == 1
-    assert results[host.player_id]["points"] > results[ann.player_id]["points"] > 0
+    assert results[host.player_id]["score"] == 3 * 100 + 2 * 80
+    assert results[ann.player_id]["score"] == 2 * 100 + 3 * 80
+    assert results[host.player_id]["points"] == 100 and results[ann.player_id]["points"] == 0
     state = await ann.wait_push("room:state", lambda d: d["status"] == "finished")
-    assert state["scoreboard"][host.player_id] == results[host.player_id]["points"]
+    assert state["scoreboard"] == {host.player_id: 100, ann.player_id: 0}
+    assert state["wins"] == {host.player_id: 1}

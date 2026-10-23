@@ -40,7 +40,7 @@ class _Tiny(GameModule):
         return True
 
     def get_results(self, state) -> list[GameResult]:
-        return [{"player_id": p, "placement": 1, "points": 0} for p in state["players"]]
+        return [{"player_id": p, "placement": 1, "score": 0} for p in state["players"]]
 
 
 def test_base_is_abstract() -> None:

@@ -9,3 +9,6 @@ pytest
 pytest-django
 pytest-asyncio
 ruff
+psycopg[binary]
+dj-database-url
+whitenoise

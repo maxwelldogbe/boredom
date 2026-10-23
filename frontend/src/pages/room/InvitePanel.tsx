@@ -5,7 +5,7 @@ import { QrCode } from './QrCode'
 /** Copy link, Web Share (where available), WhatsApp and a collapsible QR code (plan 6.1). */
 export function InvitePanel({ code }: { code: string }) {
   const url = `${window.location.origin}/join/${code}`
-  const text = `Join my game on Boredom! Room ${code}`
+  const text = `Join my game on boredom! Room ${code}`
   const canShare = typeof navigator.share === 'function' && window.isSecureContext
   return (
     <section className="card stack" aria-labelledby="invite-title">
@@ -18,7 +18,7 @@ export function InvitePanel({ code }: { code: string }) {
         <Button
           variant="secondary"
           block
-          onClick={() => navigator.share({ title: 'Boredom', text, url }).catch(() => undefined)}
+          onClick={() => navigator.share({ title: 'boredom', text, url }).catch(() => undefined)}
         >
           Share…
         </Button>

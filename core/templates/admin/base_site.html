@@ -1,0 +1,61 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block blockbots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<style>
+  .dash-nav { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 8px 40px; background: var(--darkened-bg); border-bottom: 1px solid var(--hairline-color); }
+  .dash-nav a { font-weight: 600; }
+  .dash-nav a.active { color: var(--body-fg); text-decoration: underline; }
+  .dash-ranges { display: flex; gap: 8px; margin: 0 0 16px; flex-wrap: wrap; }
+  .dash-ranges a { padding: 4px 10px; border: 1px solid var(--border-color); border-radius: 12px; }
+  .dash-ranges a.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .dash-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .dash-tile { border: 1px solid var(--hairline-color); border-radius: 6px; padding: 12px; background: var(--body-bg); }
+  .dash-tile .label { color: var(--body-quiet-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: .04em; }
+  .dash-tile .value { font-size: 1.6rem; font-weight: 600; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .dash-tile .hint { color: var(--body-quiet-color); font-size: 0.8rem; }
+  .dash-section { margin: 0 0 28px; }
+  .dash-section h2 { margin-bottom: 8px; }
+  .dash-table { width: 100%; }
+  .dash-table td.n, .dash-table th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .dash-bars { display: flex; align-items: flex-end; gap: 2px; height: 140px; border-bottom: 1px solid var(--border-color); }
+  .dash-bars .bar { flex: 1; background: var(--primary); min-width: 4px; position: relative; }
+  .dash-bars .bar:hover { background: var(--link-fg); }
+  .dash-bars-labels { display: flex; justify-content: space-between; color: var(--body-quiet-color); font-size: 0.75rem; margin-top: 4px; }
+  .dash-spark { color: var(--primary); }
+  .dash-badge { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 0.75rem; border: 1px solid var(--border-color); color: var(--body-quiet-color); }
+  .dash-badge.registered { border-color: var(--primary); color: var(--link-fg); }
+  .dash-muted { color: var(--body-quiet-color); }
+  .dash-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+  .dash-pager { margin-top: 12px; display: flex; gap: 12px; align-items: center; }
+  .dash-actions form { display: inline; }
+  .dash-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+  @media (max-width: 767px) { .dash-nav { padding: 8px 16px; } .dash-scroll { overflow-x: auto; } }
+</style>
+{% endblock %}
+
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></div>
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block nav-breadcrumbs %}
+{% if user.is_active and user.is_staff %}
+<nav class="dash-nav" aria-label="Dashboard">
+  <a href="{% url 'admin:index' %}"{% if dash_page == 'overview' %} class="active"{% endif %}>Overview</a>
+  <a href="{% url 'admin:dashboard-games' %}"{% if dash_page == 'games' %} class="active"{% endif %}>Games</a>
+  <a href="{% url 'admin:dashboard-users' %}"{% if dash_page == 'users' %} class="active"{% endif %}>Users</a>
+  <a href="{% url 'admin:dashboard-leaderboards' %}"{% if dash_page == 'leaderboards' %} class="active"{% endif %}>Leaderboards</a>
+  <a href="{% url 'admin:dashboard-activity' %}"{% if dash_page == 'activity' %} class="active"{% endif %}>Activity</a>
+  <a href="{% url 'admin:dashboard-data' %}"{% if dash_page == 'data' %} class="active"{% endif %}>Data</a>
+</nav>
+{% endif %}
+{{ block.super }}
+{% endblock %}

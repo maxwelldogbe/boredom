@@ -12,6 +12,8 @@ from typing import Any
 
 from games import registry
 from games.base import GameError, GameEvent, GameModule
+from games.constants import SESSION_POINTS_MAX
+from games.scoring import score_results
 from rooms import hooks
 from rooms.models_types import Room, RoomError, result_to_public
 
@@ -24,7 +26,6 @@ class GameFlowMixin:
     rooms: dict[str, Room]
     clock: Callable[[], float]
     send: Callable[[str, dict[str, Any]], Awaitable[None]]
-
 
     def _module(self, room: Room) -> GameModule:
         """The module of the game currently running in `room`."""
@@ -56,6 +57,8 @@ class GameFlowMixin:
                 events.extend(extra)
         room.game_id = module.id
         room.status = "playing"
+        room.game_started_at = now
+        hooks.on_game_started(room.code, module.id)
         await self._broadcast_room(room)
         await self._apply(room, state, events)
 
@@ -114,10 +117,11 @@ class GameFlowMixin:
     async def _finish(self, room: Room, module: GameModule) -> None:
         """Record results on the scoreboard, announce them and drop players who left."""
         self._cancel_timer(room)
-        results = module.get_results(room.game_state)
+        results = score_results(module.get_results(room.game_state), SESSION_POINTS_MAX)
+        finished = hooks.game_record(room, module.id, self.clock(), results)
         for result in results:
             pid = result["player_id"]
-            room.scoreboard[pid] = room.scoreboard.get(pid, 0) + result["points"]
+            room.scoreboard[pid] = round(room.scoreboard.get(pid, 0) + result["points"], 2)
             if result["placement"] == 1:
                 room.wins[pid] = room.wins.get(pid, 0) + 1
         room.status = "finished"
@@ -131,7 +135,10 @@ class GameFlowMixin:
             room.scoreboard.pop(player.id, None)
             room.wins.pop(player.id, None)
         await self._broadcast_room(room)
-        hooks.on_game_finished(room.code, results, module.id)
+        try:
+            hooks.on_game_finished(finished)
+        except Exception:
+            logger.exception("Game-finished hook failed: room=%s game=%s", room.code, module.id)
 
     def _cancel_timer(self, room: Room) -> None:
         """Cancel the room's pending game timer, unless it is the task running now."""

@@ -44,9 +44,16 @@ def test_alphabet_excludes_confusing_letters() -> None:
     assert len(set(c.ROOM_CODE_ALPHABET)) == len(c.ROOM_CODE_ALPHABET) == 24
 
 
-def test_emoji_presets_are_24_unique() -> None:
-    assert len(c.EMOJI_PRESETS) == 24
-    assert len(set(c.EMOJI_PRESETS)) == 24
+def test_avatar_constants() -> None:
+    raw = json.loads(c.CONSTANTS_PATH.read_text(encoding="utf-8"))
+    assert "EMOJI_PRESETS" not in raw
+    assert c.AVATAR_API_VERSION == "10.x"
+    assert c.AVATAR_STYLES == ("adventurer-neutral", "croodles-neutral", "cutouts", "voxel-art")
+    seed = re.compile(c.AVATAR_SEED_PATTERN)
+    for ok in ["a", "9c41e07b", "A_b-C", "x" * 32]:
+        assert seed.fullmatch(ok), ok
+    for bad in ["", "x" * 33, "a b", "a/b", "é"]:
+        assert not seed.fullmatch(bad), bad
 
 
 def test_player_colors_are_10_unique_hex() -> None:
@@ -62,3 +69,28 @@ def test_nickname_pattern() -> None:
         assert pattern.fullmatch(ok), ok
     for bad in ["<b>", "a/b", "émile", "tab\tname", "😀"]:
         assert not pattern.fullmatch(bad), bad
+
+
+def test_dots_turn_timer_matches_plan_section_10() -> None:
+    assert c.DOTS_TURN_MS == 45_000
+
+
+def test_account_constants() -> None:
+    assert c.PASSWORD_MIN_LENGTH == 8
+    assert c.AUTH_TOKEN_DAYS == 30
+    assert c.AUTH_RATE_LIMIT_PER_MIN == 10
+    assert c.STATS_MAX_IMPORT_GAMES == 500
+    username = re.compile(c.USERNAME_PATTERN)
+    for ok in ["sam", "Sam_99", "x" * 20]:
+        assert username.fullmatch(ok), ok
+    for bad in ["ab", "x" * 21, "sam smith", "sam-1", "é" * 3]:
+        assert not username.fullmatch(bad), bad
+
+
+def test_dashboard_constants() -> None:
+    assert c.ACTIVITY_RETENTION_DAYS == 180
+    assert c.DASHBOARD_MIN_GAMES_FOR_RATES == 5
+    assert c.DASHBOARD_PAGE_SIZE == 50
+    assert c.GUEST_KEY_LENGTH == 16
+    assert c.ADMIN_LOGIN_MAX_FAILS == 5
+    assert c.ADMIN_LOGIN_LOCK_MINUTES == 15

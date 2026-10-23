@@ -14,6 +14,7 @@ from typing import Any
 
 from channels.layers import get_channel_layer
 
+from analytics.keys import guest_key
 from games import registry
 from games.base import GameError
 from games.constants import (
@@ -25,6 +26,8 @@ from games.constants import (
     ROOM_CODE_MAX_ATTEMPTS,
     ROOM_IDLE_TTL_MS,
 )
+from rooms import hooks
+from rooms.avatars import AvatarRng, SystemAvatarRng, assign_avatar
 from rooms.game_flow import GameFlowMixin
 from rooms.models_types import Player, Profile, Room, RoomError
 from rooms.upkeep import UpkeepMixin
@@ -53,11 +56,13 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
         send: SendFn = channel_layer_send,
         clock: Callable[[], float] = wall_clock_ms,
         rng_factory: Callable[[], random.Random] = lambda: random.Random(secrets.randbits(64)),
+        avatar_rng: AvatarRng | None = None,
     ) -> None:
         self.rooms: dict[str, Room] = {}
         self.send = send
         self.clock = clock
         self.rng_factory = rng_factory
+        self.avatar_rng: AvatarRng = avatar_rng or SystemAvatarRng()
         self.host_transfer_ms: float = HOST_TRANSFER_MS
         self.idle_ttl_ms: float = ROOM_IDLE_TTL_MS
         self.cleanup_interval_ms: float = ROOM_CLEANUP_INTERVAL_MS
@@ -103,6 +108,13 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
                 return player
         return None
 
+    @staticmethod
+    def _seat_for_account(room: Room, user_id: int | None) -> Player | None:
+        """The seat an account already holds here: one account never gets two seats."""
+        if user_id is None:
+            return None
+        return next((p for p in room.players if p.user_id == user_id and not p.left), None)
+
     def _seat_reply(self, room: Room, player: Player) -> dict[str, Any]:
         return {"playerId": player.id, "roomToken": player.token, "room": room.to_public()}
 
@@ -125,11 +137,13 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
             id="p_" + secrets.token_hex(6),
             profile_id=profile.id,
             nickname=nickname,
-            emoji=profile.emoji,
             color=profile.color,
+            avatar=assign_avatar(profile, self.avatar_rng, taken={p.avatar for p in room.players}),
             joined_at=self.clock(),
             token=secrets.token_urlsafe(16),
             channel=channel,
+            user_id=profile.user_id,
+            guest_key="" if profile.user_id is not None else guest_key(profile.id),
         )
 
     # ----- requests ------------------------------------------------------------------
@@ -144,18 +158,21 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
             room.players.append(player)
             room.host_id = player.id
             await self._broadcast_room(room)
+            hooks.on_room_event("room_created", room.code, player)
             return self._seat_reply(room, player)
 
     async def join_room(
         self, channel: str, code: str, profile: Profile, token: str | None
     ) -> dict[str, Any]:
-        """Take a new seat, or reclaim one by token (detaching any older socket on it)."""
+        """Take a new seat, or reclaim one by token or by account (detaching any older socket)."""
         room = self.rooms.get(code)
         if room is None:
             raise RoomError("ROOM_NOT_FOUND", f"We couldn't find room {code}.")
         async with room.lock:
             room.last_activity = self.clock()
-            seat = self._seat_for_token(room, token)
+            seat = self._seat_for_token(room, token) or self._seat_for_account(
+                room, profile.user_id
+            )
             if seat is not None:
                 if seat.channel and seat.channel != channel:
                     await self._detach(seat.channel, room.code, "You joined from another tab.")
@@ -170,6 +187,7 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
             player = self._new_player(room, profile, channel)
             room.players.append(player)
             await self._broadcast_room(room)
+            hooks.on_room_event("room_joined", room.code, player)
             return self._seat_reply(room, player)
 
     def peek(self, code: str | None) -> dict[str, Any]:
@@ -193,6 +211,7 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
             room.last_activity = self.clock()
             player.channel, player.online, player.offline_since = None, False, self.clock()
             player.token = ""
+            hooks.on_room_event("room_left", room.code, player)
             if room.status == "playing":
                 player.left = True
             else:

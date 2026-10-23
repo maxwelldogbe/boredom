@@ -11,12 +11,15 @@ from games.base import GameError
 from games.constants import (
     GUESS_HINT1_MS,
     GUESS_HINT2_MS,
+    GUESS_RANK_POINTS_FIRST,
+    GUESS_RANK_POINTS_FLOOR,
+    GUESS_RANK_POINTS_STEP,
     GUESS_REVEAL_MS,
     GUESS_ROUND_MS,
     GUESS_TEXT_MAX,
 )
 from games.content import EMOJI, WORDS
-from games.guess_race import GuessRace, first_letter, scramble
+from games.guess_race import GuessRace, first_letter, rank_points, scramble
 from games.normalize import normalize
 
 GR = GuessRace()
@@ -83,38 +86,67 @@ def test_difficulty_filters_words(difficulty) -> None:
     assert {by_word[p.answer] for p in state.plan} == {difficulty}
 
 
-def test_correct_guess_scores_with_speed_bonus() -> None:
-    state = new(content="scramble")
+def test_every_solver_scores_by_finishing_order() -> None:
+    state = new(("a", "b", "c", "d"), content="scramble")
     answer = state.current.answer
     state, events = guess(state, "b", f"  {answer.lower()}! ", T0 + 7_900)
-    assert events == [
-        {
-            "kind": "roundOver",
-            "data": {"round": 1, "answer": answer, "winnerId": "b", "points": 100 - 2 * 7},
-        }
+    assert events == [] and state.phase == "guessing"
+    state, events = guess(state, "d", answer, T0 + 8_000)
+    state, _ = guess(state, "c", "nope", T0 + 8_100)
+    state, events = guess(state, "a", answer, T0 + 29_000)
+    assert events == [] and state.scores == {"a": 60, "b": 100, "c": 0, "d": 80}
+    view = GR.get_view(state, "c")
+    assert view["solvers"] == [
+        {"playerId": "b", "rank": 1, "points": 100},
+        {"playerId": "d", "rank": 2, "points": 80},
+        {"playerId": "a", "rank": 3, "points": 60},
     ]
-    assert state.scores == {"a": 0, "b": 86, "c": 0}
-    assert state.phase == "roundOver" and state.deadline == T0 + 7_900 + GUESS_REVEAL_MS
+    assert view["iSolved"] is False and GR.get_view(state, "d")["iSolved"] is True
+    state, events = guess(state, "c", answer, T0 + 29_500)  # the last online player solves
+    assert events == [{
+        "kind": "roundOver",
+        "data": {"round": 1, "answer": answer, "solvers": [*view["solvers"],
+                 {"playerId": "c", "rank": 4, "points": 40}]},
+    }]
+    assert state.phase == "roundOver" and state.deadline == T0 + 29_500 + GUESS_REVEAL_MS
 
 
-@pytest.mark.parametrize(("elapsed_ms", "points"), [(0, 100), (999, 100), (1000, 98), (29_999, 42)])
-def test_speed_points(elapsed_ms, points) -> None:
-    state = new(content="scramble")
-    state, events = guess(state, "a", state.current.answer, T0 + elapsed_ms)
-    assert events[0]["data"]["points"] == points
+@pytest.mark.parametrize(
+    ("rank", "points"), [(1, 100), (2, 80), (3, 60), (4, 40), (5, 20), (6, 20), (10, 20)]
+)
+def test_rank_points_from_constants(rank, points) -> None:
+    assert rank_points(rank) == points
+    assert rank_points(rank) == max(
+        GUESS_RANK_POINTS_FLOOR, GUESS_RANK_POINTS_FIRST - GUESS_RANK_POINTS_STEP * (rank - 1)
+    )
 
 
-def test_minimum_points_is_20() -> None:
-    import games.guess_race as gr_module
+def test_speed_within_a_rank_does_not_matter() -> None:
+    fast = new(content="scramble")
+    fast, _ = guess(fast, "a", fast.current.answer, T0)
+    slow = new(content="scramble")
+    slow, _ = guess(slow, "a", slow.current.answer, T0 + GUESS_ROUND_MS - 1)
+    assert fast.scores["a"] == slow.scores["a"] == GUESS_RANK_POINTS_FIRST
 
-    original = gr_module.GUESS_ROUND_MS
-    gr_module.GUESS_ROUND_MS = 60_000
-    try:
-        state = new(content="scramble")
-        state, events = guess(state, "a", state.current.answer, T0 + 59_000)
-        assert events[0]["data"]["points"] == 20
-    finally:
-        gr_module.GUESS_ROUND_MS = original
+
+def test_round_ends_when_every_online_player_has_solved() -> None:
+    state = new(("a", "b", "c"), content="scramble")
+    state, _ = GR.on_presence(state, "c", False, T0)
+    state, events = guess(state, "a", state.current.answer, T0 + 100)
+    assert events == []
+    state, events = guess(state, "b", state.current.answer, T0 + 200)
+    assert events[0]["kind"] == "roundOver" and state.phase == "roundOver"
+
+
+def test_going_offline_can_end_the_round() -> None:
+    state = new(("a", "b", "c"), content="scramble")
+    state, _ = guess(state, "a", state.current.answer, T0 + 100)
+    state, _ = guess(state, "b", state.current.answer, T0 + 200)
+    state, events = GR.on_presence(state, "c", False, T0 + 300)
+    assert events[0]["kind"] == "roundOver"
+    assert [s["playerId"] for s in events[0]["data"]["solvers"]] == ["a", "b"]
+    back, events = GR.on_presence(new(), "a", True, T0)
+    assert events == []
 
 
 def test_emoji_alternatives_and_normalization() -> None:
@@ -126,8 +158,8 @@ def test_emoji_alternatives_and_normalization() -> None:
     st = lion.init(["a", "b"], lion.validate_settings({"content": "emoji"}), random.Random(1), T0)
     for text in ("the lion king", "LION KING", "Lion-King!!", "  lionking "):
         action = {"type": "guess", "text": text}
-        _, events = lion.handle_action(copy.deepcopy(st), "a", action, T0)
-        assert events and events[0]["data"]["winnerId"] == "a", text
+        solved, _ = lion.handle_action(copy.deepcopy(st), "a", action, T0)
+        assert solved.solvers == [{"playerId": "a", "rank": 1, "points": 100}], text
 
 
 def test_wrong_guess_is_free_and_recorded() -> None:
@@ -138,13 +170,13 @@ def test_wrong_guess_is_free_and_recorded() -> None:
     assert GR.get_view(state, "b")["myLastGuess"] is None
 
 
-def test_first_correct_guess_wins_and_later_guesses_rejected() -> None:
+def test_a_solver_cannot_guess_again() -> None:
     state = new(content="scramble")
     state, _ = guess(state, "a", state.current.answer, T0 + 1000)
     with pytest.raises(GameError) as exc:
-        guess(state, "b", state.current.answer, T0 + 1500)
+        guess(state, "a", state.current.answer, T0 + 1500)
     assert exc.value.code == "INVALID_ACTION"
-    assert state.scores["b"] == 0 and state.round_winner == "a"
+    assert state.scores["a"] == 100 and len(state.solvers) == 1
 
 
 @pytest.mark.parametrize("text", ["", "   ", "x" * (GUESS_TEXT_MAX + 1), None, 5])
@@ -196,7 +228,7 @@ def test_first_letter_skips_leading_the() -> None:
 def test_timeout_without_winner_then_next_round() -> None:
     state = new(rounds=5)
     state, events = GR.tick(state, T0 + GUESS_ROUND_MS)
-    assert events[0]["data"]["winnerId"] is None and events[0]["data"]["points"] == 0
+    assert events[0]["data"]["solvers"] == []
     assert GR.get_view(state, "a")["answer"] == state.current.answer
     assert GR.next_deadline(state) == T0 + GUESS_ROUND_MS + GUESS_REVEAL_MS
     state, _ = GR.tick(state, T0 + GUESS_ROUND_MS + GUESS_REVEAL_MS - 1)
@@ -218,10 +250,10 @@ def test_game_ends_after_n_rounds_with_placements() -> None:
         state = finish_round(state, now)
     assert GR.is_over(state) and GR.next_deadline(state) is None
     assert GR.get_results(state) == [
-        {"player_id": "a", "placement": 1, "points": 200},
-        {"player_id": "b", "placement": 1, "points": 200},
-        {"player_id": "c", "placement": 3, "points": 0},
-        {"player_id": "d", "placement": 3, "points": 0},
+        {"player_id": "a", "placement": 1, "score": 200},
+        {"player_id": "b", "placement": 1, "score": 200},
+        {"player_id": "c", "placement": 3, "score": 0},
+        {"player_id": "d", "placement": 3, "score": 0},
     ]
 
 
@@ -256,6 +288,8 @@ def test_answer_never_leaks_while_guessing(content, seed) -> None:
                 assert_no_answer(GR.get_view(state, pid), state.current)
         state, _ = guess(state, "a", "wrong guess", state.started_at)
         assert_no_answer(GR.get_view(state, "b"), state.current)
+        state, _ = guess(state, "c", state.current.answer, state.started_at)
+        assert_no_answer(GR.get_view(state, "b"), state.current)  # a solve reveals nothing
         state = finish_round(state, state.started_at)
 
 

@@ -1,7 +1,10 @@
 """Rock-Paper-Scissors: a duel, or a knockout bracket for 3+ players (plan section 7).
 
 Each match is best of `bestOf`; ties replay. Matches of one bracket round run in parallel,
-each with its own pick timer and reveal pause. Odd player counts give a random bye.
+each with its own pick timer and reveal pause. Odd player counts give a bye to a random
+player, preferring players who have not had one yet. Placement is by the bracket round a
+player lost in (champion 1, runner-up 2, losing semifinalists tied 3rd, ...); the display
+score is matches won.
 """
 
 import random
@@ -13,7 +16,6 @@ from games.constants import OFFLINE_FORFEIT_MS, RPS_PICK_TIMEOUT_MS, RPS_REVEAL_
 
 CHOICES = ("rock", "paper", "scissors")
 BEATS = {"rock": "scissors", "paper": "rock", "scissors": "paper"}
-POINTS_BY_PLACEMENT = {1: 3, 2: 2, 3: 1}
 
 MatchPhase = Literal["picking", "reveal", "over"]
 
@@ -48,6 +50,8 @@ class RpsState:
     offline_since: dict[str, float] = field(default_factory=dict)
     champion: str | None = None
     all_players: list[str] = field(default_factory=list)
+    byes: list[str] = field(default_factory=list)  # players who had a bye, in order
+    match_wins: dict[str, int] = field(default_factory=dict)  # byes don't count
 
 
 class RockPaperScissors(GameModule):
@@ -72,6 +76,7 @@ class RockPaperScissors(GameModule):
         if mode == "duel" and len(players) != 2:
             raise GameError("INVALID_ACTION", "Duel needs exactly 2 players. Choose bracket.")
         state = RpsState(settings["bestOf"], mode, rng, list(players), all_players=list(players))
+        state.match_wins = dict.fromkeys(players, 0)
         self._start_bracket_round(state, now, [])
         return state
 
@@ -148,6 +153,12 @@ class RockPaperScissors(GameModule):
         state.bracket_round += 1
         order = list(state.alive)
         state.rng.shuffle(order)
+        if len(order) % 2:
+            fresh = [p for p in order if p not in state.byes]
+            bye = state.rng.choice(fresh or order)
+            order.remove(bye)
+            order.append(bye)
+            state.byes.append(bye)
         state.matches = []
         for i in range(0, len(order), 2):
             a, b = order[i], order[i + 1] if i + 1 < len(order) else None
@@ -230,6 +241,7 @@ class RockPaperScissors(GameModule):
         match.phase, match.winner, match.deadline = "over", winner, None
         match.picks = dict.fromkeys(match.players())
         if loser is not None:
+            state.match_wins[winner] += 1
             state.alive.remove(loser)
             state.out_round[loser] = state.bracket_round
         events.append(
@@ -290,19 +302,15 @@ class RockPaperScissors(GameModule):
         return state.champion is not None
 
     def get_results(self, state: RpsState) -> list[GameResult]:
-        last = state.bracket_round + 1
-        depth = {p: state.out_round.get(p, last) for p in state.all_players}
-        placements = competition_placements(depth)
-        final = state.bracket_round
-        results: list[GameResult] = []
-        for pid in sorted(state.all_players, key=lambda p: placements[p]):
-            if pid == state.champion:
-                points = POINTS_BY_PLACEMENT[1]
-            elif depth[pid] == final:
-                points = POINTS_BY_PLACEMENT[2]
-            elif depth[pid] == final - 1:
-                points = POINTS_BY_PLACEMENT[3]
-            else:
-                points = 0
-            results.append({"player_id": pid, "placement": placements[pid], "points": points})
-        return results
+        placements = rps_placements(state)
+        return [
+            {"player_id": pid, "placement": placements[pid], "score": state.match_wins[pid]}
+            for pid in sorted(state.all_players, key=lambda p: placements[p])
+        ]
+
+
+def rps_placements(state: RpsState) -> dict[str, int]:
+    """By the bracket round a player lost in; later is better, the champion never lost."""
+    last = state.bracket_round + 1
+    depth = {p: state.out_round.get(p, last) for p in state.all_players}
+    return competition_placements(depth)

@@ -6,9 +6,10 @@ from typing import Any
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+from accounts.rooms import account_profile
 from rooms import manager as manager_module
 from rooms.manager import RoomManager
-from rooms.models_types import RoomError
+from rooms.models_types import Profile, RoomError
 from rooms.validation import (
     REQUEST_TYPES,
     BadMessage,
@@ -81,7 +82,7 @@ class RoomConsumer(AsyncWebsocketConsumer):
         if request.type in ("room:create", "room:join"):
             if self.room_code and self.room_code in manager.rooms:
                 raise RoomError("INVALID_ACTION", "Leave your current room first.")
-            profile = validate_profile(payload.get("profile"))
+            profile, auth_status = await self._profile(payload)
             if request.type == "room:create":
                 data = await manager.create_room(self.channel_name, profile)
             else:
@@ -89,7 +90,7 @@ class RoomConsumer(AsyncWebsocketConsumer):
                 token = optional_token(payload.get("roomToken"))
                 data = await manager.join_room(self.channel_name, code, profile, token)
             self.room_code, self.player_id = data["room"]["code"], data["playerId"]
-            return data
+            return {**data, "authStatus": auth_status} if auth_status else data
         if not self.room_code:
             raise RoomError("NOT_IN_ROOM", "You are not in a room.")
         code, pid = self.room_code, self.player_id
@@ -105,6 +106,21 @@ class RoomConsumer(AsyncWebsocketConsumer):
         elif request.type == "game:playAgain":
             await manager.play_again(code, pid)
         return {}
+
+    @staticmethod
+    async def _profile(payload: dict[str, Any]) -> tuple[Profile, str | None]:
+        """The seat's profile and the authStatus to report (None when there is nothing to say).
+
+        A valid authToken loads the account's saved profile and the client's profile fields
+        are ignored. An invalid or expired one falls back to the guest profile.
+        """
+        token = payload.get("authToken")
+        if token is not None:
+            account = await account_profile(token)
+            if account is not None:
+                return account, None
+            return validate_profile(payload.get("profile")), "invalid"
+        return validate_profile(payload.get("profile")), None
 
     async def push(self, event: dict[str, Any]) -> None:
         """Channel-layer handler: forward a server push to this socket."""

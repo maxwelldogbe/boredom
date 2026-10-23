@@ -1,0 +1,16 @@
+{% extends "admin/base_site.html" %}
+{% load dashboard %}
+{% block content %}
+<div id="content-main">
+  {% include "admin/dashboard/_ranges.html" %}
+  <div class="dash-scroll"><table class="dash-table">
+    <thead><tr><th>Game</th><th class="n">Plays</th><th class="n">Unique players</th><th class="n">Avg players</th><th class="n">Avg duration</th><th class="n">Completion rate</th><th class="n">Abandoned</th></tr></thead>
+    <tbody>
+    {% for g in games %}
+      <tr><td><a href="{% url 'admin:dashboard-game' g.id %}?range={{ rng.key }}">{{ g.name }}</a></td><td class="n">{{ g.plays }}</td><td class="n">{{ g.unique_players }}</td><td class="n">{{ g.avg_players|num }}</td><td class="n">{{ g.avg_duration|duration }}</td><td class="n">{{ g.completion_rate|pct }}</td><td class="n">{{ g.abandoned }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <p class="dash-muted">Plays count completed games. Completion rate = completed / (completed + abandoned).</p>
+</div>
+{% endblock %}

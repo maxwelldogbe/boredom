@@ -8,6 +8,7 @@ import logging
 from collections.abc import Awaitable, Callable
 from typing import Any
 
+from rooms import hooks
 from rooms.models_types import Room
 
 logger = logging.getLogger("rooms.upkeep")
@@ -78,7 +79,15 @@ class UpkeepMixin:
         return removed
 
     async def _delete_room(self, room: Room) -> None:
-        """Remove a room, stop its timers and tell any still-connected sockets."""
+        """Remove a room, stop its timers and tell any still-connected sockets.
+
+        A room removed mid-game (everyone left, or idle cleanup) records the game as abandoned.
+        """
+        if room.status == "playing" and room.game_id:
+            try:
+                hooks.on_game_abandoned(hooks.game_record(room, room.game_id, self.clock(), None))
+            except Exception:
+                logger.exception("Game-abandoned hook failed: room=%s", room.code)
         self._cancel_timer(room)
         if room.host_task is not None:
             room.host_task.cancel()

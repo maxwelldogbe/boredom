@@ -8,7 +8,7 @@
    "players": [
     {
      "id": "p_70cb928b087b",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -20,7 +20,7 @@
     },
     {
      "id": "p_fb8688387269",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -32,7 +32,7 @@
     },
     {
      "id": "p_a41a3fd4c5b1",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
@@ -106,7 +106,7 @@
    "players": [
     {
      "id": "p_70cb928b087b",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -118,7 +118,7 @@
     },
     {
      "id": "p_fb8688387269",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -130,7 +130,7 @@
     },
     {
      "id": "p_a41a3fd4c5b1",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
@@ -204,7 +204,7 @@
    "players": [
     {
      "id": "p_70cb928b087b",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -216,7 +216,7 @@
     },
     {
      "id": "p_fb8688387269",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -228,7 +228,7 @@
     },
     {
      "id": "p_a41a3fd4c5b1",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
@@ -296,7 +296,7 @@
    "players": [
     {
      "id": "p_70cb928b087b",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -308,7 +308,7 @@
     },
     {
      "id": "p_fb8688387269",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -320,7 +320,7 @@
     },
     {
      "id": "p_a41a3fd4c5b1",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
@@ -400,7 +400,7 @@
    "players": [
     {
      "id": "p_70cb928b087b",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -412,7 +412,7 @@
     },
     {
      "id": "p_fb8688387269",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -424,7 +424,7 @@
     },
     {
      "id": "p_a41a3fd4c5b1",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
@@ -513,7 +513,7 @@
    "players": [
     {
      "id": "p_70cb928b087b",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -525,7 +525,7 @@
     },
     {
      "id": "p_fb8688387269",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -537,7 +537,7 @@
     },
     {
      "id": "p_a41a3fd4c5b1",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
@@ -626,7 +626,7 @@
    "players": [
     {
      "id": "p_70cb928b087b",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -638,7 +638,7 @@
     },
     {
      "id": "p_fb8688387269",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -650,7 +650,7 @@
     },
     {
      "id": "p_a41a3fd4c5b1",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
@@ -729,7 +729,7 @@
    "players": [
     {
      "id": "p_70cb928b087b",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -741,7 +741,7 @@
     },
     {
      "id": "p_fb8688387269",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -753,7 +753,7 @@
     },
     {
      "id": "p_a41a3fd4c5b1",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {

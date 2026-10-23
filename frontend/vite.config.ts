@@ -15,6 +15,9 @@ export default defineConfig({
     proxy: {
       '/api': { target: BACKEND, changeOrigin: true },
       '/ws': { target: BACKEND, ws: true, changeOrigin: true },
+      // Staff dashboard: the Django admin login, its static files and CSV exports.
+      '/manage': { target: BACKEND, changeOrigin: true },
+      '/static': { target: BACKEND, changeOrigin: true },
     },
     fs: { allow: ['.', SHARED_DIR] },
   },

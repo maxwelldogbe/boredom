@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '../components/Button'
+import { Logo } from '../components/Logo'
 import { PlayerChip } from '../components/PlayerChip'
 import { RoomCodeInput } from '../components/RoomCodeInput'
 import { friendlyError } from '../lib/errors'
@@ -55,7 +56,9 @@ export default function HomePage() {
   return (
     <main className="page home">
       <header className="home__header">
-        <h1 className="home__title">Boredom</h1>
+        <h1 className="home__title">
+          <Logo size={44} />
+        </h1>
         <Link to={profile ? '/profile' : '/setup'} className="home__profile" aria-label="Your profile">
           {profile ? <PlayerChip player={profile} size="sm" /> : 'Set up profile'}
         </Link>
@@ -110,6 +113,15 @@ export default function HomePage() {
       {error && (
         <p className="field__error" role="alert">
           {error}
+        </p>
+      )}
+      {!joining && (
+        <p className="home__account-link">
+          {!profile ? (
+            <Link to="/setup?mode=login">Have an account? Log in</Link>
+          ) : profile.type === 'guest' ? (
+            <Link to="/profile">Save your profile with a free account</Link>
+          ) : null}
         </p>
       )}
       {slow && (

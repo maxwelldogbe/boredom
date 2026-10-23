@@ -1,0 +1,14 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<div id="content-main">
+  <p>Delete the account <strong>{{ account.username }}</strong>? This cannot be undone.</p>
+  <ul>
+    <li>The login, saved profile and stats are deleted.</li>
+    <li>Their past games are kept for the totals, shown as “Deleted player” and no longer linked to anyone.</li>
+  </ul>
+  <form method="post">{% csrf_token %}
+    <input type="submit" value="Yes, delete the account">
+    <a href="{% url 'admin:dashboard-user' account.pk %}" class="button cancel-link">No, go back</a>
+  </form>
+</div>
+{% endblock %}

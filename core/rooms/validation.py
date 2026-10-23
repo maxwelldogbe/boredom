@@ -10,7 +10,6 @@ from typing import Any
 
 from games.constants import (
     ACTION_RATE_LIMIT_PER_SEC,
-    EMOJI_PRESETS,
     NICKNAME_ALLOWED_PATTERN,
     NICKNAME_MAX,
     NICKNAME_MIN,
@@ -18,6 +17,7 @@ from games.constants import (
     ROOM_CODE_ALPHABET,
     ROOM_CODE_LENGTH,
 )
+from rooms.avatars import validate_avatar
 from rooms.models_types import Profile, RoomError
 
 REQUEST_TYPES = frozenset(
@@ -87,24 +87,33 @@ def validate_profile(raw: Any) -> Profile:
     profile_id = raw.get("id")
     if not isinstance(profile_id, str) or not 0 < len(profile_id.strip()) <= PROFILE_ID_MAX:
         raise RoomError("INVALID_ACTION", "Profile id is invalid.")
-    nickname = raw.get("nickname")
-    if not isinstance(nickname, str):
+    nickname = validate_nickname(raw.get("nickname"))
+    color = validate_color(raw.get("color"))
+    raw_avatar = raw.get("avatar")
+    avatar = validate_avatar(raw_avatar) if raw_avatar is not None else None
+    return Profile(id=profile_id.strip(), nickname=nickname, color=color, avatar=avatar)
+
+
+def validate_nickname(raw: Any) -> str:
+    """The trimmed nickname, or RoomError(INVALID_ACTION). Shared with saved account profiles."""
+    if not isinstance(raw, str):
         raise RoomError("INVALID_ACTION", "Nickname is required.")
-    nickname = nickname.strip()
+    nickname = raw.strip()
     if not NICKNAME_MIN <= len(nickname) <= NICKNAME_MAX:
         raise RoomError(
             "INVALID_ACTION", f"Nickname must be {NICKNAME_MIN} to {NICKNAME_MAX} characters."
         )
     if not _NICKNAME_RE.fullmatch(nickname):
         raise RoomError("INVALID_ACTION", "Nickname has characters that are not allowed.")
-    emoji = raw.get("emoji")
-    if emoji not in EMOJI_PRESETS:
-        raise RoomError("INVALID_ACTION", "Pick one of the preset emojis.")
-    color = raw.get("color")
-    canonical = _COLORS.get(color.upper()) if isinstance(color, str) else None
+    return nickname
+
+
+def validate_color(raw: Any) -> str:
+    """The palette color in canonical case, or RoomError(INVALID_ACTION)."""
+    canonical = _COLORS.get(raw.upper()) if isinstance(raw, str) else None
     if canonical is None:
         raise RoomError("INVALID_ACTION", "Pick one of the palette colors.")
-    return Profile(id=profile_id.strip(), nickname=nickname, emoji=emoji, color=canonical)
+    return canonical
 
 
 def normalize_code(raw: Any) -> str:
@@ -144,21 +153,27 @@ def unique_nickname(wanted: str, taken: list[str]) -> str:
 
 
 class RateLimiter:
-    """Sliding one-second window allowing ACTION_RATE_LIMIT_PER_SEC accepted calls."""
+    """Sliding window (one second by default) allowing `limit` accepted calls."""
 
     def __init__(
         self,
         limit: int = ACTION_RATE_LIMIT_PER_SEC,
         clock: Callable[[], float] = time.monotonic,
+        window: float = 1.0,
     ) -> None:
         self.limit = limit
         self.clock = clock
+        self.window = window
         self._hits: deque[float] = deque()
+
+    def idle(self) -> bool:
+        """True when no accepted call is still inside the window."""
+        return not self._hits or self.clock() - self._hits[-1] >= self.window
 
     def allow(self) -> bool:
         """Record and allow a call, or return False if the window is full."""
         now = self.clock()
-        while self._hits and now - self._hits[0] >= 1.0:
+        while self._hits and now - self._hits[0] >= self.window:
             self._hits.popleft()
         if len(self._hits) >= self.limit:
             return False

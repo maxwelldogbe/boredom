@@ -11,3 +11,5 @@ core/db.sqlite3
 
 # Local env
 .env
+core/test_db.sqlite3
+core/staticfiles/

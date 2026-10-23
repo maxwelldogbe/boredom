@@ -9,7 +9,7 @@
    "players": [
     {
      "id": "p_9f8abaa4fbd8",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -45,7 +45,7 @@
   "players": [
    {
     "id": "p_9f8abaa4fbd8",
-    "profileId": "prof-Sam",
+    "type": "guest",
     "nickname": "Sam",
     "color": "#E74C3C",
     "avatar": {
@@ -57,7 +57,7 @@
    },
    {
     "id": "p_3bfb64a3da15",
-    "profileId": "prof-Sam",
+    "type": "guest",
     "nickname": "Sam2",
     "color": "#3498DB",
     "avatar": {
@@ -80,7 +80,7 @@
   "players": [
    {
     "id": "p_b6b1381cf2c4",
-    "profileId": "prof-Sam",
+    "type": "guest",
     "nickname": "Sam",
     "color": "#E74C3C",
     "avatar": {
@@ -92,7 +92,7 @@
    },
    {
     "id": "p_5ad3853e89c9",
-    "profileId": "prof-Ann",
+    "type": "guest",
     "nickname": "Ann",
     "color": "#3498DB",
     "avatar": {
@@ -104,7 +104,7 @@
    },
    {
     "id": "p_0df8d478810b",
-    "profileId": "prof-Bob",
+    "type": "guest",
     "nickname": "Bob",
     "color": "#2ECC71",
     "avatar": {
@@ -130,7 +130,7 @@
   "players": [
    {
     "id": "p_9f8abaa4fbd8",
-    "profileId": "prof-Sam",
+    "type": "guest",
     "nickname": "Sam",
     "color": "#E74C3C",
     "avatar": {
@@ -142,7 +142,7 @@
    },
    {
     "id": "p_3bfb64a3da15",
-    "profileId": "prof-Sam",
+    "type": "guest",
     "nickname": "Sam2",
     "color": "#3498DB",
     "avatar": {
@@ -173,7 +173,7 @@
   "players": [
    {
     "id": "p_9f8abaa4fbd8",
-    "profileId": "prof-Sam",
+    "type": "guest",
     "nickname": "Sam",
     "color": "#E74C3C",
     "avatar": {
@@ -185,7 +185,7 @@
    },
    {
     "id": "p_3bfb64a3da15",
-    "profileId": "prof-Sam",
+    "type": "guest",
     "nickname": "Sam2",
     "color": "#3498DB",
     "avatar": {

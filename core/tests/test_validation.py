@@ -60,7 +60,12 @@ def test_profile_is_trimmed_and_stats_ignored() -> None:
         {"nickname": "x" * 13},
         {"nickname": "<script>"},
         {"nickname": 42},
-        {"emoji": "💩"},
+        {"avatar": {"style": "pixel-art", "seed": "abc"}},
+        {"avatar": {"style": "cutouts", "seed": ""}},
+        {"avatar": {"style": "cutouts", "seed": "has space"}},
+        {"avatar": {"style": "cutouts", "seed": "x" * 33}},
+        {"avatar": {"style": "cutouts"}},
+        {"avatar": "cutouts"},
         {"color": "#000000"},
         {"color": None},
         {"id": ""},
@@ -71,6 +76,13 @@ def test_invalid_profiles(overrides: dict) -> None:
     with pytest.raises(RoomError) as exc:
         validate_profile(make_profile(**overrides))
     assert exc.value.code == "INVALID_ACTION"
+
+
+def test_profile_avatar_is_optional_and_validated() -> None:
+    assert validate_profile(make_profile()).avatar is None
+    profile = validate_profile(make_profile(avatar={"style": "cutouts", "seed": "my-seed_1"}))
+    assert (profile.avatar.style, profile.avatar.seed) == ("cutouts", "my-seed_1")
+    assert not hasattr(validate_profile(make_profile(emoji="😀")), "emoji")
 
 
 def test_profile_must_be_object() -> None:

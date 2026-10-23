@@ -1,0 +1,14 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<div id="content-main">
+  <p>Delete these accounts? Their past games are kept as “Deleted player”. This cannot be undone.</p>
+  <ul>{% for a in accounts %}<li>{{ a.username }}</li>{% endfor %}</ul>
+  <form method="post">{% csrf_token %}
+    {% for a in accounts %}<input type="hidden" name="{{ action_checkbox_name }}" value="{{ a.pk }}">{% endfor %}
+    <input type="hidden" name="action" value="{{ action }}">
+    <input type="hidden" name="confirmed" value="yes">
+    <input type="submit" value="Yes, delete">
+    <a href="{% url 'admin:auth_user_changelist' %}" class="button cancel-link">No, go back</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<div id="content-main">
+  <p class="errornote">Too many failed log-in attempts. Try again in {{ lockout_minutes }} minutes.</p>
+</div>
+{% endblock %}

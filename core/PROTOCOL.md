@@ -1,12 +1,25 @@
 # Boredom WebSocket Protocol
 
-> **Status: rooms, RPS, Guess Race complete (phase B3).** The envelope, event names, error codes and room types
-> are fixed. Game sections (**B2–B7**) are filled in as each game lands. This file is kept in sync
+> **Status: rooms and all six games complete, with fair scoring (phases R1–R3, S1–S2).** The
+> envelope, event names, error codes and room types are fixed. This file is kept in sync
 > with the code; if they ever disagree, report it.
 >
 > **Changes approved after B0:** `RoomPublic.wins` added; `game:view` carries `serverNow`;
 > a game's end is announced with `game:event` kind `gameOver`; mid-game `room:leave` keeps the
 > seat (offline) until the game ends.
+>
+> **Contract change (avatars):** the profile `emoji` is gone. Every seat now has a server-assigned
+> DiceBear `avatar: {style, seed}` (see 5.1); `EMOJI_PRESETS` was removed from the constants.
+>
+> **Contract change (fair scoring, S1–S2):** games report a placement and a raw display `score`;
+> session `points` are computed centrally from placements (6.2). `GameResult` gained `score`,
+> scoreboard values can have 2 decimals, and the per-game rules changed (section 7).
+>
+> **Contract change (accounts, A1–A4):** optional permanent accounts over HTTP (section 8).
+> `room:create` / `room:join` accept an optional `authToken`; a registered seat uses the saved
+> profile and avatar, and an invalid token falls back to guest with `authStatus: "invalid"` in
+> the ack. `Player.profileId` was **removed** from `room:state` (it leaked every player's
+> persistent browser id); `Player.type` (`"guest"` | `"registered"`) was added.
 
 ## 1. Transport
 
@@ -16,6 +29,7 @@
 | Origin check | The browser `Origin` host must be in `DJANGO_ALLOWED_HOSTS`, otherwise the socket is closed. |
 | Encoding | One JSON object per text frame, UTF-8. Binary frames are rejected. |
 | Health check | HTTP `GET /api/health` → `200 {"ok": true}` |
+| Accounts | HTTP JSON API under `/api/auth/` (section 8). Optional; guests need none of it. |
 | Field naming | `camelCase` on the wire. |
 | Times | Absolute times (deadlines, timestamps) are **epoch milliseconds** (number), from the server clock. |
 
@@ -77,7 +91,7 @@ Failure:
 Example push:
 
 ```json
-{"type": "room:state", "data": {"code": "ABCD", "hostId": "p_x1", "status": "lobby", "players": [], "selectedGame": null, "settings": {}, "scoreboard": {}}}
+{"type": "room:state", "data": {"code": "ABCD", "hostId": "p_x1", "status": "lobby", "players": [{"id": "p_x1", "type": "guest", "nickname": "Sam", "color": "#E74C3C", "avatar": {"style": "voxel-art", "seed": "9c41e07b"}, "online": true, "joinedAt": 1792324569015.47}], "selectedGame": null, "settings": {}, "scoreboard": {}, "wins": {}}}
 ```
 
 ## 3. Error codes
@@ -100,13 +114,29 @@ Example push:
 
 ### 4.1 `room:create`
 
-Payload: `{ "profile": Profile }`. Creates a room; the sender becomes host.
+Payload: `{ "profile": Profile, "authToken"?: string }`. Creates a room; the sender becomes host.
 
 Ack data:
 
 ```json
 {"playerId": "p_x1", "roomToken": "Xb9...", "room": {"code": "ABCD", "...": "RoomPublic"}}
 ```
+
+**`authToken`** (also on `room:join`): the access token from the account API (section 8).
+
+| `authToken` | Seat | Ack data |
+| --- | --- | --- |
+| absent or `null` | Guest from `profile` (unchanged behaviour). | as above |
+| valid | `type: "registered"`. The account's saved nickname, color and avatar are used; the client's `profile` fields are **ignored** and `profile` may be omitted. | as above |
+| invalid, expired, or for a disabled/deleted account | Guest from `profile` (which must then be valid). | as above plus `"authStatus": "invalid"`: tell the user to log in again. |
+
+Example ack after a stale token:
+
+```json
+{"type": "ack", "id": 1, "ok": true, "data": {"playerId": "p_x1", "roomToken": "Xb9...", "room": {"...": "RoomPublic"}, "authStatus": "invalid"}}
+```
+
+Keep sending `profile` with an `authToken`, so an expired token still gets a guest seat.
 
 Store `roomToken` per room code (e.g. localStorage); it reclaims the seat after a disconnect.
 `roomToken` is only ever sent to its owner.
@@ -116,20 +146,25 @@ A socket holds at most one seat: `room:create`/`room:join` while already seated 
 
 ### 4.2 `room:join`
 
-Payload: `{ "code": "ABCD", "profile": Profile, "roomToken"?: string }`
+Payload: `{ "code": "ABCD", "profile": Profile, "roomToken"?: string, "authToken"?: string }`
+(`authToken`: see 4.1.)
 
 - `code` is case-insensitive (uppercased by the server).
 - With a `roomToken` matching a seated player: reclaims that seat (same `playerId`, nickname,
-  emoji and color; the sent profile is validated but not applied), marks it online, and allowed in
+  color and **avatar**; the sent profile is validated but not applied), marks it online, and allowed in
   any status, including mid-game. If another socket still held the seat, that socket gets an
   `error` push `NOT_IN_ROOM`. A reconnecting player in a running game also receives a `game:view`.
-- Without a valid token: takes a new seat. Rejected with `GAME_IN_PROGRESS` while the room is
-  `playing`; allowed in `lobby` and `finished`. An unknown or stale token is simply ignored.
+- With a valid `authToken` for an account that already holds a seat here: reclaims that seat
+  exactly like a `roomToken` (same `playerId` and `roomToken` in the ack, older socket detached).
+  One account never holds two seats in a room.
+- Without a valid token: takes a new seat with a **newly assigned avatar** (5.1). Rejected with
+  `GAME_IN_PROGRESS` while the room is `playing`; allowed in `lobby` and `finished`. An unknown or
+  stale token is simply ignored.
 - Nickname clashes (case-insensitive) get the lowest free suffix from 2: `Sam`, `Sam2`, `Sam3`.
   The base is shortened if needed to stay within 12 characters (`Alexandrinas` → `Alexandrina2`).
 
-Check order: profile (`INVALID_ACTION`), room exists (`ROOM_NOT_FOUND`), token reclaim,
-`GAME_IN_PROGRESS`, `ROOM_FULL`.
+Check order: profile or account (`INVALID_ACTION`), room exists (`ROOM_NOT_FOUND`), seat reclaim
+(`roomToken`, then account), `GAME_IN_PROGRESS`, `ROOM_FULL`.
 
 Ack data: same shape as `room:create`.
 
@@ -194,21 +229,26 @@ Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `GAME_IN_PROGRESS`.
 ```ts
 type GameId = 'rps' | 'guess_race' | 'hangman' | 'dots_and_boxes' | 'liars_dice' | 'name_it';
 
-// Sent by the client. Unknown fields (including `stats`) are ignored.
+// Sent by the client. Unknown fields (including `type`, `stats` and an old `emoji`) are ignored:
+// the server decides the seat type from `authToken` (4.1). Ignored entirely with a valid authToken.
 type Profile = {
-  id: string;               // browser profile id (e.g. crypto.randomUUID())
+  id: string;               // browser profile id (e.g. crypto.randomUUID()); never sent to other players
   nickname: string;         // trimmed; NICKNAME_MIN..NICKNAME_MAX chars; matches NICKNAME_ALLOWED_PATTERN
-  emoji: string;            // one of EMOJI_PRESETS
   color: string;            // one of PLAYER_COLORS
-  type: 'guest' | 'registered';
+  avatar?: Avatar;          // optional; validated if present, then IGNORED for guests (see 5.1)
+};
+
+type Avatar = {
+  style: string;            // one of AVATAR_STYLES
+  seed: string;             // matches AVATAR_SEED_PATTERN
 };
 
 type Player = {
   id: string;               // per-room player id
-  profileId: string;
+  type: 'guest' | 'registered';  // for a badge; no username or account id is ever exposed
   nickname: string;         // may carry a suffix: "Sam2"
-  emoji: string;
   color: string;
+  avatar: Avatar;           // assigned by the server when the seat is created
   online: boolean;
   joinedAt: number;         // epoch ms
 };
@@ -222,14 +262,34 @@ type RoomPublic = {
   players: Player[];        // seat (join) order
   selectedGame: GameId | null;
   settings: Record<string, unknown>;
-  scoreboard: Record<string, number>;   // playerId -> session points (only players with points recorded)
+  scoreboard: Record<string, number>;   // playerId -> session points, up to 2 decimals (only players with points recorded)
   wins: Record<string, number>;         // playerId -> games won (placement 1) this session
 };
 
-type GameResult = { playerId: string; placement: number; points: number };
+type GameResult = {
+  playerId: string;
+  placement: number;   // 1 is best; tied players share a placement (1, 2, 2, 4)
+  score: number;       // raw in-game score, for display only (meaning per game, section 7)
+  points: number;      // session points this game added to the scoreboard (6.2)
+};
 ```
 
 Constants (`shared/constants.json`) are shared by client and server.
+
+### 5.1 Avatars
+
+Each seat gets a DiceBear avatar, described only by `{style, seed}`. The server never stores or
+sends image URLs. The client builds the image from `AVATAR_API_VERSION`, `style` and `seed`,
+for example `https://api.dicebear.com/{AVATAR_API_VERSION}/{style}/svg?seed={seed}`.
+
+| Rule | Detail |
+| --- | --- |
+| New guest seat (`room:create`, or `room:join` without a valid token) | The server picks a random style from `AVATAR_STYLES` and a random seed (8 hex characters). Any `avatar` the guest sent is ignored. |
+| Reclaimed seat (valid `roomToken`) | Keeps its existing avatar unchanged. |
+| Registered seat (valid `authToken`) | The avatar saved with the account, in every room and game, forever (8.3). |
+| Uniqueness | No two guest seats in a room share the same `{style, seed}`. A registered seat keeps its saved avatar even if a guest seat happens to match it. |
+| Validation | A `profile.avatar` that is present must be an object with `style` in `AVATAR_STYLES` and `seed` matching `AVATAR_SEED_PATTERN`; otherwise the request fails with `INVALID_ACTION`. |
+| Privacy | Seeds are random. They are never derived from the nickname, profile id or anything identifying. |
 
 ## 6. Room lifecycle
 
@@ -251,6 +311,22 @@ When a game ends the server sends, in order:
 4. `room:state` with status `finished`, updated `scoreboard` (points added) and `wins`
    (+1 for every placement-1 player, so ties share the win). Players who left mid-game are
    removed at this point.
+
+Afterwards, in the background, every registered player's account stats get `played + 1`, and
+`wins + 1` for placement 1 (8.4). A failed stats write is logged and never affects the game.
+
+**Session points** are the same for every game and depend only on placement. With `n`
+players in the game, position `p` is worth `SESSION_POINTS_MAX × (n − p) / (n − 1)`
+(`SESSION_POINTS_MAX` = 100): 1st gets 100, last gets 0. Tied players share the **average** of
+the positions they occupy (two tied for 1st of 4 each get (100 + 66.67) / 2 = 83.33). A
+one-player game gives 100. Points are rounded to 2 decimals. Raw game scores never reach the
+scoreboard, so no game is worth more than another.
+
+| Players | 1st | 2nd | 3rd | 4th |
+| --- | --- | --- | --- | --- |
+| 2 | 100 | 0 | | |
+| 3 | 100 | 50 | 0 | |
+| 4 | 100 | 66.67 | 33.33 | 0 |
 
 ### 6.3 Presence and host
 
@@ -285,9 +361,9 @@ settings combination (for example an RPS duel with 3 players).
 | `rps` | B2 |
 | `guess_race` | B3 |
 | `hangman` | B4 |
-| `dots_and_boxes` | B5 |
-| `liars_dice` | B6 |
-| `name_it` | B7 |
+| `dots_and_boxes` | B5 (R1) |
+| `liars_dice` | B6 (R2) |
+| `name_it` | B7 (R3) |
 
 ### 7.1 `rps`: Rock-Paper-Scissors
 
@@ -312,6 +388,7 @@ settings combination (for example an RPS duel with 3 players).
 **Rules**
 - Matches in a bracket round run at the same time, each with its own timers. Players are paired
   at random each bracket round. With an odd count, one random player gets a bye and advances.
+  The bye goes only to a player who has not had one yet, while such a player is still in.
 - Each round has `RPS_PICK_TIMEOUT_MS` (10 s). The round is revealed as soon as both have picked,
   or at the deadline. Someone who did not pick loses the round. If neither picked, or both picked
   the same, it's a tie: no point, and the round is replayed.
@@ -361,16 +438,17 @@ type MatchPublic = {
 | `bracketRound` | `{bracketRound, pairs: [a, b \| null][]}`, sent when bracket round 2+ starts. Round 1 pairs (and its bye) are in the first `game:view`; no events are sent at game start. |
 | `gameOver` | see 6.2 |
 
-**Results:**
+**Results:** placement by the bracket round a player lost in; `score` is matches won (byes
+are not wins).
 
-| Who | Placement | Points |
-| --- | --- | --- |
-| Champion | 1 | 3 |
-| Runner-up (lost the final) | 2 | 2 |
-| Lost in the round before the final | 3 (shared) | 1 |
-| Lost earlier | Shared by round lost; later rounds rank higher | 0 |
+| Who | Placement |
+| --- | --- |
+| Champion | 1 |
+| Runner-up (lost the final) | 2 |
+| Lost in the round before the final | 3 (shared) |
+| Lost earlier | Shared by round lost; later rounds rank higher |
 
-In a duel the loser is runner-up (2 points).
+In a duel the loser is runner-up.
 
 ### 7.2 `guess_race`: Word Scramble and Emoji Guess
 
@@ -391,18 +469,22 @@ and not blank. Wrong guesses are allowed without limit, apart from the rate limi
 
 | Error | When |
 | --- | --- |
-| `INVALID_ACTION` | Unknown `type`, bad `text`, or the round is no longer accepting guesses. |
+| `INVALID_ACTION` | Unknown `type`, bad `text`, you already solved this round, or the round is no longer accepting guesses. |
 
 **Rules**
 - Content never repeats within a game. Everyone sees the same prompt.
 - A guess is correct if `normalize(text)` equals the normalized answer or one of its
   alternatives. normalize: lowercase, trim, drop a leading "the ", then remove all punctuation and whitespace.
-- The first correct guess wins the round and scores
-  `max(20, 100 - 2 * floor(secondsElapsed))`.
+- **Everyone can score.** Each player who solves the round earns points by finishing order
+  (the order the server received the correct guesses, so there are no exact ties): rank `k`
+  earns `max(GUESS_RANK_POINTS_FLOOR, GUESS_RANK_POINTS_FIRST − GUESS_RANK_POINTS_STEP × (k − 1))`,
+  that is 100, 80, 60, 40, then 20 for everyone after. Players who don't solve it earn 0.
+  Once you solve it you can't guess again that round.
 - Hint 1 at `GUESS_HINT1_MS` (10 s): the category (emoji) or the letter count (scramble).
   Hint 2 at `GUESS_HINT2_MS` (20 s): the first letter of the answer, ignoring a leading "The".
-- The round ends at the first correct guess or at `GUESS_ROUND_MS` (30 s) with no winner. The
-  answer is then shown for `GUESS_REVEAL_MS` (3 s), and the next round starts.
+- The round ends when every **online** player has solved it (going offline can end it too) or
+  at `GUESS_ROUND_MS` (30 s). The answer is then shown for `GUESS_REVEAL_MS` (3 s), and the
+  next round starts.
 
 **View:**
 
@@ -418,11 +500,12 @@ type GuessRaceView = {
   roundEndsAt: number;           // epoch ms: when guessing closes
   revealEndsAt: number | null;   // epoch ms: when the next round starts (roundOver only)
   scores: Record<string, number>;
-  roundWinner: string | null;
-  roundPoints: number;           // points the round winner earned (0 if none)
+  solvers: Solver[];             // this round, in finishing order (public; never the answer)
+  iSolved: boolean;              // you solved this round
   answer: string | null;         // null while guessing; set in roundOver/done
   myLastGuess: { text: string; correct: boolean } | null;   // your own last guess this round
 };
+type Solver = { playerId: string; rank: number; points: number };
 type Hint =
   | { type: 'length'; value: number }        // scramble, hint 1
   | { type: 'category'; value: string }      // emoji, hint 1
@@ -433,8 +516,482 @@ type Hint =
 
 | kind | data |
 | --- | --- |
-| `roundOver` | `{round, answer, winnerId: string \| null, points}` |
+| `roundOver` | `{round, answer, solvers: Solver[]}` |
 | `gameOver` | see 6.2 |
 
-**Results:** placement by total score (ties share). Each player's `points` is their total score,
-which is added directly to the session scoreboard.
+**Results:** placement by total score (ties share). `score` is the total score.
+
+### 7.3 `hangman`: Hangman Duel
+
+**Players:** 2–10. **Settings** (defaults shown):
+
+```json
+{"mode": "group"}
+```
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| `mode` | `"group"` \| `"duel"` | `duel` needs exactly 2 players (rejected at `game:start` otherwise). With 2 players the two modes play identically. |
+
+There is one round per player. Every player sets a word exactly once, in join order, and
+guesses every other player's word.
+
+**Actions:**
+
+| Action | Who | Rules |
+| --- | --- | --- |
+| `{"type": "setWord", "word": string, "hint"?: string}` | the setter, while `setting` | `word` is `HANGMAN_WORD_MIN`–`HANGMAN_WORD_MAX` (5–10) letters A–Z, stored uppercase. `hint` is optional, trimmed, at most `HANGMAN_HINT_MAX` (30) characters from `NICKNAME_ALLOWED_PATTERN`. A blank hint means none. |
+| `{"type": "guessLetter", "letter": string}` | any guesser, while `guessing` | One letter A–Z, case-insensitive, not already guessed by anyone. |
+| `{"type": "flagWord"}` | any guesser, while `roundOver` | Claims the word is not a real word. Within `HANGMAN_FLAG_WINDOW_MS` (5 s) of the round ending, once per round, only after a played word (not a skipped round), and only with 3+ players. |
+| `{"type": "voteWord", "valid": boolean}` | each voter once, while `flagVote` | Voters are all guessers (never the setter). The flagger has already voted Invalid. |
+
+| Error | When |
+| --- | --- |
+| `NOT_YOUR_TURN` | `setWord` from a non-setter or outside `setting`; `guessLetter` outside `guessing`. |
+| `INVALID_ACTION` | Bad word, hint or letter; letter already guessed; the setter tries to guess; flag not allowed (setter, window over, already flagged, skipped round, fewer than 3 players); vote by a non-voter, twice, or not a boolean; unknown `type`. |
+
+**Rules**
+- All guessers share one pool of `HANGMAN_MAX_WRONG` (6) wrong letters and may guess at any
+  time. The first valid guess of a letter counts; the same letter again is rejected.
+- Guessers win when every letter is revealed. The setter wins when the 6th wrong letter is guessed.
+- **Scoring:** every round is a fixed pot of `HANGMAN_POT` (12) points, whatever the word's
+  length. Points are given when the round ends:
+
+  | Outcome | Setter | Guessers (split equally among all guessers) |
+  | --- | --- | --- |
+  | Solved with `w` wrong letters | `HANGMAN_WRONG_COST × w` (2w) | `POT − 2w` |
+  | Figure completes, or every guesser offline 30 s | `POT` | 0 |
+  | Setter never sets a word (skipped) | 0 | `POT` |
+  | Flag upheld (see below) | 0 | `POT` |
+
+  Setter plus guessers always add up to exactly `POT`. Scores can have fractions in group mode
+  (shown rounded to 2 decimals).
+- **Not-a-real-word flag:** after a played round, any guesser may send `flagWord` within 5 s.
+  The game moves to `flagVote` for `HANGMAN_VOTE_MS` (8 s). Votes are secret until the vote
+  closes. It closes early once every voter has voted.
+  - The flag is **upheld** only if more than half of **all** voters voted Invalid. The
+    flagger's own vote counts as Invalid. Ties, missing votes and absent voters keep the word valid.
+  - If upheld, the round's award is replaced: the setter gets 0 and the guessers share the full pot.
+  - Flagging is disabled with fewer than 3 players, because there would be no neutral voter.
+  - After the vote, the next round starts at once.
+- **Timers:**
+  - The setter has `HANGMAN_SET_WORD_MS` (60 s) to set a word. If they don't, the round is
+    skipped (`result: "skipped"`) and the guessers share the pot.
+  - Guessing has no timer. If **every** guesser has been offline for `OFFLINE_FORFEIT_MS`
+    (30 s), the setter wins the round.
+  - After a round, the word is shown for `HANGMAN_REVEAL_MS` (3 s), or for the 5 s flag
+    window when flagging is possible, whichever is longer. Then the next round starts.
+
+**View:**
+
+```ts
+type HangmanView = {
+  phase: 'setting' | 'guessing' | 'roundOver' | 'flagVote' | 'done';
+  round: number;               // 1-based
+  total: number;               // = number of players
+  setterId: string;
+  isSetter: boolean;
+  mask: (string | null)[];     // one cell per letter; null = hidden. Empty while setting.
+  word: string | null;         // setter only during the round; everyone in roundOver/flagVote/done
+  hint: string | null;
+  guessed: string[];           // every letter guessed this round, in order (uppercase)
+  wrong: string[];             // wrong letters, in order
+  wrongCount: number;
+  maxWrong: number;            // 6
+  deadline: number | null;     // epoch ms: setter deadline, round-over end, or vote close
+  result: 'guessers' | 'setter' | 'skipped' | null;   // set in roundOver/flagVote/done
+  award: Record<string, number>;   // this round's points per player (after the round ends)
+  scores: Record<string, number>;  // totals, 2 decimals
+  pot: number;                 // HANGMAN_POT
+  wrongCost: number;           // HANGMAN_WRONG_COST
+  flagUntil: number | null;    // epoch ms: flag window end (roundOver only)
+  canFlag: boolean;            // you are a guesser and a flag is possible this round (check flagUntil)
+  flag: {                      // only during flagVote
+    flaggerId: string;
+    deadline: number;
+    voterIds: string[];
+    votedCount: number;        // how many voted; never who voted what
+    canVote: boolean;
+    hasVoted: boolean;         // your own status only
+  } | null;
+};
+```
+
+**Events:**
+
+| kind | data |
+| --- | --- |
+| `roundOver` | `{round, setterId, word: string \| null, result: 'guessers' \| 'setter' \| 'skipped', award: Record<string, number>}` |
+| `wordFlagged` | `{round, flaggerId}` |
+| `flagResult` | `{round, setterId, word, flaggerId, votes: Record<playerId, boolean>, validVotes, invalidVotes, upheld: boolean, award}` (`award` is the round's final award) |
+| `gameOver` | see 6.2 |
+
+**Results:** placement by total score across the whole game (ties share). `score` is the total.
+
+### 7.4 `dots_and_boxes`: Dots and Boxes
+
+**Players:** 2–4. **Settings** (defaults shown):
+
+```json
+{"size": 5}
+```
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| `size` | integer `4`–`7` | Boxes per side. The board has `size + 1` dots per side. |
+
+**Line ids:** `h:r:c` is the horizontal line from dot (r, c) to dot (r, c+1), with r `0..size`
+and c `0..size-1`. `v:r:c` is the vertical line from dot (r, c) to dot (r+1, c), with r
+`0..size-1` and c `0..size`. Box (r, c) is bounded by `h:r:c`, `h:{r+1}:c`, `v:r:c` and
+`v:r:{c+1}`. There are `2 × size × (size + 1)` lines.
+
+**Action:** `{"type": "drawLine", "id": string}`
+
+| Error | When |
+| --- | --- |
+| `NOT_YOUR_TURN` | It is another player's turn. |
+| `INVALID_ACTION` | Unknown or off-board line id; line already drawn; game over; unknown `type`. |
+
+**Rules**
+- The turn order is shuffled at random when the game starts (`order` in the view).
+- Drawing the fourth side of a box claims it for the drawer. One line can close two boxes.
+  Closing at least one box keeps the turn; otherwise the turn passes.
+- The game ends when every box is claimed (that is, when every line is drawn).
+- **Timers:** each turn lasts `DOTS_TURN_MS` (45 s); the timer restarts after every line,
+  including extra turns. When it runs out, the server draws a line for the current player.
+  - A player who has been offline for `OFFLINE_FORFEIT_MS` (30 s) is auto-played as soon as
+    their turn comes (or at the 30 s mark if it is already their turn), until they return.
+  - Auto-moves pick a random free line that does not give any box its third side. If every
+    free line does, any free line is picked.
+
+**View** (everything is public; every player gets the same view apart from `isYourTurn`):
+
+```ts
+type DotsView = {
+  phase: 'playing' | 'done';
+  size: number;
+  order: string[];                      // player ids in turn order
+  currentPlayerId: string | null;       // null when done
+  isYourTurn: boolean;
+  lines: Record<string, string>;        // drawn line id -> drawer's player id
+  boxes: (string | null)[][];           // [row][col] -> owner's player id or null
+  scores: Record<string, number>;       // boxes owned
+  lastMove: {
+    lineId: string;
+    playerId: string;                   // who the line was drawn for
+    boxes: [number, number][];          // boxes it closed, as [row, col]
+    auto: 'timeout' | 'offline' | null; // set when the server drew it
+  } | null;
+  turnDeadline: number | null;          // epoch ms; null when done
+};
+```
+
+**Events:** only `gameOver` (see 6.2).
+
+**Results:** placement by boxes owned (ties share; a tie for most boxes is a shared win).
+`score` is the box count.
+
+### 7.5 `liars_dice`: Liar's Dice
+
+**Players:** 2–6. **Settings** (defaults shown):
+
+```json
+{"startingDice": 5, "wildOnes": false, "spotOn": false}
+```
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| `startingDice` | integer `3`–`6` | Dice per player at the start. Also the most a player can hold. |
+| `wildOnes` | boolean | Ones count as any face, except when the bid is on ones. |
+| `spotOn` | boolean | Enables the `callSpotOn` action. |
+
+**Actions** (only the current player, only while `bidding`):
+
+| Action | Rules |
+| --- | --- |
+| `{"type": "bid", "quantity": int, "face": int}` | `face` 1–6; `quantity` from 1 to the total dice in play. Must beat the current bid: a higher quantity, or the same quantity and a higher face. |
+| `{"type": "callLiar"}` | Challenges the current bid. Not allowed before the round's first bid. |
+| `{"type": "callSpotOn"}` | Only when `spotOn` is on. Claims the bid is exactly right. Not allowed before the first bid. |
+
+| Error | When |
+| --- | --- |
+| `NOT_YOUR_TURN` | It is another player's turn. |
+| `INVALID_ACTION` | Bad or non-raising bid; a call with no bid yet; `callSpotOn` while disabled; outside `bidding`; unknown `type`. |
+
+**Rules**
+- Every round, each player still in the game rolls their dice in secret (server rng). The first
+  round is opened by a random player (server rng).
+- Turns go round the table in join order, skipping eliminated players. Each turn is a bid or a call.
+- **Liar:** all dice are revealed. If the actual count of the bid face (plus ones when
+  `wildOnes` is on and the face is not 1) is **at least** the bid quantity, the caller loses a
+  die; otherwise the bidder loses one.
+- **Spot-on:** if the count is **exactly** the bid quantity, the caller gains a die (never above
+  `startingDice`); otherwise the caller loses one.
+- A player with 0 dice is eliminated. The player who lost the die starts the next round; if
+  they were eliminated, the next player still in the game starts. After a successful spot-on,
+  the caller starts.
+- The game ends when one player is left.
+- **Timers:**
+  - Each turn lasts `DICE_TURN_MS` (30 s). When it runs out, the server makes the minimum legal
+    bid for the player (`1 × 1` to open; otherwise the same quantity with the next face, or
+    quantity + 1 with face 1 after a bid on sixes). If that would exceed the dice in play, it calls Liar instead.
+  - After a call, the reveal is shown for `DICE_REVEAL_MS` (4 s), then the next round starts (or the game ends).
+
+**View:**
+
+```ts
+type LiarsDiceView = {
+  phase: 'bidding' | 'reveal' | 'done';
+  round: number;                          // 1-based
+  order: string[];                        // player ids in seat order
+  myDice: number[];                       // your own dice only, sorted; [] once eliminated
+  diceCounts: Record<string, number>;     // everyone's dice count (0 = eliminated)
+  totalDice: number;
+  eliminated: string[];                   // in elimination order
+  currentPlayerId: string | null;         // null outside bidding
+  isYourTurn: boolean;
+  currentBid: {playerId: string; quantity: number; face: number} | null;
+  history: {playerId: string; quantity: number; face: number; auto: boolean}[];  // this round
+  settings: {startingDice: number; wildOnes: boolean; spotOn: boolean};
+  deadline: number | null;                // epoch ms: turn end (bidding) or reveal end (reveal)
+  lastReveal: Reveal | null;              // only during `reveal`
+};
+
+type Reveal = {
+  round: number;
+  call: 'liar' | 'spotOn';
+  callerId: string;
+  bid: {playerId: string; quantity: number; face: number};
+  dice: Record<string, number[]>;         // every player still in the round
+  actual: number;                         // dice matching the bid (wild ones included)
+  loserId: string | null;                 // lost a die
+  gainerId: string | null;                // gained a die (spot-on)
+  eliminatedId: string | null;
+  auto: boolean;                          // the server called on a timeout
+};
+```
+
+Opponents' dice are **never** in a view except inside `lastReveal` during `reveal`.
+
+**Events:**
+
+| kind | data |
+| --- | --- |
+| `reveal` | `Reveal` (above) |
+| `gameOver` | see 6.2 |
+
+**Results:** placement by elimination order: the last player standing is 1st, the first player
+out is last. `score` is the number of players they outlasted (`n − placement`), for display.
+
+### 7.6 `name_it`: Name It Survival
+
+**Players:** 3–10. **Settings** (defaults shown):
+
+```json
+{"turnSeconds": 10, "challenges": true, "allowCustomTopics": false}
+```
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| `turnSeconds` | integer `5`–`30` | Time per turn. The default comes from `NAMEIT_TURN_MS`. |
+| `challenges` | boolean | Enables the `challenge` and `vote` actions. |
+| `allowCustomTopics` | boolean | Off: the chooser must pick one of the `suggestions`. On: a typed topic is also accepted. |
+
+**Actions:**
+
+| Action | Who | Rules |
+| --- | --- | --- |
+| `{"type": "chooseTopic", "topic": string}` | the topic chooser, while `topicSelect` | Trimmed. One of the `suggestions`; or, with `allowCustomTopics`, any 1–40 characters from `NICKNAME_ALLOWED_PATTERN`. |
+| `{"type": "submitAnswer", "text": string}` | the current player, while `turn` | Trimmed, 1–40 characters, and it must still have letters or digits after normalization. |
+| `{"type": "challenge"}` | any alive player except the answerer | Only for the **latest** answer, within `NAMEIT_CHALLENGE_WINDOW_MS` (5 s) of it, while `turn`. |
+| `{"type": "vote", "valid": boolean}` | each voter once, while `challenge` | Voters are the alive players except the answerer and the challenger. |
+
+| Error | When |
+| --- | --- |
+| `NOT_YOUR_TURN` | `chooseTopic` from a non-chooser or outside `topicSelect`; `submitAnswer` when it is not your turn. |
+| `INVALID_ACTION` | Bad topic (or a typed topic while `allowCustomTopics` is off) or bad answer; challenge outside the window, of your own answer, by an eliminated player, or with challenges off; vote by a non-voter, twice, or not a boolean; game over; unknown `type`. |
+
+**Rules**
+- The first topic is chosen by the **first player in seat order** (the room creator). The module
+  does not know who the current host is.
+- The chooser sees `NAMEIT_TOPIC_SUGGESTIONS` (5) random topics from `content/topics.json` and
+  must pick one; a typed topic is accepted only when `allowCustomTopics` is on. After
+  `NAMEIT_TOPIC_MS` (30 s) a random suggestion is used.
+- Players answer in seat order, skipping eliminated players. The chooser of the first topic
+  starts. An accepted answer passes the turn and restarts the timer.
+- A player is **out** when they:
+  - time out (`turnSeconds`);
+  - repeat an answer (compared after normalization: lowercase, trim, strip a leading "the",
+    drop punctuation and spaces; the repeat is not added to `used`);
+  - lose a challenge.
+- **Challenges:** a challenge pauses the current turn timer and opens a vote for
+  `NAMEIT_VOTE_MS` (8 s). The vote closes early once every voter has voted. A strict majority
+  of Invalid votes eliminates the answerer. Ties and no votes keep the answer. With only two
+  players alive there are no voters, so the answer stays. If the answer stays, the paused turn
+  resumes with the time it had left.
+- When a player is out, the used list resets and they choose the next topic once (same 30 s
+  fallback), then spectate. The next alive player after them in seat order starts.
+- The last player left wins.
+
+**View:**
+
+```ts
+type NameItView = {
+  phase: 'topicSelect' | 'turn' | 'challenge' | 'done';
+  topic: string | null;                    // null while a topic is being chosen
+  topicChooserId: string | null;           // set during topicSelect
+  isTopicChooser: boolean;
+  suggestions: string[];                   // during topicSelect, otherwise []
+  topicDeadline: number | null;            // epoch ms (topicSelect)
+  order: string[];                         // seat order
+  alive: string[];
+  eliminated: string[];                    // in elimination order
+  currentPlayerId: string | null;
+  isYourTurn: boolean;
+  turnDeadline: number | null;             // null while paused by a challenge
+  pausedMs: number | null;                 // turn time left while a challenge runs
+  used: {playerId: string; text: string}[];             // this topic, oldest first
+  challengeWindow: {answerIndex: number; until: number} | null;  // latest answer
+  challengeWindowMs: number;               // 5000
+  canChallenge: boolean;                   // you may challenge the latest answer now
+  challenge: {
+    answerIndex: number;
+    answererId: string;
+    challengerId: string;
+    text: string;
+    deadline: number;                      // vote closes (epoch ms)
+    voterIds: string[];
+    votedCount: number;                    // how many voted; never who voted what
+    canVote: boolean;
+    hasVoted: boolean;                     // your own status only
+  } | null;
+  lastElimination: {playerId: string; reason: 'timeout' | 'duplicate' | 'challenge'; text: string | null} | null;
+  settings: {turnSeconds: number; challenges: boolean; allowCustomTopics: boolean};
+};
+```
+
+Votes are secret until the vote closes; they appear only in the `challengeResult` event.
+
+**Events:**
+
+| kind | data |
+| --- | --- |
+| `challengeResult` | `{answererId, challengerId, text, votes: Record<playerId, boolean>, validVotes, invalidVotes, valid: boolean}` (`valid: true` = the answer stays) |
+| `eliminated` | `{playerId, reason: 'timeout' \| 'duplicate' \| 'challenge', text: string \| null, topic: string \| null}` |
+| `gameOver` | see 6.2 |
+
+**Results:** placement by elimination order: the last survivor is 1st, the first player out is
+last. `score` is the number of players they outlasted (`n − placement`), for display.
+
+## 8. Account HTTP API
+
+Optional permanent accounts. Guests never need any of this. Plain JSON over HTTP under
+`/api/auth/`; send `Content-Type: application/json`. Authenticated requests carry
+`Authorization: Bearer <token>` (allowed by CORS from `CORS_ALLOWED_ORIGINS`). No cookies or
+CSRF tokens are involved.
+
+### 8.1 Tokens
+
+| Item | Value |
+| --- | --- |
+| Format | JWT, HS256, signed with the server's `SECRET_KEY` |
+| Claims | `{sub: user id (string), iat, exp}` |
+| Lifetime | `AUTH_TOKEN_DAYS` (30) days from login or registration; no refresh |
+| Logout | Client-side only: forget the token. Tokens are stateless, so there is no server logout. |
+| Invalid when | expired, badly signed, or the account was disabled or deleted |
+
+Store the token on the device (e.g. localStorage) and send it as `authToken` on
+`room:create` / `room:join` (4.1). Treat the token as opaque.
+
+### 8.2 Types
+
+```ts
+type AccountProfile = {          // only ever sent to the account holder
+  username: string;
+  nickname: string;
+  color: string;
+  avatar: Avatar;                // fixed forever at registration
+  type: 'registered';
+  createdAt: number;             // epoch ms
+};
+
+type AccountStats = {            // same shape as the guest Stats kept in the browser
+  gamesPlayed: number;
+  wins: number;
+  byGame: Record<GameId, {played: number; wins: number}>;
+};
+
+type ApiError = {error: {code: string; message: string; fields?: Record<string, string>}};
+```
+
+### 8.3 Endpoints
+
+**`POST /api/auth/register`** → `201 {token, profile}`
+
+```json
+{"username": "sam_1", "password": "correct horse battery",
+ "profile": {"nickname": "Sam", "color": "#F1C40F", "avatar": {"style": "cutouts", "seed": "9c41e07b"},
+             "stats": {"gamesPlayed": 4, "wins": 2, "byGame": {"rps": {"played": 4, "wins": 2}}}}}
+```
+
+```json
+{"token": "eyJhbGciOi...", "profile": {"username": "sam_1", "nickname": "Sam", "color": "#F1C40F",
+ "avatar": {"style": "cutouts", "seed": "9c41e07b"}, "type": "registered", "createdAt": 1792324569015}}
+```
+
+- `username` matches `USERNAME_PATTERN` (3–20 letters, digits, `_`) and is unique **ignoring case**.
+- `password`: at least `PASSWORD_MIN_LENGTH` (8) characters and passes Django's validators
+  (not too common, not all digits, not too similar to the username).
+- `profile.nickname` / `profile.color`: the same rules as room profiles (5).
+- `profile.avatar` (optional): the guest's current avatar is **claimed and kept forever** when
+  valid (5.1 rules). Missing or invalid: a random one is assigned. Send it so the player keeps
+  the face they know.
+- `profile.stats` (optional): the guest's browser stats, imported for fun. Only `byGame` is read.
+  Accepted only if every entry is a known `GameId` with integers `0 ≤ wins ≤ played` and the
+  total played is at most `STATS_MAX_IMPORT_GAMES` (500); otherwise all of it is ignored and the
+  account starts at zero. The registration still succeeds either way.
+
+**`POST /api/auth/login`** `{"username", "password"}` → `200 {token, profile, stats}`
+
+The username is matched ignoring case. Wrong username and wrong password get the **same**
+`401 INVALID_CREDENTIALS` response.
+
+**`GET /api/auth/me`** (Bearer) → `200 {profile, stats}`
+
+Use it on startup to check a stored token and refresh the saved profile and stats.
+
+**`PATCH /api/auth/profile`** (Bearer) `{"nickname"?, "color"?}` → `200 {profile}`
+
+Only the fields present change. The avatar and username cannot be changed. Rooms already
+joined keep the old values; the change applies from the next `room:create` / `room:join`.
+
+**`DELETE /api/auth/account`** (Bearer) `{"password"}` → `200 {"ok": true}`
+
+Deletes the account, its saved profile and its stats. The token stops working.
+
+### 8.4 Stats
+
+Server-side stats count finished games only: `played + 1` for every registered player in the
+results, `wins + 1` for placement 1 (ties share the win). Guests in the same game are not
+counted anywhere on the server.
+
+### 8.5 Errors
+
+Every error response is `{"error": {"code", "message", "fields"?}}`. `fields` maps a request
+field (`username`, `password`, `nickname`, `color`) to a message to show next to it.
+
+| Status | `code` | When |
+| --- | --- | --- |
+| 400 | `INVALID_INPUT` | Missing, malformed or weak input, or a body that is not a JSON object. Has `fields` when tied to fields. |
+| 401 | `INVALID_CREDENTIALS` | Login failed (one generic message), or wrong password on account deletion. |
+| 401 | `UNAUTHORIZED` | Missing, invalid or expired Bearer token. Forget the token and offer login. |
+| 405 | `METHOD_NOT_ALLOWED` | Wrong HTTP method for the endpoint. |
+| 409 | `USERNAME_TAKEN` | Registration with a username already in use (ignoring case). `fields.username` is set. |
+| 429 | `RATE_LIMITED` | More than `AUTH_RATE_LIMIT_PER_MIN` (10) register or login requests per minute from one IP. |
+
+Example:
+
+```json
+{"error": {"code": "INVALID_INPUT", "message": "Some fields need fixing.",
+           "fields": {"password": "This password is too common."}}}
+```

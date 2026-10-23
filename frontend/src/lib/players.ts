@@ -6,7 +6,7 @@ export function playerById(room: RoomPublic, id: string | null | undefined): Pla
   return (
     found ?? {
       id: id ?? '',
-      profileId: '',
+      type: 'guest',
       nickname: 'Someone',
       color: '#607D8B',
       avatar: { style: '', seed: '' }, // not a known style, so the initial is shown

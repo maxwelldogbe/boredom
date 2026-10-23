@@ -112,8 +112,8 @@ def test_first_to_majority_wins_duel(best_of, needed) -> None:
     assert any(e["kind"] == "matchOver" and e["data"]["reason"] == "score" for e in events)
     assert RPS.next_deadline(state) is None
     assert RPS.get_results(state) == [
-        {"player_id": "a", "placement": 1, "points": 3},
-        {"player_id": "b", "placement": 2, "points": 2},
+        {"player_id": "a", "placement": 1, "score": 1},
+        {"player_id": "b", "placement": 2, "score": 0},
     ]
 
 
@@ -164,30 +164,33 @@ def play_bracket_to_end(state, now=T0):
     return state
 
 
-def test_bracket_placements_and_points() -> None:
+def test_bracket_placements_and_scores() -> None:
     players = ["p1", "p2", "p3", "p4", "p5"]
     state = play_bracket_to_end(new(players, mode="bracket", seed=7))
     results = {r["player_id"]: r for r in RPS.get_results(state)}
     final = state.bracket_round
     assert final == 3  # 5 -> 3 -> 2 -> 1
     champ = state.champion
-    assert results[champ] == {"player_id": champ, "placement": 1, "points": 3}
+    assert results[champ]["placement"] == 1
     runner = next(p for p, r in state.out_round.items() if r == final)
-    assert results[runner]["placement"] == 2 and results[runner]["points"] == 2
+    assert results[runner]["placement"] == 2
     semis = [p for p, r in state.out_round.items() if r == final - 1]
     firsts = [p for p, r in state.out_round.items() if r == 1]
     assert len(semis) == 1 and len(firsts) == 2
-    assert results[semis[0]]["placement"] == 3 and results[semis[0]]["points"] == 1
+    assert results[semis[0]]["placement"] == 3
     for p in firsts:
-        assert results[p]["placement"] == 4 and results[p]["points"] == 0
+        assert results[p]["placement"] == 4 and results[p]["score"] == 0
+    # The display score is matches won; byes are not wins. 5 players play 4 matches.
+    assert sum(r["score"] for r in results.values()) == 4
+    assert all(r["score"] == state.match_wins[p] for p, r in results.items())
     assert [r["placement"] for r in RPS.get_results(state)] == [1, 2, 3, 4, 4]
 
 
 def test_bracket_with_four_players_shares_semifinal_place() -> None:
     state = play_bracket_to_end(new(["a", "b", "c", "d"], mode="bracket", seed=2))
     placements = sorted(r["placement"] for r in RPS.get_results(state))
-    points = sorted((r["points"] for r in RPS.get_results(state)), reverse=True)
-    assert placements == [1, 2, 3, 3] and points == [3, 2, 1, 1]
+    scores = sorted((r["score"] for r in RPS.get_results(state)), reverse=True)
+    assert placements == [1, 2, 3, 3] and scores == [2, 1, 0, 0]
 
 
 def test_seeded_pairing_is_deterministic() -> None:
@@ -266,3 +269,23 @@ def test_view_shape_is_json_serializable() -> None:
         "champion",
     }
     json.dumps(view)
+
+
+@pytest.mark.parametrize("seed", range(25))
+def test_bye_goes_to_someone_without_one_when_possible(seed) -> None:
+    state = play_bracket_to_end(new(["a", "b", "c", "d", "e"], mode="bracket", seed=seed))
+    # 5 -> 3 -> 2: two byes. The second goes to a player who has not had one.
+    assert len(state.byes) == 2 and state.byes[0] != state.byes[1]
+
+
+def test_byes_are_random() -> None:
+    first_byes = {new(["a", "b", "c"], mode="bracket", seed=s).byes[0] for s in range(30)}
+    assert first_byes == {"a", "b", "c"}
+
+
+def test_repeat_bye_only_when_everyone_has_had_one() -> None:
+    state = new(["a", "b", "c"], mode="bracket", seed=1)
+    state.byes = ["a", "b", "c"]
+    state.alive = ["a", "b", "c"]
+    RPS._start_bracket_round(state, T0, [])
+    assert len(state.byes) == 4

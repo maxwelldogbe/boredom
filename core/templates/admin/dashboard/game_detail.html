@@ -1,0 +1,30 @@
+{% extends "admin/base_site.html" %}
+{% load dashboard %}
+{% block content %}
+<div id="content-main">
+  {% include "admin/dashboard/_ranges.html" %}
+  {% with t=game.totals %}
+  <div class="dash-tiles">
+    <div class="dash-tile"><div class="label">Plays</div><div class="value">{{ t.completed }}</div><div class="hint">{{ rng.label|lower }}</div></div>
+    <div class="dash-tile"><div class="label">Unique players</div><div class="value">{{ t.unique_players }}</div></div>
+    <div class="dash-tile"><div class="label">Avg players</div><div class="value">{{ t.avg_players|num }}</div></div>
+    <div class="dash-tile"><div class="label">Avg duration</div><div class="value">{{ t.avg_duration|duration }}</div></div>
+    <div class="dash-tile"><div class="label">Completion rate</div><div class="value">{{ t.completion_rate|pct }}</div><div class="hint">{{ t.abandoned }} abandoned</div></div>
+  </div>
+  {% endwith %}
+  <div class="dash-section">
+    <h2>Plays per day, last 30 days</h2>
+    {% include "admin/dashboard/_bars.html" with series=game.per_day peak=peak bars_label="Completed games per day, last 30 days" %}
+  </div>
+  <div class="dash-section">
+    <h2>Recent sessions</h2>
+    {% if game.recent %}
+    <div class="dash-scroll"><table class="dash-table">
+      <thead><tr><th>Started</th><th>Status</th><th class="n">Players</th><th class="n">Duration</th><th>Room</th></tr></thead>
+      <tbody>{% for s in game.recent %}<tr><td>{{ s.started_at|date:"Y-m-d H:i" }}</td><td>{{ s.status }}</td><td class="n">{{ s.player_count }}</td><td class="n">{{ s.duration_seconds|duration }}</td><td>{{ s.room_code }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% else %}<p class="dash-muted">No sessions yet.</p>{% endif %}
+  </div>
+  <p><a href="{% url 'admin:dashboard-leaderboards' %}?game={{ game.id }}">Leaderboard for {{ game.name }}</a></p>
+</div>
+{% endblock %}

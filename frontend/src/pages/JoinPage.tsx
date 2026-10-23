@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { EmptyState, Loading } from '../components/EmptyState'
+import { Logo } from '../components/Logo'
 import { C } from '../lib/constants'
 import { errorCode, friendlyError } from '../lib/errors'
 import { isRoomCode } from '../lib/roomCode'
@@ -62,9 +63,12 @@ export default function JoinPage() {
     </Button>
   )
 
+  const brand = <Logo size={32} className="join__logo" />
+
   if (!valid) {
     return (
       <main className="page">
+        {brand}
         <EmptyState icon="🤔" title="That doesn't look like a room code" actions={home}>
           Room codes are {C.ROOM_CODE_LENGTH} letters, like ABCD.
         </EmptyState>
@@ -74,6 +78,7 @@ export default function JoinPage() {
 
   return (
     <main className="page">
+      {brand}
       {status === 'joining' && (
         <>
           <h1>{hostName ? `Joining ${hostName}'s room` : `Joining room ${code}`}</h1>

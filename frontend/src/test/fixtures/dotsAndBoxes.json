@@ -8,7 +8,7 @@
    "players": [
     {
      "id": "p_7759939eb919",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -20,7 +20,7 @@
     },
     {
      "id": "p_f343628808aa",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -32,7 +32,7 @@
     },
     {
      "id": "p_3bb207e1d945",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
@@ -109,7 +109,7 @@
    "players": [
     {
      "id": "p_7759939eb919",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -121,7 +121,7 @@
     },
     {
      "id": "p_f343628808aa",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -133,7 +133,7 @@
     },
     {
      "id": "p_3bb207e1d945",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
@@ -220,7 +220,7 @@
    "players": [
     {
      "id": "p_7759939eb919",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -232,7 +232,7 @@
     },
     {
      "id": "p_f343628808aa",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -244,7 +244,7 @@
     },
     {
      "id": "p_3bb207e1d945",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
@@ -354,7 +354,7 @@
    "players": [
     {
      "id": "p_7759939eb919",
-     "profileId": "prof-Sam",
+     "type": "guest",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
@@ -366,7 +366,7 @@
     },
     {
      "id": "p_f343628808aa",
-     "profileId": "prof-Ann",
+     "type": "guest",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
@@ -378,7 +378,7 @@
     },
     {
      "id": "p_3bb207e1d945",
-     "profileId": "prof-Bob",
+     "type": "guest",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {

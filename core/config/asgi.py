@@ -15,11 +15,19 @@ django_asgi_app = get_asgi_application()
 from channels.routing import ProtocolTypeRouter, URLRouter  # noqa: E402
 from channels.security.websocket import AllowedHostsOriginValidator  # noqa: E402
 
+from analytics.recorder import recorder  # noqa: E402
 from rooms.routing import websocket_urlpatterns  # noqa: E402
 
-application = ProtocolTypeRouter(
+router = ProtocolTypeRouter(
     {
         "http": django_asgi_app,
         "websocket": AllowedHostsOriginValidator(URLRouter(websocket_urlpatterns)),
     }
 )
+
+
+async def application(scope, receive, send):
+    """The router, plus the activity recorder and its daily retention task, which start on
+    the server's event loop with the first request of any kind (idempotent)."""
+    recorder.start()
+    await router(scope, receive, send)

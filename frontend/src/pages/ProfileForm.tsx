@@ -4,15 +4,19 @@ import { PlayerChip } from '../components/PlayerChip'
 import { TextInput } from '../components/TextInput'
 import { C } from '../lib/constants'
 import { nicknameError, type ProfileFields } from '../lib/profileStore'
+import type { Avatar } from '../types/protocol'
 
 interface ProfileFormProps {
   initial?: ProfileFields
   submitLabel: string
   onSubmit: (fields: ProfileFields) => void
+  /** A registered account's saved avatar (guests get a random one per room). */
+  savedAvatar?: Avatar
+  busy?: boolean
 }
 
-/** Nickname, color swatches and a live preview chip. The avatar is assigned per room by the server. */
-export function ProfileForm({ initial, submitLabel, onSubmit }: ProfileFormProps) {
+/** Nickname, color swatches and a live preview chip. */
+export function ProfileForm({ initial, submitLabel, onSubmit, savedAvatar, busy = false }: ProfileFormProps) {
   const [nickname, setNickname] = useState(initial?.nickname ?? '')
   const [color, setColor] = useState(initial?.color ?? C.PLAYER_COLORS[0])
   const [touched, setTouched] = useState(false)
@@ -27,9 +31,15 @@ export function ProfileForm({ initial, submitLabel, onSubmit }: ProfileFormProps
   return (
     <form className="stack" onSubmit={submit} noValidate>
       <div className="profile-preview" aria-live="polite">
-        <PlayerChip player={{ nickname: nickname.trim() || 'Your name', color }} />
+        <PlayerChip
+          player={{ nickname: nickname.trim() || 'Your name', color, avatar: savedAvatar, type: savedAvatar ? 'registered' : undefined }}
+        />
       </div>
-      <p className="muted">You get a random avatar each time you join a room.</p>
+      <p className="muted">
+        {savedAvatar
+          ? 'Your avatar is saved with your account and follows you into every room.'
+          : 'You get a random avatar each time you join a room.'}
+      </p>
       <TextInput
         label="Nickname"
         value={nickname}
@@ -58,8 +68,8 @@ export function ProfileForm({ initial, submitLabel, onSubmit }: ProfileFormProps
           ))}
         </div>
       </fieldset>
-      <Button type="submit" block disabled={Boolean(error)}>
-        {submitLabel}
+      <Button type="submit" block disabled={Boolean(error) || busy}>
+        {busy ? 'Saving…' : submitLabel}
       </Button>
     </form>
   )

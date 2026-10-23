@@ -1,0 +1,21 @@
+{% extends "admin/base_site.html" %}
+{% load dashboard %}
+{% block content %}
+<div id="content-main">
+  <div class="dash-ranges" role="group" aria-label="Game">
+    <a href="?"{% if not game_id %} class="active"{% endif %}>Overall</a>
+    {% for id, name in games_list %}<a href="?game={{ id }}"{% if id == game_id %} class="active"{% endif %}>{{ name }}</a>{% endfor %}
+  </div>
+  <div class="dash-cols">
+    {% for title, rows, metric in board_list %}
+    <div class="dash-section"><h2>{{ title }}</h2>
+      {% if rows %}
+      <table class="dash-table"><thead><tr><th>#</th><th>Player</th><th class="n">{{ metric }}</th><th class="n">Games</th></tr></thead>
+      <tbody>{% for row in rows %}<tr><td>{{ forloop.counter }}</td><td>{% include "admin/dashboard/_actor.html" %}</td><td class="n">{% if metric == "Win rate" %}{{ row.win_rate|pct }}{% elif metric == "Wins" %}{{ row.wins }}{% else %}{{ row.games }}{% endif %}</td><td class="n">{{ row.games }}</td></tr>{% endfor %}</tbody></table>
+      {% else %}<p class="dash-muted">Nobody yet.</p>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  <p class="dash-muted">Completed games only. Best win rate needs at least {{ min_games }} games.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Boredom logo: a bored face with a half smirk">
+  <rect width="100" height="100" rx="30" fill="#111111"/>
+  <path d="M22 42H44A11 11 0 0 1 22 42Z" fill="#ffffff"/>
+  <path d="M56 42H78A11 11 0 0 1 56 42Z" fill="#ffffff"/>
+  <circle cx="38" cy="46" r="4.5" fill="#111111"/>
+  <circle cx="72" cy="46" r="4.5" fill="#111111"/>
+  <path d="M30 72H58Q72 72 74 60" fill="none" stroke="#ffffff" stroke-width="6.5" stroke-linecap="round"/>
+</svg>

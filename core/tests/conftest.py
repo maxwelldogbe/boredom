@@ -3,17 +3,20 @@
 import asyncio
 import itertools
 import json
-from collections.abc import AsyncIterator, Callable
+from collections.abc import AsyncIterator, Callable, Iterator
 from typing import Any
 
 import pytest
 from channels.testing import WebsocketCommunicator
 
+from analytics.recorder import Recorder, recorder
 from games import registry
-from games.constants import EMOJI_PRESETS, PLAYER_COLORS
+from games.constants import PLAYER_COLORS
 from rooms import manager as manager_module
 from rooms.manager import RoomManager
 from tests.dummy_game import DummyGame
+
+pytest_plugins = ["tests.dashboard_data"]
 
 ORIGIN = (b"origin", b"http://localhost")
 
@@ -23,7 +26,6 @@ def make_profile(nickname: str = "Sam", **overrides: Any) -> dict[str, Any]:
     profile = {
         "id": f"prof-{nickname}",
         "nickname": nickname,
-        "emoji": EMOJI_PRESETS[0],
         "color": PLAYER_COLORS[0],
         "type": "guest",
     }
@@ -85,6 +87,43 @@ class WsClient:
 
     async def close(self) -> None:
         await self.comm.disconnect()
+
+
+@pytest.fixture(scope="session")
+def django_db_modify_db_settings(django_db_modify_db_settings_parallel_suffix: None) -> None:
+    """Test SQLite as a file, not in memory: in-memory connections are never closed, so one
+    opened by a WebSocket's database thread would outlive its test and trip later tests.
+    Durability is pointless for a throwaway test database, so skip fsync."""
+    from django.conf import settings
+
+    db = settings.DATABASES["default"]
+    if db["ENGINE"] == "django.db.backends.sqlite3":
+        db["TEST"] = {**db.get("TEST", {}), "NAME": str(settings.BASE_DIR / "test_db.sqlite3")}
+        db["OPTIONS"] = {
+            **db.get("OPTIONS", {}),
+            "init_command": "PRAGMA synchronous=OFF; PRAGMA journal_mode=MEMORY;",
+        }
+
+
+@pytest.fixture(autouse=True)
+def no_activity_recording(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
+    """Activity recording writes to the database; tests opt in with `recording`."""
+    monkeypatch.setattr(recorder, "enabled", False)
+    yield
+    recorder.stop()
+
+
+@pytest.fixture
+def recording(monkeypatch: pytest.MonkeyPatch) -> Recorder:
+    """Turn activity recording on (needs database access)."""
+    monkeypatch.setattr(recorder, "enabled", True)
+    return recorder
+
+
+@pytest.fixture(autouse=True)
+def fast_password_hashing(settings: Any) -> None:
+    """Real hashers are deliberately slow; tests only need hashing to work."""
+    settings.PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
 
 @pytest.fixture(autouse=True)

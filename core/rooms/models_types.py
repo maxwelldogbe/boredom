@@ -4,7 +4,7 @@ import asyncio
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-from games.base import GameResult
+from games.scoring import ScoredResult
 
 RoomStatus = Literal["lobby", "playing", "between_rounds", "finished"]
 
@@ -19,39 +19,67 @@ class RoomError(Exception):
 
 
 @dataclass(frozen=True)
+class Avatar:
+    """A DiceBear avatar: a style and a seed. The server never builds or sends image URLs."""
+
+    style: str
+    seed: str
+
+    def to_public(self) -> dict[str, str]:
+        """The `Avatar` wire type."""
+        return {"style": self.style, "seed": self.seed}
+
+
+@dataclass(frozen=True)
 class Profile:
-    """A validated, sanitized client profile. Client-supplied stats are never kept."""
+    """A validated, sanitized client profile, or a registered account's saved profile.
+
+    Client-supplied stats are never kept. `avatar` is what the client sent (validated);
+    guests' avatars are ignored at seat creation. `user_id` is set only for an account
+    loaded from a valid authToken, and then `avatar` is the account's saved avatar.
+    """
 
     id: str
     nickname: str
-    emoji: str
     color: str
+    avatar: Avatar | None = None
+    user_id: int | None = None
 
 
 @dataclass
 class Player:
-    """A seat in a room. `token` reclaims the seat; it is never sent to other players."""
+    """A seat in a room. `token` reclaims the seat; it is never sent to other players.
+
+    `profile_id` and `user_id` stay on the server: room:state only exposes `type`.
+    """
 
     id: str
     profile_id: str
     nickname: str
-    emoji: str
     color: str
+    avatar: Avatar
     joined_at: float
     token: str
     channel: str | None = None
     online: bool = True
     offline_since: float | None = None
+    user_id: int | None = None
+    guest_key: str = ""  # pseudonymous id for activity records (guests only)
     left: bool = False
+
+    @property
+    def type(self) -> str:
+        """ "registered" for a seat held by an account, else "guest"."""
+        return "registered" if self.user_id is not None else "guest"
 
     def to_public(self) -> dict[str, Any]:
         """The `Player` wire type."""
         return {
             "id": self.id,
-            "profileId": self.profile_id,
+            "type": self.type,
             "nickname": self.nickname,
-            "emoji": self.emoji,
             "color": self.color,
+            "avatar": self.avatar.to_public(),
             "online": self.online,
             "joinedAt": self.joined_at,
         }
@@ -69,13 +97,14 @@ class Room:
     players: list[Player] = field(default_factory=list)
     selected_game: str | None = None
     settings: dict[str, Any] = field(default_factory=dict)
-    scoreboard: dict[str, int] = field(default_factory=dict)
+    scoreboard: dict[str, float] = field(default_factory=dict)
     wins: dict[str, int] = field(default_factory=dict)
     game_id: str | None = None
     game_state: Any = None
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
     timer_task: asyncio.Task[None] | None = None
     host_task: asyncio.Task[None] | None = None
+    game_started_at: float | None = None
 
     def player(self, player_id: str) -> Player | None:
         """Find a seated player by id."""
@@ -109,10 +138,11 @@ class Room:
         }
 
 
-def result_to_public(result: GameResult) -> dict[str, Any]:
-    """The `GameResult` wire type."""
+def result_to_public(result: ScoredResult) -> dict[str, Any]:
+    """The `GameResult` wire type: the game's placement and raw score, plus session points."""
     return {
         "playerId": result["player_id"],
         "placement": result["placement"],
+        "score": result["score"],
         "points": result["points"],
     }

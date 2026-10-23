@@ -1,0 +1,43 @@
+{% extends "admin/base_site.html" %}
+{% load dashboard %}
+{% block breadcrumbs %}{% endblock %}
+{% block content %}
+<div id="content-main">
+  {% include "admin/dashboard/_ranges.html" %}
+  {% with s=data.sessions %}
+  <div class="dash-tiles">
+    <div class="dash-tile"><div class="label">Registered users</div><div class="value">{{ data.users.total }}</div><div class="hint">{{ data.users.new }} new ({{ rng.label|lower }})</div></div>
+    <div class="dash-tile"><div class="label">Guests seen</div><div class="value">{{ data.guests_seen }}</div><div class="hint">approximate (browser-based)</div></div>
+    <div class="dash-tile"><div class="label">Active today</div><div class="value">{{ data.active.daily }}</div><div class="hint">last 24 hours</div></div>
+    <div class="dash-tile"><div class="label">Active this week</div><div class="value">{{ data.active.weekly }}</div><div class="hint">last 7 days</div></div>
+    <div class="dash-tile"><div class="label">Active this month</div><div class="value">{{ data.active.monthly }}</div><div class="hint">last 30 days</div></div>
+    <div class="dash-tile"><div class="label">Completed games</div><div class="value">{{ s.completed }}</div><div class="hint">{{ rng.label|lower }}</div></div>
+    <div class="dash-tile"><div class="label">Games today</div><div class="value">{{ s.today }}</div></div>
+    <div class="dash-tile"><div class="label">Avg players / game</div><div class="value">{{ s.avg_players|num }}</div></div>
+    <div class="dash-tile"><div class="label">Avg duration</div><div class="value">{{ s.avg_duration|duration }}</div></div>
+    <div class="dash-tile"><div class="label">Abandon rate</div><div class="value">{{ s.abandon_rate|pct }}</div><div class="hint">{{ s.abandoned }} abandoned</div></div>
+    <div class="dash-tile"><div class="label">Most played</div><div class="value">{% if data.most_played %}<a href="{% url 'admin:dashboard-game' data.most_played.id %}">{{ data.most_played.name }}</a>{% else %}—{% endif %}</div>{% if data.most_played %}<div class="hint">{{ data.most_played.plays }} plays</div>{% endif %}</div>
+  </div>
+  {% endwith %}
+
+  <div class="dash-section">
+    <h2>Completed games, last 30 days</h2>
+    <svg class="dash-spark" width="100%" height="48" viewBox="0 0 240 40" preserveAspectRatio="none" role="img" aria-label="Completed games per day, last 30 days">
+      <polyline fill="none" stroke="currentColor" stroke-width="1.5" vector-effect="non-scaling-stroke" points="{% sparkline data.per_day %}"/>
+    </svg>
+    <div class="dash-bars-labels"><span>{{ data.per_day.0.0|date:"j M" }}</span><span>{{ data.per_day|last|first|date:"j M" }}</span></div>
+  </div>
+
+  <div class="dash-section">
+    <h2>Live now</h2>
+    <p class="dash-muted">{{ live|length }} room{{ live|length|pluralize }} open, {{ live_players }} player{{ live_players|pluralize }} seated. Read-only snapshot of the in-memory rooms.</p>
+    {% if live %}
+    <div class="dash-scroll"><table class="dash-table">
+      <thead><tr><th>Room</th><th>Status</th><th>Game</th><th class="n">Players</th><th class="n">Online</th></tr></thead>
+      <tbody>{% for room in live %}<tr><td>{{ room.code }}</td><td>{{ room.status }}</td><td>{{ room.game }}</td><td class="n">{{ room.players }}</td><td class="n">{{ room.online }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% endif %}
+  </div>
+  <p class="dash-muted">Cached for 60 seconds. Times shown in {{ time_zone }}.</p>
+</div>
+{% endblock %}

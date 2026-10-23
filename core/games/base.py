@@ -30,11 +30,15 @@ class GameEvent(TypedDict):
 
 
 class GameResult(TypedDict):
-    """One player's final outcome. Placement 1 is best; tied players share a placement."""
+    """One player's final outcome. Placement 1 is best; tied players share a placement.
+
+    `score` is the raw in-game score, for display only. Session points are not a game's
+    business: the room manager derives them from placements (games/scoring.py).
+    """
 
     player_id: str
     placement: int
-    points: int
+    score: float
 
 
 class GameModule(ABC):
@@ -89,7 +93,7 @@ class GameModule(ABC):
 
     @abstractmethod
     def get_results(self, state: Any) -> list[GameResult]:
-        """Final placement and points for every player. Only valid once `is_over`."""
+        """Final placement and raw score for every player. Only valid once `is_over`."""
 
 
 def competition_placements(values: dict[str, float]) -> dict[str, int]:

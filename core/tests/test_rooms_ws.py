@@ -34,9 +34,9 @@ async def test_create_room_ack_and_state(connect):
     assert room["players"][0]["nickname"] == "Sam"
     assert set(room["players"][0]) == {
         "id",
-        "profileId",
+        "type",
         "nickname",
-        "emoji",
+        "avatar",
         "color",
         "online",
         "joinedAt",
@@ -82,7 +82,9 @@ async def test_room_not_found_and_bad_code(connect):
 
 async def test_invalid_profile_rejected(connect):
     client = await connect()
-    ack = await client.request("room:create", {"profile": make_profile("Sam", emoji="💩")})
+    ack = await client.request(
+        "room:create", {"profile": make_profile("Sam", avatar={"style": "nope", "seed": "x"})}
+    )
     assert ack["error"]["code"] == "INVALID_ACTION"
 
 

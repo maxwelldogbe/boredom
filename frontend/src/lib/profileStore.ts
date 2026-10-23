@@ -1,5 +1,5 @@
 /** Guest profile stored in the browser under `partypack.profile` (plan 5.1). */
-import type { WireProfile } from '../types/protocol'
+import type { Avatar, WireProfile } from '../types/protocol'
 import { C } from './constants'
 import { readItem, removeItem, writeItem } from './storage'
 
@@ -18,11 +18,26 @@ export interface Profile {
   type: 'guest' | 'registered'
   createdAt: number
   stats: Stats
+  /** Guest: the avatar the last room gave you (kept forever if you create an account).
+   *  Registered: the account's saved avatar. */
+  avatar?: Avatar
+  /** Registered only: the account's username. */
+  username?: string
 }
 
 export type ProfileFields = Pick<Profile, 'nickname' | 'color'>
 
 const NICKNAME_RE = new RegExp(C.NICKNAME_ALLOWED_PATTERN)
+const SEED_RE = new RegExp(C.AVATAR_SEED_PATTERN)
+
+/** A well-formed {style, seed}, else undefined. */
+export function parseAvatar(raw: unknown): Avatar | undefined {
+  if (!raw || typeof raw !== 'object') return undefined
+  const { style, seed } = raw as Record<string, unknown>
+  if (typeof style !== 'string' || !C.AVATAR_STYLES.includes(style)) return undefined
+  if (typeof seed !== 'string' || !SEED_RE.test(seed)) return undefined
+  return { style, seed }
+}
 
 /** Returns an error message, or null when the nickname is valid. */
 export function nicknameError(raw: string): string | null {
@@ -68,13 +83,17 @@ export function parseProfile(data: unknown): Profile | null {
     s && typeof s.gamesPlayed === 'number' && typeof s.wins === 'number' && s.byGame
       ? { gamesPlayed: s.gamesPlayed, wins: s.wins, byGame: { ...s.byGame } }
       : emptyStats()
+  const avatar = parseAvatar(p.avatar)
+  const registered = p.type === 'registered' && typeof p.username === 'string' && p.username !== ''
   return {
     id: p.id,
     nickname: p.nickname.trim(),
     color: p.color,
-    type: 'guest',
+    type: registered ? 'registered' : 'guest',
     createdAt,
     stats,
+    ...(avatar ? { avatar } : {}),
+    ...(registered ? { username: p.username as string } : {}),
   }
 }
 
@@ -130,15 +149,23 @@ export function importProfile(text: string): ImportResult {
   } catch {
     // fall through
   }
-  return { ok: false, error: "That file isn't a valid Boredom profile." }
+  return { ok: false, error: "That file isn't a valid boredom profile." }
 }
 
-/** The fields the server accepts (stats never leave the browser). */
+/** The fields a room accepts (stats never leave the browser through a room). */
 export function toWireProfile(profile: Profile): WireProfile {
   return {
     id: profile.id,
     nickname: profile.nickname,
     color: profile.color,
-    type: profile.type,
   }
+}
+
+/** Back to a guest on this device (after log-out, account deletion or an expired login).
+ *  Nickname and color stay; the account's username, avatar and stats are forgotten. */
+export function toGuest(profile: Profile): Profile {
+  const guest: Profile = { ...profile, type: 'guest', stats: emptyStats() }
+  delete guest.username
+  delete guest.avatar
+  return guest
 }
