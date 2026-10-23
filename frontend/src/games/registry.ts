@@ -1,8 +1,9 @@
 /**
  * Game UI registry keyed by backend game id. Only games the backend implements are listed;
- * dots_and_boxes, liars_dice and name_it are pending (no backend yet) and stay hidden.
+ * games without a backend module yet stay hidden.
  */
 import type { GameId } from '../types/protocol'
+import { DotsGame } from './dotsAndBoxes/DotsGame'
 import { GuessRaceGame } from './guessRace/GuessRaceGame'
 import { HangmanGame } from './hangman/HangmanGame'
 import { RpsGame } from './rps/RpsGame'
@@ -80,6 +81,18 @@ export const GAME_UIS: Registry = {
       },
     ],
     Component: HangmanGame,
+  },
+  dots_and_boxes: {
+    id: 'dots_and_boxes',
+    name: 'Dots and Boxes',
+    icon: '🔲',
+    description: 'Take turns drawing lines. Close a box to claim it and go again.',
+    minPlayers: 2,
+    maxPlayers: 4,
+    settings: [
+      { key: 'size', label: 'Board size', options: [4, 5, 6, 7].map((n) => ({ value: n, label: `${n} × ${n} boxes` })) },
+    ],
+    Component: DotsGame,
   },
 }
 

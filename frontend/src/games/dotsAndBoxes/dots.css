@@ -1,0 +1,60 @@
+.dots__banner {
+  gap: 4px;
+  text-align: center;
+}
+.dots__turn {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+.dots__turn--me {
+  color: var(--primary);
+}
+.dots__note {
+  margin: 0;
+}
+.dots__board {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  touch-action: manipulation;
+}
+.dots__dot {
+  fill: var(--text);
+}
+.dots__line {
+  stroke: var(--border);
+  stroke-width: 2;
+  stroke-dasharray: 3 4;
+  stroke-linecap: round;
+}
+.dots__line--drawn {
+  stroke-width: 6;
+  stroke-dasharray: none;
+}
+.dots__line--last {
+  stroke-width: 9;
+}
+.dots__hit {
+  stroke: transparent;
+  stroke-width: 22;
+  cursor: pointer;
+}
+.dots__hit:hover,
+.dots__hit:focus-visible {
+  stroke: var(--primary);
+  stroke-opacity: 0.35;
+  outline: none;
+}
+.dots__box {
+  fill-opacity: 0.3;
+}
+.dots__initial {
+  fill: var(--text);
+  font-size: 18px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}

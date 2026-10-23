@@ -71,8 +71,27 @@ export interface HangmanView {
   scores: Record<string, number>
 }
 
+export interface DotsView {
+  phase: 'playing' | 'done'
+  size: number
+  order: string[]
+  currentPlayerId: string | null
+  isYourTurn: boolean
+  lines: Record<string, string>
+  boxes: (string | null)[][]
+  scores: Record<string, number>
+  lastMove: {
+    lineId: string
+    playerId: string
+    boxes: [number, number][]
+    auto: 'timeout' | 'offline' | null
+  } | null
+  turnDeadline: number | null
+}
+
 /** `game:view` push data, discriminated by gameId (games with a backend today). */
 export type GameViewPush =
   | { gameId: 'rps'; view: RpsView; serverNow: number }
   | { gameId: 'guess_race'; view: GuessRaceView; serverNow: number }
   | { gameId: 'hangman'; view: HangmanView; serverNow: number }
+  | { gameId: 'dots_and_boxes'; view: DotsView; serverNow: number }
