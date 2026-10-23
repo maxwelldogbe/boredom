@@ -48,7 +48,7 @@
   outline: none;
 }
 .dots__box {
-  fill-opacity: 0.3;
+  fill-opacity: 0.45;
 }
 .dots__initial {
   fill: var(--text);
@@ -57,4 +57,32 @@
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
+}
+.dots__legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dots__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.dots__legend-item--turn {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+.dots__swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
 }

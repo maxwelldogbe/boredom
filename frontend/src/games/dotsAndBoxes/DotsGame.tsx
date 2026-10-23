@@ -4,8 +4,8 @@ import { C } from '../../lib/constants'
 import { nameOf, playerById } from '../../lib/players'
 import type { RoomPublic } from '../../types/protocol'
 import type { DotsView } from '../../types/views'
-import { ScoresStrip } from '../ScoresStrip'
 import type { GameUiProps } from '../types'
+import { playerColors } from './colors'
 import './dots.css'
 
 const GAP = 40 // viewBox units between dots
@@ -43,6 +43,7 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
   const canDraw = view.isYourTurn && pending === null
   const extent = PAD * 2 + view.size * GAP
   const at = (n: number) => PAD + n * GAP
+  const colors = playerColors(view.order, room)
 
   const draw = async (id: string) => {
     if (!canDraw || view.lines[id]) return
@@ -69,7 +70,7 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
             const p = playerById(room, owner)
             return (
               <g key={`b${r}:${c}`} aria-label={`Box owned by ${nameOf(room, owner, me)}`}>
-                <rect x={at(c)} y={at(r)} width={GAP} height={GAP} fill={p.color} className="dots__box" />
+                <rect x={at(c)} y={at(r)} width={GAP} height={GAP} fill={colors[owner]} className="dots__box" />
                 <text x={at(c) + GAP / 2} y={at(r) + GAP / 2} className="dots__initial">
                   {p.nickname.charAt(0).toUpperCase()}
                 </text>
@@ -86,7 +87,7 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
               <line
                 {...pick(line)}
                 className={`dots__line${owner ? ' dots__line--drawn' : ''}${isLast ? ' dots__line--last' : ''}`}
-                stroke={owner ? playerById(room, owner).color : undefined}
+                stroke={owner ? colors[owner] : undefined}
               />
               {free && canDraw && (
                 <line
@@ -107,7 +108,15 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
         ))}
       </svg>
 
-      <ScoresStrip scores={view.scores} room={room} me={me} />
+      <ul className="dots__legend" aria-label="Players and boxes">
+        {view.order.map((pid) => (
+          <li key={pid} className={`dots__legend-item${pid === view.currentPlayerId ? ' dots__legend-item--turn' : ''}`}>
+            <span className="dots__swatch" style={{ background: colors[pid] }} aria-hidden="true" />
+            <span>{nameOf(room, pid, me)}</span>
+            <strong aria-label={`${view.scores[pid] ?? 0} boxes`}>{view.scores[pid] ?? 0}</strong>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
