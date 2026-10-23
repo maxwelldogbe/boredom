@@ -40,7 +40,7 @@ describe('Lobby', () => {
     expect(screen.getByRole('button', { name: /Rock-Paper-Scissors/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Dots and Boxes/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Liar's Dice/ })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /Name It/ })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Name It Survival/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Start game' })).toBeDisabled()
     expect(screen.getByText('Pick a game first.')).toBeInTheDocument()
   })

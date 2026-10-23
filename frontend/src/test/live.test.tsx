@@ -1,5 +1,5 @@
 /**
- * Opt-in smoke test against a REAL backend on localhost:8000 (skipped otherwise):
+ * Opt-in smoke test against a REAL backend on localhost:8000, or LIVE_WS_URL (skipped otherwise):
  *   LIVE_BACKEND=1 npx vitest run -c vitest.live.config.ts
  * Player A uses the real UI; player B is a bare GameSocket.
  */
@@ -8,37 +8,16 @@ import { MemoryRouter } from 'react-router-dom'
 import { afterAll, describe, expect, it } from 'vitest'
 import { AppRoutes } from '../App'
 import { createProfile, saveProfile, toWireProfile } from '../lib/profileStore'
-import { GameSocket } from '../lib/socket'
+import type { GameSocket } from '../lib/socket'
 import { RoomProvider } from '../state/RoomProvider'
-import type { PushMessage } from '../types/protocol'
-import type { GameViewPush, HangmanView, RpsView } from '../types/views'
-
-const env = (globalThis as { process?: { env: Record<string, string | undefined> } }).process?.env ?? {}
-const URL = env.LIVE_WS_URL ?? 'ws://127.0.0.1:8000/ws/'
-
-/** Node's WebSocket sends no Origin header (browsers always do); the backend requires one. */
-class OriginWebSocket extends WebSocket {
-  constructor(url: string | URL) {
-    super(url, { headers: { Origin: 'http://localhost:5173' } } as unknown as string[])
-  }
-}
-const live = () => new GameSocket({ url: URL, WebSocketImpl: OriginWebSocket })
-const T = { timeout: 15_000 }
+import type { HangmanView, RpsView } from '../types/views'
+import { env, live, socketPlayer, T } from './liveHelpers'
 
 describe.skipIf(!env.LIVE_BACKEND)('live backend smoke test', () => {
   const sockets: GameSocket[] = []
   afterAll(() => sockets.forEach((s) => s.close()))
 
-  function playerB() {
-    const socket = live()
-    sockets.push(socket)
-    const views: GameViewPush[] = []
-    socket.onPush((m: PushMessage) => {
-      if (m.type === 'game:view') views.push(m.data)
-    })
-    const latest = <V,>() => views.at(-1)?.view as V
-    return { socket, views, latest }
-  }
+  const playerB = () => socketPlayer(sockets)
 
   it('plays RPS, Hangman and starts Guess Race through the real UI', async () => {
     saveProfile(createProfile({ nickname: 'Ann', color: '#3498DB' }))

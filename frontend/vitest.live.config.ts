@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'node',
-    include: ['src/test/live.test.tsx'],
+    include: ['src/test/live*.test.tsx'],
     setupFiles: ['./src/test/live-setup.ts'],
     testTimeout: 120_000,
   },

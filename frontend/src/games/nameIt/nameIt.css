@@ -1,0 +1,87 @@
+.name-it__banner {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--danger) 15%, var(--surface));
+  font-weight: 600;
+  text-align: center;
+}
+.name-it__topic {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  text-align: center;
+}
+.name-it__topic strong {
+  font-size: 1.5rem;
+  overflow-wrap: anywhere;
+}
+.name-it__waiting,
+.name-it__turn {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.name-it__waiting p,
+.name-it__turn p,
+.name-it__status {
+  margin: 0;
+  font-weight: 600;
+  text-align: center;
+}
+.name-it__suggestions {
+  display: grid;
+  gap: 8px;
+}
+.name-it__answer {
+  display: grid;
+  gap: 8px;
+}
+.name-it__vote {
+  padding: 12px;
+  border: 2px solid var(--danger);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.name-it__vote p {
+  margin: 0;
+  text-align: center;
+}
+.name-it__vote-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.name-it__title {
+  margin: 0;
+  font-size: 1rem;
+}
+.name-it__used {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 0;
+  padding-left: 1.5rem;
+  overflow-wrap: anywhere;
+}
+.name-it__empty {
+  margin: 0;
+  text-align: center;
+}
+.name-it__players {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.name-it__player {
+  border-radius: 999px;
+}
+.name-it__player--turn {
+  box-shadow: 0 0 0 2px var(--primary);
+}
+.name-it__player--out {
+  opacity: 0.5;
+}

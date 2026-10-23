@@ -125,6 +125,41 @@ export interface LiarsDiceView {
   lastReveal: DiceReveal | null
 }
 
+export interface NameItChallenge {
+  answerIndex: number
+  answererId: string
+  challengerId: string
+  text: string
+  deadline: number
+  voterIds: string[]
+  votedCount: number
+  canVote: boolean
+  hasVoted: boolean
+}
+
+export interface NameItView {
+  phase: 'topicSelect' | 'turn' | 'challenge' | 'done'
+  topic: string | null
+  topicChooserId: string | null
+  isTopicChooser: boolean
+  suggestions: string[]
+  topicDeadline: number | null
+  order: string[]
+  alive: string[]
+  eliminated: string[]
+  currentPlayerId: string | null
+  isYourTurn: boolean
+  turnDeadline: number | null
+  pausedMs: number | null
+  used: { playerId: string; text: string }[]
+  challengeWindow: { answerIndex: number; until: number } | null
+  challengeWindowMs: number
+  canChallenge: boolean
+  challenge: NameItChallenge | null
+  lastElimination: { playerId: string; reason: 'timeout' | 'duplicate' | 'challenge'; text: string | null } | null
+  settings: { turnSeconds: number; challenges: boolean }
+}
+
 /** `game:view` push data, discriminated by gameId (games with a backend today). */
 export type GameViewPush =
   | { gameId: 'rps'; view: RpsView; serverNow: number }
@@ -132,3 +167,4 @@ export type GameViewPush =
   | { gameId: 'hangman'; view: HangmanView; serverNow: number }
   | { gameId: 'dots_and_boxes'; view: DotsView; serverNow: number }
   | { gameId: 'liars_dice'; view: LiarsDiceView; serverNow: number }
+  | { gameId: 'name_it'; view: NameItView; serverNow: number }

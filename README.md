@@ -20,7 +20,9 @@ boredom/
 | Rock-Paper-Scissors (duel or bracket) | **Playable** |
 | Guess Race (Word Scramble and Emoji Guess) | **Playable** |
 | Hangman Duel | **Playable** |
-| Dots and Boxes, Liar's Dice, Name It Survival | Not built yet (hidden from the game list) |
+| Dots and Boxes (2–4 players) | **Playable** |
+| Liar's Dice (2–6 players) | **Playable** |
+| Name It Survival (3–10 players) | **Playable** |
 
 ## How to play (once both servers are running, steps 4 and 6)
 

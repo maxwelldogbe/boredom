@@ -1,12 +1,12 @@
 /**
- * Game UI registry keyed by backend game id. Only games the backend implements are listed;
- * games without a backend module yet stay hidden.
+ * Game UI registry keyed by backend game id: picker metadata plus the screen for each game.
  */
 import type { GameId } from '../types/protocol'
 import { DotsGame } from './dotsAndBoxes/DotsGame'
 import { GuessRaceGame } from './guessRace/GuessRaceGame'
 import { HangmanGame } from './hangman/HangmanGame'
 import { LiarsDiceGame } from './liarsDice/LiarsDiceGame'
+import { NameItGame } from './nameIt/NameItGame'
 import { RpsGame } from './rps/RpsGame'
 import type { GameUi, ImplementedGameId } from './types'
 
@@ -108,6 +108,19 @@ export const GAME_UIS: Registry = {
       { key: 'spotOn', label: 'Spot-on calls', options: [{ value: false, label: 'Off' }, { value: true, label: 'On' }] },
     ],
     Component: LiarsDiceGame,
+  },
+  name_it: {
+    id: 'name_it',
+    name: 'Name It Survival',
+    icon: '🗣️',
+    description: 'Name things in a topic, one at a time. Repeat, stall or get voted down and you are out.',
+    minPlayers: 3,
+    maxPlayers: 10,
+    settings: [
+      { key: 'turnSeconds', label: 'Time per turn', options: [5, 10, 15, 20, 30].map((n) => ({ value: n, label: `${n} seconds` })) },
+      { key: 'challenges', label: 'Challenges', options: [{ value: true, label: 'On' }, { value: false, label: 'Off' }] },
+    ],
+    Component: NameItGame,
   },
 }
 

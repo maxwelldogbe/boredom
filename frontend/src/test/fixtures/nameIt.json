@@ -1,0 +1,809 @@
+{
+ "topicChooser": {
+  "me": "p_dec543dacf0e",
+  "room": {
+   "code": "EWHS",
+   "hostId": "p_dec543dacf0e",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_dec543dacf0e",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "ab6cd36c"
+     },
+     "online": true,
+     "joinedAt": 1792749434965.463
+    },
+    {
+     "id": "p_f28f8f6a3b5c",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "32de10f4"
+     },
+     "online": true,
+     "joinedAt": 1792749434969.906
+    },
+    {
+     "id": "p_583261ed4077",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "voxel-art",
+      "seed": "09672ed9"
+     },
+     "online": true,
+     "joinedAt": 1792749434974.117
+    }
+   ],
+   "selectedGame": "name_it",
+   "settings": {
+    "turnSeconds": 10,
+    "challenges": true
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "name_it",
+   "view": {
+    "phase": "topicSelect",
+    "topic": null,
+    "topicChooserId": "p_dec543dacf0e",
+    "isTopicChooser": true,
+    "suggestions": [
+     "Jobs",
+     "Things in a classroom",
+     "Languages",
+     "Birds",
+     "Things that are red"
+    ],
+    "topicDeadline": 1792749464982.6213,
+    "order": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "alive": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "eliminated": [],
+    "currentPlayerId": null,
+    "isYourTurn": false,
+    "turnDeadline": null,
+    "pausedMs": null,
+    "used": [],
+    "challengeWindow": null,
+    "challengeWindowMs": 5000,
+    "canChallenge": false,
+    "challenge": null,
+    "lastElimination": null,
+    "settings": {
+     "turnSeconds": 10,
+     "challenges": true
+    }
+   },
+   "serverNow": 1792749434982.9185
+  }
+ },
+ "topicWaiting": {
+  "me": "p_f28f8f6a3b5c",
+  "room": {
+   "code": "EWHS",
+   "hostId": "p_dec543dacf0e",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_dec543dacf0e",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "ab6cd36c"
+     },
+     "online": true,
+     "joinedAt": 1792749434965.463
+    },
+    {
+     "id": "p_f28f8f6a3b5c",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "32de10f4"
+     },
+     "online": true,
+     "joinedAt": 1792749434969.906
+    },
+    {
+     "id": "p_583261ed4077",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "voxel-art",
+      "seed": "09672ed9"
+     },
+     "online": true,
+     "joinedAt": 1792749434974.117
+    }
+   ],
+   "selectedGame": "name_it",
+   "settings": {
+    "turnSeconds": 10,
+    "challenges": true
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "name_it",
+   "view": {
+    "phase": "topicSelect",
+    "topic": null,
+    "topicChooserId": "p_dec543dacf0e",
+    "isTopicChooser": false,
+    "suggestions": [
+     "Jobs",
+     "Things in a classroom",
+     "Languages",
+     "Birds",
+     "Things that are red"
+    ],
+    "topicDeadline": 1792749464982.6213,
+    "order": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "alive": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "eliminated": [],
+    "currentPlayerId": null,
+    "isYourTurn": false,
+    "turnDeadline": null,
+    "pausedMs": null,
+    "used": [],
+    "challengeWindow": null,
+    "challengeWindowMs": 5000,
+    "canChallenge": false,
+    "challenge": null,
+    "lastElimination": null,
+    "settings": {
+     "turnSeconds": 10,
+     "challenges": true
+    }
+   },
+   "serverNow": 1792749434982.9185
+  }
+ },
+ "myTurn": {
+  "me": "p_dec543dacf0e",
+  "room": {
+   "code": "EWHS",
+   "hostId": "p_dec543dacf0e",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_dec543dacf0e",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "ab6cd36c"
+     },
+     "online": true,
+     "joinedAt": 1792749434965.463
+    },
+    {
+     "id": "p_f28f8f6a3b5c",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "32de10f4"
+     },
+     "online": true,
+     "joinedAt": 1792749434969.906
+    },
+    {
+     "id": "p_583261ed4077",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "voxel-art",
+      "seed": "09672ed9"
+     },
+     "online": true,
+     "joinedAt": 1792749434974.117
+    }
+   ],
+   "selectedGame": "name_it",
+   "settings": {
+    "turnSeconds": 10,
+    "challenges": true
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "name_it",
+   "view": {
+    "phase": "turn",
+    "topic": "Fruits",
+    "topicChooserId": null,
+    "isTopicChooser": false,
+    "suggestions": [],
+    "topicDeadline": null,
+    "order": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "alive": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "eliminated": [],
+    "currentPlayerId": "p_dec543dacf0e",
+    "isYourTurn": true,
+    "turnDeadline": 1792749445287.5315,
+    "pausedMs": null,
+    "used": [],
+    "challengeWindow": null,
+    "challengeWindowMs": 5000,
+    "canChallenge": false,
+    "challenge": null,
+    "lastElimination": null,
+    "settings": {
+     "turnSeconds": 10,
+     "challenges": true
+    }
+   },
+   "serverNow": 1792749435287.5852
+  }
+ },
+ "canChallenge": {
+  "me": "p_dec543dacf0e",
+  "room": {
+   "code": "EWHS",
+   "hostId": "p_dec543dacf0e",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_dec543dacf0e",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "ab6cd36c"
+     },
+     "online": true,
+     "joinedAt": 1792749434965.463
+    },
+    {
+     "id": "p_f28f8f6a3b5c",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "32de10f4"
+     },
+     "online": true,
+     "joinedAt": 1792749434969.906
+    },
+    {
+     "id": "p_583261ed4077",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "voxel-art",
+      "seed": "09672ed9"
+     },
+     "online": true,
+     "joinedAt": 1792749434974.117
+    }
+   ],
+   "selectedGame": "name_it",
+   "settings": {
+    "turnSeconds": 10,
+    "challenges": true
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "name_it",
+   "view": {
+    "phase": "turn",
+    "topic": "Fruits",
+    "topicChooserId": null,
+    "isTopicChooser": false,
+    "suggestions": [],
+    "topicDeadline": null,
+    "order": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "alive": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "eliminated": [],
+    "currentPlayerId": "p_583261ed4077",
+    "isYourTurn": false,
+    "turnDeadline": 1792749445900.4727,
+    "pausedMs": null,
+    "used": [
+     {
+      "playerId": "p_dec543dacf0e",
+      "text": "Apple"
+     },
+     {
+      "playerId": "p_f28f8f6a3b5c",
+      "text": "Car"
+     }
+    ],
+    "challengeWindow": {
+     "answerIndex": 1,
+     "until": 1792749440900.4727
+    },
+    "challengeWindowMs": 5000,
+    "canChallenge": true,
+    "challenge": null,
+    "lastElimination": null,
+    "settings": {
+     "turnSeconds": 10,
+     "challenges": true
+    }
+   },
+   "serverNow": 1792749435900.5835
+  }
+ },
+ "challengeVoter": {
+  "me": "p_dec543dacf0e",
+  "room": {
+   "code": "EWHS",
+   "hostId": "p_dec543dacf0e",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_dec543dacf0e",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "ab6cd36c"
+     },
+     "online": true,
+     "joinedAt": 1792749434965.463
+    },
+    {
+     "id": "p_f28f8f6a3b5c",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "32de10f4"
+     },
+     "online": true,
+     "joinedAt": 1792749434969.906
+    },
+    {
+     "id": "p_583261ed4077",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "voxel-art",
+      "seed": "09672ed9"
+     },
+     "online": true,
+     "joinedAt": 1792749434974.117
+    }
+   ],
+   "selectedGame": "name_it",
+   "settings": {
+    "turnSeconds": 10,
+    "challenges": true
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "name_it",
+   "view": {
+    "phase": "challenge",
+    "topic": "Fruits",
+    "topicChooserId": null,
+    "isTopicChooser": false,
+    "suggestions": [],
+    "topicDeadline": null,
+    "order": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "alive": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "eliminated": [],
+    "currentPlayerId": "p_583261ed4077",
+    "isYourTurn": false,
+    "turnDeadline": null,
+    "pausedMs": 9694.663330078125,
+    "used": [
+     {
+      "playerId": "p_dec543dacf0e",
+      "text": "Apple"
+     },
+     {
+      "playerId": "p_f28f8f6a3b5c",
+      "text": "Car"
+     }
+    ],
+    "challengeWindow": null,
+    "challengeWindowMs": 5000,
+    "canChallenge": false,
+    "challenge": {
+     "answerIndex": 1,
+     "answererId": "p_f28f8f6a3b5c",
+     "challengerId": "p_583261ed4077",
+     "text": "Car",
+     "deadline": 1792749444205.8093,
+     "voterIds": [
+      "p_dec543dacf0e"
+     ],
+     "votedCount": 0,
+     "canVote": true,
+     "hasVoted": false
+    },
+    "lastElimination": null,
+    "settings": {
+     "turnSeconds": 10,
+     "challenges": true
+    }
+   },
+   "serverNow": 1792749436205.8555
+  }
+ },
+ "challengeChallenger": {
+  "me": "p_583261ed4077",
+  "room": {
+   "code": "EWHS",
+   "hostId": "p_dec543dacf0e",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_dec543dacf0e",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "ab6cd36c"
+     },
+     "online": true,
+     "joinedAt": 1792749434965.463
+    },
+    {
+     "id": "p_f28f8f6a3b5c",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "32de10f4"
+     },
+     "online": true,
+     "joinedAt": 1792749434969.906
+    },
+    {
+     "id": "p_583261ed4077",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "voxel-art",
+      "seed": "09672ed9"
+     },
+     "online": true,
+     "joinedAt": 1792749434974.117
+    }
+   ],
+   "selectedGame": "name_it",
+   "settings": {
+    "turnSeconds": 10,
+    "challenges": true
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "name_it",
+   "view": {
+    "phase": "challenge",
+    "topic": "Fruits",
+    "topicChooserId": null,
+    "isTopicChooser": false,
+    "suggestions": [],
+    "topicDeadline": null,
+    "order": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "alive": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "eliminated": [],
+    "currentPlayerId": "p_583261ed4077",
+    "isYourTurn": false,
+    "turnDeadline": null,
+    "pausedMs": 9694.663330078125,
+    "used": [
+     {
+      "playerId": "p_dec543dacf0e",
+      "text": "Apple"
+     },
+     {
+      "playerId": "p_f28f8f6a3b5c",
+      "text": "Car"
+     }
+    ],
+    "challengeWindow": null,
+    "challengeWindowMs": 5000,
+    "canChallenge": false,
+    "challenge": {
+     "answerIndex": 1,
+     "answererId": "p_f28f8f6a3b5c",
+     "challengerId": "p_583261ed4077",
+     "text": "Car",
+     "deadline": 1792749444205.8093,
+     "voterIds": [
+      "p_dec543dacf0e"
+     ],
+     "votedCount": 0,
+     "canVote": false,
+     "hasVoted": false
+    },
+    "lastElimination": null,
+    "settings": {
+     "turnSeconds": 10,
+     "challenges": true
+    }
+   },
+   "serverNow": 1792749436205.8555
+  }
+ },
+ "eliminatedChooser": {
+  "me": "p_f28f8f6a3b5c",
+  "room": {
+   "code": "EWHS",
+   "hostId": "p_dec543dacf0e",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_dec543dacf0e",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "ab6cd36c"
+     },
+     "online": true,
+     "joinedAt": 1792749434965.463
+    },
+    {
+     "id": "p_f28f8f6a3b5c",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "32de10f4"
+     },
+     "online": true,
+     "joinedAt": 1792749434969.906
+    },
+    {
+     "id": "p_583261ed4077",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "voxel-art",
+      "seed": "09672ed9"
+     },
+     "online": true,
+     "joinedAt": 1792749434974.117
+    }
+   ],
+   "selectedGame": "name_it",
+   "settings": {
+    "turnSeconds": 10,
+    "challenges": true
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "name_it",
+   "view": {
+    "phase": "topicSelect",
+    "topic": null,
+    "topicChooserId": "p_f28f8f6a3b5c",
+    "isTopicChooser": true,
+    "suggestions": [
+     "Things at a birthday party",
+     "Things in a bathroom",
+     "Capital cities",
+     "Video games",
+     "Jobs"
+    ],
+    "topicDeadline": 1792749466510.059,
+    "order": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "alive": [
+     "p_dec543dacf0e",
+     "p_583261ed4077"
+    ],
+    "eliminated": [
+     "p_f28f8f6a3b5c"
+    ],
+    "currentPlayerId": null,
+    "isYourTurn": false,
+    "turnDeadline": null,
+    "pausedMs": null,
+    "used": [],
+    "challengeWindow": null,
+    "challengeWindowMs": 5000,
+    "canChallenge": false,
+    "challenge": null,
+    "lastElimination": {
+     "playerId": "p_f28f8f6a3b5c",
+     "reason": "challenge",
+     "text": "Car"
+    },
+    "settings": {
+     "turnSeconds": 10,
+     "challenges": true
+    }
+   },
+   "serverNow": 1792749436510.144
+  }
+ },
+ "done": {
+  "me": "p_dec543dacf0e",
+  "room": {
+   "code": "EWHS",
+   "hostId": "p_dec543dacf0e",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_dec543dacf0e",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "ab6cd36c"
+     },
+     "online": true,
+     "joinedAt": 1792749434965.463
+    },
+    {
+     "id": "p_f28f8f6a3b5c",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "32de10f4"
+     },
+     "online": true,
+     "joinedAt": 1792749434969.906
+    },
+    {
+     "id": "p_583261ed4077",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "voxel-art",
+      "seed": "09672ed9"
+     },
+     "online": true,
+     "joinedAt": 1792749434974.117
+    }
+   ],
+   "selectedGame": "name_it",
+   "settings": {
+    "turnSeconds": 10,
+    "challenges": true
+   },
+   "scoreboard": {},
+   "wins": {}
+  },
+  "push": {
+   "gameId": "name_it",
+   "view": {
+    "phase": "done",
+    "topic": "Things at a birthday party",
+    "topicChooserId": null,
+    "isTopicChooser": false,
+    "suggestions": [],
+    "topicDeadline": null,
+    "order": [
+     "p_dec543dacf0e",
+     "p_f28f8f6a3b5c",
+     "p_583261ed4077"
+    ],
+    "alive": [
+     "p_583261ed4077"
+    ],
+    "eliminated": [
+     "p_f28f8f6a3b5c",
+     "p_dec543dacf0e"
+    ],
+    "currentPlayerId": null,
+    "isYourTurn": false,
+    "turnDeadline": null,
+    "pausedMs": null,
+    "used": [
+     {
+      "playerId": "p_583261ed4077",
+      "text": "Blue"
+     }
+    ],
+    "challengeWindow": null,
+    "challengeWindowMs": 5000,
+    "canChallenge": false,
+    "challenge": null,
+    "lastElimination": {
+     "playerId": "p_dec543dacf0e",
+     "reason": "duplicate",
+     "text": "the blue"
+    },
+    "settings": {
+     "turnSeconds": 10,
+     "challenges": true
+    }
+   },
+   "serverNow": 1792749437442.1802
+  }
+ }
+}
