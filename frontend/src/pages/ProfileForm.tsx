@@ -11,10 +11,9 @@ interface ProfileFormProps {
   onSubmit: (fields: ProfileFields) => void
 }
 
-/** Nickname, emoji grid, color swatches and a live preview chip. */
+/** Nickname, color swatches and a live preview chip. The avatar is assigned per room by the server. */
 export function ProfileForm({ initial, submitLabel, onSubmit }: ProfileFormProps) {
   const [nickname, setNickname] = useState(initial?.nickname ?? '')
-  const [emoji, setEmoji] = useState(initial?.emoji ?? C.EMOJI_PRESETS[0])
   const [color, setColor] = useState(initial?.color ?? C.PLAYER_COLORS[0])
   const [touched, setTouched] = useState(false)
   const error = nicknameError(nickname)
@@ -22,14 +21,15 @@ export function ProfileForm({ initial, submitLabel, onSubmit }: ProfileFormProps
   const submit = (e: FormEvent) => {
     e.preventDefault()
     setTouched(true)
-    if (!error) onSubmit({ nickname: nickname.trim(), emoji, color })
+    if (!error) onSubmit({ nickname: nickname.trim(), color })
   }
 
   return (
     <form className="stack" onSubmit={submit} noValidate>
       <div className="profile-preview" aria-live="polite">
-        <PlayerChip player={{ nickname: nickname.trim() || 'Your name', emoji, color }} />
+        <PlayerChip player={{ nickname: nickname.trim() || 'Your name', color }} />
       </div>
+      <p className="muted">You get a random avatar each time you join a room.</p>
       <TextInput
         label="Nickname"
         value={nickname}
@@ -40,23 +40,6 @@ export function ProfileForm({ initial, submitLabel, onSubmit }: ProfileFormProps
         error={touched ? error : null}
         hint={`${C.NICKNAME_MIN} to ${C.NICKNAME_MAX} characters`}
       />
-      <fieldset className="picker">
-        <legend className="field__label">Emoji</legend>
-        <div className="picker__grid picker__grid--emoji">
-          {C.EMOJI_PRESETS.map((e) => (
-            <button
-              key={e}
-              type="button"
-              className="picker__item"
-              aria-pressed={emoji === e}
-              aria-label={`Emoji ${e}`}
-              onClick={() => setEmoji(e)}
-            >
-              {e}
-            </button>
-          ))}
-        </div>
-      </fieldset>
       <fieldset className="picker">
         <legend className="field__label">Color</legend>
         <div className="picker__grid picker__grid--color">

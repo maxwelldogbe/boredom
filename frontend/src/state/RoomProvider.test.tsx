@@ -43,7 +43,7 @@ const code = seat.room.code
 
 beforeEach(() => {
   FakeWebSocket.reset()
-  saveProfile(createProfile({ nickname: 'Sam', emoji: '😀', color: '#E74C3C' }))
+  saveProfile(createProfile({ nickname: 'Sam', color: '#E74C3C' }))
 })
 afterEach(() => {
   localStorage.clear()

@@ -24,7 +24,7 @@ boredom/
 
 ## How to play (once both servers are running, steps 4 and 6)
 
-1. Open **http://localhost:5173** and set up your profile: a nickname, an emoji and a color.
+1. Open **http://localhost:5173** and set up your profile: a nickname and a color. Each room gives you a random avatar.
 2. Press **Create room**. You land in the lobby with a big 4-letter room code.
 3. Add a second player. Every game needs at least 2.
    - **On the same computer:** open a **private/incognito window** (or another browser) at

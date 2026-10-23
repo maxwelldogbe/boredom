@@ -24,11 +24,16 @@ export interface ProtocolError {
   message: string
 }
 
-/** Profile as sent to the server (`room:create` / `room:join`). */
+/** DiceBear avatar, assigned by the server per seat. The client builds the image URL. */
+export interface Avatar {
+  style: string
+  seed: string
+}
+
+/** Profile as sent to the server (`room:create` / `room:join`). Guests get a server-picked avatar. */
 export interface WireProfile {
   id: string
   nickname: string
-  emoji: string
   color: string
   type: 'guest' | 'registered'
 }
@@ -37,8 +42,8 @@ export interface Player {
   id: string
   profileId: string
   nickname: string
-  emoji: string
   color: string
+  avatar: Avatar
   online: boolean
   joinedAt: number
 }

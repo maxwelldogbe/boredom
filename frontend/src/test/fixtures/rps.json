@@ -1,28 +1,34 @@
 {
  "duelPickingOpponentPicked": {
-  "me": "p_c81bc3224349",
+  "me": "p_4d1b1d521b34",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "rps",
@@ -44,57 +50,63 @@
     "myPick": null,
     "matches": [
      {
-      "a": "p_21437b202d37",
-      "b": "p_c81bc3224349",
+      "a": "p_411cc33018d3",
+      "b": "p_4d1b1d521b34",
       "phase": "picking",
       "round": 1,
       "scores": {
-       "p_21437b202d37": 0,
-       "p_c81bc3224349": 0
+       "p_411cc33018d3": 0,
+       "p_4d1b1d521b34": 0
       },
       "hasPicked": {
-       "p_21437b202d37": true,
-       "p_c81bc3224349": false
+       "p_411cc33018d3": true,
+       "p_4d1b1d521b34": false
       },
-      "deadline": 1792324579038.5552,
+      "deadline": 1792745701733.9421,
       "winner": null,
       "lastReveal": null
      }
     ],
     "alive": [
-     "p_21437b202d37",
-     "p_c81bc3224349"
+     "p_411cc33018d3",
+     "p_4d1b1d521b34"
     ],
     "eliminated": [],
     "champion": null
    },
-   "serverNow": 1792324569044.9624
+   "serverNow": 1792745691739.9727
   }
  },
  "duelPickedWaiting": {
-  "me": "p_21437b202d37",
+  "me": "p_411cc33018d3",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "rps",
@@ -116,57 +128,63 @@
     "myPick": "paper",
     "matches": [
      {
-      "a": "p_21437b202d37",
-      "b": "p_c81bc3224349",
+      "a": "p_411cc33018d3",
+      "b": "p_4d1b1d521b34",
       "phase": "picking",
       "round": 1,
       "scores": {
-       "p_21437b202d37": 0,
-       "p_c81bc3224349": 0
+       "p_411cc33018d3": 0,
+       "p_4d1b1d521b34": 0
       },
       "hasPicked": {
-       "p_21437b202d37": true,
-       "p_c81bc3224349": false
+       "p_411cc33018d3": true,
+       "p_4d1b1d521b34": false
       },
-      "deadline": 1792324579038.5552,
+      "deadline": 1792745701733.9421,
       "winner": null,
       "lastReveal": null
      }
     ],
     "alive": [
-     "p_21437b202d37",
-     "p_c81bc3224349"
+     "p_411cc33018d3",
+     "p_4d1b1d521b34"
     ],
     "eliminated": [],
     "champion": null
    },
-   "serverNow": 1792324569044.9624
+   "serverNow": 1792745691739.9727
   }
  },
  "duelReveal": {
-  "me": "p_21437b202d37",
+  "me": "p_411cc33018d3",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "rps",
@@ -188,64 +206,70 @@
     "myPick": "paper",
     "matches": [
      {
-      "a": "p_21437b202d37",
-      "b": "p_c81bc3224349",
+      "a": "p_411cc33018d3",
+      "b": "p_4d1b1d521b34",
       "phase": "reveal",
       "round": 1,
       "scores": {
-       "p_21437b202d37": 1,
-       "p_c81bc3224349": 0
+       "p_411cc33018d3": 1,
+       "p_4d1b1d521b34": 0
       },
       "hasPicked": {
-       "p_21437b202d37": true,
-       "p_c81bc3224349": true
+       "p_411cc33018d3": true,
+       "p_4d1b1d521b34": true
       },
-      "deadline": 1792324572052.7908,
+      "deadline": 1792745694844.848,
       "winner": null,
       "lastReveal": {
        "round": 1,
        "picks": {
-        "p_21437b202d37": "paper",
-        "p_c81bc3224349": "rock"
+        "p_411cc33018d3": "paper",
+        "p_4d1b1d521b34": "rock"
        },
-       "roundWinner": "p_21437b202d37"
+       "roundWinner": "p_411cc33018d3"
       }
      }
     ],
     "alive": [
-     "p_21437b202d37",
-     "p_c81bc3224349"
+     "p_411cc33018d3",
+     "p_4d1b1d521b34"
     ],
     "eliminated": [],
     "champion": null
    },
-   "serverNow": 1792324569052.8352
+   "serverNow": 1792745691844.9126
   }
  },
  "duelDone": {
-  "me": "p_21437b202d37",
+  "me": "p_411cc33018d3",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "rps",
@@ -267,74 +291,83 @@
     "myPick": null,
     "matches": [
      {
-      "a": "p_21437b202d37",
-      "b": "p_c81bc3224349",
+      "a": "p_411cc33018d3",
+      "b": "p_4d1b1d521b34",
       "phase": "over",
       "round": 2,
       "scores": {
-       "p_21437b202d37": 2,
-       "p_c81bc3224349": 0
+       "p_411cc33018d3": 2,
+       "p_4d1b1d521b34": 0
       },
       "hasPicked": {
-       "p_21437b202d37": false,
-       "p_c81bc3224349": false
+       "p_411cc33018d3": false,
+       "p_4d1b1d521b34": false
       },
       "deadline": null,
-      "winner": "p_21437b202d37",
+      "winner": "p_411cc33018d3",
       "lastReveal": {
        "round": 2,
        "picks": {
-        "p_21437b202d37": "paper",
-        "p_c81bc3224349": "rock"
+        "p_411cc33018d3": "paper",
+        "p_4d1b1d521b34": "rock"
        },
-       "roundWinner": "p_21437b202d37"
+       "roundWinner": "p_411cc33018d3"
       }
      }
     ],
     "alive": [
-     "p_21437b202d37"
+     "p_411cc33018d3"
     ],
     "eliminated": [
-     "p_c81bc3224349"
+     "p_4d1b1d521b34"
     ],
-    "champion": "p_21437b202d37"
+    "champion": "p_411cc33018d3"
    },
-   "serverNow": 1792324575073.1465
+   "serverNow": 1792745697956.6128
   }
  },
  "bracketPicking": {
-  "me": "p_8f6472a7964d",
+  "me": "p_d4c962936a4c",
   "room": {
-   "code": "PKFH",
-   "hostId": "p_8f6472a7964d",
+   "code": "XGWY",
+   "hostId": "p_c199ad9b891f",
    "status": "playing",
    "players": [
     {
-     "id": "p_8f6472a7964d",
+     "id": "p_c199ad9b891f",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "caa73a73"
+     },
      "online": true,
-     "joinedAt": 1792326043802.7166
+     "joinedAt": 1792745707336.459
     },
     {
-     "id": "p_0831c038aab2",
+     "id": "p_d4c962936a4c",
      "profileId": "prof-Ann",
      "nickname": "Ann",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "croodles-neutral",
+      "seed": "b7823d6e"
+     },
      "online": true,
-     "joinedAt": 1792326043807.6624
+     "joinedAt": 1792745707345.0535
     },
     {
-     "id": "p_4f374e1154de",
+     "id": "p_9cda6916a7b0",
      "profileId": "prof-Bob",
      "nickname": "Bob",
-     "emoji": "🐼",
      "color": "#2ECC71",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "fba5a0dd"
+     },
      "online": true,
-     "joinedAt": 1792326043810.7554
+     "joinedAt": 1792745707349.5288
     }
    ],
    "selectedGame": "rps",
@@ -356,82 +389,91 @@
     "myPick": null,
     "matches": [
      {
-      "a": "p_8f6472a7964d",
-      "b": "p_0831c038aab2",
+      "a": "p_d4c962936a4c",
+      "b": "p_9cda6916a7b0",
       "phase": "picking",
       "round": 1,
       "scores": {
-       "p_8f6472a7964d": 0,
-       "p_0831c038aab2": 0
+       "p_d4c962936a4c": 0,
+       "p_9cda6916a7b0": 0
       },
       "hasPicked": {
-       "p_8f6472a7964d": false,
-       "p_0831c038aab2": false
+       "p_d4c962936a4c": false,
+       "p_9cda6916a7b0": false
       },
-      "deadline": 1792326053816.1099,
+      "deadline": 1792745717356.5825,
       "winner": null,
       "lastReveal": null
      },
      {
-      "a": "p_4f374e1154de",
+      "a": "p_c199ad9b891f",
       "b": null,
       "phase": "over",
       "round": 1,
       "scores": {
-       "p_4f374e1154de": 0
+       "p_c199ad9b891f": 0
       },
       "hasPicked": {
-       "p_4f374e1154de": false
+       "p_c199ad9b891f": false
       },
       "deadline": null,
-      "winner": "p_4f374e1154de",
+      "winner": "p_c199ad9b891f",
       "lastReveal": null
      }
     ],
     "alive": [
-     "p_8f6472a7964d",
-     "p_0831c038aab2",
-     "p_4f374e1154de"
+     "p_c199ad9b891f",
+     "p_d4c962936a4c",
+     "p_9cda6916a7b0"
     ],
     "eliminated": [],
     "champion": null
    },
-   "serverNow": 1792326043816.3855
+   "serverNow": 1792745707356.882
   }
  },
  "bracketBye": {
-  "me": "p_4f374e1154de",
+  "me": "p_c199ad9b891f",
   "room": {
-   "code": "PKFH",
-   "hostId": "p_8f6472a7964d",
+   "code": "XGWY",
+   "hostId": "p_c199ad9b891f",
    "status": "playing",
    "players": [
     {
-     "id": "p_8f6472a7964d",
+     "id": "p_c199ad9b891f",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "caa73a73"
+     },
      "online": true,
-     "joinedAt": 1792326043802.7166
+     "joinedAt": 1792745707336.459
     },
     {
-     "id": "p_0831c038aab2",
+     "id": "p_d4c962936a4c",
      "profileId": "prof-Ann",
      "nickname": "Ann",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "croodles-neutral",
+      "seed": "b7823d6e"
+     },
      "online": true,
-     "joinedAt": 1792326043807.6624
+     "joinedAt": 1792745707345.0535
     },
     {
-     "id": "p_4f374e1154de",
+     "id": "p_9cda6916a7b0",
      "profileId": "prof-Bob",
      "nickname": "Bob",
-     "emoji": "🐼",
      "color": "#2ECC71",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "fba5a0dd"
+     },
      "online": true,
-     "joinedAt": 1792326043810.7554
+     "joinedAt": 1792745707349.5288
     }
    ],
    "selectedGame": "rps",
@@ -453,82 +495,91 @@
     "myPick": null,
     "matches": [
      {
-      "a": "p_8f6472a7964d",
-      "b": "p_0831c038aab2",
+      "a": "p_d4c962936a4c",
+      "b": "p_9cda6916a7b0",
       "phase": "picking",
       "round": 1,
       "scores": {
-       "p_8f6472a7964d": 0,
-       "p_0831c038aab2": 0
+       "p_d4c962936a4c": 0,
+       "p_9cda6916a7b0": 0
       },
       "hasPicked": {
-       "p_8f6472a7964d": false,
-       "p_0831c038aab2": false
+       "p_d4c962936a4c": false,
+       "p_9cda6916a7b0": false
       },
-      "deadline": 1792326053816.1099,
+      "deadline": 1792745717356.5825,
       "winner": null,
       "lastReveal": null
      },
      {
-      "a": "p_4f374e1154de",
+      "a": "p_c199ad9b891f",
       "b": null,
       "phase": "over",
       "round": 1,
       "scores": {
-       "p_4f374e1154de": 0
+       "p_c199ad9b891f": 0
       },
       "hasPicked": {
-       "p_4f374e1154de": false
+       "p_c199ad9b891f": false
       },
       "deadline": null,
-      "winner": "p_4f374e1154de",
+      "winner": "p_c199ad9b891f",
       "lastReveal": null
      }
     ],
     "alive": [
-     "p_8f6472a7964d",
-     "p_0831c038aab2",
-     "p_4f374e1154de"
+     "p_c199ad9b891f",
+     "p_d4c962936a4c",
+     "p_9cda6916a7b0"
     ],
     "eliminated": [],
     "champion": null
    },
-   "serverNow": 1792326043816.3855
+   "serverNow": 1792745707356.882
   }
  },
  "bracketEliminated": {
-  "me": "p_0831c038aab2",
+  "me": "p_9cda6916a7b0",
   "room": {
-   "code": "PKFH",
-   "hostId": "p_8f6472a7964d",
+   "code": "XGWY",
+   "hostId": "p_c199ad9b891f",
    "status": "playing",
    "players": [
     {
-     "id": "p_8f6472a7964d",
+     "id": "p_c199ad9b891f",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "caa73a73"
+     },
      "online": true,
-     "joinedAt": 1792326043802.7166
+     "joinedAt": 1792745707336.459
     },
     {
-     "id": "p_0831c038aab2",
+     "id": "p_d4c962936a4c",
      "profileId": "prof-Ann",
      "nickname": "Ann",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "croodles-neutral",
+      "seed": "b7823d6e"
+     },
      "online": true,
-     "joinedAt": 1792326043807.6624
+     "joinedAt": 1792745707345.0535
     },
     {
-     "id": "p_4f374e1154de",
+     "id": "p_9cda6916a7b0",
      "profileId": "prof-Bob",
      "nickname": "Bob",
-     "emoji": "🐼",
      "color": "#2ECC71",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "fba5a0dd"
+     },
      "online": true,
-     "joinedAt": 1792326043810.7554
+     "joinedAt": 1792745707349.5288
     }
    ],
    "selectedGame": "rps",
@@ -550,68 +601,77 @@
     "myPick": null,
     "matches": [
      {
-      "a": "p_4f374e1154de",
-      "b": "p_8f6472a7964d",
+      "a": "p_d4c962936a4c",
+      "b": "p_c199ad9b891f",
       "phase": "picking",
       "round": 1,
       "scores": {
-       "p_4f374e1154de": 0,
-       "p_8f6472a7964d": 0
+       "p_d4c962936a4c": 0,
+       "p_c199ad9b891f": 0
       },
       "hasPicked": {
-       "p_4f374e1154de": false,
-       "p_8f6472a7964d": false
+       "p_d4c962936a4c": false,
+       "p_c199ad9b891f": false
       },
-      "deadline": 1792326060047.1228,
+      "deadline": 1792745723590.5403,
       "winner": null,
       "lastReveal": null
      }
     ],
     "alive": [
-     "p_8f6472a7964d",
-     "p_4f374e1154de"
+     "p_c199ad9b891f",
+     "p_d4c962936a4c"
     ],
     "eliminated": [
-     "p_0831c038aab2"
+     "p_9cda6916a7b0"
     ],
     "champion": null
    },
-   "serverNow": 1792326050047.2095
+   "serverNow": 1792745713590.6165
   }
  },
  "bracketDone": {
-  "me": "p_8f6472a7964d",
+  "me": "p_c199ad9b891f",
   "room": {
-   "code": "PKFH",
-   "hostId": "p_8f6472a7964d",
+   "code": "XGWY",
+   "hostId": "p_c199ad9b891f",
    "status": "playing",
    "players": [
     {
-     "id": "p_8f6472a7964d",
+     "id": "p_c199ad9b891f",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "caa73a73"
+     },
      "online": true,
-     "joinedAt": 1792326043802.7166
+     "joinedAt": 1792745707336.459
     },
     {
-     "id": "p_0831c038aab2",
+     "id": "p_d4c962936a4c",
      "profileId": "prof-Ann",
      "nickname": "Ann",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "croodles-neutral",
+      "seed": "b7823d6e"
+     },
      "online": true,
-     "joinedAt": 1792326043807.6624
+     "joinedAt": 1792745707345.0535
     },
     {
-     "id": "p_4f374e1154de",
+     "id": "p_9cda6916a7b0",
      "profileId": "prof-Bob",
      "nickname": "Bob",
-     "emoji": "🐼",
      "color": "#2ECC71",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "fba5a0dd"
+     },
      "online": true,
-     "joinedAt": 1792326043810.7554
+     "joinedAt": 1792745707349.5288
     }
    ],
    "selectedGame": "rps",
@@ -633,40 +693,40 @@
     "myPick": null,
     "matches": [
      {
-      "a": "p_4f374e1154de",
-      "b": "p_8f6472a7964d",
+      "a": "p_d4c962936a4c",
+      "b": "p_c199ad9b891f",
       "phase": "over",
       "round": 2,
       "scores": {
-       "p_4f374e1154de": 2,
-       "p_8f6472a7964d": 0
+       "p_d4c962936a4c": 2,
+       "p_c199ad9b891f": 0
       },
       "hasPicked": {
-       "p_4f374e1154de": false,
-       "p_8f6472a7964d": false
+       "p_d4c962936a4c": false,
+       "p_c199ad9b891f": false
       },
       "deadline": null,
-      "winner": "p_4f374e1154de",
+      "winner": "p_d4c962936a4c",
       "lastReveal": {
        "round": 2,
        "picks": {
-        "p_4f374e1154de": "rock",
-        "p_8f6472a7964d": "scissors"
+        "p_d4c962936a4c": "rock",
+        "p_c199ad9b891f": "scissors"
        },
-       "roundWinner": "p_4f374e1154de"
+       "roundWinner": "p_d4c962936a4c"
       }
      }
     ],
     "alive": [
-     "p_4f374e1154de"
+     "p_d4c962936a4c"
     ],
     "eliminated": [
-     "p_8f6472a7964d",
-     "p_0831c038aab2"
+     "p_c199ad9b891f",
+     "p_9cda6916a7b0"
     ],
-    "champion": "p_4f374e1154de"
+    "champion": "p_d4c962936a4c"
    },
-   "serverNow": 1792326056093.156
+   "serverNow": 1792745719637.1301
   }
  }
 }

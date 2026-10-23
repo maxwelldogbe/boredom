@@ -19,7 +19,7 @@ afterEach(() => {
   clearMemoryStorage()
 })
 
-const fields = { nickname: '  Sam  ', emoji: C.EMOJI_PRESETS[3], color: C.PLAYER_COLORS[2] }
+const fields = { nickname: '  Sam  ', color: C.PLAYER_COLORS[2] }
 
 describe('profileStore', () => {
   it('creates, saves and loads a guest profile', () => {
@@ -36,8 +36,16 @@ describe('profileStore', () => {
     expect(getProfile()).toBeNull()
     localStorage.setItem(PROFILE_KEY, '{oops')
     expect(getProfile()).toBeNull()
-    localStorage.setItem(PROFILE_KEY, JSON.stringify({ id: 'x', nickname: 'Sam', emoji: '💩', color: '#000' }))
+    localStorage.setItem(PROFILE_KEY, JSON.stringify({ id: 'x', nickname: 'Sam', color: '#000' }))
     expect(getProfile()).toBeNull()
+  })
+
+  it('still loads a profile saved before avatars existed, dropping its emoji', () => {
+    const old = { ...createProfile(fields), emoji: '😀' }
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(old))
+    const loaded = getProfile()
+    expect(loaded?.id).toBe(old.id)
+    expect(loaded).not.toHaveProperty('emoji')
   })
 
   it('keeps working when localStorage throws', () => {

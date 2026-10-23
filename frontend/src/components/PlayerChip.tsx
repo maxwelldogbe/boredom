@@ -1,21 +1,20 @@
 import type { Player } from '../types/protocol'
+import { Avatar } from './Avatar'
 
 interface PlayerChipProps {
-  player: Pick<Player, 'nickname' | 'emoji' | 'color'> & { online?: boolean }
+  player: Pick<Player, 'nickname' | 'color'> & { avatar?: Player['avatar'] | null; online?: boolean }
   isHost?: boolean
   isMe?: boolean
   size?: 'sm' | 'md'
   extra?: string
 }
 
-/** Avatar (emoji on the player's color) + nickname, with host, you and offline labels. */
+/** Avatar (DiceBear image on the player's color) + nickname, with host, you and offline labels. */
 export function PlayerChip({ player, isHost, isMe, size = 'md', extra }: PlayerChipProps) {
   const offline = player.online === false
   return (
     <span className={`chip chip--${size}${offline ? ' chip--offline' : ''}`}>
-      <span className="chip__avatar" style={{ background: player.color }} aria-hidden="true">
-        {player.emoji}
-      </span>
+      <Avatar avatar={player.avatar} nickname={player.nickname} color={player.color} />
       <span className="chip__name">
         {player.nickname}
         {isMe && <span className="chip__tag"> (you)</span>}

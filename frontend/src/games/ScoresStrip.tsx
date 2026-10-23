@@ -9,7 +9,7 @@ export function ScoresStrip({ scores, room, me }: { scores: Record<string, numbe
     <div className="scores-strip" aria-label="Scores">
       {ids.map((id) => {
         const p = playerById(room, id)
-        return <ScoreChip key={id} label={id === me ? 'You' : `${p.emoji} ${p.nickname}`} score={scores[id]} highlight={id === me} />
+        return <ScoreChip key={id} label={id === me ? 'You' : p.nickname} score={scores[id]} highlight={id === me} />
       })}
     </div>
   )

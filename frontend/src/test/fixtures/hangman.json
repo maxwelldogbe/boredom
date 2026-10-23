@@ -1,28 +1,34 @@
 {
  "settingSetter": {
-  "me": "p_21437b202d37",
+  "me": "p_411cc33018d3",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "hangman",
@@ -30,11 +36,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_21437b202d37": 3,
-    "p_c81bc3224349": 2
+    "p_411cc33018d3": 3,
+    "p_4d1b1d521b34": 2
    },
    "wins": {
-    "p_21437b202d37": 1
+    "p_411cc33018d3": 1
    }
   },
   "push": {
@@ -43,7 +49,7 @@
     "phase": "setting",
     "round": 1,
     "total": 2,
-    "setterId": "p_21437b202d37",
+    "setterId": "p_411cc33018d3",
     "isSetter": true,
     "mask": [],
     "word": null,
@@ -52,40 +58,46 @@
     "wrong": [],
     "wrongCount": 0,
     "maxWrong": 6,
-    "deadline": 1792324635438.4949,
+    "deadline": 1792745758317.0166,
     "result": null,
     "scores": {
-     "p_21437b202d37": 0,
-     "p_c81bc3224349": 0
+     "p_411cc33018d3": 0,
+     "p_4d1b1d521b34": 0
     }
    },
-   "serverNow": 1792324575438.733
+   "serverNow": 1792745698317.2346
   }
  },
  "settingGuesser": {
-  "me": "p_c81bc3224349",
+  "me": "p_4d1b1d521b34",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "hangman",
@@ -93,11 +105,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_21437b202d37": 3,
-    "p_c81bc3224349": 2
+    "p_411cc33018d3": 3,
+    "p_4d1b1d521b34": 2
    },
    "wins": {
-    "p_21437b202d37": 1
+    "p_411cc33018d3": 1
    }
   },
   "push": {
@@ -106,7 +118,7 @@
     "phase": "setting",
     "round": 1,
     "total": 2,
-    "setterId": "p_21437b202d37",
+    "setterId": "p_411cc33018d3",
     "isSetter": false,
     "mask": [],
     "word": null,
@@ -115,40 +127,46 @@
     "wrong": [],
     "wrongCount": 0,
     "maxWrong": 6,
-    "deadline": 1792324635438.4949,
+    "deadline": 1792745758317.0166,
     "result": null,
     "scores": {
-     "p_21437b202d37": 0,
-     "p_c81bc3224349": 0
+     "p_411cc33018d3": 0,
+     "p_4d1b1d521b34": 0
     }
    },
-   "serverNow": 1792324575438.733
+   "serverNow": 1792745698317.2346
   }
  },
  "guessingSetter": {
-  "me": "p_21437b202d37",
+  "me": "p_411cc33018d3",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "hangman",
@@ -156,11 +174,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_21437b202d37": 3,
-    "p_c81bc3224349": 2
+    "p_411cc33018d3": 3,
+    "p_4d1b1d521b34": 2
    },
    "wins": {
-    "p_21437b202d37": 1
+    "p_411cc33018d3": 1
    }
   },
   "push": {
@@ -169,7 +187,7 @@
     "phase": "guessing",
     "round": 1,
     "total": 2,
-    "setterId": "p_21437b202d37",
+    "setterId": "p_411cc33018d3",
     "isSetter": true,
     "mask": [
      "L",
@@ -189,37 +207,43 @@
     "deadline": null,
     "result": null,
     "scores": {
-     "p_21437b202d37": 0,
-     "p_c81bc3224349": 2
+     "p_411cc33018d3": 0,
+     "p_4d1b1d521b34": 2
     }
    },
-   "serverNow": 1792324575452.9397
+   "serverNow": 1792745698330.3
   }
  },
  "guessingGuesser": {
-  "me": "p_c81bc3224349",
+  "me": "p_4d1b1d521b34",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "hangman",
@@ -227,11 +251,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_21437b202d37": 3,
-    "p_c81bc3224349": 2
+    "p_411cc33018d3": 3,
+    "p_4d1b1d521b34": 2
    },
    "wins": {
-    "p_21437b202d37": 1
+    "p_411cc33018d3": 1
    }
   },
   "push": {
@@ -240,7 +264,7 @@
     "phase": "guessing",
     "round": 1,
     "total": 2,
-    "setterId": "p_21437b202d37",
+    "setterId": "p_411cc33018d3",
     "isSetter": false,
     "mask": [
      "L",
@@ -263,37 +287,43 @@
     "deadline": null,
     "result": null,
     "scores": {
-     "p_21437b202d37": 0,
-     "p_c81bc3224349": 2
+     "p_411cc33018d3": 0,
+     "p_4d1b1d521b34": 2
     }
    },
-   "serverNow": 1792324575457.5652
+   "serverNow": 1792745698335.305
   }
  },
  "roundOverGuessers": {
-  "me": "p_21437b202d37",
+  "me": "p_411cc33018d3",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "hangman",
@@ -301,11 +331,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_21437b202d37": 3,
-    "p_c81bc3224349": 2
+    "p_411cc33018d3": 3,
+    "p_4d1b1d521b34": 2
    },
    "wins": {
-    "p_21437b202d37": 1
+    "p_411cc33018d3": 1
    }
   },
   "push": {
@@ -314,7 +344,7 @@
     "phase": "roundOver",
     "round": 1,
     "total": 2,
-    "setterId": "p_21437b202d37",
+    "setterId": "p_411cc33018d3",
     "isSetter": true,
     "mask": [
      "L",
@@ -336,40 +366,46 @@
     ],
     "wrongCount": 1,
     "maxWrong": 6,
-    "deadline": 1792324579581.5435,
+    "deadline": 1792745702450.5325,
     "result": "guessers",
     "scores": {
-     "p_21437b202d37": 0,
-     "p_c81bc3224349": 8
+     "p_411cc33018d3": 0,
+     "p_4d1b1d521b34": 8
     }
    },
-   "serverNow": 1792324576581.589
+   "serverNow": 1792745699450.608
   }
  },
  "roundOverSetterWins": {
-  "me": "p_21437b202d37",
+  "me": "p_411cc33018d3",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "hangman",
@@ -377,11 +413,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_21437b202d37": 3,
-    "p_c81bc3224349": 2
+    "p_411cc33018d3": 3,
+    "p_4d1b1d521b34": 2
    },
    "wins": {
-    "p_21437b202d37": 1
+    "p_411cc33018d3": 1
    }
   },
   "push": {
@@ -390,7 +426,7 @@
     "phase": "roundOver",
     "round": 2,
     "total": 2,
-    "setterId": "p_c81bc3224349",
+    "setterId": "p_4d1b1d521b34",
     "isSetter": false,
     "mask": [
      "Q",
@@ -418,40 +454,46 @@
     ],
     "wrongCount": 6,
     "maxWrong": 6,
-    "deadline": 1792324583732.741,
+    "deadline": 1792745706582.1917,
     "result": "setter",
     "scores": {
-     "p_21437b202d37": 0,
-     "p_c81bc3224349": 13
+     "p_411cc33018d3": 0,
+     "p_4d1b1d521b34": 13
     }
    },
-   "serverNow": 1792324580732.7747
+   "serverNow": 1792745703582.245
   }
  },
  "done": {
-  "me": "p_21437b202d37",
+  "me": "p_411cc33018d3",
   "room": {
-   "code": "BPET",
-   "hostId": "p_21437b202d37",
+   "code": "CNSR",
+   "hostId": "p_411cc33018d3",
    "status": "playing",
    "players": [
     {
-     "id": "p_21437b202d37",
+     "id": "p_411cc33018d3",
      "profileId": "prof-Sam",
      "nickname": "Sam",
-     "emoji": "😀",
      "color": "#E74C3C",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "d42bcdc7"
+     },
      "online": true,
-     "joinedAt": 1792324569015.4731
+     "joinedAt": 1792745691711.3298
     },
     {
-     "id": "p_c81bc3224349",
+     "id": "p_4d1b1d521b34",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
-     "emoji": "🦊",
      "color": "#3498DB",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "693ada2c"
+     },
      "online": true,
-     "joinedAt": 1792324569023.4224
+     "joinedAt": 1792745691719.4868
     }
    ],
    "selectedGame": "hangman",
@@ -459,11 +501,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_21437b202d37": 3,
-    "p_c81bc3224349": 2
+    "p_411cc33018d3": 3,
+    "p_4d1b1d521b34": 2
    },
    "wins": {
-    "p_21437b202d37": 1
+    "p_411cc33018d3": 1
    }
   },
   "push": {
@@ -472,7 +514,7 @@
     "phase": "done",
     "round": 2,
     "total": 2,
-    "setterId": "p_c81bc3224349",
+    "setterId": "p_4d1b1d521b34",
     "isSetter": false,
     "mask": [
      "Q",
@@ -503,11 +545,11 @@
     "deadline": null,
     "result": "setter",
     "scores": {
-     "p_21437b202d37": 0,
-     "p_c81bc3224349": 13
+     "p_411cc33018d3": 0,
+     "p_4d1b1d521b34": 13
     }
    },
-   "serverNow": 1792324583734.492
+   "serverNow": 1792745706584.5222
   }
  }
 }

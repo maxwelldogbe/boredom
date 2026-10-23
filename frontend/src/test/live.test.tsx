@@ -41,7 +41,7 @@ describe.skipIf(!env.LIVE_BACKEND)('live backend smoke test', () => {
   }
 
   it('plays RPS, Hangman and starts Guess Race through the real UI', async () => {
-    saveProfile(createProfile({ nickname: 'Ann', emoji: '🦊', color: '#3498DB' }))
+    saveProfile(createProfile({ nickname: 'Ann', color: '#3498DB' }))
     const socketA = live()
     sockets.push(socketA)
     render(
@@ -59,7 +59,7 @@ describe.skipIf(!env.LIVE_BACKEND)('live backend smoke test', () => {
     const b = playerB()
     const bSeat = await b.socket.request('room:join', {
       code,
-      profile: toWireProfile(createProfile({ nickname: 'Bob', emoji: '🐼', color: '#2ECC71' })),
+      profile: toWireProfile(createProfile({ nickname: 'Bob', color: '#2ECC71' })),
     })
     await screen.findByText('Players (2/10)', {}, T)
 

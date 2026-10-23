@@ -14,14 +14,13 @@ export interface Stats {
 export interface Profile {
   id: string
   nickname: string
-  emoji: string
   color: string
   type: 'guest' | 'registered'
   createdAt: number
   stats: Stats
 }
 
-export type ProfileFields = Pick<Profile, 'nickname' | 'emoji' | 'color'>
+export type ProfileFields = Pick<Profile, 'nickname' | 'color'>
 
 const NICKNAME_RE = new RegExp(C.NICKNAME_ALLOWED_PATTERN)
 
@@ -55,13 +54,13 @@ export function newId(): string {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
 }
 
-/** Validate unknown data as a Profile; returns null if anything is wrong. */
+/** Validate unknown data as a Profile; returns null if anything is wrong.
+ * Profiles saved before avatars existed still load: their old `emoji` field is dropped. */
 export function parseProfile(data: unknown): Profile | null {
   if (!data || typeof data !== 'object') return null
   const p = data as Record<string, unknown>
   if (typeof p.id !== 'string' || !p.id || p.id.length > 64) return null
   if (typeof p.nickname !== 'string' || nicknameError(p.nickname)) return null
-  if (typeof p.emoji !== 'string' || !C.EMOJI_PRESETS.includes(p.emoji)) return null
   if (typeof p.color !== 'string' || !C.PLAYER_COLORS.includes(p.color)) return null
   const createdAt = typeof p.createdAt === 'number' ? p.createdAt : Date.now()
   const s = p.stats as Partial<Stats> | undefined
@@ -72,7 +71,6 @@ export function parseProfile(data: unknown): Profile | null {
   return {
     id: p.id,
     nickname: p.nickname.trim(),
-    emoji: p.emoji,
     color: p.color,
     type: 'guest',
     createdAt,
@@ -102,7 +100,6 @@ export function createProfile(fields: ProfileFields): Profile {
   return {
     id: newId(),
     nickname: fields.nickname.trim(),
-    emoji: fields.emoji,
     color: fields.color,
     type: 'guest',
     createdAt: Date.now(),
@@ -141,7 +138,6 @@ export function toWireProfile(profile: Profile): WireProfile {
   return {
     id: profile.id,
     nickname: profile.nickname,
-    emoji: profile.emoji,
     color: profile.color,
     type: profile.type,
   }

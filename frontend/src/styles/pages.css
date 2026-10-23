@@ -70,9 +70,6 @@
   gap: 8px;
   margin-top: 8px;
 }
-.picker__grid--emoji {
-  grid-template-columns: repeat(6, 1fr);
-}
 .picker__grid--color {
   grid-template-columns: repeat(5, 1fr);
 }

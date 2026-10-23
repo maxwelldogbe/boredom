@@ -8,7 +8,7 @@ import { RoomProvider } from '../state/RoomProvider'
 import { asWebSocket, FakeWebSocket } from './fakeWebSocket'
 
 export function saveTestProfile(nickname = 'Sam') {
-  const profile = createProfile({ nickname, emoji: '😀', color: '#E74C3C' })
+  const profile = createProfile({ nickname, color: '#E74C3C' })
   saveProfile(profile)
   return profile
 }

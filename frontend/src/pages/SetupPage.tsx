@@ -3,7 +3,7 @@ import { createProfile, saveProfile } from '../lib/profileStore'
 import { safeNext } from '../lib/navigation'
 import { ProfileForm } from './ProfileForm'
 
-/** First visit: pick a nickname, emoji and color, then continue to where you were going. */
+/** First visit: pick a nickname and a color, then continue to where you were going. */
 export default function SetupPage() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
