@@ -76,7 +76,9 @@ export function GuessRaceGame({ view, send, me, room }: GameUiProps<GuessRaceVie
         </ul>
       )}
 
-      {guessing ? (
+      {guessing && view.iSolved ? (
+        <MySolve view={view} me={me} />
+      ) : guessing ? (
         <form className="guess__form" onSubmit={submit}>
           <label htmlFor="guess-input" className="visually-hidden">
             Your guess
@@ -104,7 +106,9 @@ export function GuessRaceGame({ view, send, me, room }: GameUiProps<GuessRaceVie
         <RoundOver view={view} me={me} room={room} />
       )}
 
-      {guessing && view.myLastGuess && (
+      {guessing && view.solvers.length > 0 && <Solvers view={view} me={me} room={room} />}
+
+      {guessing && !view.iSolved && view.myLastGuess && (
         <p className={view.myLastGuess.correct ? 'guess__feedback guess__feedback--ok' : 'guess__feedback'} role="status">
           {view.myLastGuess.correct ? '✓ Correct!' : `✕ “${view.myLastGuess.text}” isn't it. Keep trying!`}
         </p>
@@ -121,16 +125,39 @@ function RoundOver({ view, me, room }: Omit<GameUiProps<GuessRaceView>, 'send'>)
     <div className="card guess__over" role="status">
       <p className="muted">The answer was</p>
       <p className="guess__answer">{view.answer}</p>
-      <p>
-        {view.roundWinner
-          ? `🎉 ${nameOf(room, view.roundWinner, me)} got it! +${view.roundPoints}`
-          : '⌛ Nobody got it this time.'}
-      </p>
+      {view.solvers.length > 0 ? <Solvers view={view} me={me} room={room} /> : <p>⌛ Nobody got it this time.</p>}
       {view.phase === 'roundOver' && remaining !== null && (
         <p className="muted">
           {view.round < view.total ? 'Next round' : 'Results'} in {Math.ceil(remaining / 1000)}s…
         </p>
       )}
     </div>
+  )
+}
+
+function ordinal(n: number): string {
+  const suffix = n % 10 === 1 && n % 100 !== 11 ? 'st' : n % 10 === 2 && n % 100 !== 12 ? 'nd' : n % 10 === 3 && n % 100 !== 13 ? 'rd' : 'th'
+  return `${n}${suffix}`
+}
+
+function MySolve({ view, me }: Pick<GameUiProps<GuessRaceView>, 'view' | 'me'>) {
+  const mine = view.solvers.find((s) => s.playerId === me)
+  return (
+    <p className="guess__feedback guess__feedback--ok" role="status">
+      ✓ Solved! You were {mine ? `${ordinal(mine.rank)} (+${mine.points})` : 'in'}. Waiting for the others…
+    </p>
+  )
+}
+
+/** Who has solved this round, in finishing order. Never shows the answer. */
+function Solvers({ view, me, room }: Omit<GameUiProps<GuessRaceView>, 'send'>) {
+  return (
+    <ol className="guess__solvers" aria-label="Solved">
+      {view.solvers.map((s) => (
+        <li key={s.playerId}>
+          🎉 {ordinal(s.rank)}: {nameOf(room, s.playerId, me)} <strong>+{s.points}</strong>
+        </li>
+      ))}
+    </ol>
   )
 }

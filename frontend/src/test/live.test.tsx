@@ -54,7 +54,7 @@ describe.skipIf(!env.LIVE_BACKEND)('live backend smoke test', () => {
       await screen.findByText(round === 1 ? '✅ You win the round!' : '🏆 You win the match!', {}, T)
     }
     await screen.findByText('Game over', {}, T)
-    expect(screen.getByText('+3')).toBeInTheDocument()
+    expect(screen.getByText('+100')).toBeInTheDocument()
 
     // ---- Hangman: A sets, B solves; then B sets, A loses with wrong letters ----
     fireEvent.click(screen.getByRole('button', { name: 'Back to lobby' }))
@@ -71,15 +71,15 @@ describe.skipIf(!env.LIVE_BACKEND)('live backend smoke test', () => {
     }
     await screen.findByText(/Solved! The word was ZEBRA/, {}, T)
     await waitFor(() => expect(b.latest<HangmanView>()?.isSetter && b.latest<HangmanView>()?.phase === 'setting').toBe(true), T)
-    await b.socket.request('game:action', { type: 'setWord', word: 'quiz' })
+    await b.socket.request('game:action', { type: 'setWord', word: 'quizzes' })
     const keyboard = await screen.findByLabelText('Letters', {}, T)
-    for (const letter of 'ABCDE') {
+    for (const letter of 'ABCDF') {
       fireEvent.click(within(keyboard).getByRole('button', { name: letter }))
       await waitFor(() => expect(within(keyboard).getByRole('button', { name: `${letter}, wrong` })).toBeDisabled(), T)
       await act(async () => new Promise((r) => setTimeout(r, 220))) // human pace, under the rate limit
     }
-    fireEvent.click(within(keyboard).getByRole('button', { name: 'F' })) // 6th wrong letter: setter wins
-    await screen.findByText(/wins this round! The word was QUIZ/, {}, T)
+    fireEvent.click(within(keyboard).getByRole('button', { name: 'G' })) // 6th wrong letter: setter wins
+    await screen.findByText(/wins this round! The word was QUIZZES/, {}, T)
     await screen.findByText('Game over', {}, T)
 
     // ---- Guess Race: starts, shows a prompt and accepts a (wrong) guess ----

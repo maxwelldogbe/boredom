@@ -1,34 +1,34 @@
 {
  "settingSetter": {
-  "me": "p_411cc33018d3",
+  "me": "p_9f8abaa4fbd8",
   "room": {
-   "code": "CNSR",
-   "hostId": "p_411cc33018d3",
+   "code": "TCGK",
+   "hostId": "p_9f8abaa4fbd8",
    "status": "playing",
    "players": [
     {
-     "id": "p_411cc33018d3",
+     "id": "p_9f8abaa4fbd8",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "d42bcdc7"
+      "style": "cutouts",
+      "seed": "8a44fcd3"
      },
      "online": true,
-     "joinedAt": 1792745691711.3298
+     "joinedAt": 1792751169462.8535
     },
     {
-     "id": "p_4d1b1d521b34",
+     "id": "p_3bfb64a3da15",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
      "color": "#3498DB",
      "avatar": {
-      "style": "cutouts",
-      "seed": "693ada2c"
+      "style": "adventurer-neutral",
+      "seed": "c47e6f83"
      },
      "online": true,
-     "joinedAt": 1792745691719.4868
+     "joinedAt": 1792751169466.0383
     }
    ],
    "selectedGame": "hangman",
@@ -36,11 +36,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_411cc33018d3": 3,
-    "p_4d1b1d521b34": 2
+    "p_9f8abaa4fbd8": 100.0,
+    "p_3bfb64a3da15": 0.0
    },
    "wins": {
-    "p_411cc33018d3": 1
+    "p_9f8abaa4fbd8": 1
    }
   },
   "push": {
@@ -49,7 +49,7 @@
     "phase": "setting",
     "round": 1,
     "total": 2,
-    "setterId": "p_411cc33018d3",
+    "setterId": "p_9f8abaa4fbd8",
     "isSetter": true,
     "mask": [],
     "word": null,
@@ -58,46 +58,52 @@
     "wrong": [],
     "wrongCount": 0,
     "maxWrong": 6,
-    "deadline": 1792745758317.0166,
+    "deadline": 1792751236057.3599,
     "result": null,
+    "award": {},
     "scores": {
-     "p_411cc33018d3": 0,
-     "p_4d1b1d521b34": 0
-    }
+     "p_9f8abaa4fbd8": 0.0,
+     "p_3bfb64a3da15": 0.0
+    },
+    "pot": 12,
+    "wrongCost": 2,
+    "flagUntil": null,
+    "canFlag": false,
+    "flag": null
    },
-   "serverNow": 1792745698317.2346
+   "serverNow": 1792751176057.5598
   }
  },
  "settingGuesser": {
-  "me": "p_4d1b1d521b34",
+  "me": "p_3bfb64a3da15",
   "room": {
-   "code": "CNSR",
-   "hostId": "p_411cc33018d3",
+   "code": "TCGK",
+   "hostId": "p_9f8abaa4fbd8",
    "status": "playing",
    "players": [
     {
-     "id": "p_411cc33018d3",
+     "id": "p_9f8abaa4fbd8",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "d42bcdc7"
+      "style": "cutouts",
+      "seed": "8a44fcd3"
      },
      "online": true,
-     "joinedAt": 1792745691711.3298
+     "joinedAt": 1792751169462.8535
     },
     {
-     "id": "p_4d1b1d521b34",
+     "id": "p_3bfb64a3da15",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
      "color": "#3498DB",
      "avatar": {
-      "style": "cutouts",
-      "seed": "693ada2c"
+      "style": "adventurer-neutral",
+      "seed": "c47e6f83"
      },
      "online": true,
-     "joinedAt": 1792745691719.4868
+     "joinedAt": 1792751169466.0383
     }
    ],
    "selectedGame": "hangman",
@@ -105,11 +111,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_411cc33018d3": 3,
-    "p_4d1b1d521b34": 2
+    "p_9f8abaa4fbd8": 100.0,
+    "p_3bfb64a3da15": 0.0
    },
    "wins": {
-    "p_411cc33018d3": 1
+    "p_9f8abaa4fbd8": 1
    }
   },
   "push": {
@@ -118,7 +124,7 @@
     "phase": "setting",
     "round": 1,
     "total": 2,
-    "setterId": "p_411cc33018d3",
+    "setterId": "p_9f8abaa4fbd8",
     "isSetter": false,
     "mask": [],
     "word": null,
@@ -127,46 +133,52 @@
     "wrong": [],
     "wrongCount": 0,
     "maxWrong": 6,
-    "deadline": 1792745758317.0166,
+    "deadline": 1792751236057.3599,
     "result": null,
+    "award": {},
     "scores": {
-     "p_411cc33018d3": 0,
-     "p_4d1b1d521b34": 0
-    }
+     "p_9f8abaa4fbd8": 0.0,
+     "p_3bfb64a3da15": 0.0
+    },
+    "pot": 12,
+    "wrongCost": 2,
+    "flagUntil": null,
+    "canFlag": false,
+    "flag": null
    },
-   "serverNow": 1792745698317.2346
+   "serverNow": 1792751176057.5598
   }
  },
  "guessingSetter": {
-  "me": "p_411cc33018d3",
+  "me": "p_9f8abaa4fbd8",
   "room": {
-   "code": "CNSR",
-   "hostId": "p_411cc33018d3",
+   "code": "TCGK",
+   "hostId": "p_9f8abaa4fbd8",
    "status": "playing",
    "players": [
     {
-     "id": "p_411cc33018d3",
+     "id": "p_9f8abaa4fbd8",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "d42bcdc7"
+      "style": "cutouts",
+      "seed": "8a44fcd3"
      },
      "online": true,
-     "joinedAt": 1792745691711.3298
+     "joinedAt": 1792751169462.8535
     },
     {
-     "id": "p_4d1b1d521b34",
+     "id": "p_3bfb64a3da15",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
      "color": "#3498DB",
      "avatar": {
-      "style": "cutouts",
-      "seed": "693ada2c"
+      "style": "adventurer-neutral",
+      "seed": "c47e6f83"
      },
      "online": true,
-     "joinedAt": 1792745691719.4868
+     "joinedAt": 1792751169466.0383
     }
    ],
    "selectedGame": "hangman",
@@ -174,11 +186,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_411cc33018d3": 3,
-    "p_4d1b1d521b34": 2
+    "p_9f8abaa4fbd8": 100.0,
+    "p_3bfb64a3da15": 0.0
    },
    "wins": {
-    "p_411cc33018d3": 1
+    "p_9f8abaa4fbd8": 1
    }
   },
   "push": {
@@ -187,7 +199,7 @@
     "phase": "guessing",
     "round": 1,
     "total": 2,
-    "setterId": "p_411cc33018d3",
+    "setterId": "p_9f8abaa4fbd8",
     "isSetter": true,
     "mask": [
      "L",
@@ -206,44 +218,50 @@
     "maxWrong": 6,
     "deadline": null,
     "result": null,
+    "award": {},
     "scores": {
-     "p_411cc33018d3": 0,
-     "p_4d1b1d521b34": 2
-    }
+     "p_9f8abaa4fbd8": 0.0,
+     "p_3bfb64a3da15": 0.0
+    },
+    "pot": 12,
+    "wrongCost": 2,
+    "flagUntil": null,
+    "canFlag": false,
+    "flag": null
    },
-   "serverNow": 1792745698330.3
+   "serverNow": 1792751176065.8538
   }
  },
  "guessingGuesser": {
-  "me": "p_4d1b1d521b34",
+  "me": "p_3bfb64a3da15",
   "room": {
-   "code": "CNSR",
-   "hostId": "p_411cc33018d3",
+   "code": "TCGK",
+   "hostId": "p_9f8abaa4fbd8",
    "status": "playing",
    "players": [
     {
-     "id": "p_411cc33018d3",
+     "id": "p_9f8abaa4fbd8",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "d42bcdc7"
+      "style": "cutouts",
+      "seed": "8a44fcd3"
      },
      "online": true,
-     "joinedAt": 1792745691711.3298
+     "joinedAt": 1792751169462.8535
     },
     {
-     "id": "p_4d1b1d521b34",
+     "id": "p_3bfb64a3da15",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
      "color": "#3498DB",
      "avatar": {
-      "style": "cutouts",
-      "seed": "693ada2c"
+      "style": "adventurer-neutral",
+      "seed": "c47e6f83"
      },
      "online": true,
-     "joinedAt": 1792745691719.4868
+     "joinedAt": 1792751169466.0383
     }
    ],
    "selectedGame": "hangman",
@@ -251,11 +269,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_411cc33018d3": 3,
-    "p_4d1b1d521b34": 2
+    "p_9f8abaa4fbd8": 100.0,
+    "p_3bfb64a3da15": 0.0
    },
    "wins": {
-    "p_411cc33018d3": 1
+    "p_9f8abaa4fbd8": 1
    }
   },
   "push": {
@@ -264,7 +282,7 @@
     "phase": "guessing",
     "round": 1,
     "total": 2,
-    "setterId": "p_411cc33018d3",
+    "setterId": "p_9f8abaa4fbd8",
     "isSetter": false,
     "mask": [
      "L",
@@ -286,44 +304,50 @@
     "maxWrong": 6,
     "deadline": null,
     "result": null,
+    "award": {},
     "scores": {
-     "p_411cc33018d3": 0,
-     "p_4d1b1d521b34": 2
-    }
+     "p_9f8abaa4fbd8": 0.0,
+     "p_3bfb64a3da15": 0.0
+    },
+    "pot": 12,
+    "wrongCost": 2,
+    "flagUntil": null,
+    "canFlag": false,
+    "flag": null
    },
-   "serverNow": 1792745698335.305
+   "serverNow": 1792751176068.381
   }
  },
  "roundOverGuessers": {
-  "me": "p_411cc33018d3",
+  "me": "p_9f8abaa4fbd8",
   "room": {
-   "code": "CNSR",
-   "hostId": "p_411cc33018d3",
+   "code": "TCGK",
+   "hostId": "p_9f8abaa4fbd8",
    "status": "playing",
    "players": [
     {
-     "id": "p_411cc33018d3",
+     "id": "p_9f8abaa4fbd8",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "d42bcdc7"
+      "style": "cutouts",
+      "seed": "8a44fcd3"
      },
      "online": true,
-     "joinedAt": 1792745691711.3298
+     "joinedAt": 1792751169462.8535
     },
     {
-     "id": "p_4d1b1d521b34",
+     "id": "p_3bfb64a3da15",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
      "color": "#3498DB",
      "avatar": {
-      "style": "cutouts",
-      "seed": "693ada2c"
+      "style": "adventurer-neutral",
+      "seed": "c47e6f83"
      },
      "online": true,
-     "joinedAt": 1792745691719.4868
+     "joinedAt": 1792751169466.0383
     }
    ],
    "selectedGame": "hangman",
@@ -331,11 +355,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_411cc33018d3": 3,
-    "p_4d1b1d521b34": 2
+    "p_9f8abaa4fbd8": 100.0,
+    "p_3bfb64a3da15": 0.0
    },
    "wins": {
-    "p_411cc33018d3": 1
+    "p_9f8abaa4fbd8": 1
    }
   },
   "push": {
@@ -344,7 +368,7 @@
     "phase": "roundOver",
     "round": 1,
     "total": 2,
-    "setterId": "p_411cc33018d3",
+    "setterId": "p_9f8abaa4fbd8",
     "isSetter": true,
     "mask": [
      "L",
@@ -366,46 +390,55 @@
     ],
     "wrongCount": 1,
     "maxWrong": 6,
-    "deadline": 1792745702450.5325,
+    "deadline": 1792751180179.05,
     "result": "guessers",
+    "award": {
+     "p_9f8abaa4fbd8": 2.0,
+     "p_3bfb64a3da15": 10.0
+    },
     "scores": {
-     "p_411cc33018d3": 0,
-     "p_4d1b1d521b34": 8
-    }
+     "p_9f8abaa4fbd8": 2.0,
+     "p_3bfb64a3da15": 10.0
+    },
+    "pot": 12,
+    "wrongCost": 2,
+    "flagUntil": null,
+    "canFlag": false,
+    "flag": null
    },
-   "serverNow": 1792745699450.608
+   "serverNow": 1792751177179.1755
   }
  },
  "roundOverSetterWins": {
-  "me": "p_411cc33018d3",
+  "me": "p_9f8abaa4fbd8",
   "room": {
-   "code": "CNSR",
-   "hostId": "p_411cc33018d3",
+   "code": "TCGK",
+   "hostId": "p_9f8abaa4fbd8",
    "status": "playing",
    "players": [
     {
-     "id": "p_411cc33018d3",
+     "id": "p_9f8abaa4fbd8",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "d42bcdc7"
+      "style": "cutouts",
+      "seed": "8a44fcd3"
      },
      "online": true,
-     "joinedAt": 1792745691711.3298
+     "joinedAt": 1792751169462.8535
     },
     {
-     "id": "p_4d1b1d521b34",
+     "id": "p_3bfb64a3da15",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
      "color": "#3498DB",
      "avatar": {
-      "style": "cutouts",
-      "seed": "693ada2c"
+      "style": "adventurer-neutral",
+      "seed": "c47e6f83"
      },
      "online": true,
-     "joinedAt": 1792745691719.4868
+     "joinedAt": 1792751169466.0383
     }
    ],
    "selectedGame": "hangman",
@@ -413,11 +446,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_411cc33018d3": 3,
-    "p_4d1b1d521b34": 2
+    "p_9f8abaa4fbd8": 100.0,
+    "p_3bfb64a3da15": 0.0
    },
    "wins": {
-    "p_411cc33018d3": 1
+    "p_9f8abaa4fbd8": 1
    }
   },
   "push": {
@@ -426,74 +459,86 @@
     "phase": "roundOver",
     "round": 2,
     "total": 2,
-    "setterId": "p_4d1b1d521b34",
+    "setterId": "p_3bfb64a3da15",
     "isSetter": false,
     "mask": [
      "Q",
      "U",
      "I",
-     "Z"
+     "Z",
+     "Z",
+     "E",
+     "S"
     ],
-    "word": "QUIZ",
+    "word": "QUIZZES",
     "hint": null,
     "guessed": [
      "B",
      "C",
      "D",
-     "E",
      "F",
-     "G"
+     "G",
+     "H"
     ],
     "wrong": [
      "B",
      "C",
      "D",
-     "E",
      "F",
-     "G"
+     "G",
+     "H"
     ],
     "wrongCount": 6,
     "maxWrong": 6,
-    "deadline": 1792745706582.1917,
+    "deadline": 1792751184325.9807,
     "result": "setter",
+    "award": {
+     "p_3bfb64a3da15": 12.0,
+     "p_9f8abaa4fbd8": 0.0
+    },
     "scores": {
-     "p_411cc33018d3": 0,
-     "p_4d1b1d521b34": 13
-    }
+     "p_9f8abaa4fbd8": 2.0,
+     "p_3bfb64a3da15": 22.0
+    },
+    "pot": 12,
+    "wrongCost": 2,
+    "flagUntil": null,
+    "canFlag": false,
+    "flag": null
    },
-   "serverNow": 1792745703582.245
+   "serverNow": 1792751181326.5747
   }
  },
  "done": {
-  "me": "p_411cc33018d3",
+  "me": "p_9f8abaa4fbd8",
   "room": {
-   "code": "CNSR",
-   "hostId": "p_411cc33018d3",
+   "code": "TCGK",
+   "hostId": "p_9f8abaa4fbd8",
    "status": "playing",
    "players": [
     {
-     "id": "p_411cc33018d3",
+     "id": "p_9f8abaa4fbd8",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "d42bcdc7"
+      "style": "cutouts",
+      "seed": "8a44fcd3"
      },
      "online": true,
-     "joinedAt": 1792745691711.3298
+     "joinedAt": 1792751169462.8535
     },
     {
-     "id": "p_4d1b1d521b34",
+     "id": "p_3bfb64a3da15",
      "profileId": "prof-Sam",
      "nickname": "Sam2",
      "color": "#3498DB",
      "avatar": {
-      "style": "cutouts",
-      "seed": "693ada2c"
+      "style": "adventurer-neutral",
+      "seed": "c47e6f83"
      },
      "online": true,
-     "joinedAt": 1792745691719.4868
+     "joinedAt": 1792751169466.0383
     }
    ],
    "selectedGame": "hangman",
@@ -501,11 +546,11 @@
     "mode": "group"
    },
    "scoreboard": {
-    "p_411cc33018d3": 3,
-    "p_4d1b1d521b34": 2
+    "p_9f8abaa4fbd8": 100.0,
+    "p_3bfb64a3da15": 0.0
    },
    "wins": {
-    "p_411cc33018d3": 1
+    "p_9f8abaa4fbd8": 1
    }
   },
   "push": {
@@ -514,42 +559,404 @@
     "phase": "done",
     "round": 2,
     "total": 2,
-    "setterId": "p_4d1b1d521b34",
+    "setterId": "p_3bfb64a3da15",
     "isSetter": false,
     "mask": [
      "Q",
      "U",
      "I",
-     "Z"
+     "Z",
+     "Z",
+     "E",
+     "S"
     ],
-    "word": "QUIZ",
+    "word": "QUIZZES",
     "hint": null,
     "guessed": [
      "B",
      "C",
      "D",
-     "E",
      "F",
-     "G"
+     "G",
+     "H"
     ],
     "wrong": [
      "B",
      "C",
      "D",
-     "E",
      "F",
-     "G"
+     "G",
+     "H"
     ],
     "wrongCount": 6,
     "maxWrong": 6,
     "deadline": null,
     "result": "setter",
+    "award": {
+     "p_3bfb64a3da15": 12.0,
+     "p_9f8abaa4fbd8": 0.0
+    },
     "scores": {
-     "p_411cc33018d3": 0,
-     "p_4d1b1d521b34": 13
+     "p_9f8abaa4fbd8": 2.0,
+     "p_3bfb64a3da15": 22.0
+    },
+    "pot": 12,
+    "wrongCost": 2,
+    "flagUntil": null,
+    "canFlag": false,
+    "flag": null
+   },
+   "serverNow": 1792751184328.3306
+  }
+ },
+ "roundOverCanFlag": {
+  "me": "p_5ad3853e89c9",
+  "room": {
+   "code": "WMKZ",
+   "hostId": "p_b6b1381cf2c4",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_b6b1381cf2c4",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "4fee898f"
+     },
+     "online": true,
+     "joinedAt": 1792751185032.038
+    },
+    {
+     "id": "p_5ad3853e89c9",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "b015024d"
+     },
+     "online": true,
+     "joinedAt": 1792751185033.8958
+    },
+    {
+     "id": "p_0df8d478810b",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "61b26852"
+     },
+     "online": true,
+     "joinedAt": 1792751185036.4607
+    }
+   ],
+   "selectedGame": "hangman",
+   "settings": {
+    "mode": "group"
+   },
+   "scoreboard": {
+    "p_b6b1381cf2c4": 200.0,
+    "p_5ad3853e89c9": 100.0,
+    "p_0df8d478810b": 0.0
+   },
+   "wins": {
+    "p_b6b1381cf2c4": 2
+   }
+  },
+  "push": {
+   "gameId": "hangman",
+   "view": {
+    "phase": "roundOver",
+    "round": 1,
+    "total": 3,
+    "setterId": "p_b6b1381cf2c4",
+    "isSetter": false,
+    "mask": [
+     "Q",
+     "W",
+     "E",
+     "R",
+     "T",
+     "Y"
+    ],
+    "word": "QWERTY",
+    "hint": null,
+    "guessed": [
+     "Z",
+     "Q",
+     "W",
+     "E",
+     "R",
+     "T",
+     "Y"
+    ],
+    "wrong": [
+     "Z"
+    ],
+    "wrongCount": 1,
+    "maxWrong": 6,
+    "deadline": 1792751225117.7153,
+    "result": "guessers",
+    "award": {
+     "p_b6b1381cf2c4": 2.0,
+     "p_5ad3853e89c9": 5.0,
+     "p_0df8d478810b": 5.0
+    },
+    "scores": {
+     "p_b6b1381cf2c4": 2.0,
+     "p_5ad3853e89c9": 5.0,
+     "p_0df8d478810b": 5.0
+    },
+    "pot": 12,
+    "wrongCost": 2,
+    "flagUntil": 1792751225117.7153,
+    "canFlag": true,
+    "flag": null
+   },
+   "serverNow": 1792751220117.7705
+  }
+ },
+ "flagVoteVoter": {
+  "me": "p_0df8d478810b",
+  "room": {
+   "code": "WMKZ",
+   "hostId": "p_b6b1381cf2c4",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_b6b1381cf2c4",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "4fee898f"
+     },
+     "online": true,
+     "joinedAt": 1792751185032.038
+    },
+    {
+     "id": "p_5ad3853e89c9",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "b015024d"
+     },
+     "online": true,
+     "joinedAt": 1792751185033.8958
+    },
+    {
+     "id": "p_0df8d478810b",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "61b26852"
+     },
+     "online": true,
+     "joinedAt": 1792751185036.4607
+    }
+   ],
+   "selectedGame": "hangman",
+   "settings": {
+    "mode": "group"
+   },
+   "scoreboard": {
+    "p_b6b1381cf2c4": 200.0,
+    "p_5ad3853e89c9": 100.0,
+    "p_0df8d478810b": 0.0
+   },
+   "wins": {
+    "p_b6b1381cf2c4": 2
+   }
+  },
+  "push": {
+   "gameId": "hangman",
+   "view": {
+    "phase": "flagVote",
+    "round": 1,
+    "total": 3,
+    "setterId": "p_b6b1381cf2c4",
+    "isSetter": false,
+    "mask": [
+     "Q",
+     "W",
+     "E",
+     "R",
+     "T",
+     "Y"
+    ],
+    "word": "QWERTY",
+    "hint": null,
+    "guessed": [
+     "Z",
+     "Q",
+     "W",
+     "E",
+     "R",
+     "T",
+     "Y"
+    ],
+    "wrong": [
+     "Z"
+    ],
+    "wrongCount": 1,
+    "maxWrong": 6,
+    "deadline": 1792751228678.686,
+    "result": "guessers",
+    "award": {
+     "p_b6b1381cf2c4": 2.0,
+     "p_5ad3853e89c9": 5.0,
+     "p_0df8d478810b": 5.0
+    },
+    "scores": {
+     "p_b6b1381cf2c4": 2.0,
+     "p_5ad3853e89c9": 5.0,
+     "p_0df8d478810b": 5.0
+    },
+    "pot": 12,
+    "wrongCost": 2,
+    "flagUntil": null,
+    "canFlag": false,
+    "flag": {
+     "flaggerId": "p_5ad3853e89c9",
+     "deadline": 1792751228678.686,
+     "voterIds": [
+      "p_5ad3853e89c9",
+      "p_0df8d478810b"
+     ],
+     "votedCount": 1,
+     "canVote": true,
+     "hasVoted": false
     }
    },
-   "serverNow": 1792745706584.5222
+   "serverNow": 1792751220678.7073
+  }
+ },
+ "flagVoteFlagger": {
+  "me": "p_5ad3853e89c9",
+  "room": {
+   "code": "WMKZ",
+   "hostId": "p_b6b1381cf2c4",
+   "status": "playing",
+   "players": [
+    {
+     "id": "p_b6b1381cf2c4",
+     "profileId": "prof-Sam",
+     "nickname": "Sam",
+     "color": "#E74C3C",
+     "avatar": {
+      "style": "cutouts",
+      "seed": "4fee898f"
+     },
+     "online": true,
+     "joinedAt": 1792751185032.038
+    },
+    {
+     "id": "p_5ad3853e89c9",
+     "profileId": "prof-Ann",
+     "nickname": "Ann",
+     "color": "#3498DB",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "b015024d"
+     },
+     "online": true,
+     "joinedAt": 1792751185033.8958
+    },
+    {
+     "id": "p_0df8d478810b",
+     "profileId": "prof-Bob",
+     "nickname": "Bob",
+     "color": "#2ECC71",
+     "avatar": {
+      "style": "adventurer-neutral",
+      "seed": "61b26852"
+     },
+     "online": true,
+     "joinedAt": 1792751185036.4607
+    }
+   ],
+   "selectedGame": "hangman",
+   "settings": {
+    "mode": "group"
+   },
+   "scoreboard": {
+    "p_b6b1381cf2c4": 200.0,
+    "p_5ad3853e89c9": 100.0,
+    "p_0df8d478810b": 0.0
+   },
+   "wins": {
+    "p_b6b1381cf2c4": 2
+   }
+  },
+  "push": {
+   "gameId": "hangman",
+   "view": {
+    "phase": "flagVote",
+    "round": 1,
+    "total": 3,
+    "setterId": "p_b6b1381cf2c4",
+    "isSetter": false,
+    "mask": [
+     "Q",
+     "W",
+     "E",
+     "R",
+     "T",
+     "Y"
+    ],
+    "word": "QWERTY",
+    "hint": null,
+    "guessed": [
+     "Z",
+     "Q",
+     "W",
+     "E",
+     "R",
+     "T",
+     "Y"
+    ],
+    "wrong": [
+     "Z"
+    ],
+    "wrongCount": 1,
+    "maxWrong": 6,
+    "deadline": 1792751228678.686,
+    "result": "guessers",
+    "award": {
+     "p_b6b1381cf2c4": 2.0,
+     "p_5ad3853e89c9": 5.0,
+     "p_0df8d478810b": 5.0
+    },
+    "scores": {
+     "p_b6b1381cf2c4": 2.0,
+     "p_5ad3853e89c9": 5.0,
+     "p_0df8d478810b": 5.0
+    },
+    "pot": 12,
+    "wrongCost": 2,
+    "flagUntil": null,
+    "canFlag": false,
+    "flag": {
+     "flaggerId": "p_5ad3853e89c9",
+     "deadline": 1792751228678.686,
+     "voterIds": [
+      "p_5ad3853e89c9",
+      "p_0df8d478810b"
+     ],
+     "votedCount": 1,
+     "canVote": false,
+     "hasVoted": true
+    }
+   },
+   "serverNow": 1792751220678.7073
   }
  }
 }

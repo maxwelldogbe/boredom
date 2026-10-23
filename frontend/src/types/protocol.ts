@@ -64,6 +64,9 @@ export interface RoomPublic {
 export interface GameResult {
   playerId: string
   placement: number
+  /** Raw in-game score, for display only (meaning per game). */
+  score: number
+  /** Session points this game added to the scoreboard (placement-based, up to 2 decimals). */
   points: number
 }
 

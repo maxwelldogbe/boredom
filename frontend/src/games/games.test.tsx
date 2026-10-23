@@ -1,5 +1,5 @@
 import { act, fireEvent, screen, within } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { FakeWebSocket } from '../test/fakeWebSocket'
 import { guessRaceFx, hangmanFx, rpsFx, type ViewFixture } from '../test/fixtures'
 import { renderWithRoom } from '../test/render'
@@ -123,5 +123,64 @@ describe('HangmanGame (real backend views)', () => {
     unmount()
     renderWithRoom(<HangmanGame {...props(hangmanFx.roundOverSetterWins)} />)
     expect(screen.getByText(/this round! The word was/)).toBeInTheDocument()
+  })
+})
+
+describe('Guess Race fair scoring (real backend views)', () => {
+  it('after solving: no input, my rank and points, the solvers list', () => {
+    renderWithRoom(<GuessRaceGame {...props(guessRaceFx.scrambleSolvedMe)} />)
+    expect(screen.queryByLabelText('Your guess')).not.toBeInTheDocument()
+    expect(screen.getByText(/Solved! You were 1st \(\+100\)/)).toBeInTheDocument()
+    expect(within(screen.getByRole('list', { name: 'Solved' })).getAllByRole('listitem')).toHaveLength(1)
+  })
+
+  it('others solved: I can still guess and see who solved', () => {
+    const fx = guessRaceFx.scrambleOthersSolved
+    renderWithRoom(<GuessRaceGame {...props(fx)} />)
+    expect(screen.getByLabelText('Your guess')).toBeInTheDocument()
+    const solver = fx.room.players.find((pl) => pl.id === fx.push.view.solvers[0].playerId)!
+    expect(screen.getByText(new RegExp(`1st: ${solver.nickname}`))).toBeInTheDocument()
+  })
+
+  it('round over lists every solver in finishing order', () => {
+    renderWithRoom(<GuessRaceGame {...props(guessRaceFx.scrambleRoundOver)} />)
+    const items = within(screen.getByRole('list', { name: 'Solved' })).getAllByRole('listitem')
+    expect(items.map((li) => li.textContent?.match(/\+\d+/)?.[0])).toEqual(['+100', '+80', '+60'])
+  })
+})
+
+describe('Hangman flag (real backend views)', () => {
+  afterEach(() => vi.useRealTimers())
+
+  it('round over: the round award and a flag button inside the window', async () => {
+    const fx = hangmanFx.roundOverCanFlag
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(fx.push.view.flagUntil! - 2000)
+    const p = props(fx)
+    renderWithRoom(<HangmanGame {...p} />)
+    expect(screen.getByText(/This round:/)).toBeInTheDocument()
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: /Not a real word/ })))
+    expect(p.send).toHaveBeenCalledWith({ type: 'flagWord' })
+  })
+
+  it('no flag button after the window', () => {
+    const fx = hangmanFx.roundOverCanFlag
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(fx.push.view.flagUntil! + 1)
+    renderWithRoom(<HangmanGame {...props(fx)} />)
+    expect(screen.queryByRole('button', { name: /Not a real word/ })).not.toBeInTheDocument()
+  })
+
+  it('voter gets the two vote buttons', async () => {
+    const p = props(hangmanFx.flagVoteVoter)
+    renderWithRoom(<HangmanGame {...p} />)
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: '✗ Not a word' })))
+    expect(p.send).toHaveBeenCalledWith({ type: 'voteWord', valid: false })
+  })
+
+  it('flagger sees only the vote count', () => {
+    renderWithRoom(<HangmanGame {...props(hangmanFx.flagVoteFlagger)} />)
+    expect(screen.queryByRole('button', { name: '✓ It\'s a word' })).not.toBeInTheDocument()
+    expect(screen.getByText(/Votes in: 1\/2/)).toBeInTheDocument()
   })
 })

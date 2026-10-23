@@ -78,3 +78,11 @@
   flex-wrap: wrap;
   gap: 6px;
 }
+.guess__solvers {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}

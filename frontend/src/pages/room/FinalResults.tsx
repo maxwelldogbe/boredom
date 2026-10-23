@@ -3,6 +3,7 @@ import { Button } from '../../components/Button'
 import { PlayerChip } from '../../components/PlayerChip'
 import { gameUi } from '../../games/registry'
 import { friendlyError } from '../../lib/errors'
+import { formatPoints } from '../../lib/format'
 import { playerById } from '../../lib/players'
 import { useRoomActions, useRoomState } from '../../state/context'
 import type { RoomPublic } from '../../types/protocol'
@@ -57,7 +58,9 @@ export function FinalResults({ room, me }: { room: RoomPublic; me: string }) {
                     {ordinal(r.placement)}
                   </span>
                   <PlayerChip player={playerById(room, r.playerId)} isMe={r.playerId === me} size="sm" />
-                  <span className="rank-list__points">+{r.points}</span>
+                  <span className="rank-list__points">
+                    <span className="muted rank-list__score">score {formatPoints(r.score)} · </span>+{formatPoints(r.points)}
+                  </span>
                 </li>
               ))}
           </ol>
@@ -78,7 +81,7 @@ export function FinalResults({ room, me }: { room: RoomPublic; me: string }) {
                 <PlayerChip player={p} isMe={p.id === me} size="sm" extra={wins ? `${wins} win${wins > 1 ? 's' : ''}` : undefined} />
                 <span className="rank-list__points">
                   {leader && <span title="Session leader">👑 </span>}
-                  {points}
+                  {formatPoints(points)}
                 </span>
               </li>
             )

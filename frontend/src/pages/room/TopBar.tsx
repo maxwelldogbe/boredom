@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '../../components/Button'
 import { Modal } from '../../components/Modal'
 import { friendlyError } from '../../lib/errors'
+import { formatPoints } from '../../lib/format'
 import { useRoomActions } from '../../state/context'
 import type { RoomPublic } from '../../types/protocol'
 
@@ -36,7 +37,7 @@ export function TopBar({ room, me, onLeaving, onLeft }: TopBarProps) {
       <span className="topbar__code" aria-label={`Room ${room.code}`}>
         🏠 {room.code}
       </span>
-      <span className="topbar__score">Score: {room.scoreboard[me] ?? 0}</span>
+      <span className="topbar__score">Score: {formatPoints(room.scoreboard[me] ?? 0)}</span>
       <Button variant="ghost" onClick={() => setConfirm(true)}>
         Leave
       </Button>

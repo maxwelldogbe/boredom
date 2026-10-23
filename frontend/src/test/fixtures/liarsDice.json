@@ -1,46 +1,46 @@
 {
  "myTurnOpening": {
-  "me": "p_d980cd944cca",
+  "me": "p_2ea418a9d355",
   "room": {
-   "code": "WCRC",
-   "hostId": "p_d980cd944cca",
+   "code": "NHLJ",
+   "hostId": "p_b2110f7d1617",
    "status": "playing",
    "players": [
     {
-     "id": "p_d980cd944cca",
+     "id": "p_b2110f7d1617",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "63c473eb"
+      "style": "cutouts",
+      "seed": "b4a0f8bb"
      },
      "online": true,
-     "joinedAt": 1792748873870.362
+     "joinedAt": 1792751237456.1348
     },
     {
-     "id": "p_dfe6047e882f",
+     "id": "p_2ea418a9d355",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "09534a9c"
+      "style": "croodles-neutral",
+      "seed": "474dedc6"
      },
      "online": true,
-     "joinedAt": 1792748873873.2683
+     "joinedAt": 1792751237463.6501
     },
     {
-     "id": "p_6db7241fd320",
+     "id": "p_14366c93b8a5",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
-      "style": "cutouts",
-      "seed": "3c325741"
+      "style": "voxel-art",
+      "seed": "d446e7b1"
      },
      "online": true,
-     "joinedAt": 1792748873876.9678
+     "joinedAt": 1792751237470.2463
     }
    ],
    "selectedGame": "liars_dice",
@@ -58,23 +58,23 @@
     "phase": "bidding",
     "round": 1,
     "order": [
-     "p_d980cd944cca",
-     "p_dfe6047e882f",
-     "p_6db7241fd320"
+     "p_b2110f7d1617",
+     "p_2ea418a9d355",
+     "p_14366c93b8a5"
     ],
     "myDice": [
      1,
-     5,
-     5
+     2,
+     3
     ],
     "diceCounts": {
-     "p_d980cd944cca": 3,
-     "p_dfe6047e882f": 3,
-     "p_6db7241fd320": 3
+     "p_b2110f7d1617": 3,
+     "p_2ea418a9d355": 3,
+     "p_14366c93b8a5": 3
     },
     "totalDice": 9,
     "eliminated": [],
-    "currentPlayerId": "p_d980cd944cca",
+    "currentPlayerId": "p_2ea418a9d355",
     "isYourTurn": true,
     "currentBid": null,
     "history": [],
@@ -83,54 +83,54 @@
      "wildOnes": true,
      "spotOn": true
     },
-    "deadline": 1792748903894.2065,
+    "deadline": 1792751267481.0632,
     "lastReveal": null
    },
-   "serverNow": 1792748873894.5352
+   "serverNow": 1792751237481.34
   }
  },
  "myTurnAfterBid": {
-  "me": "p_dfe6047e882f",
+  "me": "p_14366c93b8a5",
   "room": {
-   "code": "WCRC",
-   "hostId": "p_d980cd944cca",
+   "code": "NHLJ",
+   "hostId": "p_b2110f7d1617",
    "status": "playing",
    "players": [
     {
-     "id": "p_d980cd944cca",
+     "id": "p_b2110f7d1617",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "63c473eb"
+      "style": "cutouts",
+      "seed": "b4a0f8bb"
      },
      "online": true,
-     "joinedAt": 1792748873870.362
+     "joinedAt": 1792751237456.1348
     },
     {
-     "id": "p_dfe6047e882f",
+     "id": "p_2ea418a9d355",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "09534a9c"
+      "style": "croodles-neutral",
+      "seed": "474dedc6"
      },
      "online": true,
-     "joinedAt": 1792748873873.2683
+     "joinedAt": 1792751237463.6501
     },
     {
-     "id": "p_6db7241fd320",
+     "id": "p_14366c93b8a5",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
-      "style": "cutouts",
-      "seed": "3c325741"
+      "style": "voxel-art",
+      "seed": "d446e7b1"
      },
      "online": true,
-     "joinedAt": 1792748873876.9678
+     "joinedAt": 1792751237470.2463
     }
    ],
    "selectedGame": "liars_dice",
@@ -148,32 +148,32 @@
     "phase": "bidding",
     "round": 1,
     "order": [
-     "p_d980cd944cca",
-     "p_dfe6047e882f",
-     "p_6db7241fd320"
+     "p_b2110f7d1617",
+     "p_2ea418a9d355",
+     "p_14366c93b8a5"
     ],
     "myDice": [
-     4,
-     4,
-     5
+     5,
+     6,
+     6
     ],
     "diceCounts": {
-     "p_d980cd944cca": 3,
-     "p_dfe6047e882f": 3,
-     "p_6db7241fd320": 3
+     "p_b2110f7d1617": 3,
+     "p_2ea418a9d355": 3,
+     "p_14366c93b8a5": 3
     },
     "totalDice": 9,
     "eliminated": [],
-    "currentPlayerId": "p_dfe6047e882f",
+    "currentPlayerId": "p_14366c93b8a5",
     "isYourTurn": true,
     "currentBid": {
-     "playerId": "p_d980cd944cca",
+     "playerId": "p_2ea418a9d355",
      "quantity": 1,
      "face": 2
     },
     "history": [
      {
-      "playerId": "p_d980cd944cca",
+      "playerId": "p_2ea418a9d355",
       "quantity": 1,
       "face": 2,
       "auto": false
@@ -184,54 +184,54 @@
      "wildOnes": true,
      "spotOn": true
     },
-    "deadline": 1792748904503.9167,
+    "deadline": 1792751268095.8723,
     "lastReveal": null
    },
-   "serverNow": 1792748874503.9795
+   "serverNow": 1792751238095.908
   }
  },
  "myTurnMaxBid": {
-  "me": "p_6db7241fd320",
+  "me": "p_b2110f7d1617",
   "room": {
-   "code": "WCRC",
-   "hostId": "p_d980cd944cca",
+   "code": "NHLJ",
+   "hostId": "p_b2110f7d1617",
    "status": "playing",
    "players": [
     {
-     "id": "p_d980cd944cca",
+     "id": "p_b2110f7d1617",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "63c473eb"
+      "style": "cutouts",
+      "seed": "b4a0f8bb"
      },
      "online": true,
-     "joinedAt": 1792748873870.362
+     "joinedAt": 1792751237456.1348
     },
     {
-     "id": "p_dfe6047e882f",
+     "id": "p_2ea418a9d355",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "09534a9c"
+      "style": "croodles-neutral",
+      "seed": "474dedc6"
      },
      "online": true,
-     "joinedAt": 1792748873873.2683
+     "joinedAt": 1792751237463.6501
     },
     {
-     "id": "p_6db7241fd320",
+     "id": "p_14366c93b8a5",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
-      "style": "cutouts",
-      "seed": "3c325741"
+      "style": "voxel-art",
+      "seed": "d446e7b1"
      },
      "online": true,
-     "joinedAt": 1792748873876.9678
+     "joinedAt": 1792751237470.2463
     }
    ],
    "selectedGame": "liars_dice",
@@ -249,38 +249,38 @@
     "phase": "bidding",
     "round": 1,
     "order": [
-     "p_d980cd944cca",
-     "p_dfe6047e882f",
-     "p_6db7241fd320"
+     "p_b2110f7d1617",
+     "p_2ea418a9d355",
+     "p_14366c93b8a5"
     ],
     "myDice": [
-     2,
-     2,
-     4
+     3,
+     4,
+     6
     ],
     "diceCounts": {
-     "p_d980cd944cca": 3,
-     "p_dfe6047e882f": 3,
-     "p_6db7241fd320": 3
+     "p_b2110f7d1617": 3,
+     "p_2ea418a9d355": 3,
+     "p_14366c93b8a5": 3
     },
     "totalDice": 9,
     "eliminated": [],
-    "currentPlayerId": "p_6db7241fd320",
+    "currentPlayerId": "p_b2110f7d1617",
     "isYourTurn": true,
     "currentBid": {
-     "playerId": "p_dfe6047e882f",
+     "playerId": "p_14366c93b8a5",
      "quantity": 9,
      "face": 6
     },
     "history": [
      {
-      "playerId": "p_d980cd944cca",
+      "playerId": "p_2ea418a9d355",
       "quantity": 1,
       "face": 2,
       "auto": false
      },
      {
-      "playerId": "p_dfe6047e882f",
+      "playerId": "p_14366c93b8a5",
       "quantity": 9,
       "face": 6,
       "auto": false
@@ -291,54 +291,54 @@
      "wildOnes": true,
      "spotOn": true
     },
-    "deadline": 1792748904812.514,
+    "deadline": 1792751268403.4846,
     "lastReveal": null
    },
-   "serverNow": 1792748874812.5818
+   "serverNow": 1792751238403.539
   }
  },
  "othersTurn": {
-  "me": "p_d980cd944cca",
+  "me": "p_b2110f7d1617",
   "room": {
-   "code": "WCRC",
-   "hostId": "p_d980cd944cca",
+   "code": "NHLJ",
+   "hostId": "p_b2110f7d1617",
    "status": "playing",
    "players": [
     {
-     "id": "p_d980cd944cca",
+     "id": "p_b2110f7d1617",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "63c473eb"
+      "style": "cutouts",
+      "seed": "b4a0f8bb"
      },
      "online": true,
-     "joinedAt": 1792748873870.362
+     "joinedAt": 1792751237456.1348
     },
     {
-     "id": "p_dfe6047e882f",
+     "id": "p_2ea418a9d355",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "09534a9c"
+      "style": "croodles-neutral",
+      "seed": "474dedc6"
      },
      "online": true,
-     "joinedAt": 1792748873873.2683
+     "joinedAt": 1792751237463.6501
     },
     {
-     "id": "p_6db7241fd320",
+     "id": "p_14366c93b8a5",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
-      "style": "cutouts",
-      "seed": "3c325741"
+      "style": "voxel-art",
+      "seed": "d446e7b1"
      },
      "online": true,
-     "joinedAt": 1792748873876.9678
+     "joinedAt": 1792751237470.2463
     }
    ],
    "selectedGame": "liars_dice",
@@ -356,32 +356,32 @@
     "phase": "bidding",
     "round": 1,
     "order": [
-     "p_d980cd944cca",
-     "p_dfe6047e882f",
-     "p_6db7241fd320"
+     "p_b2110f7d1617",
+     "p_2ea418a9d355",
+     "p_14366c93b8a5"
     ],
     "myDice": [
-     1,
-     5,
-     5
+     3,
+     4,
+     6
     ],
     "diceCounts": {
-     "p_d980cd944cca": 3,
-     "p_dfe6047e882f": 3,
-     "p_6db7241fd320": 3
+     "p_b2110f7d1617": 3,
+     "p_2ea418a9d355": 3,
+     "p_14366c93b8a5": 3
     },
     "totalDice": 9,
     "eliminated": [],
-    "currentPlayerId": "p_dfe6047e882f",
+    "currentPlayerId": "p_14366c93b8a5",
     "isYourTurn": false,
     "currentBid": {
-     "playerId": "p_d980cd944cca",
+     "playerId": "p_2ea418a9d355",
      "quantity": 1,
      "face": 2
     },
     "history": [
      {
-      "playerId": "p_d980cd944cca",
+      "playerId": "p_2ea418a9d355",
       "quantity": 1,
       "face": 2,
       "auto": false
@@ -392,54 +392,54 @@
      "wildOnes": true,
      "spotOn": true
     },
-    "deadline": 1792748904503.9167,
+    "deadline": 1792751268095.8723,
     "lastReveal": null
    },
-   "serverNow": 1792748874503.9795
+   "serverNow": 1792751238095.908
   }
  },
  "reveal": {
-  "me": "p_d980cd944cca",
+  "me": "p_b2110f7d1617",
   "room": {
-   "code": "WCRC",
-   "hostId": "p_d980cd944cca",
+   "code": "NHLJ",
+   "hostId": "p_b2110f7d1617",
    "status": "playing",
    "players": [
     {
-     "id": "p_d980cd944cca",
+     "id": "p_b2110f7d1617",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "63c473eb"
+      "style": "cutouts",
+      "seed": "b4a0f8bb"
      },
      "online": true,
-     "joinedAt": 1792748873870.362
+     "joinedAt": 1792751237456.1348
     },
     {
-     "id": "p_dfe6047e882f",
+     "id": "p_2ea418a9d355",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "09534a9c"
+      "style": "croodles-neutral",
+      "seed": "474dedc6"
      },
      "online": true,
-     "joinedAt": 1792748873873.2683
+     "joinedAt": 1792751237463.6501
     },
     {
-     "id": "p_6db7241fd320",
+     "id": "p_14366c93b8a5",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
-      "style": "cutouts",
-      "seed": "3c325741"
+      "style": "voxel-art",
+      "seed": "d446e7b1"
      },
      "online": true,
-     "joinedAt": 1792748873876.9678
+     "joinedAt": 1792751237470.2463
     }
    ],
    "selectedGame": "liars_dice",
@@ -457,38 +457,38 @@
     "phase": "reveal",
     "round": 1,
     "order": [
-     "p_d980cd944cca",
-     "p_dfe6047e882f",
-     "p_6db7241fd320"
+     "p_b2110f7d1617",
+     "p_2ea418a9d355",
+     "p_14366c93b8a5"
     ],
     "myDice": [
-     1,
-     5,
-     5
+     3,
+     4,
+     6
     ],
     "diceCounts": {
-     "p_d980cd944cca": 3,
-     "p_dfe6047e882f": 2,
-     "p_6db7241fd320": 3
+     "p_b2110f7d1617": 3,
+     "p_2ea418a9d355": 3,
+     "p_14366c93b8a5": 2
     },
     "totalDice": 8,
     "eliminated": [],
     "currentPlayerId": null,
     "isYourTurn": false,
     "currentBid": {
-     "playerId": "p_dfe6047e882f",
+     "playerId": "p_14366c93b8a5",
      "quantity": 9,
      "face": 6
     },
     "history": [
      {
-      "playerId": "p_d980cd944cca",
+      "playerId": "p_2ea418a9d355",
       "quantity": 1,
       "face": 2,
       "auto": false
      },
      {
-      "playerId": "p_dfe6047e882f",
+      "playerId": "p_14366c93b8a5",
       "quantity": 9,
       "face": 6,
       "auto": false
@@ -499,85 +499,85 @@
      "wildOnes": true,
      "spotOn": true
     },
-    "deadline": 1792748879120.8555,
+    "deadline": 1792751242712.873,
     "lastReveal": {
      "round": 1,
      "call": "liar",
-     "callerId": "p_6db7241fd320",
+     "callerId": "p_b2110f7d1617",
      "bid": {
-      "playerId": "p_dfe6047e882f",
+      "playerId": "p_14366c93b8a5",
       "quantity": 9,
       "face": 6
      },
      "dice": {
-      "p_d980cd944cca": [
+      "p_b2110f7d1617": [
+       3,
+       4,
+       6
+      ],
+      "p_2ea418a9d355": [
        1,
+       2,
+       3
+      ],
+      "p_14366c93b8a5": [
        5,
-       5
-      ],
-      "p_dfe6047e882f": [
-       4,
-       4,
-       5
-      ],
-      "p_6db7241fd320": [
-       2,
-       2,
-       4
+       6,
+       6
       ]
      },
-     "actual": 1,
-     "loserId": "p_dfe6047e882f",
+     "actual": 4,
+     "loserId": "p_14366c93b8a5",
      "gainerId": null,
      "eliminatedId": null,
      "auto": false
     }
    },
-   "serverNow": 1792748875120.9238
+   "serverNow": 1792751238712.923
   }
  },
  "eliminatedWatching": {
-  "me": "p_dfe6047e882f",
+  "me": "p_14366c93b8a5",
   "room": {
-   "code": "WCRC",
-   "hostId": "p_d980cd944cca",
+   "code": "NHLJ",
+   "hostId": "p_b2110f7d1617",
    "status": "playing",
    "players": [
     {
-     "id": "p_d980cd944cca",
+     "id": "p_b2110f7d1617",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "63c473eb"
+      "style": "cutouts",
+      "seed": "b4a0f8bb"
      },
      "online": true,
-     "joinedAt": 1792748873870.362
+     "joinedAt": 1792751237456.1348
     },
     {
-     "id": "p_dfe6047e882f",
+     "id": "p_2ea418a9d355",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "09534a9c"
+      "style": "croodles-neutral",
+      "seed": "474dedc6"
      },
      "online": true,
-     "joinedAt": 1792748873873.2683
+     "joinedAt": 1792751237463.6501
     },
     {
-     "id": "p_6db7241fd320",
+     "id": "p_14366c93b8a5",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
-      "style": "cutouts",
-      "seed": "3c325741"
+      "style": "voxel-art",
+      "seed": "d446e7b1"
      },
      "online": true,
-     "joinedAt": 1792748873876.9678
+     "joinedAt": 1792751237470.2463
     }
    ],
    "selectedGame": "liars_dice",
@@ -595,21 +595,21 @@
     "phase": "bidding",
     "round": 8,
     "order": [
-     "p_d980cd944cca",
-     "p_dfe6047e882f",
-     "p_6db7241fd320"
+     "p_b2110f7d1617",
+     "p_2ea418a9d355",
+     "p_14366c93b8a5"
     ],
     "myDice": [],
     "diceCounts": {
-     "p_d980cd944cca": 1,
-     "p_dfe6047e882f": 0,
-     "p_6db7241fd320": 1
+     "p_b2110f7d1617": 1,
+     "p_2ea418a9d355": 1,
+     "p_14366c93b8a5": 0
     },
     "totalDice": 2,
     "eliminated": [
-     "p_dfe6047e882f"
+     "p_14366c93b8a5"
     ],
-    "currentPlayerId": "p_6db7241fd320",
+    "currentPlayerId": "p_b2110f7d1617",
     "isYourTurn": false,
     "currentBid": null,
     "history": [],
@@ -618,54 +618,54 @@
      "wildOnes": true,
      "spotOn": true
     },
-    "deadline": 1792748943535.65,
+    "deadline": 1792751307125.4814,
     "lastReveal": null
    },
-   "serverNow": 1792748913535.6975
+   "serverNow": 1792751277125.5352
   }
  },
  "done": {
-  "me": "p_d980cd944cca",
+  "me": "p_b2110f7d1617",
   "room": {
-   "code": "WCRC",
-   "hostId": "p_d980cd944cca",
+   "code": "NHLJ",
+   "hostId": "p_b2110f7d1617",
    "status": "playing",
    "players": [
     {
-     "id": "p_d980cd944cca",
+     "id": "p_b2110f7d1617",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "63c473eb"
+      "style": "cutouts",
+      "seed": "b4a0f8bb"
      },
      "online": true,
-     "joinedAt": 1792748873870.362
+     "joinedAt": 1792751237456.1348
     },
     {
-     "id": "p_dfe6047e882f",
+     "id": "p_2ea418a9d355",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "09534a9c"
+      "style": "croodles-neutral",
+      "seed": "474dedc6"
      },
      "online": true,
-     "joinedAt": 1792748873873.2683
+     "joinedAt": 1792751237463.6501
     },
     {
-     "id": "p_6db7241fd320",
+     "id": "p_14366c93b8a5",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
-      "style": "cutouts",
-      "seed": "3c325741"
+      "style": "voxel-art",
+      "seed": "d446e7b1"
      },
      "online": true,
-     "joinedAt": 1792748873876.9678
+     "joinedAt": 1792751237470.2463
     }
    ],
    "selectedGame": "liars_dice",
@@ -683,39 +683,39 @@
     "phase": "done",
     "round": 8,
     "order": [
-     "p_d980cd944cca",
-     "p_dfe6047e882f",
-     "p_6db7241fd320"
+     "p_b2110f7d1617",
+     "p_2ea418a9d355",
+     "p_14366c93b8a5"
     ],
     "myDice": [
-     3
+     5
     ],
     "diceCounts": {
-     "p_d980cd944cca": 0,
-     "p_dfe6047e882f": 0,
-     "p_6db7241fd320": 1
+     "p_b2110f7d1617": 1,
+     "p_2ea418a9d355": 0,
+     "p_14366c93b8a5": 0
     },
     "totalDice": 1,
     "eliminated": [
-     "p_dfe6047e882f",
-     "p_d980cd944cca"
+     "p_14366c93b8a5",
+     "p_2ea418a9d355"
     ],
     "currentPlayerId": null,
     "isYourTurn": false,
     "currentBid": {
-     "playerId": "p_d980cd944cca",
+     "playerId": "p_2ea418a9d355",
      "quantity": 2,
      "face": 6
     },
     "history": [
      {
-      "playerId": "p_6db7241fd320",
+      "playerId": "p_b2110f7d1617",
       "quantity": 1,
       "face": 2,
       "auto": false
      },
      {
-      "playerId": "p_d980cd944cca",
+      "playerId": "p_2ea418a9d355",
       "quantity": 2,
       "face": 6,
       "auto": false
@@ -729,7 +729,7 @@
     "deadline": null,
     "lastReveal": null
    },
-   "serverNow": 1792748919272.198
+   "serverNow": 1792751282852.5007
   }
  }
 }

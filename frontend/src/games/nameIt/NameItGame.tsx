@@ -89,12 +89,14 @@ function TopicSelect({ view, send, me, room }: ActPart) {
           </Button>
         ))}
       </div>
-      <form className="stack" onSubmit={submit} noValidate>
-        <TextInput label="Or type your own" value={custom} onChange={(e) => setCustom(e.target.value)} maxLength={TEXT_MAX} autoComplete="off" />
-        <Button type="submit" block disabled={sending || !custom.trim()}>
-          Use this topic
-        </Button>
-      </form>
+      {view.settings.allowCustomTopics && (
+        <form className="stack" onSubmit={submit} noValidate>
+          <TextInput label="Or type your own" value={custom} onChange={(e) => setCustom(e.target.value)} maxLength={TEXT_MAX} autoComplete="off" />
+          <Button type="submit" block disabled={sending || !custom.trim()}>
+            Use this topic
+          </Button>
+        </form>
+      )}
     </section>
   )
 }

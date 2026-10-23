@@ -119,6 +119,14 @@ export const GAME_UIS: Registry = {
     settings: [
       { key: 'turnSeconds', label: 'Time per turn', options: [5, 10, 15, 20, 30].map((n) => ({ value: n, label: `${n} seconds` })) },
       { key: 'challenges', label: 'Challenges', options: [{ value: true, label: 'On' }, { value: false, label: 'Off' }] },
+      {
+        key: 'allowCustomTopics',
+        label: 'Typed topics',
+        options: [
+          { value: false, label: 'Off (pick from suggestions)' },
+          { value: true, label: 'On' },
+        ],
+      },
     ],
     Component: NameItGame,
   },

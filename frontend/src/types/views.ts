@@ -36,6 +36,12 @@ export type GuessHint =
   | { type: 'category'; value: string }
   | { type: 'firstLetter'; value: string }
 
+export interface GuessSolver {
+  playerId: string
+  rank: number
+  points: number
+}
+
 export interface GuessRaceView {
   phase: 'guessing' | 'roundOver' | 'done'
   round: number
@@ -47,14 +53,14 @@ export interface GuessRaceView {
   roundEndsAt: number
   revealEndsAt: number | null
   scores: Record<string, number>
-  roundWinner: string | null
-  roundPoints: number
+  solvers: GuessSolver[]
+  iSolved: boolean
   answer: string | null
   myLastGuess: { text: string; correct: boolean } | null
 }
 
 export interface HangmanView {
-  phase: 'setting' | 'guessing' | 'roundOver' | 'done'
+  phase: 'setting' | 'guessing' | 'roundOver' | 'flagVote' | 'done'
   round: number
   total: number
   setterId: string
@@ -68,7 +74,20 @@ export interface HangmanView {
   maxWrong: number
   deadline: number | null
   result: 'guessers' | 'setter' | 'skipped' | null
+  award: Record<string, number>
   scores: Record<string, number>
+  pot: number
+  wrongCost: number
+  flagUntil: number | null
+  canFlag: boolean
+  flag: {
+    flaggerId: string
+    deadline: number
+    voterIds: string[]
+    votedCount: number
+    canVote: boolean
+    hasVoted: boolean
+  } | null
 }
 
 export interface DotsView {
@@ -157,7 +176,7 @@ export interface NameItView {
   canChallenge: boolean
   challenge: NameItChallenge | null
   lastElimination: { playerId: string; reason: 'timeout' | 'duplicate' | 'challenge'; text: string | null } | null
-  settings: { turnSeconds: number; challenges: boolean }
+  settings: { turnSeconds: number; challenges: boolean; allowCustomTopics: boolean }
 }
 
 /** `game:view` push data, discriminated by gameId (games with a backend today). */

@@ -1,52 +1,53 @@
 {
  "topicChooser": {
-  "me": "p_dec543dacf0e",
+  "me": "p_70cb928b087b",
   "room": {
-   "code": "EWHS",
-   "hostId": "p_dec543dacf0e",
+   "code": "WVDD",
+   "hostId": "p_70cb928b087b",
    "status": "playing",
    "players": [
     {
-     "id": "p_dec543dacf0e",
+     "id": "p_70cb928b087b",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "ab6cd36c"
+      "style": "cutouts",
+      "seed": "d022103a"
      },
      "online": true,
-     "joinedAt": 1792749434965.463
+     "joinedAt": 1792751222253.4617
     },
     {
-     "id": "p_f28f8f6a3b5c",
+     "id": "p_fb8688387269",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "32de10f4"
+      "style": "voxel-art",
+      "seed": "0a751024"
      },
      "online": true,
-     "joinedAt": 1792749434969.906
+     "joinedAt": 1792751222256.4165
     },
     {
-     "id": "p_583261ed4077",
+     "id": "p_a41a3fd4c5b1",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
       "style": "voxel-art",
-      "seed": "09672ed9"
+      "seed": "7b7c9ada"
      },
      "online": true,
-     "joinedAt": 1792749434974.117
+     "joinedAt": 1792751222258.7922
     }
    ],
    "selectedGame": "name_it",
    "settings": {
     "turnSeconds": 10,
-    "challenges": true
+    "challenges": true,
+    "allowCustomTopics": true
    },
    "scoreboard": {},
    "wins": {}
@@ -56,25 +57,25 @@
    "view": {
     "phase": "topicSelect",
     "topic": null,
-    "topicChooserId": "p_dec543dacf0e",
+    "topicChooserId": "p_70cb928b087b",
     "isTopicChooser": true,
     "suggestions": [
-     "Jobs",
-     "Things in a classroom",
-     "Languages",
-     "Birds",
-     "Things that are red"
+     "Colors",
+     "Things you can recycle",
+     "Things that fly",
+     "Tools",
+     "Insects"
     ],
-    "topicDeadline": 1792749464982.6213,
+    "topicDeadline": 1792751252267.1506,
     "order": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "alive": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "eliminated": [],
     "currentPlayerId": null,
@@ -89,60 +90,62 @@
     "lastElimination": null,
     "settings": {
      "turnSeconds": 10,
-     "challenges": true
+     "challenges": true,
+     "allowCustomTopics": true
     }
    },
-   "serverNow": 1792749434982.9185
+   "serverNow": 1792751222267.4517
   }
  },
  "topicWaiting": {
-  "me": "p_f28f8f6a3b5c",
+  "me": "p_fb8688387269",
   "room": {
-   "code": "EWHS",
-   "hostId": "p_dec543dacf0e",
+   "code": "WVDD",
+   "hostId": "p_70cb928b087b",
    "status": "playing",
    "players": [
     {
-     "id": "p_dec543dacf0e",
+     "id": "p_70cb928b087b",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "ab6cd36c"
+      "style": "cutouts",
+      "seed": "d022103a"
      },
      "online": true,
-     "joinedAt": 1792749434965.463
+     "joinedAt": 1792751222253.4617
     },
     {
-     "id": "p_f28f8f6a3b5c",
+     "id": "p_fb8688387269",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "32de10f4"
+      "style": "voxel-art",
+      "seed": "0a751024"
      },
      "online": true,
-     "joinedAt": 1792749434969.906
+     "joinedAt": 1792751222256.4165
     },
     {
-     "id": "p_583261ed4077",
+     "id": "p_a41a3fd4c5b1",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
       "style": "voxel-art",
-      "seed": "09672ed9"
+      "seed": "7b7c9ada"
      },
      "online": true,
-     "joinedAt": 1792749434974.117
+     "joinedAt": 1792751222258.7922
     }
    ],
    "selectedGame": "name_it",
    "settings": {
     "turnSeconds": 10,
-    "challenges": true
+    "challenges": true,
+    "allowCustomTopics": true
    },
    "scoreboard": {},
    "wins": {}
@@ -152,25 +155,25 @@
    "view": {
     "phase": "topicSelect",
     "topic": null,
-    "topicChooserId": "p_dec543dacf0e",
+    "topicChooserId": "p_70cb928b087b",
     "isTopicChooser": false,
     "suggestions": [
-     "Jobs",
-     "Things in a classroom",
-     "Languages",
-     "Birds",
-     "Things that are red"
+     "Colors",
+     "Things you can recycle",
+     "Things that fly",
+     "Tools",
+     "Insects"
     ],
-    "topicDeadline": 1792749464982.6213,
+    "topicDeadline": 1792751252267.1506,
     "order": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "alive": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "eliminated": [],
     "currentPlayerId": null,
@@ -185,60 +188,62 @@
     "lastElimination": null,
     "settings": {
      "turnSeconds": 10,
-     "challenges": true
+     "challenges": true,
+     "allowCustomTopics": true
     }
    },
-   "serverNow": 1792749434982.9185
+   "serverNow": 1792751222267.4517
   }
  },
  "myTurn": {
-  "me": "p_dec543dacf0e",
+  "me": "p_70cb928b087b",
   "room": {
-   "code": "EWHS",
-   "hostId": "p_dec543dacf0e",
+   "code": "WVDD",
+   "hostId": "p_70cb928b087b",
    "status": "playing",
    "players": [
     {
-     "id": "p_dec543dacf0e",
+     "id": "p_70cb928b087b",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "ab6cd36c"
+      "style": "cutouts",
+      "seed": "d022103a"
      },
      "online": true,
-     "joinedAt": 1792749434965.463
+     "joinedAt": 1792751222253.4617
     },
     {
-     "id": "p_f28f8f6a3b5c",
+     "id": "p_fb8688387269",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "32de10f4"
+      "style": "voxel-art",
+      "seed": "0a751024"
      },
      "online": true,
-     "joinedAt": 1792749434969.906
+     "joinedAt": 1792751222256.4165
     },
     {
-     "id": "p_583261ed4077",
+     "id": "p_a41a3fd4c5b1",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
       "style": "voxel-art",
-      "seed": "09672ed9"
+      "seed": "7b7c9ada"
      },
      "online": true,
-     "joinedAt": 1792749434974.117
+     "joinedAt": 1792751222258.7922
     }
    ],
    "selectedGame": "name_it",
    "settings": {
     "turnSeconds": 10,
-    "challenges": true
+    "challenges": true,
+    "allowCustomTopics": true
    },
    "scoreboard": {},
    "wins": {}
@@ -253,19 +258,19 @@
     "suggestions": [],
     "topicDeadline": null,
     "order": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "alive": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "eliminated": [],
-    "currentPlayerId": "p_dec543dacf0e",
+    "currentPlayerId": "p_70cb928b087b",
     "isYourTurn": true,
-    "turnDeadline": 1792749445287.5315,
+    "turnDeadline": 1792751232570.6282,
     "pausedMs": null,
     "used": [],
     "challengeWindow": null,
@@ -275,60 +280,62 @@
     "lastElimination": null,
     "settings": {
      "turnSeconds": 10,
-     "challenges": true
+     "challenges": true,
+     "allowCustomTopics": true
     }
    },
-   "serverNow": 1792749435287.5852
+   "serverNow": 1792751222570.659
   }
  },
  "canChallenge": {
-  "me": "p_dec543dacf0e",
+  "me": "p_70cb928b087b",
   "room": {
-   "code": "EWHS",
-   "hostId": "p_dec543dacf0e",
+   "code": "WVDD",
+   "hostId": "p_70cb928b087b",
    "status": "playing",
    "players": [
     {
-     "id": "p_dec543dacf0e",
+     "id": "p_70cb928b087b",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "ab6cd36c"
+      "style": "cutouts",
+      "seed": "d022103a"
      },
      "online": true,
-     "joinedAt": 1792749434965.463
+     "joinedAt": 1792751222253.4617
     },
     {
-     "id": "p_f28f8f6a3b5c",
+     "id": "p_fb8688387269",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "32de10f4"
+      "style": "voxel-art",
+      "seed": "0a751024"
      },
      "online": true,
-     "joinedAt": 1792749434969.906
+     "joinedAt": 1792751222256.4165
     },
     {
-     "id": "p_583261ed4077",
+     "id": "p_a41a3fd4c5b1",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
       "style": "voxel-art",
-      "seed": "09672ed9"
+      "seed": "7b7c9ada"
      },
      "online": true,
-     "joinedAt": 1792749434974.117
+     "joinedAt": 1792751222258.7922
     }
    ],
    "selectedGame": "name_it",
    "settings": {
     "turnSeconds": 10,
-    "challenges": true
+    "challenges": true,
+    "allowCustomTopics": true
    },
    "scoreboard": {},
    "wins": {}
@@ -343,33 +350,33 @@
     "suggestions": [],
     "topicDeadline": null,
     "order": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "alive": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "eliminated": [],
-    "currentPlayerId": "p_583261ed4077",
+    "currentPlayerId": "p_a41a3fd4c5b1",
     "isYourTurn": false,
-    "turnDeadline": 1792749445900.4727,
+    "turnDeadline": 1792751233180.661,
     "pausedMs": null,
     "used": [
      {
-      "playerId": "p_dec543dacf0e",
+      "playerId": "p_70cb928b087b",
       "text": "Apple"
      },
      {
-      "playerId": "p_f28f8f6a3b5c",
+      "playerId": "p_fb8688387269",
       "text": "Car"
      }
     ],
     "challengeWindow": {
      "answerIndex": 1,
-     "until": 1792749440900.4727
+     "until": 1792751228180.661
     },
     "challengeWindowMs": 5000,
     "canChallenge": true,
@@ -377,60 +384,62 @@
     "lastElimination": null,
     "settings": {
      "turnSeconds": 10,
-     "challenges": true
+     "challenges": true,
+     "allowCustomTopics": true
     }
    },
-   "serverNow": 1792749435900.5835
+   "serverNow": 1792751223180.74
   }
  },
  "challengeVoter": {
-  "me": "p_dec543dacf0e",
+  "me": "p_70cb928b087b",
   "room": {
-   "code": "EWHS",
-   "hostId": "p_dec543dacf0e",
+   "code": "WVDD",
+   "hostId": "p_70cb928b087b",
    "status": "playing",
    "players": [
     {
-     "id": "p_dec543dacf0e",
+     "id": "p_70cb928b087b",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "ab6cd36c"
+      "style": "cutouts",
+      "seed": "d022103a"
      },
      "online": true,
-     "joinedAt": 1792749434965.463
+     "joinedAt": 1792751222253.4617
     },
     {
-     "id": "p_f28f8f6a3b5c",
+     "id": "p_fb8688387269",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "32de10f4"
+      "style": "voxel-art",
+      "seed": "0a751024"
      },
      "online": true,
-     "joinedAt": 1792749434969.906
+     "joinedAt": 1792751222256.4165
     },
     {
-     "id": "p_583261ed4077",
+     "id": "p_a41a3fd4c5b1",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
       "style": "voxel-art",
-      "seed": "09672ed9"
+      "seed": "7b7c9ada"
      },
      "online": true,
-     "joinedAt": 1792749434974.117
+     "joinedAt": 1792751222258.7922
     }
    ],
    "selectedGame": "name_it",
    "settings": {
     "turnSeconds": 10,
-    "challenges": true
+    "challenges": true,
+    "allowCustomTopics": true
    },
    "scoreboard": {},
    "wins": {}
@@ -445,27 +454,27 @@
     "suggestions": [],
     "topicDeadline": null,
     "order": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "alive": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "eliminated": [],
-    "currentPlayerId": "p_583261ed4077",
+    "currentPlayerId": "p_a41a3fd4c5b1",
     "isYourTurn": false,
     "turnDeadline": null,
-    "pausedMs": 9694.663330078125,
+    "pausedMs": 9693.584228515625,
     "used": [
      {
-      "playerId": "p_dec543dacf0e",
+      "playerId": "p_70cb928b087b",
       "text": "Apple"
      },
      {
-      "playerId": "p_f28f8f6a3b5c",
+      "playerId": "p_fb8688387269",
       "text": "Car"
      }
     ],
@@ -474,12 +483,12 @@
     "canChallenge": false,
     "challenge": {
      "answerIndex": 1,
-     "answererId": "p_f28f8f6a3b5c",
-     "challengerId": "p_583261ed4077",
+     "answererId": "p_fb8688387269",
+     "challengerId": "p_a41a3fd4c5b1",
      "text": "Car",
-     "deadline": 1792749444205.8093,
+     "deadline": 1792751231487.0767,
      "voterIds": [
-      "p_dec543dacf0e"
+      "p_70cb928b087b"
      ],
      "votedCount": 0,
      "canVote": true,
@@ -488,60 +497,62 @@
     "lastElimination": null,
     "settings": {
      "turnSeconds": 10,
-     "challenges": true
+     "challenges": true,
+     "allowCustomTopics": true
     }
    },
-   "serverNow": 1792749436205.8555
+   "serverNow": 1792751223487.128
   }
  },
  "challengeChallenger": {
-  "me": "p_583261ed4077",
+  "me": "p_a41a3fd4c5b1",
   "room": {
-   "code": "EWHS",
-   "hostId": "p_dec543dacf0e",
+   "code": "WVDD",
+   "hostId": "p_70cb928b087b",
    "status": "playing",
    "players": [
     {
-     "id": "p_dec543dacf0e",
+     "id": "p_70cb928b087b",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "ab6cd36c"
+      "style": "cutouts",
+      "seed": "d022103a"
      },
      "online": true,
-     "joinedAt": 1792749434965.463
+     "joinedAt": 1792751222253.4617
     },
     {
-     "id": "p_f28f8f6a3b5c",
+     "id": "p_fb8688387269",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "32de10f4"
+      "style": "voxel-art",
+      "seed": "0a751024"
      },
      "online": true,
-     "joinedAt": 1792749434969.906
+     "joinedAt": 1792751222256.4165
     },
     {
-     "id": "p_583261ed4077",
+     "id": "p_a41a3fd4c5b1",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
       "style": "voxel-art",
-      "seed": "09672ed9"
+      "seed": "7b7c9ada"
      },
      "online": true,
-     "joinedAt": 1792749434974.117
+     "joinedAt": 1792751222258.7922
     }
    ],
    "selectedGame": "name_it",
    "settings": {
     "turnSeconds": 10,
-    "challenges": true
+    "challenges": true,
+    "allowCustomTopics": true
    },
    "scoreboard": {},
    "wins": {}
@@ -556,27 +567,27 @@
     "suggestions": [],
     "topicDeadline": null,
     "order": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "alive": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "eliminated": [],
-    "currentPlayerId": "p_583261ed4077",
+    "currentPlayerId": "p_a41a3fd4c5b1",
     "isYourTurn": false,
     "turnDeadline": null,
-    "pausedMs": 9694.663330078125,
+    "pausedMs": 9693.584228515625,
     "used": [
      {
-      "playerId": "p_dec543dacf0e",
+      "playerId": "p_70cb928b087b",
       "text": "Apple"
      },
      {
-      "playerId": "p_f28f8f6a3b5c",
+      "playerId": "p_fb8688387269",
       "text": "Car"
      }
     ],
@@ -585,12 +596,12 @@
     "canChallenge": false,
     "challenge": {
      "answerIndex": 1,
-     "answererId": "p_f28f8f6a3b5c",
-     "challengerId": "p_583261ed4077",
+     "answererId": "p_fb8688387269",
+     "challengerId": "p_a41a3fd4c5b1",
      "text": "Car",
-     "deadline": 1792749444205.8093,
+     "deadline": 1792751231487.0767,
      "voterIds": [
-      "p_dec543dacf0e"
+      "p_70cb928b087b"
      ],
      "votedCount": 0,
      "canVote": false,
@@ -599,60 +610,62 @@
     "lastElimination": null,
     "settings": {
      "turnSeconds": 10,
-     "challenges": true
+     "challenges": true,
+     "allowCustomTopics": true
     }
    },
-   "serverNow": 1792749436205.8555
+   "serverNow": 1792751223487.128
   }
  },
  "eliminatedChooser": {
-  "me": "p_f28f8f6a3b5c",
+  "me": "p_fb8688387269",
   "room": {
-   "code": "EWHS",
-   "hostId": "p_dec543dacf0e",
+   "code": "WVDD",
+   "hostId": "p_70cb928b087b",
    "status": "playing",
    "players": [
     {
-     "id": "p_dec543dacf0e",
+     "id": "p_70cb928b087b",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "ab6cd36c"
+      "style": "cutouts",
+      "seed": "d022103a"
      },
      "online": true,
-     "joinedAt": 1792749434965.463
+     "joinedAt": 1792751222253.4617
     },
     {
-     "id": "p_f28f8f6a3b5c",
+     "id": "p_fb8688387269",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "32de10f4"
+      "style": "voxel-art",
+      "seed": "0a751024"
      },
      "online": true,
-     "joinedAt": 1792749434969.906
+     "joinedAt": 1792751222256.4165
     },
     {
-     "id": "p_583261ed4077",
+     "id": "p_a41a3fd4c5b1",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
       "style": "voxel-art",
-      "seed": "09672ed9"
+      "seed": "7b7c9ada"
      },
      "online": true,
-     "joinedAt": 1792749434974.117
+     "joinedAt": 1792751222258.7922
     }
    ],
    "selectedGame": "name_it",
    "settings": {
     "turnSeconds": 10,
-    "challenges": true
+    "challenges": true,
+    "allowCustomTopics": true
    },
    "scoreboard": {},
    "wins": {}
@@ -662,27 +675,27 @@
    "view": {
     "phase": "topicSelect",
     "topic": null,
-    "topicChooserId": "p_f28f8f6a3b5c",
+    "topicChooserId": "p_fb8688387269",
     "isTopicChooser": true,
     "suggestions": [
-     "Things at a birthday party",
-     "Things in a bathroom",
-     "Capital cities",
-     "Video games",
-     "Jobs"
+     "Dog breeds",
+     "Things in space",
+     "Fruits",
+     "Tools",
+     "Desserts"
     ],
-    "topicDeadline": 1792749466510.059,
+    "topicDeadline": 1792751253793.5962,
     "order": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "alive": [
-     "p_dec543dacf0e",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_a41a3fd4c5b1"
     ],
     "eliminated": [
-     "p_f28f8f6a3b5c"
+     "p_fb8688387269"
     ],
     "currentPlayerId": null,
     "isYourTurn": false,
@@ -694,66 +707,68 @@
     "canChallenge": false,
     "challenge": null,
     "lastElimination": {
-     "playerId": "p_f28f8f6a3b5c",
+     "playerId": "p_fb8688387269",
      "reason": "challenge",
      "text": "Car"
     },
     "settings": {
      "turnSeconds": 10,
-     "challenges": true
+     "challenges": true,
+     "allowCustomTopics": true
     }
    },
-   "serverNow": 1792749436510.144
+   "serverNow": 1792751223793.7004
   }
  },
  "done": {
-  "me": "p_dec543dacf0e",
+  "me": "p_70cb928b087b",
   "room": {
-   "code": "EWHS",
-   "hostId": "p_dec543dacf0e",
+   "code": "WVDD",
+   "hostId": "p_70cb928b087b",
    "status": "playing",
    "players": [
     {
-     "id": "p_dec543dacf0e",
+     "id": "p_70cb928b087b",
      "profileId": "prof-Sam",
      "nickname": "Sam",
      "color": "#E74C3C",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "ab6cd36c"
+      "style": "cutouts",
+      "seed": "d022103a"
      },
      "online": true,
-     "joinedAt": 1792749434965.463
+     "joinedAt": 1792751222253.4617
     },
     {
-     "id": "p_f28f8f6a3b5c",
+     "id": "p_fb8688387269",
      "profileId": "prof-Ann",
      "nickname": "Ann",
      "color": "#3498DB",
      "avatar": {
-      "style": "adventurer-neutral",
-      "seed": "32de10f4"
+      "style": "voxel-art",
+      "seed": "0a751024"
      },
      "online": true,
-     "joinedAt": 1792749434969.906
+     "joinedAt": 1792751222256.4165
     },
     {
-     "id": "p_583261ed4077",
+     "id": "p_a41a3fd4c5b1",
      "profileId": "prof-Bob",
      "nickname": "Bob",
      "color": "#2ECC71",
      "avatar": {
       "style": "voxel-art",
-      "seed": "09672ed9"
+      "seed": "7b7c9ada"
      },
      "online": true,
-     "joinedAt": 1792749434974.117
+     "joinedAt": 1792751222258.7922
     }
    ],
    "selectedGame": "name_it",
    "settings": {
     "turnSeconds": 10,
-    "challenges": true
+    "challenges": true,
+    "allowCustomTopics": true
    },
    "scoreboard": {},
    "wins": {}
@@ -762,22 +777,22 @@
    "gameId": "name_it",
    "view": {
     "phase": "done",
-    "topic": "Things at a birthday party",
+    "topic": "Dog breeds",
     "topicChooserId": null,
     "isTopicChooser": false,
     "suggestions": [],
     "topicDeadline": null,
     "order": [
-     "p_dec543dacf0e",
-     "p_f28f8f6a3b5c",
-     "p_583261ed4077"
+     "p_70cb928b087b",
+     "p_fb8688387269",
+     "p_a41a3fd4c5b1"
     ],
     "alive": [
-     "p_583261ed4077"
+     "p_a41a3fd4c5b1"
     ],
     "eliminated": [
-     "p_f28f8f6a3b5c",
-     "p_dec543dacf0e"
+     "p_fb8688387269",
+     "p_70cb928b087b"
     ],
     "currentPlayerId": null,
     "isYourTurn": false,
@@ -785,7 +800,7 @@
     "pausedMs": null,
     "used": [
      {
-      "playerId": "p_583261ed4077",
+      "playerId": "p_a41a3fd4c5b1",
       "text": "Blue"
      }
     ],
@@ -794,16 +809,17 @@
     "canChallenge": false,
     "challenge": null,
     "lastElimination": {
-     "playerId": "p_dec543dacf0e",
+     "playerId": "p_70cb928b087b",
      "reason": "duplicate",
      "text": "the blue"
     },
     "settings": {
      "turnSeconds": 10,
-     "challenges": true
+     "challenges": true,
+     "allowCustomTopics": true
     }
    },
-   "serverNow": 1792749437442.1802
+   "serverNow": 1792751224720.666
   }
  }
 }

@@ -3,8 +3,11 @@ import { Button } from '../../components/Button'
 import { CountdownRing } from '../../components/CountdownRing'
 import { PlayerChip } from '../../components/PlayerChip'
 import { TextInput } from '../../components/TextInput'
+import { TimerBar } from '../../components/TimerBar'
 import { C } from '../../lib/constants'
+import { formatPoints } from '../../lib/format'
 import { nameOf, playerById } from '../../lib/players'
+import { useRemainingMs } from '../../state/useCountdown'
 import type { HangmanView } from '../../types/views'
 import { ScoresStrip } from '../ScoresStrip'
 import type { GameUiProps } from '../types'
@@ -13,8 +16,8 @@ import './hangman.css'
 
 // Alphabetical 6-column grid keeps every key ≥44px wide even on a 320px screen.
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
-const WORD_MIN = 3
-const WORD_MAX = 15
+const WORD_MIN = C.HANGMAN_WORD_MIN
+const WORD_MAX = C.HANGMAN_WORD_MAX
 
 /** Hangman Duel (plan section 9). The secret word is only in the setter's view. */
 export function HangmanGame({ view, send, me, room }: GameUiProps<HangmanView>) {
@@ -38,7 +41,7 @@ export function HangmanGame({ view, send, me, room }: GameUiProps<HangmanView>) 
           </div>
         )
       ) : (
-        <Board view={view} send={send} setterName={setterName} />
+        <Board view={view} send={send} setterName={setterName} room={room} me={me} />
       )}
 
       <ScoresStrip scores={view.scores} room={room} me={me} />
@@ -91,7 +94,7 @@ function SetWordForm({ view, send }: Pick<GameUiProps<HangmanView>, 'view' | 'se
   )
 }
 
-function Board({ view, send, setterName }: Pick<GameUiProps<HangmanView>, 'view' | 'send'> & { setterName: string }) {
+function Board({ view, send, setterName, room, me }: GameUiProps<HangmanView> & { setterName: string }) {
   const [pending, setPending] = useState<string | null>(null)
   const canGuess = view.phase === 'guessing' && !view.isSetter
   const letters = view.word ? view.word.split('') : view.mask.map((m) => m ?? '')
@@ -150,17 +153,81 @@ function Board({ view, send, setterName }: Pick<GameUiProps<HangmanView>, 'view'
         </div>
       )}
 
-      {(view.phase === 'roundOver' || view.phase === 'done') && (
+      {view.phase === 'guessing' && (
+        <p className="muted hangman__pot">
+          Round pot: {view.pot} points. Each wrong letter moves {view.wrongCost} to the setter.
+        </p>
+      )}
+
+      {(view.phase === 'roundOver' || view.phase === 'flagVote' || view.phase === 'done') && (
         <p className="hangman__result" role="status">
           {view.result === 'guessers' && `🎉 Solved! The word was ${view.word}.`}
           {view.result === 'setter' && `🪢 ${setterName === 'You' ? 'You win' : `${setterName} wins`} this round! The word was ${view.word}.`}
           {view.result === 'skipped' && `⌛ ${setterName === 'You' ? "You didn't" : `${setterName} didn't`} pick a word in time. Round skipped.`}
         </p>
       )}
+      {view.phase !== 'guessing' && Object.keys(view.award).length > 0 && <Award view={view} room={room} me={me} />}
+      {view.phase === 'roundOver' && <FlagButton view={view} send={send} />}
+      {view.phase === 'flagVote' && view.flag && <FlagVote view={view} send={send} room={room} me={me} />}
       {view.phase === 'roundOver' && <p className="muted">Next round starting…</p>}
       {view.phase === 'done' && (
         <p className="muted">That was the last round. Results coming up…</p>
       )}
     </>
+  )
+}
+
+function Award({ view, room, me }: Pick<GameUiProps<HangmanView>, 'view' | 'room' | 'me'>) {
+  const parts = Object.entries(view.award).map(([pid, pts]) => `${nameOf(room, pid, me)} +${formatPoints(pts)}`)
+  return <p className="hangman__award">This round: {parts.join(' · ')}</p>
+}
+
+function FlagButton({ view, send }: Pick<GameUiProps<HangmanView>, 'view' | 'send'>) {
+  const left = useRemainingMs(view.flagUntil)
+  const [sending, setSending] = useState(false)
+  if (!view.canFlag || !view.flagUntil || !left) return null
+  const flag = async () => {
+    setSending(true)
+    await send({ type: 'flagWord' })
+    setSending(false)
+  }
+  return (
+    <section className="stack" aria-label="Flag the word">
+      <Button variant="secondary" block disabled={sending} onClick={flag}>
+        🚩 Not a real word?
+      </Button>
+      <TimerBar deadline={view.flagUntil} totalMs={C.HANGMAN_FLAG_WINDOW_MS} label="Flag window" />
+    </section>
+  )
+}
+
+function FlagVote({ view, send, room, me }: GameUiProps<HangmanView>) {
+  const flag = view.flag!
+  const [sending, setSending] = useState(false)
+  const vote = async (valid: boolean) => {
+    setSending(true)
+    if (!(await send({ type: 'voteWord', valid }))) setSending(false)
+  }
+  return (
+    <section className="stack hangman__vote" aria-label="Vote on the word">
+      <p>
+        🚩 <strong>{nameOf(room, flag.flaggerId, me)}</strong> says <strong>{view.word}</strong> is not a real word.
+      </p>
+      <TimerBar deadline={flag.deadline} totalMs={C.HANGMAN_VOTE_MS} label="Vote closes" />
+      {flag.canVote ? (
+        <div className="hangman__vote-buttons">
+          <Button variant="secondary" disabled={sending} onClick={() => vote(true)}>
+            ✓ It's a word
+          </Button>
+          <Button variant="danger" disabled={sending} onClick={() => vote(false)}>
+            ✗ Not a word
+          </Button>
+        </div>
+      ) : (
+        <p className="muted">
+          {flag.hasVoted ? 'Vote cast. ' : ''}Votes in: {flag.votedCount}/{flag.voterIds.length}
+        </p>
+      )}
+    </section>
   )
 }

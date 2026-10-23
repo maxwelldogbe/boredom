@@ -35,7 +35,8 @@ boredom/
    - **On a phone:** see step 7, then open the invite link or type the code.
 4. As the host, tap a game card, adjust its settings, and press **Start game**.
 5. When the game ends, the host picks **Play again** or **Back to lobby**. Scores add up
-   across games on the session scoreboard.
+   across games on the session scoreboard: every game gives the winner 100 points and last
+   place 0 (ties share), so each game counts the same.
 
 ---
 
