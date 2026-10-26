@@ -5,14 +5,25 @@ each with its own pick timer and reveal pause. Odd player counts give a bye to a
 player, preferring players who have not had one yet. Placement is by the bracket round a
 player lost in (champion 1, runner-up 2, losing semifinalists tied 3rd, ...); the display
 score is matches won.
+
+A forfeiting player loses their current match and the opponent advances. A player whose
+match is already decided (a bye, or a won match) simply leaves the bracket before the
+next pairing.
 """
 
 import random
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-from games.base import GameError, GameEvent, GameModule, GameResult, competition_placements
-from games.constants import OFFLINE_FORFEIT_MS, RPS_PICK_TIMEOUT_MS, RPS_REVEAL_MS
+from games.base import (
+    ForfeitReason,
+    GameError,
+    GameEvent,
+    GameModule,
+    GameResult,
+    competition_placements,
+)
+from games.constants import RPS_PICK_TIMEOUT_MS, RPS_REVEAL_MS
 
 CHOICES = ("rock", "paper", "scissors")
 BEATS = {"rock": "scissors", "paper": "rock", "scissors": "paper"}
@@ -47,7 +58,6 @@ class RpsState:
     bracket_round: int = 0
     matches: list[Match] = field(default_factory=list)
     out_round: dict[str, int] = field(default_factory=dict)  # player -> bracket round lost
-    offline_since: dict[str, float] = field(default_factory=dict)
     champion: str | None = None
     all_players: list[str] = field(default_factory=list)
     byes: list[str] = field(default_factory=list)  # players who had a bye, in order
@@ -108,8 +118,6 @@ class RockPaperScissors(GameModule):
         for match in state.matches:
             if match.phase == "over":
                 continue
-            if self._apply_forfeit(state, match, now, events):
-                continue
             if match.deadline is not None and now >= match.deadline:
                 if match.phase == "picking":
                     self._resolve(state, match, now, events)
@@ -123,25 +131,25 @@ class RockPaperScissors(GameModule):
             self._start_bracket_round(state, now, events)
         return state, events
 
-    def on_presence(self, state: RpsState, player_id, online, now) -> tuple[Any, list[GameEvent]]:
-        if online:
-            state.offline_since.pop(player_id, None)
-        else:
-            state.offline_since.setdefault(player_id, now)
-        return state, []
+    def forfeit(
+        self, state: RpsState, player_id: str, now: float, reason: ForfeitReason
+    ) -> tuple[Any, list[GameEvent]]:
+        events: list[GameEvent] = []
+        if state.champion is not None or player_id not in state.alive:
+            return state, events
+        match = self._match_of(state, player_id)
+        if match is not None and match.phase != "over" and match.b is not None:
+            opponent = match.b if player_id == match.a else match.a
+            self._end_match(state, match, opponent, "forfeit", events)
+        else:  # bye or already through: out before the next pairing
+            state.alive.remove(player_id)
+            state.out_round[player_id] = state.bracket_round
+        if all(m.phase == "over" for m in state.matches):
+            self._start_bracket_round(state, now, events)
+        return state, events
 
     def next_deadline(self, state: RpsState) -> float | None:
-        times = []
-        for match in state.matches:
-            if match.phase == "over":
-                continue
-            if match.deadline is not None:
-                times.append(match.deadline)
-            times += [
-                state.offline_since[p] + OFFLINE_FORFEIT_MS
-                for p in match.players()
-                if p in state.offline_since
-            ]
+        times = [m.deadline for m in state.matches if m.phase != "over" and m.deadline]
         return min(times) if times and state.champion is None else None
 
     # ----- rules ---------------------------------------------------------------------------
@@ -215,24 +223,6 @@ class RockPaperScissors(GameModule):
                 "data": {"matchIndex": index, **match.last_reveal, "scores": dict(match.scores)},
             }
         )
-
-    def _apply_forfeit(
-        self, state: RpsState, match: Match, now: float, events: list[GameEvent]
-    ) -> bool:
-        """Offline >= OFFLINE_FORFEIT_MS loses the match; if both, the later one to leave wins."""
-        gone = [
-            p
-            for p in match.players()
-            if p in state.offline_since and now - state.offline_since[p] >= OFFLINE_FORFEIT_MS
-        ]
-        if not gone:
-            return False
-        if len(gone) == 2:
-            winner = max(gone, key=lambda p: (state.offline_since[p], p == match.a))
-        else:
-            winner = next(p for p in match.players() if p not in gone)
-        self._end_match(state, match, winner, "forfeit", events)
-        return True
 
     def _end_match(
         self, state: RpsState, match: Match, winner: str, reason: str, events: list[GameEvent]

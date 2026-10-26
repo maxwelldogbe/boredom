@@ -202,18 +202,83 @@ def test_setter_timeout_skips_round_and_guessers_share_the_pot() -> None:
     assert state.deadline == T0 + HANGMAN_SET_WORD_MS + HANGMAN_REVEAL_MS + HANGMAN_SET_WORD_MS
 
 
-def test_all_guessers_offline_gives_setter_the_round() -> None:
+def test_offline_guessers_no_longer_end_the_round() -> None:
     state = set_word(new(), "apple")
-    assert HM.next_deadline(state) is None
     state, _ = HM.on_presence(state, "b", False, T0)
+    state, _ = HM.on_presence(state, "c", False, T0)
     assert HM.next_deadline(state) is None
-    state, _ = HM.on_presence(state, "c", False, T0 + 1000)
-    assert HM.next_deadline(state) == T0 + 1000 + OFFLINE_FORFEIT_MS
-    state, _ = HM.on_presence(state, "b", True, T0 + 2000)
-    assert HM.next_deadline(state) is None
-    state, _ = HM.on_presence(state, "b", False, T0 + 3000)
-    state, events = HM.tick(state, T0 + 3000 + OFFLINE_FORFEIT_MS)
-    assert events[0]["data"]["result"] == "setter" and state.scores["a"] == HANGMAN_POT
+    state, events = HM.tick(state, T0 + OFFLINE_FORFEIT_MS + 1)
+    assert events == [] and state.phase == "guessing"
+
+
+@pytest.mark.parametrize("phase", ["setting", "guessing"])
+def test_setter_forfeit_skips_the_round_with_no_points(phase) -> None:
+    state = new(("a", "b", "c", "d"))
+    if phase == "guessing":
+        state = set_word(state, "apple")
+        state, _ = guess(state, "b", "z")
+    state, events = HM.forfeit(state, "a", T0 + 1, "quit")
+    assert state.phase == "roundOver" and state.result == "skipped"
+    assert events[0]["data"]["award"] == {} and state.award == {}
+    assert state.scores == dict.fromkeys("abcd", 0.0)
+    assert state.flag_until is None
+    assert HM.get_view(state, "b")["word"] == ("APPLE" if phase == "guessing" else None)
+    state, _ = HM.tick(state, state.deadline)
+    assert state.setter == "b" and state.phase == "setting"
+
+
+def test_a_forfeiters_own_setter_turn_is_dropped() -> None:
+    state = new(("a", "b", "c", "d"))
+    state, _ = HM.forfeit(state, "c", T0, "left")
+    assert state.order == ["a", "b", "d"] and HM.get_view(state, "a")["total"] == 3
+    setters = []
+    for _ in range(3):
+        setters.append(state.setter)
+        state, _ = HM.tick(state, state.deadline)  # setting times out: skipped
+        state, _ = HM.tick(state, state.deadline)
+    assert setters == ["a", "b", "d"] and HM.is_over(state)
+
+
+def test_past_setter_keeps_their_round_in_the_count() -> None:
+    state = new(("a", "b", "c"))
+    state, _ = HM.tick(state, state.deadline)
+    state, _ = HM.tick(state, state.deadline)
+    assert state.setter == "b"
+    state, _ = HM.forfeit(state, "a", T0 + 1, "quit")
+    assert state.order == ["a", "b", "c"] and state.guessers() == ["c"]
+
+
+def test_guesser_forfeit_leaves_the_pot_to_the_others() -> None:
+    state = set_word(new(("a", "b", "c", "d")), "abcde")
+    state, _ = HM.forfeit(state, "d", T0 + 1, "offline")
+    assert state.guessers() == ["b", "c"]
+    with pytest.raises(GameError):
+        act(state, "d", {"type": "guessLetter", "letter": "a"})
+    state, _ = solve(state, "abcde", wrong=1)
+    assert state.award == {"a": 2.0, "b": 5.0, "c": 5.0}
+    assert state.scores["d"] == 0
+
+
+def test_guesser_forfeit_mid_vote_recounts() -> None:
+    state = set_word(new(("a", "b", "c", "d")), "abcde")
+    state, _ = solve(state, "abcde")
+    state, _ = act(state, "b", {"type": "flagWord"})
+    state, _ = act(state, "c", {"type": "voteWord", "valid": False})
+    assert state.phase == "flagVote"
+    state, events = HM.forfeit(state, "d", T0 + 1, "quit")  # last voter gone: vote closes
+    assert events[0]["kind"] == "flagResult" and events[0]["data"]["upheld"] is True
+    assert state.scores == {"a": 0.0, "b": 6.0, "c": 6.0, "d": 0.0}
+    assert state.setter == "b" and state.phase == "setting"
+
+
+def test_forfeit_of_a_flag_voter_keeps_the_vote_open() -> None:
+    state = set_word(new(("a", "b", "c", "d", "e")), "abcde")
+    state, _ = solve(state, "abcde")
+    state, _ = act(state, "b", {"type": "flagWord"})
+    state, events = HM.forfeit(state, "c", T0 + 1, "quit")
+    assert events == [] and state.flag["voters"] == ["b", "d", "e"]
+    view = HM.get_view(state, "d")["flag"]
+    assert view["voterIds"] == ["b", "d", "e"] and view["votedCount"] == 1
 
 
 def test_results_by_total_score_and_ties_share() -> None:

@@ -127,22 +127,28 @@ class GameFlowMixin:
         if not active:
             await self._abandon(room, "forfeit")
             return
-        await self._apply(room, state, events, forfeit_end=len(active) == 1)
+        await self._apply(room, state, events, "forfeit", force_end=len(active) == 1)
 
     async def _apply(
-        self, room: Room, state: Any, events: list[GameEvent], forfeit_end: bool = False
+        self,
+        room: Room,
+        state: Any,
+        events: list[GameEvent],
+        end_reason: EndReason = "completed",
+        force_end: bool = False,
     ) -> None:
-        """Store new game state, send views and events, then finish or reschedule."""
+        """Store new game state, send views and events, then finish or reschedule.
+
+        A game that ends right after a forfeit (or with one player left) ends as "forfeit".
+        """
         module = self._module(room)
         room.game_state = state
         room.last_activity = self.clock()
         await self._send_views(room, module)
         for event in events:
             await self._push(room, {"type": "game:event", "data": event})
-        if forfeit_end:
-            await self._finish(room, module, "forfeit")
-        elif module.is_over(state):
-            await self._finish(room, module, "completed")
+        if force_end or module.is_over(state):
+            await self._finish(room, module, end_reason)
         else:
             self._reschedule(room, module)
 
