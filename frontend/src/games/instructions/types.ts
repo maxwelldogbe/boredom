@@ -16,6 +16,7 @@ export interface GameInstructions {
   points?: string[]
   challenge?: string[]
   visual?: ComponentType
+  sections?: { title: string; items: string[] }[]
   tips: string[]
   reference?: InstructionReference[]
 }

@@ -2,6 +2,7 @@ import type { GameId } from '../../types/protocol'
 import { hangmanInstructions } from './hangman'
 import { guessRaceInstructions } from './guessRace'
 import { dotsAndBoxesInstructions } from './dotsAndBoxes'
+import { liarsDiceInstructions } from './liarsDice'
 import { rpsInstructions } from './rps'
 import type { GameInstructions, InstructionContext, InstructionEntry } from './types'
 
@@ -10,6 +11,7 @@ export const GAME_INSTRUCTIONS: Partial<Record<GameId, InstructionEntry>> = {
   guess_race: guessRaceInstructions,
   hangman: hangmanInstructions,
   dots_and_boxes: dotsAndBoxesInstructions,
+  liars_dice: liarsDiceInstructions,
 }
 
 export function hasGameInstructions(id: GameId | null | undefined): boolean {

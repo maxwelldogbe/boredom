@@ -93,6 +93,16 @@ export function HowToPlayModal({
             </ul>
           </section>
         )}
+        {content.sections?.map((section) => (
+          <section key={section.title}>
+            <h3>{section.title}</h3>
+            <ul>
+              {section.items.map((item) => (
+                <li key={item}>{fill(item, values)}</li>
+              ))}
+            </ul>
+          </section>
+        ))}
         <section>
           <h3>Tips</h3>
           <ul>
