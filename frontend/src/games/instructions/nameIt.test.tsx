@@ -1,9 +1,14 @@
+import { cleanup, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { afterEach } from 'vitest'
 import { C } from '../../lib/constants'
+import { HowToPlayModal } from '../../components/HowToPlayModal'
 import { gameInstructions } from './index'
 import { nameItInstructions } from './nameIt'
 
 const defaults = { turnSeconds: 10, challenges: true, allowCustomTopics: false }
+
+afterEach(cleanup)
 
 describe('Name It Survival instructions', () => {
   it('changes challenge and topic text with settings', () => {
@@ -48,6 +53,9 @@ describe('Name It Survival instructions', () => {
       expect(instructions?.steps.length, id).toBeGreaterThan(0)
       expect(instructions?.rules.length, id).toBeGreaterThan(0)
       expect(instructions?.tips.length, id).toBeGreaterThan(0)
+      render(<HowToPlayModal content={instructions!} onClose={() => undefined} />)
+      expect(screen.getByRole('dialog')).toBeInTheDocument()
+      cleanup()
     }
   })
 })
