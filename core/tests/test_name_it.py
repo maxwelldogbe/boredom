@@ -260,3 +260,76 @@ def test_suggestions_differ_between_topic_picks() -> None:
     state, _ = act(state, "a", {"type": "chooseTopic", "topic": first[0]})
     state, _ = NI.tick(state, T0 + TURN)  # a times out and picks next
     assert len(state.suggestions) == NAMEIT_TOPIC_SUGGESTIONS and state.suggestions != first
+
+
+@pytest.mark.parametrize("reason", ["quit", "left", "offline"])
+def test_forfeit_on_your_turn_eliminates_and_passes_the_turn(reason) -> None:
+    state, _ = answer(new(), "Apple", now=T0)  # b's turn
+    state, events = NI.forfeit(state, "b", T0 + 2000, reason)
+    assert events == [{"kind": "eliminated", "data": {
+        "playerId": "b", "reason": "forfeit", "text": None, "topic": "Fruits",
+    }}]
+    assert state.alive == ["a", "c", "d"] and state.eliminated == ["b"]
+    assert state.phase == "turn" and state.topic == "Fruits"  # no new topic
+    assert state.current == "c" and state.turn_deadline == T0 + 2000 + TURN
+    assert [u["text"] for u in state.used] == ["Apple"]
+
+
+def test_three_players_continue_with_two_survivors() -> None:
+    state = new(("a", "b", "c"))
+    state, _ = NI.forfeit(state, "c", T0 + 1, "quit")
+    assert not NI.is_over(state) and state.alive == ["a", "b"] and state.current == "a"
+    state, _ = NI.forfeit(state, "b", T0 + 2, "quit")
+    assert NI.is_over(state) and NI.get_results(state)[0]["player_id"] == "a"
+
+
+def test_forfeiting_topic_chooser_gets_a_random_suggestion() -> None:
+    state = new(topic=None)
+    assert state.phase == "topicSelect" and state.chooser == "a" and state.starter == "a"
+    state, _ = NI.forfeit(state, "a", T0 + 10, "offline")
+    assert state.phase == "turn" and state.topic in state.suggestions
+    assert state.current == "b" and state.turn_deadline == T0 + 10 + TURN
+
+
+def test_eliminated_chooser_who_forfeits_still_gets_a_topic_picked() -> None:
+    state, _ = NI.tick(new(), T0 + TURN)  # a times out and must pick the next topic
+    assert state.phase == "topicSelect" and state.chooser == "a" and state.starter == "b"
+    state, events = NI.forfeit(state, "a", T0 + TURN + 5, "left")
+    assert events == [] and state.phase == "turn" and state.current == "b"
+    assert state.eliminated == ["a"]  # no second elimination
+
+
+def test_forfeit_of_the_answerer_cancels_the_challenge() -> None:
+    state, _ = answer(new(), "Apple", now=T0)
+    state, _ = challenge(state, by="c", now=T0 + 3000)
+    state, events = NI.forfeit(state, "a", T0 + 4000, "quit")
+    assert [e["kind"] for e in events] == ["eliminated"]
+    assert state.phase == "turn" and state.challenge is None and state.current == "b"
+    assert state.turn_deadline == T0 + 4000 + TURN - 3000
+
+
+def test_forfeit_of_a_voter_recounts_the_vote() -> None:
+    state, _ = answer(new(), "Banana")
+    state, _ = challenge(state, by="b")
+    state, _ = act(state, "c", {"type": "vote", "valid": False})
+    state, events = NI.forfeit(state, "d", T0 + 2000, "quit")  # last voter gone: closes
+    assert [e["kind"] for e in events] == ["eliminated", "challengeResult", "eliminated"]
+    assert events[1]["data"]["valid"] is False and events[2]["data"]["playerId"] == "a"
+    assert state.phase == "topicSelect" and state.chooser == "a" and state.starter == "b"
+
+
+def test_forfeit_of_the_paused_player_hands_the_turn_on() -> None:
+    state, _ = answer(new(), "Apple", now=T0)  # b to answer, then c challenges a
+    state, _ = challenge(state, by="c", now=T0 + 3000)
+    state, _ = NI.forfeit(state, "b", T0 + 3500, "quit")
+    assert state.phase == "challenge" and state.current == "c" and state.paused_ms == TURN
+    assert state.challenge["voters"] == ["d"]
+    state, events = act(state, "d", {"type": "vote", "valid": True}, T0 + 4000)
+    assert state.phase == "turn" and state.current == "c"
+    assert state.turn_deadline == T0 + 4000 + TURN
+
+
+def test_forfeiters_answer_can_no_longer_be_challenged() -> None:
+    state, _ = answer(new(), "Apple", now=T0)
+    state, _ = NI.forfeit(state, "a", T0 + 100, "quit")
+    assert state.window_until is None and not NI.get_view(state, "c")["canChallenge"]

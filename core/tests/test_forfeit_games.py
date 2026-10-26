@@ -6,7 +6,7 @@ import pytest
 from games import registry
 from tests.conftest import make_profile
 
-GAMES = ["rps", "guess_race", "hangman"]
+GAMES = ["rps", "guess_race", "hangman", "dots_and_boxes", "liars_dice", "name_it"]
 SETTINGS = {"rps": {"mode": "bracket"}}
 NAMES = ("Host", "Ann", "Bob", "Cat")
 

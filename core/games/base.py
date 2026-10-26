@@ -81,6 +81,7 @@ class GameModule(ABC):
         """A player went offline or came back. Default: ignore. Override for offline rules."""
         return state, []
 
+    @abstractmethod
     def forfeit(
         self, state: Any, player_id: str, now: float, reason: ForfeitReason
     ) -> tuple[Any, list[GameEvent]]:
@@ -91,7 +92,6 @@ class GameModule(ABC):
         once exactly one active player remains (`is_over`). Placements of forfeiters are
         decided by the room manager (games/scoring.py), not here.
         """
-        raise NotImplementedError(f"{self.id} does not support forfeits yet.")
 
     @abstractmethod
     def get_view(self, state: Any, player_id: str) -> dict[str, Any]:

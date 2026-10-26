@@ -3,8 +3,8 @@
 Lines are `h:r:c` (r 0..size, c 0..size-1) and `v:r:c` (r 0..size-1, c 0..size).
 Turn order is shuffled at the start. Closing a box scores it and keeps the turn.
 The game ends when every box is claimed.
-On turn timeout, or once the player has been offline OFFLINE_FORFEIT_MS, the server
-draws a random line that gives away no third side when one exists.
+On turn timeout the server draws a random line that gives away no third side when one
+exists. A forfeiting player leaves the turn order; their lines and boxes stay on the board.
 """
 
 import random
@@ -12,8 +12,15 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-from games.base import GameError, GameEvent, GameModule, GameResult, competition_placements
-from games.constants import DOTS_TURN_MS, OFFLINE_FORFEIT_MS
+from games.base import (
+    ForfeitReason,
+    GameError,
+    GameEvent,
+    GameModule,
+    GameResult,
+    competition_placements,
+)
+from games.constants import DOTS_TURN_MS
 
 SIZES = range(4, 8)
 LINE_RE = re.compile(r"^([hv]):(\d+):(\d+)$")
@@ -32,11 +39,19 @@ class DotsState:
     phase: str = "playing"  # playing | done
     turn_deadline: float | None = None
     last_move: dict[str, Any] | None = None
-    offline_since: dict[str, float] = field(default_factory=dict)
+    out: list[str] = field(default_factory=list)  # forfeited: skipped in the turn order
 
     @property
     def current(self) -> str:
         return self.order[self.turn_index]
+
+    def next_turn_index(self) -> int:
+        """The next player after the current one who is still in the game (wrapping)."""
+        for step in range(1, len(self.order) + 1):
+            index = (self.turn_index + step) % len(self.order)
+            if self.order[index] not in self.out:
+                return index
+        return self.turn_index
 
 
 def all_lines(size: int) -> list[str]:
@@ -115,7 +130,7 @@ class DotsAndBoxes(GameModule):
             raise GameError("INVALID_ACTION", "Unknown action.")
         if state.phase != "playing":
             raise GameError("INVALID_ACTION", "The game is over.")
-        if player_id not in state.order:
+        if player_id not in state.order or player_id in state.out:
             raise GameError("INVALID_ACTION", "You are not in this game.")
         if player_id != state.current:
             raise GameError("NOT_YOUR_TURN", "Wait for your turn.")
@@ -145,7 +160,7 @@ class DotsAndBoxes(GameModule):
             state.phase, state.turn_deadline = "done", None
             return
         if not claimed:
-            state.turn_index = (state.turn_index + 1) % len(state.order)
+            state.turn_index = state.next_turn_index()
         state.turn_deadline = now + DOTS_TURN_MS
 
     def _auto_line(self, state: DotsState) -> str:
@@ -161,35 +176,26 @@ class DotsAndBoxes(GameModule):
                 return True
         return False
 
-    # ----- timers and presence ----------------------------------------------------------------
-
-    def _due(self, state: DotsState) -> tuple[float, str] | None:
-        """When the current player's move is auto-played, and why."""
-        if state.phase != "playing" or state.turn_deadline is None:
-            return None
-        due = (state.turn_deadline, "timeout")
-        gone = state.offline_since.get(state.current)
-        if gone is not None and gone + OFFLINE_FORFEIT_MS < due[0]:
-            due = (gone + OFFLINE_FORFEIT_MS, "offline")
-        return due
+    # ----- timers and forfeits ----------------------------------------------------------------
 
     def tick(self, state: DotsState, now) -> tuple[Any, list[GameEvent]]:
-        due = self._due(state)
-        while due is not None and now >= due[0]:
-            self._draw(state, self._auto_line(state), now, auto=due[1])
-            due = self._due(state)
+        while self.next_deadline(state) is not None and now >= (state.turn_deadline or 0):
+            self._draw(state, self._auto_line(state), now, auto="timeout")
         return state, []
 
-    def on_presence(self, state: DotsState, player_id, online, now) -> tuple[Any, list]:
-        if online:
-            state.offline_since.pop(player_id, None)
-        else:
-            state.offline_since.setdefault(player_id, now)
+    def forfeit(
+        self, state: DotsState, player_id: str, now: float, reason: ForfeitReason
+    ) -> tuple[Any, list[GameEvent]]:
+        if state.phase != "playing" or player_id not in state.order or player_id in state.out:
+            return state, []
+        state.out.append(player_id)
+        if state.current == player_id:
+            state.turn_index = state.next_turn_index()
+            state.turn_deadline = now + DOTS_TURN_MS
         return state, []
 
     def next_deadline(self, state: DotsState) -> float | None:
-        due = self._due(state)
-        return due[0] if due else None
+        return state.turn_deadline if state.phase == "playing" else None
 
     # ----- views and results -------------------------------------------------------------------
 
