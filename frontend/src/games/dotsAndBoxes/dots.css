@@ -27,10 +27,12 @@
   fill: #1f2937;
 }
 .dots__line {
-  stroke: #667085;
   stroke-width: 2;
   stroke-dasharray: 4 6;
   stroke-linecap: round;
+}
+.dots__line:not(.dots__line--drawn) {
+  stroke: #667085;
 }
 .dots__line--drawn {
   stroke-width: 8;
