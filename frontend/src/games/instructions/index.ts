@@ -3,6 +3,7 @@ import { hangmanInstructions } from './hangman'
 import { guessRaceInstructions } from './guessRace'
 import { dotsAndBoxesInstructions } from './dotsAndBoxes'
 import { liarsDiceInstructions } from './liarsDice'
+import { nameItInstructions } from './nameIt'
 import { rpsInstructions } from './rps'
 import type { GameInstructions, InstructionContext, InstructionEntry } from './types'
 
@@ -12,6 +13,7 @@ export const GAME_INSTRUCTIONS: Partial<Record<GameId, InstructionEntry>> = {
   hangman: hangmanInstructions,
   dots_and_boxes: dotsAndBoxesInstructions,
   liars_dice: liarsDiceInstructions,
+  name_it: nameItInstructions,
 }
 
 export function hasGameInstructions(id: GameId | null | undefined): boolean {
