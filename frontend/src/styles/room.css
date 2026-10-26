@@ -5,6 +5,7 @@
 }
 .topbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
@@ -21,6 +22,13 @@
 }
 .topbar__score {
   color: var(--muted);
+}
+.topbar__forfeit {
+  color: var(--danger);
+  white-space: nowrap;
+}
+.forfeit-waiting {
+  margin-top: 24px;
 }
 .topbar__menu {
   position: relative;
@@ -88,16 +96,6 @@
   border-radius: 8px;
   background: #fff;
 }
-.player-list {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.player-list li {
-  min-width: 0;
-}
 .lobby__start {
   display: grid;
   gap: 6px;
@@ -150,35 +148,4 @@
   color: var(--primary);
   font-size: 1.4rem;
   font-weight: 800;
-}
-
-.rank-list {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.rank-list li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-.rank-list li > .chip {
-  flex: 1;
-}
-.rank-list__place {
-  min-width: 4ch;
-  font-weight: 700;
-}
-.rank-list__points {
-  margin-left: auto;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-.rank-list__me .chip__name,
-.rank-list__leader .chip__name {
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }

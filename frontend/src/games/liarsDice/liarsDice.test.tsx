@@ -64,7 +64,10 @@ describe('LiarsDiceGame (real backend views)', () => {
     renderWithRoom(<LiarsDiceGame {...props(fx)} />)
     expect(screen.queryByRole('region', { name: 'Your move' })).not.toBeInTheDocument()
     const current = fx.room.players.find((pl) => pl.id === fx.push.view.currentPlayerId)!
-    expect(screen.getByText(new RegExp(`${current.nickname}'s turn`))).toBeInTheDocument()
+    const active = screen.getAllByRole('listitem').filter((li) => li.classList.contains('player-card--active'))
+    expect(active).toHaveLength(1)
+    expect(within(active[0]).getByText(current.nickname)).toBeInTheDocument()
+    expect(screen.queryByText(/turn/i)).not.toBeInTheDocument()
     expect(screen.getAllByLabelText('3 dice').length).toBe(fx.push.view.order.length)
     expect(within(screen.getByRole('region', { name: 'Bids this round' })).getAllByRole('listitem')).toHaveLength(1)
   })

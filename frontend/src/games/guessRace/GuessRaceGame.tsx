@@ -1,11 +1,12 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { Button } from '../../components/Button'
+import { PlayerCards } from '../../components/PlayerCards'
 import { TimerBar } from '../../components/TimerBar'
 import { C } from '../../lib/constants'
+import { formatPoints } from '../../lib/format'
 import { nameOf } from '../../lib/players'
 import { useRemainingMs } from '../../state/useCountdown'
 import type { GuessHint, GuessRaceView } from '../../types/views'
-import { ScoresStrip } from '../ScoresStrip'
 import type { GameUiProps } from '../types'
 import './guessRace.css'
 
@@ -114,7 +115,11 @@ export function GuessRaceGame({ view, send, me, room }: GameUiProps<GuessRaceVie
         </p>
       )}
 
-      <ScoresStrip scores={view.scores} room={room} me={me} />
+      <PlayerCards
+        room={room}
+        me={me}
+        entries={room.players.filter((p) => p.id in view.scores).map((p) => ({ id: p.id, value: formatPoints(view.scores[p.id]) }))}
+      />
     </div>
   )
 }

@@ -32,19 +32,6 @@
   border-radius: var(--radius);
   background: var(--surface);
 }
-.dice-table__row--turn {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 1px var(--primary);
-}
-.dice-table__row--out {
-  opacity: 0.5;
-}
-.dice-table__dice {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-  color: var(--muted);
-}
 .dice-row {
   display: flex;
   flex-wrap: wrap;
@@ -73,11 +60,6 @@
   height: 24px;
   padding: 2px;
   border-width: 1.5px;
-}
-.die--hidden {
-  border-color: var(--muted);
-  background: var(--muted);
-  opacity: 0.6;
 }
 .die--hit {
   border-color: var(--success);

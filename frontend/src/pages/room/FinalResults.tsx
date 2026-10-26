@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Button } from '../../components/Button'
-import { PlayerChip } from '../../components/PlayerChip'
+import { PlayerCards } from '../../components/PlayerCards'
 import { gameUi } from '../../games/registry'
 import { friendlyError } from '../../lib/errors'
 import { formatPoints } from '../../lib/format'
-import { playerById } from '../../lib/players'
 import { useRoomActions, useRoomState } from '../../state/context'
 import type { RoomPublic } from '../../types/protocol'
 
@@ -48,22 +47,18 @@ export function FinalResults({ room, me }: { room: RoomPublic; me: string }) {
           <h2 id="results-title" className="section-title">
             {game?.name ?? 'Results'}
           </h2>
-          <ol className="rank-list">
-            {[...lastResults]
+          <PlayerCards
+            room={room}
+            me={me}
+            label="Game results"
+            entries={[...lastResults]
               .sort((a, b) => a.placement - b.placement)
-              .map((r) => (
-                <li key={r.playerId} className={r.playerId === me ? 'rank-list__me' : undefined}>
-                  <span className="rank-list__place">
-                    <span aria-hidden="true">{MEDALS[r.placement] ?? ''} </span>
-                    {ordinal(r.placement)}
-                  </span>
-                  <PlayerChip player={playerById(room, r.playerId)} isMe={r.playerId === me} size="sm" />
-                  <span className="rank-list__points">
-                    <span className="muted rank-list__score">score {formatPoints(r.score)} · </span>+{formatPoints(r.points)}
-                  </span>
-                </li>
-              ))}
-          </ol>
+              .map((r) => ({
+                id: r.playerId,
+                value: `+${formatPoints(r.points)}`,
+                notes: [`${MEDALS[r.placement] ? `${MEDALS[r.placement]} ` : ''}${ordinal(r.placement)}`, `score ${formatPoints(r.score)}`],
+              }))}
+          />
         </section>
       )}
 
@@ -71,22 +66,19 @@ export function FinalResults({ room, me }: { room: RoomPublic; me: string }) {
         <h2 id="session-title" className="section-title">
           Session scoreboard
         </h2>
-        <ol className="rank-list">
-          {session.map((p) => {
+        <PlayerCards
+          room={room}
+          me={me}
+          label="Session scoreboard"
+          entries={session.map((p) => {
             const points = room.scoreboard[p.id] ?? 0
-            const leader = topScore > 0 && points === topScore
             const wins = room.wins[p.id] ?? 0
-            return (
-              <li key={p.id} className={leader ? 'rank-list__leader' : undefined}>
-                <PlayerChip player={p} isMe={p.id === me} size="sm" extra={wins ? `${wins} win${wins > 1 ? 's' : ''}` : undefined} />
-                <span className="rank-list__points">
-                  {leader && <span title="Session leader">👑 </span>}
-                  {formatPoints(points)}
-                </span>
-              </li>
-            )
+            const notes = []
+            if (topScore > 0 && points === topScore) notes.push(<span title="Session leader">👑 leader</span>)
+            if (wins) notes.push(`${wins} win${wins > 1 ? 's' : ''}`)
+            return { id: p.id, value: formatPoints(points), notes }
           })}
-        </ol>
+        />
       </section>
 
       {isHost ? (

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button } from '../../components/Button'
+import { PlayerCards } from '../../components/PlayerCards'
 import { PlayerChip } from '../../components/PlayerChip'
 import { TimerBar } from '../../components/TimerBar'
 import { C } from '../../lib/constants'
@@ -8,7 +9,7 @@ import type { RoomPublic } from '../../types/protocol'
 import type { DiceReveal, LiarsDiceView } from '../../types/views'
 import type { GameUiProps } from '../types'
 import { beats, bidText } from './bids'
-import { Die, HiddenDie } from './Die'
+import { Die } from './Die'
 import './liarsDice.css'
 
 const FACES = [1, 2, 3, 4, 5, 6]
@@ -25,21 +26,25 @@ export function LiarsDiceGame({ view, send, me, room }: GameUiProps<LiarsDiceVie
         </span>
       </div>
 
-      <Table view={view} me={me} room={room} />
+      <PlayerCards
+        room={room}
+        me={me}
+        activeId={view.phase === 'bidding' ? view.currentPlayerId : null}
+        entries={view.order.map((id) => {
+          const count = view.diceCounts[id] ?? 0
+          return { id, value: count, valueLabel: count === 0 ? 'out' : `${count} dice`, notes: count === 0 ? ['✖ out'] : [] }
+        })}
+      />
 
       {view.phase === 'reveal' && view.lastReveal && <RevealPanel reveal={view.lastReveal} view={view} me={me} room={room} />}
 
       {view.phase === 'bidding' && (
         <>
-          <p className="dice-game__turn" role="status">
-            {view.isYourTurn ? 'Your turn' : `${nameOf(room, view.currentPlayerId, me)}'s turn`}
-            {view.currentBid && (
-              <>
-                {' · current bid '}
-                <strong>{bidText(view.currentBid)}</strong> by {nameOf(room, view.currentBid.playerId, me)}
-              </>
-            )}
-          </p>
+          {view.currentBid && (
+            <p className="dice-game__turn" role="status">
+              Current bid <strong>{bidText(view.currentBid)}</strong> by {nameOf(room, view.currentBid.playerId, me)}
+            </p>
+          )}
           <TimerBar deadline={view.deadline} totalMs={C.DICE_TURN_MS} label="Turn time left" />
         </>
       )}
@@ -76,27 +81,6 @@ export function LiarsDiceGame({ view, send, me, room }: GameUiProps<LiarsDiceVie
 
       {view.phase === 'done' && <p className="dice-game__turn">Game over! Results coming up…</p>}
     </div>
-  )
-}
-
-function Table({ view, me, room }: { view: LiarsDiceView; me: string; room: RoomPublic }) {
-  return (
-    <ul className="dice-table" aria-label="Players">
-      {view.order.map((pid) => {
-        const count = view.diceCounts[pid] ?? 0
-        return (
-          <li
-            key={pid}
-            className={`dice-table__row${count === 0 ? ' dice-table__row--out' : ''}${pid === view.currentPlayerId ? ' dice-table__row--turn' : ''}`}
-          >
-            <PlayerChip player={playerById(room, pid)} isMe={pid === me} size="sm" />
-            <span className="dice-table__dice" aria-label={count === 0 ? 'out' : `${count} dice`}>
-              {count === 0 ? '✖ out' : Array.from({ length: count }, (_, i) => <HiddenDie key={i} />)}
-            </span>
-          </li>
-        )
-      })}
-    </ul>
   )
 }
 

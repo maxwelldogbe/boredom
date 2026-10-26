@@ -1,15 +1,14 @@
 import { useState, type FormEvent } from 'react'
 import { Button } from '../../components/Button'
 import { CountdownRing } from '../../components/CountdownRing'
-import { PlayerChip } from '../../components/PlayerChip'
+import { PlayerCards } from '../../components/PlayerCards'
 import { TextInput } from '../../components/TextInput'
 import { TimerBar } from '../../components/TimerBar'
 import { C } from '../../lib/constants'
 import { formatPoints } from '../../lib/format'
-import { nameOf, playerById } from '../../lib/players'
+import { nameOf } from '../../lib/players'
 import { useRemainingMs } from '../../state/useCountdown'
 import type { HangmanView } from '../../types/views'
-import { ScoresStrip } from '../ScoresStrip'
 import type { GameUiProps } from '../types'
 import { Gallows } from './Gallows'
 import './hangman.css'
@@ -28,7 +27,6 @@ export function HangmanGame({ view, send, me, room }: GameUiProps<HangmanView>) 
         <span>
           Round {view.round}/{view.total}
         </span>
-        <PlayerChip player={playerById(room, view.setterId)} isMe={view.setterId === me} size="sm" extra="sets the word" />
       </div>
 
       {view.phase === 'setting' ? (
@@ -44,7 +42,13 @@ export function HangmanGame({ view, send, me, room }: GameUiProps<HangmanView>) 
         <Board view={view} send={send} setterName={setterName} room={room} me={me} />
       )}
 
-      <ScoresStrip scores={view.scores} room={room} me={me} />
+      <PlayerCards
+        room={room}
+        me={me}
+        entries={room.players
+          .filter((p) => p.id in view.scores)
+          .map((p) => ({ id: p.id, value: formatPoints(view.scores[p.id]), notes: p.id === view.setterId ? ['sets the word'] : [] }))}
+      />
     </div>
   )
 }

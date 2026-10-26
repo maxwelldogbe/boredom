@@ -385,25 +385,91 @@ a {
   color: var(--muted);
 }
 
-/* Scores */
-.score-chip {
-  display: inline-flex;
+/* Player cards (shared player banner) */
+.player-cards {
+  display: grid;
+  grid-template-columns: repeat(var(--player-cols, 2), minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+}
+.player-cards--cols-3 {
+  --player-cols: 3;
+}
+.player-cards--cols-4 {
+  --player-cols: 4;
+}
+@media (max-width: 599px) {
+  .player-cards {
+    --player-cols: 2;
+  }
+}
+.player-card {
+  display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  min-width: 0;
+  min-height: 64px;
+  padding: 8px;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 14px;
   background: var(--surface);
+  color: var(--text);
+}
+.player-card--active {
+  border-color: transparent;
+}
+.player-card__ring {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  flex: none;
+  border: 3px solid;
+  border-radius: 50%;
+}
+.player-card__ring .chip__avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+}
+.player-card__info {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+.player-card__name {
+  overflow: hidden;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
-.score-chip--me {
-  border-color: var(--primary);
-  border-width: 2px;
-}
-.score-chip__label {
-  max-width: 9ch;
+.player-card__notes {
   overflow: hidden;
+  font-size: 14px;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.player-card__note + .player-card__note::before {
+  content: ' · ';
+}
+.player-card__you {
+  margin-left: 4px;
+  padding: 0 4px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: 11px;
+}
+.player-card__value {
+  flex: none;
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Timers */

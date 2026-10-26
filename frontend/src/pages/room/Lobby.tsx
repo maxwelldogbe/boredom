@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button } from '../../components/Button'
-import { PlayerChip } from '../../components/PlayerChip'
+import { PlayerCards } from '../../components/PlayerCards'
 import { gameUi } from '../../games/registry'
 import { hasGameInstructions } from '../../games/instructions'
 import { copyText } from '../../lib/clipboard'
@@ -49,13 +49,11 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
         <h2 id="players-title" className="section-title">
           Players ({room.players.length}/{C.MAX_PLAYERS})
         </h2>
-        <ul className="player-list">
-          {room.players.map((p) => (
-            <li key={p.id}>
-              <PlayerChip player={p} isHost={p.id === room.hostId} isMe={p.id === me} />
-            </li>
-          ))}
-        </ul>
+        <PlayerCards
+          room={room}
+          me={me}
+          entries={room.players.map((p) => ({ id: p.id, notes: p.id === room.hostId ? ['👑 host'] : [] }))}
+        />
       </section>
 
       {isHost ? (

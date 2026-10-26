@@ -9,6 +9,7 @@ import { friendlyError } from '../lib/errors'
 import { getRoomToken } from '../lib/roomTokens'
 import { useRoomActions, useRoomState } from '../state/context'
 import { FinalResults } from './room/FinalResults'
+import { ForfeitWaiting } from './room/ForfeitWaiting'
 import { GameScreen } from './room/GameScreen'
 import { Lobby } from './room/Lobby'
 import { TopBar } from './room/TopBar'
@@ -158,7 +159,11 @@ export default function RoomPage() {
       )}
       {room.status === 'lobby' && <Lobby room={room} me={state.playerId} onHowToPlay={openInstructions} />}
       {(room.status === 'playing' || room.status === 'between_rounds') && (
-        <GameScreen room={room} me={state.playerId} />
+        room.players.some((player) => player.id === state.playerId && player.inGame) ? (
+          <GameScreen room={room} me={state.playerId} />
+        ) : (
+          <ForfeitWaiting room={room} me={state.playerId} />
+        )
       )}
       {room.status === 'finished' && <FinalResults room={room} me={state.playerId} />}
       {instructionsOpen && content && (
