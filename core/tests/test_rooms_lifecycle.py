@@ -217,14 +217,18 @@ async def test_full_game_loop_with_timer_scoreboard_and_hook(connect, manager, m
     assert state["wins"] == {host.player_id: 2}
 
 
-async def test_leave_mid_game_keeps_seat_until_game_ends(connect, manager):
+async def test_leave_mid_game_forfeits_and_lists_until_game_ends(connect, manager):
     code, (host, ann, bob) = await setup_room(connect, ("Host", "Ann", "Bob"), {"target": 1})
     await start([host, ann, bob])
     assert (await ann.request("room:leave"))["ok"]
+    left = await host.wait_push("room:event", lambda d: d["kind"] == "player_left")
+    assert left == {"kind": "player_left", "playerId": ann.player_id, "nickname": "Ann"}
     state = await host.wait_push("room:state", offline_at(1))
-    assert len(state["players"]) == 3
-    view = await host.wait_push("game:view", lambda d: d["view"]["offline"])
-    assert view["view"]["offline"] == [ann.player_id]
+    assert len(state["players"]) == 3 and state["players"][1]["inGame"] is False
+    assert state["status"] == "playing"
+    forfeit = await host.wait_push("game:event", lambda d: d["kind"] == "forfeit")
+    assert forfeit["data"] == {"playerId": ann.player_id, "reason": "left"}
+    assert manager.rooms[code].player(ann.player_id).token == ""
     assert (await host.request("game:action", {"type": "score"}))["ok"]
     state = await bob.wait_push("room:state", lambda d: d["status"] == "finished")
     assert [p["nickname"] for p in state["players"]] == ["Host", "Bob"]
@@ -232,9 +236,12 @@ async def test_leave_mid_game_keeps_seat_until_game_ends(connect, manager):
 
 
 async def test_host_leaving_mid_game_transfers_immediately(connect):
-    code, (host, ann) = await setup_room(connect)
-    await start([host, ann])
+    code, (host, ann, bob) = await setup_room(connect, ("Host", "Ann", "Bob"))
+    await start([host, ann, bob])
     assert (await host.request("room:leave"))["ok"]
+    changed = await ann.wait_push("room:event", lambda d: d["kind"] == "host_changed")
+    assert changed["playerId"] == ann.player_id
+    assert changed["data"] == {"previousHostId": host.player_id}
     state = await ann.wait_push("room:state", lambda d: d["hostId"] == ann.player_id)
     assert state["status"] == "playing"
 

@@ -2,7 +2,8 @@
 
 Rules: players take turns sending {"type": "score"}; first to `target` points wins.
 A turn not taken within `turnMs` is skipped by `tick`. Only the first player's view
-contains `secret`, so leak handling can be checked end to end.
+contains `secret`, so leak handling can be checked end to end. A forfeiting player leaves
+the turn order; the game is over once only one player is left after a forfeit.
 """
 
 import random
@@ -37,6 +38,7 @@ class DummyGame(GameModule):
             "turnMs": settings["turnMs"],
             "deadline": now + settings["turnMs"],
             "offline": [],
+            "forfeited": [],
         }
 
     def handle_action(self, state, player_id, action, now) -> tuple[Any, list[GameEvent]]:
@@ -61,6 +63,18 @@ class DummyGame(GameModule):
         state["offline"] = sorted(offline)
         return state, []
 
+    def forfeit(self, state, player_id, now, reason) -> tuple[Any, list[GameEvent]]:
+        order = state["order"]
+        index, current = order.index(player_id), order[state["turn"]]
+        order.remove(player_id)
+        state["forfeited"].append(player_id)
+        if order:
+            if current == player_id:
+                state["turn"], state["deadline"] = index % len(order), now + state["turnMs"]
+            else:
+                state["turn"] = order.index(current)
+        return state, [{"kind": "forfeit", "data": {"playerId": player_id, "reason": reason}}]
+
     def get_view(self, state, player_id) -> dict[str, Any]:
         view = {
             "turn": state["order"][state["turn"]],
@@ -76,6 +90,8 @@ class DummyGame(GameModule):
         return None if self.is_over(state) else state["deadline"]
 
     def is_over(self, state) -> bool:
+        if state["forfeited"] and len(state["order"]) <= 1:
+            return True
         return max(state["scores"].values()) >= state["target"]
 
     def get_results(self, state) -> list[GameResult]:

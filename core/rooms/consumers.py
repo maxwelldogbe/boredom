@@ -105,6 +105,10 @@ class RoomConsumer(AsyncWebsocketConsumer):
             await manager.game_action(code, pid, payload, self.limiter.allow)
         elif request.type == "game:playAgain":
             await manager.play_again(code, pid)
+        elif request.type == "game:quit":
+            await manager.quit_game(code, pid)
+        elif request.type == "game:end":
+            await manager.end_game(code, pid)
         return {}
 
     @staticmethod

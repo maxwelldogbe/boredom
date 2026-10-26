@@ -188,7 +188,10 @@ async def test_room_state_exposes_only_type(connect) -> None:
     state = await host.wait_push("room:state", lambda d: len(d["players"]) == 2)
     text = json.dumps(state)
     for player in state["players"]:
-        assert set(player) == {"id", "type", "nickname", "color", "avatar", "online", "joinedAt"}
+        assert set(player) == {
+            "id", "type", "nickname", "color", "avatar", "online", "offlineSince", "inGame",
+            "joinedAt",
+        }
     assert "profileId" not in text and "prof-Ann" not in text
     assert "secret_name" not in text and token not in text
     assert f"account-{user.pk}" not in text

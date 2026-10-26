@@ -141,7 +141,9 @@ async def manager(monkeypatch: pytest.MonkeyPatch) -> AsyncIterator[RoomManager]
     monkeypatch.setattr(manager_module, "manager", fresh)
     yield fresh
     tasks = [fresh._cleanup_task]
-    tasks += [t for room in fresh.rooms.values() for t in (room.timer_task, room.host_task)]
+    for room in fresh.rooms.values():
+        tasks += [room.timer_task, room.host_task]
+        tasks += [*room.notice_tasks.values(), *room.forfeit_tasks.values()]
     for task in tasks:
         if task is not None:
             task.cancel()

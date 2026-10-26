@@ -30,6 +30,8 @@ REQUEST_TYPES = frozenset(
         "game:start",
         "game:action",
         "game:playAgain",
+        "game:quit",
+        "game:end",
     }
 )
 MAX_MESSAGE_CHARS = 8192
