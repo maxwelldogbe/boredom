@@ -1,1 +1,1 @@
-export const DOTS_PALETTE = ['#FF2D95', '#00E5FF', '#FFE600', '#FF8A00'] as const
+export const DOTS_PALETTE = ['#FF0000', '#0057FF', '#00C21A', '#FFD500'] as const

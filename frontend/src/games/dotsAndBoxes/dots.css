@@ -21,23 +21,20 @@
   touch-action: manipulation;
   padding: 8px;
   border-radius: 12px;
-  background: #14172b;
+  background: #ffffff;
 }
 .dots__dot {
-  fill: #f5f7ff;
+  fill: #1f2937;
 }
 .dots__line {
   stroke: #667085;
   stroke-width: 2;
+  stroke-dasharray: 4 6;
   stroke-linecap: round;
 }
 .dots__line--drawn {
-  stroke-width: 7;
-  filter: drop-shadow(0 0 3px currentColor);
-}
-.dots__line--last {
-  stroke-width: 9;
-  filter: drop-shadow(0 0 5px currentColor);
+  stroke-width: 8;
+  stroke-dasharray: none;
 }
 .dots__hit {
   stroke: transparent;
@@ -51,10 +48,10 @@
   outline: none;
 }
 .dots__box {
-  fill-opacity: 0.45;
+  fill-opacity: 1;
 }
 .dots__initial {
-  fill: currentColor;
+  fill: #ffffff;
   font-size: 18px;
   font-weight: 700;
   text-anchor: middle;
@@ -81,8 +78,7 @@
   background: var(--surface);
 }
 .dots__legend-item--turn {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 1px var(--primary);
+  border-color: currentColor;
 }
 .dots__avatar {
   display: inline-grid;
@@ -91,7 +87,7 @@
   place-items: center;
   border: 2px solid;
   border-radius: 50%;
-  color: var(--text);
+  color: currentColor;
   font-size: 0.8rem;
   font-weight: 700;
 }

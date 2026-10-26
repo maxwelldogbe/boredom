@@ -63,15 +63,26 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
       <TurnBanner view={view} me={me} room={room} />
       {view.phase === 'playing' && <TimerBar deadline={view.turnDeadline} totalMs={C.DOTS_TURN_MS} label="Turn time left" />}
 
-      <svg className="dots__board" viewBox={`0 0 ${extent} ${extent}`} role="group" aria-label="Board">
+      <svg
+        className="dots__board"
+        viewBox={`0 0 ${extent} ${extent}`}
+        role="group"
+        aria-label="Board"
+        style={{ background: '#FFFFFF' }}
+      >
         {view.boxes.map((row, r) =>
           row.map((owner, c) => {
             if (!owner) return null
             const p = playerById(room, owner)
             return (
               <g key={`b${r}:${c}`} aria-label={`Box owned by ${nameOf(room, owner, me)}`}>
-                <rect x={at(c)} y={at(r)} width={GAP} height={GAP} fill={colors[owner]} className="dots__box" />
-                <text x={at(c) + GAP / 2} y={at(r) + GAP / 2} className="dots__initial" fill={colors[owner]}>
+                <rect x={at(c)} y={at(r)} width={GAP} height={GAP} fill={colors[owner]} fillOpacity={1} className="dots__box" />
+                <text
+                  x={at(c) + GAP / 2}
+                  y={at(r) + GAP / 2}
+                  className="dots__initial"
+                  fill={colors[owner] === '#FFD500' ? '#1A1A1A' : '#FFFFFF'}
+                >
                   {p.nickname.charAt(0).toUpperCase()}
                 </text>
               </g>
@@ -88,6 +99,10 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
                 {...pick(line)}
                 className={`dots__line${owner ? ' dots__line--drawn' : ''}${isLast ? ' dots__line--last' : ''}`}
                 stroke={owner ? colors[owner] : undefined}
+                strokeOpacity={owner ? 1 : undefined}
+                strokeWidth={owner ? 8 : 2}
+                strokeDasharray={owner ? undefined : '4 6'}
+                strokeLinecap="round"
               />
               {free && canDraw && (
                 <line
@@ -110,7 +125,11 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
 
       <ul className="dots__legend" aria-label="Players and boxes">
         {view.order.map((pid) => (
-          <li key={pid} className={`dots__legend-item${pid === view.currentPlayerId ? ' dots__legend-item--turn' : ''}`}>
+          <li
+            key={pid}
+            className={`dots__legend-item${pid === view.currentPlayerId ? ' dots__legend-item--turn' : ''}`}
+            style={{ color: colors[pid], borderColor: pid === view.currentPlayerId ? colors[pid] : undefined }}
+          >
             <span className="dots__swatch" style={{ background: colors[pid] }} aria-hidden="true" />
             <span className="dots__avatar" style={{ borderColor: colors[pid] }} aria-hidden="true">
               {nameOf(room, pid, me).charAt(0).toUpperCase()}
@@ -137,7 +156,7 @@ function TurnBanner({ view, me, room }: { view: DotsView; me: string; room: Room
       {view.phase === 'done' ? (
         <p className="dots__turn">All boxes are claimed! Results coming up…</p>
       ) : view.isYourTurn ? (
-        <p className="dots__turn dots__turn--me">Your turn: draw a line</p>
+        <p className="dots__turn dots__turn--me" style={{ color: colors[me] }}>Your turn: draw a line</p>
       ) : (
         <p className="dots__turn" style={{ color: view.currentPlayerId ? colors[view.currentPlayerId] : undefined }}>
           {nameOf(room, view.currentPlayerId, me)}'s turn
