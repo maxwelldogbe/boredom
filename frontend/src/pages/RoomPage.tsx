@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { EmptyState, Loading } from '../components/EmptyState'
+import { HowToPlayModal } from '../components/HowToPlayModal'
+import { gameInstructions, hasGameInstructions } from '../games/instructions'
+import { C } from '../lib/constants'
 import { friendlyError } from '../lib/errors'
 import { getRoomToken } from '../lib/roomTokens'
 import { useRoomActions, useRoomState } from '../state/context'
@@ -18,6 +21,10 @@ export default function RoomPage() {
   const { joinRoom } = useRoomActions()
   const [error, setError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
+  const [manualInstructionsKey, setManualInstructionsKey] = useState<string | null>(null)
+  const [autoOpenKey, setAutoOpenKey] = useState<string | null>(null)
+  const seenInstructionKeys = useRef(new Set<string>())
+  const instructionStateKey = useRef<string | null>(null)
   const started = useRef<string | null>(null)
   const leaving = useRef(false)
   const inRoom = state.room?.code === code && state.playerId !== null
@@ -32,6 +39,30 @@ export default function RoomPage() {
     }
     joinRoom(code).catch((err: unknown) => setError(friendlyError(err, code)))
   }, [code, inRoom, state.seatLost, attempt, joinRoom, navigate])
+
+  useEffect(() => {
+    const room = state.room
+    if (!room || room.status === 'playing') {
+      instructionStateKey.current = null
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setAutoOpenKey(null)
+      return
+    }
+    if (!room.selectedGame || !hasGameInstructions(room.selectedGame)) {
+      instructionStateKey.current = null
+      setAutoOpenKey(null)
+      return
+    }
+    const key = `${room.code}:${room.selectedGame}`
+    if (instructionStateKey.current === key) return
+    instructionStateKey.current = key
+    if (!seenInstructionKeys.current.has(key)) {
+      seenInstructionKeys.current.add(key)
+      setAutoOpenKey(key)
+      return
+    }
+    setAutoOpenKey(null)
+  }, [state.room])
 
   const goHome = (
     <Button variant="secondary" block onClick={() => navigate('/')}>
@@ -83,6 +114,32 @@ export default function RoomPage() {
   }
 
   const room = state.room
+  const selectedInstructionKey =
+    room.selectedGame && hasGameInstructions(room.selectedGame) ? `${room.code}:${room.selectedGame}` : null
+  const content = gameInstructions(room.selectedGame, {
+    settings: room.settings,
+    constants: C,
+    playerCount: room.players.length,
+  })
+  const instructionsOpen =
+    Boolean(
+      selectedInstructionKey &&
+        ((room.status !== 'playing' && autoOpenKey === selectedInstructionKey) ||
+          (room.status !== 'playing' && manualInstructionsKey === selectedInstructionKey) ||
+          manualInstructionsKey === `${selectedInstructionKey}:playing`),
+    )
+
+  const openInstructions = () => {
+    if (selectedInstructionKey) {
+      setManualInstructionsKey(room.status === 'playing' ? `${selectedInstructionKey}:playing` : selectedInstructionKey)
+    }
+  }
+
+  const closeInstructions = () => {
+    setAutoOpenKey(null)
+    setManualInstructionsKey(null)
+  }
+
   return (
     <main className="page room">
       <TopBar
@@ -92,17 +149,28 @@ export default function RoomPage() {
         onLeaving={() => {
           leaving.current = true
         }}
+        onHowToPlay={openInstructions}
       />
       {state.connection !== 'connected' && (
         <p className="notice" role="status">
           Reconnecting… your seat is kept.
         </p>
       )}
-      {room.status === 'lobby' && <Lobby room={room} me={state.playerId} />}
+      {room.status === 'lobby' && <Lobby room={room} me={state.playerId} onHowToPlay={openInstructions} />}
       {(room.status === 'playing' || room.status === 'between_rounds') && (
         <GameScreen room={room} me={state.playerId} />
       )}
       {room.status === 'finished' && <FinalResults room={room} me={state.playerId} />}
+      {instructionsOpen && content && (
+        <HowToPlayModal
+          content={content}
+          inGame={room.status !== 'lobby'}
+          roundsToWin={Math.floor(Number(room.settings.bestOf ?? 3) / 2) + 1}
+          pickSeconds={C.RPS_PICK_TIMEOUT_MS / 1000}
+          offlineSeconds={C.OFFLINE_FORFEIT_MS / 1000}
+          onClose={closeInstructions}
+        />
+      )}
     </main>
   )
 }

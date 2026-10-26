@@ -242,17 +242,96 @@ a {
 .modal__box {
   width: 100%;
   max-width: 420px;
-  padding: 20px;
+  padding: 16px;
   border-radius: var(--radius);
   background: var(--surface);
+  max-height: calc(100dvh - 32px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
 }
 .modal__title {
-  margin: 0 0 8px;
+  margin: 4px 0 8px;
+}
+.modal__header-actions {
+  display: inline-flex;
+}
+.modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
 }
 .modal__actions {
   display: grid;
   gap: 8px;
   margin-top: 16px;
+  flex-shrink: 0;
+}
+.modal__body {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
+}
+.how-to-play {
+  overflow-wrap: anywhere;
+}
+.how-to-play__tagline {
+  margin-top: 0;
+  color: var(--muted);
+  font-weight: 600;
+}
+.how-to-play__visual {
+  overflow: hidden;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border-radius: 10px;
+  background: #14172b;
+}
+.how-to-play__visual svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.how-to-play__note {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.modal__body h3 {
+  margin: 16px 0 4px;
+  font-size: 1rem;
+}
+.modal__body p,
+.modal__body ol,
+.modal__body ul {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+.modal__body li + li {
+  margin-top: 8px;
+}
+.how-to-play__reference {
+  list-style: none;
+  padding-left: 0;
 }
 
 /* Toasts */

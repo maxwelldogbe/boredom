@@ -22,6 +22,28 @@
 .topbar__score {
   color: var(--muted);
 }
+.topbar__menu {
+  position: relative;
+}
+.topbar__menu-panel {
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  min-width: 150px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.18);
+}
+.topbar__menu-panel button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
 
 .lobby__code {
   display: grid;

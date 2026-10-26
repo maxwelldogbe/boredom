@@ -43,7 +43,7 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
   const canDraw = view.isYourTurn && pending === null
   const extent = PAD * 2 + view.size * GAP
   const at = (n: number) => PAD + n * GAP
-  const colors = playerColors(view.order, room)
+  const colors = playerColors(view.order)
 
   const draw = async (id: string) => {
     if (!canDraw || view.lines[id]) return
@@ -71,7 +71,7 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
             return (
               <g key={`b${r}:${c}`} aria-label={`Box owned by ${nameOf(room, owner, me)}`}>
                 <rect x={at(c)} y={at(r)} width={GAP} height={GAP} fill={colors[owner]} className="dots__box" />
-                <text x={at(c) + GAP / 2} y={at(r) + GAP / 2} className="dots__initial">
+                <text x={at(c) + GAP / 2} y={at(r) + GAP / 2} className="dots__initial" fill={colors[owner]}>
                   {p.nickname.charAt(0).toUpperCase()}
                 </text>
               </g>
@@ -112,6 +112,9 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
         {view.order.map((pid) => (
           <li key={pid} className={`dots__legend-item${pid === view.currentPlayerId ? ' dots__legend-item--turn' : ''}`}>
             <span className="dots__swatch" style={{ background: colors[pid] }} aria-hidden="true" />
+            <span className="dots__avatar" style={{ borderColor: colors[pid] }} aria-hidden="true">
+              {nameOf(room, pid, me).charAt(0).toUpperCase()}
+            </span>
             <span>{nameOf(room, pid, me)}</span>
             <strong aria-label={`${view.scores[pid] ?? 0} boxes`}>{view.scores[pid] ?? 0}</strong>
           </li>
@@ -126,6 +129,7 @@ function pick({ x1, y1, x2, y2 }: LineGeom) {
 }
 
 function TurnBanner({ view, me, room }: { view: DotsView; me: string; room: RoomPublic }) {
+  const colors = playerColors(view.order)
   const auto = view.lastMove?.auto
   const autoWho = view.lastMove ? nameOf(room, view.lastMove.playerId, me) : ''
   return (
@@ -135,7 +139,9 @@ function TurnBanner({ view, me, room }: { view: DotsView; me: string; room: Room
       ) : view.isYourTurn ? (
         <p className="dots__turn dots__turn--me">Your turn: draw a line</p>
       ) : (
-        <p className="dots__turn">{nameOf(room, view.currentPlayerId, me)}'s turn</p>
+        <p className="dots__turn" style={{ color: view.currentPlayerId ? colors[view.currentPlayerId] : undefined }}>
+          {nameOf(room, view.currentPlayerId, me)}'s turn
+        </p>
       )}
       {auto && (
         <p className="muted dots__note">

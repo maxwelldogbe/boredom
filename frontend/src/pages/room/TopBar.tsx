@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '../../components/Button'
 import { Logo } from '../../components/Logo'
 import { Modal } from '../../components/Modal'
+import { hasGameInstructions } from '../../games/instructions'
 import { friendlyError } from '../../lib/errors'
 import { formatPoints } from '../../lib/format'
 import { useRoomActions } from '../../state/context'
@@ -12,13 +13,15 @@ interface TopBarProps {
   me: string
   onLeaving: () => void
   onLeft: () => void
+  onHowToPlay?: () => void
 }
 
 /** Room code, your session score and Leave (with confirmation). */
-export function TopBar({ room, me, onLeaving, onLeft }: TopBarProps) {
+export function TopBar({ room, me, onLeaving, onLeft, onHowToPlay = () => {} }: TopBarProps) {
   const { leaveRoom, toast } = useRoomActions()
   const [confirm, setConfirm] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const playing = room.status === 'playing'
 
   const leave = async () => {
@@ -42,6 +45,26 @@ export function TopBar({ room, me, onLeaving, onLeft }: TopBarProps) {
         </span>
       </span>
       <span className="topbar__score">Score: {formatPoints(room.scoreboard[me] ?? 0)}</span>
+      {hasGameInstructions(room.selectedGame) && (
+        <div className="topbar__menu">
+          <Button variant="ghost" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
+            Menu
+          </Button>
+          {menuOpen && (
+            <div className="topbar__menu-panel">
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false)
+                  onHowToPlay()
+                }}
+              >
+                How to play
+              </button>
+            </div>
+          )}
+        </div>
+      )}
       <Button variant="ghost" onClick={() => setConfirm(true)}>
         Leave
       </Button>

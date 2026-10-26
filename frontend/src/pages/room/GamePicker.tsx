@@ -1,10 +1,12 @@
 import { GAME_LIST, gameUi } from '../../games/registry'
+import { hasGameInstructions } from '../../games/instructions'
+import { Button } from '../../components/Button'
 import { friendlyError } from '../../lib/errors'
 import { useRoomActions } from '../../state/context'
 import type { RoomPublic } from '../../types/protocol'
 
 /** Host-only game cards and settings for the selected game. */
-export function GamePicker({ room }: { room: RoomPublic }) {
+export function GamePicker({ room, onHowToPlay = () => {} }: { room: RoomPublic; onHowToPlay?: () => void }) {
   const { selectGame, toast } = useRoomActions()
   const selected = gameUi(room.selectedGame)
 
@@ -71,6 +73,11 @@ export function GamePicker({ room }: { room: RoomPublic }) {
             </label>
           ))}
         </div>
+      )}
+      {selected && hasGameInstructions(room.selectedGame) && (
+        <Button variant="secondary" onClick={onHowToPlay}>
+          How to play
+        </Button>
       )}
     </section>
   )

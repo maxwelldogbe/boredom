@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { FakeWebSocket } from '../../test/fakeWebSocket'
 import { dotsFx, type ViewFixture } from '../../test/fixtures'
 import { renderWithRoom } from '../../test/render'
-import { C } from '../../lib/constants'
 import { playerColors } from './colors'
+import { DOTS_PALETTE } from './palette'
 import { DotsGame } from './DotsGame'
 
 beforeEach(() => FakeWebSocket.reset())
@@ -62,28 +62,24 @@ describe('DotsGame (real backend views)', () => {
 })
 
 describe('Dots and Boxes player colours', () => {
-  it('keeps profile colours when they differ', () => {
+  it('uses the fixed palette in backend turn order', () => {
     const fx = dotsFx.done
-    const colors = playerColors(fx.push.view.order, fx.room)
-    for (const pid of fx.push.view.order) {
-      expect(colors[pid].toUpperCase()).toBe(fx.room.players.find((p) => p.id === pid)!.color.toUpperCase())
-    }
+    const colors = playerColors(fx.push.view.order)
+    expect(fx.push.view.order.map((pid) => colors[pid])).toEqual(DOTS_PALETTE.slice(0, fx.push.view.order.length))
   })
 
-  it('gives players with the same profile colour different colours', () => {
+  it('ignores profile colours and stays distinct', () => {
     const fx = dotsFx.done
-    const same = { ...fx.room, players: fx.room.players.map((p) => ({ ...p, color: C.PLAYER_COLORS[0] })) }
-    const colors = playerColors(fx.push.view.order, same)
+    const colors = playerColors(fx.push.view.order)
     const values = Object.values(colors)
     expect(new Set(values).size).toBe(fx.push.view.order.length)
-    expect(colors[fx.push.view.order[0]]).toBe(C.PLAYER_COLORS[0])
+    expect(values).not.toContain(fx.room.players[0].color)
   })
 
   it('lines, boxes and the legend use each player\'s own colour', () => {
     const fx = dotsFx.done
-    const same = { ...fx.room, players: fx.room.players.map((p) => ({ ...p, color: C.PLAYER_COLORS[0] })) }
-    const { container } = renderWithRoom(<DotsGame {...props({ ...fx, room: same })} />)
-    const colors = playerColors(fx.push.view.order, same)
+    const { container } = renderWithRoom(<DotsGame {...props(fx)} />)
+    const colors = playerColors(fx.push.view.order)
     const legend = screen.getByRole('list', { name: 'Players and boxes' })
     expect(within(legend).getAllByRole('listitem')).toHaveLength(fx.push.view.order.length)
     const owner = Object.values(fx.push.view.lines)[0]

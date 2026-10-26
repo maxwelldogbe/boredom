@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '../../components/Button'
 import { PlayerChip } from '../../components/PlayerChip'
 import { gameUi } from '../../games/registry'
+import { hasGameInstructions } from '../../games/instructions'
 import { copyText } from '../../lib/clipboard'
 import { C } from '../../lib/constants'
 import { friendlyError } from '../../lib/errors'
@@ -11,7 +12,7 @@ import { GamePicker } from './GamePicker'
 import { InvitePanel } from './InvitePanel'
 import { startBlocker } from './startBlocker'
 
-export function Lobby({ room, me }: { room: RoomPublic; me: string }) {
+export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; me: string; onHowToPlay?: () => void }) {
   const { startGame, toast } = useRoomActions()
   const [starting, setStarting] = useState(false)
   const isHost = room.hostId === me
@@ -59,7 +60,7 @@ export function Lobby({ room, me }: { room: RoomPublic; me: string }) {
 
       {isHost ? (
         <>
-          <GamePicker room={room} />
+          <GamePicker room={room} onHowToPlay={onHowToPlay} />
           <div className="lobby__start">
             <Button block onClick={start} disabled={Boolean(blocker) || starting}>
               {starting ? 'Starting…' : 'Start game'}
@@ -70,9 +71,16 @@ export function Lobby({ room, me }: { room: RoomPublic; me: string }) {
       ) : (
         <section className="card stack">
           {selected ? (
-            <p>
-              Next game: <strong>{selected.name}</strong> {selected.icon}
-            </p>
+            <>
+              <p>
+                Next game: <strong>{selected.name}</strong> {selected.icon}
+              </p>
+              {hasGameInstructions(room.selectedGame) && (
+                <Button variant="secondary" onClick={onHowToPlay}>
+                  How to play
+                </Button>
+              )}
+            </>
           ) : (
             <p className="muted">The host hasn't picked a game yet.</p>
           )}
