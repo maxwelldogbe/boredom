@@ -10,7 +10,9 @@ Modules are pure: no Django, sockets, asyncio, wall clocks or global randomness.
 
 import random
 from abc import ABC, abstractmethod
-from typing import Any, ClassVar, TypedDict
+from typing import Any, ClassVar, Literal, TypedDict
+
+ForfeitReason = Literal["quit", "left", "offline"]
 
 
 class GameError(Exception):
@@ -78,6 +80,18 @@ class GameModule(ABC):
     ) -> tuple[Any, list[GameEvent]]:
         """A player went offline or came back. Default: ignore. Override for offline rules."""
         return state, []
+
+    def forfeit(
+        self, state: Any, player_id: str, now: float, reason: ForfeitReason
+    ) -> tuple[Any, list[GameEvent]]:
+        """Remove `player_id` from the running game for good: the only way a player leaves one.
+
+        The room manager calls it for game:quit, room:leave and the offline timeout, once per
+        player. The module drops the player from play under its own rules; the game is over
+        once exactly one active player remains (`is_over`). Placements of forfeiters are
+        decided by the room manager (games/scoring.py), not here.
+        """
+        raise NotImplementedError(f"{self.id} does not support forfeits yet.")
 
     @abstractmethod
     def get_view(self, state: Any, player_id: str) -> dict[str, Any]:
