@@ -1,0 +1,649 @@
+{
+ "emptyOverview": {
+  "friends": [],
+  "incoming": [],
+  "outgoing": [],
+  "blocked": []
+ },
+ "settings": {
+  "presence": "online"
+ },
+ "settingsBusy": {
+  "presence": "busy"
+ },
+ "acceptAck": {
+  "status": "friends"
+ },
+ "requestSent": {
+  "status": "requested"
+ },
+ "blockAck": {
+  "ok": true
+ },
+ "requestErrors": {
+  "NOT_FOUND": {
+   "status": 404,
+   "body": {
+    "error": {
+     "code": "NOT_FOUND",
+     "message": "We couldn't find a player with that tag."
+    }
+   }
+  },
+  "INVALID_INPUT": {
+   "status": 400,
+   "body": {
+    "error": {
+     "code": "INVALID_INPUT",
+     "message": "A tag is 6 letters and numbers, like #K7M2QX.",
+     "fields": {
+      "tag": "A tag is 6 letters and numbers, like #K7M2QX."
+     }
+    }
+   }
+  },
+  "SELF": {
+   "status": 400,
+   "body": {
+    "error": {
+     "code": "SELF",
+     "message": "That's your own tag."
+    }
+   }
+  },
+  "ALREADY_FRIENDS": {
+   "status": 409,
+   "body": {
+    "error": {
+     "code": "ALREADY_FRIENDS",
+     "message": "You're already friends."
+    }
+   }
+  },
+  "ALREADY_REQUESTED": {
+   "status": 409,
+   "body": {
+    "error": {
+     "code": "ALREADY_REQUESTED",
+     "message": "You already sent a request."
+    }
+   }
+  },
+  "LIMIT_REACHED": {
+   "status": 409,
+   "body": {
+    "error": {
+     "code": "LIMIT_REACHED",
+     "message": "You have 1 requests waiting. Cancel some first."
+    }
+   }
+  },
+  "RATE_LIMITED": {
+   "status": 429,
+   "body": {
+    "error": {
+     "code": "RATE_LIMITED",
+     "message": "Too many friend requests. Try again later."
+    }
+   }
+  }
+ },
+ "helloAck": {
+  "presence": "online"
+ },
+ "snapshot": {
+  "friends": [
+   {
+    "tag": "VV9AUA",
+    "status": "online"
+   },
+   {
+    "tag": "DGR5BB",
+    "status": "in_lobby"
+   },
+   {
+    "tag": "GG7AZ3",
+    "status": "offline"
+   }
+  ]
+ },
+ "helloUnauthorized": {
+  "code": "UNAUTHORIZED",
+  "message": "Please sign in again."
+ },
+ "overview": {
+  "friends": [
+   {
+    "tag": "VV9AUA",
+    "nickname": "Ann",
+    "avatar": {
+     "style": "adventurer-neutral",
+     "seed": "ann1"
+    },
+    "color": "#E74C3C",
+    "status": "online"
+   },
+   {
+    "tag": "DGR5BB",
+    "nickname": "Bob",
+    "avatar": {
+     "style": "voxel-art",
+     "seed": "bob1"
+    },
+    "color": "#2ECC71",
+    "status": "in_lobby"
+   },
+   {
+    "tag": "GG7AZ3",
+    "nickname": "Cat",
+    "avatar": {
+     "style": "croodles-neutral",
+     "seed": "cat1"
+    },
+    "color": "#9B59B6",
+    "status": "offline"
+   }
+  ],
+  "incoming": [
+   {
+    "requestId": 5,
+    "tag": "7TVCZE",
+    "nickname": "Dan",
+    "avatar": {
+     "style": "cutouts",
+     "seed": "dan1"
+    },
+    "color": "#F1C40F",
+    "createdAt": "2026-10-27T20:38:48Z"
+   }
+  ],
+  "outgoing": [
+   {
+    "requestId": 4,
+    "tag": "PF3LN7",
+    "nickname": "Eve",
+    "avatar": {
+     "style": "cutouts",
+     "seed": "eve1"
+    },
+    "color": "#1ABC9C",
+    "createdAt": "2026-10-27T20:38:48Z"
+   }
+  ],
+  "blocked": [
+   {
+    "tag": "LDHB9P",
+    "nickname": "Zed",
+    "avatar": {
+     "style": "cutouts",
+     "seed": "zed1"
+    },
+    "color": "#795548"
+   }
+  ]
+ },
+ "friendProfile": {
+  "tag": "VV9AUA",
+  "nickname": "Ann",
+  "avatar": {
+   "style": "adventurer-neutral",
+   "seed": "ann1"
+  },
+  "color": "#E74C3C",
+  "memberSince": "2026-10-27T20:38:42Z",
+  "stats": {
+   "totals": {
+    "played": 8,
+    "wins": 4,
+    "losses": 4,
+    "winRate": 0.5
+   },
+   "favoriteGame": "rps",
+   "perGame": [
+    {
+     "gameId": "rps",
+     "played": 6,
+     "wins": 4,
+     "losses": 2,
+     "winRate": 0.6667
+    },
+    {
+     "gameId": "hangman",
+     "played": 2,
+     "wins": 0,
+     "losses": 2,
+     "winRate": null
+    }
+   ],
+   "minGamesForRate": 5
+  }
+ },
+ "friendProfileForbidden": {
+  "error": {
+   "code": "FORBIDDEN",
+   "message": "Only friends can see this profile."
+  }
+ },
+ "presenceBusy": {
+  "tag": "VV9AUA",
+  "status": "busy"
+ },
+ "presenceOnline": {
+  "tag": "VV9AUA",
+  "status": "online"
+ },
+ "acceptedPush": {
+  "tag": "PF3LN7",
+  "nickname": "Eve"
+ },
+ "requestPush": {
+  "request": {
+   "requestId": 6,
+   "tag": "NMCZKD",
+   "nickname": "Nia",
+   "avatar": {
+    "style": "cutouts",
+    "seed": "nia1"
+   },
+   "color": "#E84393",
+   "createdAt": "2026-10-27T20:38:49Z"
+  }
+ },
+ "removedPush": {
+  "tag": "GG7AZ3"
+ },
+ "recentPlayers": {
+  "players": [
+   {
+    "tag": "P45ZBV",
+    "nickname": "Kim",
+    "avatar": {
+     "style": "cutouts",
+     "seed": "kim1"
+    },
+    "color": "#607D8B",
+    "lastPlayedAt": "2026-10-27T17:38:49Z",
+    "gamesTogether": 1,
+    "lastGameId": "rps",
+    "relationship": "none"
+   },
+   {
+    "tag": "NMCZKD",
+    "nickname": "Nia",
+    "avatar": {
+     "style": "cutouts",
+     "seed": "nia1"
+    },
+    "color": "#E84393",
+    "lastPlayedAt": "2026-10-27T17:38:49Z",
+    "gamesTogether": 1,
+    "lastGameId": "rps",
+    "relationship": "incoming"
+   },
+   {
+    "tag": "PF3LN7",
+    "nickname": "Eve",
+    "avatar": {
+     "style": "cutouts",
+     "seed": "eve1"
+    },
+    "color": "#1ABC9C",
+    "lastPlayedAt": "2026-10-27T17:38:49Z",
+    "gamesTogether": 1,
+    "lastGameId": "rps",
+    "relationship": "friends"
+   },
+   {
+    "tag": "7TVCZE",
+    "nickname": "Dan",
+    "avatar": {
+     "style": "cutouts",
+     "seed": "dan1"
+    },
+    "color": "#F1C40F",
+    "lastPlayedAt": "2026-10-27T17:38:49Z",
+    "gamesTogether": 1,
+    "lastGameId": "rps",
+    "relationship": "incoming"
+   },
+   {
+    "tag": "VV9AUA",
+    "nickname": "Ann",
+    "avatar": {
+     "style": "adventurer-neutral",
+     "seed": "ann1"
+    },
+    "color": "#E74C3C",
+    "lastPlayedAt": "2026-10-27T17:38:49Z",
+    "gamesTogether": 1,
+    "lastGameId": "rps",
+    "relationship": "friends"
+   }
+  ]
+ },
+ "inviteSendAck": {},
+ "inviteReceived": {
+  "inviteId": "i_b1f0012d0b6961b9",
+  "fromTag": "EXF2BP",
+  "fromNickname": "Sam",
+  "fromAvatar": {
+   "style": "cutouts",
+   "seed": "a1b2c3d4"
+  },
+  "gameId": "guess_race",
+  "expiresAt": 1793133650451.6335,
+  "serverNow": 1793133530451.717
+ },
+ "inviteSendErrors": {
+  "RATE_LIMITED": {
+   "code": "RATE_LIMITED",
+   "message": "You just invited them. Give them a moment."
+  },
+  "TARGET_UNAVAILABLE": {
+   "code": "TARGET_UNAVAILABLE",
+   "message": "That friend can't be invited right now."
+  },
+  "NOT_FRIENDS": {
+   "code": "NOT_FRIENDS",
+   "message": "You can only invite friends."
+  }
+ },
+ "inviteAcceptAck": {
+  "code": "VFAJ"
+ },
+ "inviteCleared": {
+  "inviteId": "i_b1f0012d0b6961b9"
+ },
+ "inviteAcceptErrors": {
+  "INVITE_INVALID": {
+   "code": "INVITE_INVALID",
+   "message": "That invite is no longer available."
+  }
+ },
+ "inviteExpired": {
+  "inviteId": "i_3807c47b4ac8d57c"
+ },
+ "inviteAcceptExpired": {
+  "code": "INVITE_EXPIRED",
+  "message": "That invite has expired."
+ },
+ "roomWithAccounts": {
+  "code": "VFAJ",
+  "hostId": "p_a1bada6fe2dc",
+  "status": "lobby",
+  "players": [
+   {
+    "id": "p_a1bada6fe2dc",
+    "type": "registered",
+    "nickname": "Sam",
+    "color": "#3498DB",
+    "avatar": {
+     "style": "cutouts",
+     "seed": "a1b2c3d4"
+    },
+    "online": true,
+    "offlineSince": null,
+    "inGame": true,
+    "joinedAt": 1793133530422.1104,
+    "ready": false
+   }
+  ],
+  "selectedGame": null,
+  "settings": {},
+  "scoreboard": {},
+  "wins": {},
+  "endReason": null,
+  "readyCheck": null
+ },
+ "roomSeats": {
+  "sam": "p_a1bada6fe2dc",
+  "ann": "p_f45a2e4f8cef",
+  "guest": "p_6028000c4be9"
+ },
+ "byPlayer": {
+  "requestAck": {
+   "code": "ALREADY_FRIENDS",
+   "message": "You're already friends."
+  },
+  "guestRequestError": {
+   "code": "INVALID_ACTION",
+   "message": "That player doesn't have an account."
+  },
+  "reportGuestAck": {}
+ },
+ "admin": {
+  "list": {
+   "page": 1,
+   "numPages": 1,
+   "count": 2,
+   "pageSize": 50,
+   "query": {
+    "status": "",
+    "reason": ""
+   },
+   "statuses": [
+    "open",
+    "resolved",
+    "dismissed"
+   ],
+   "reasons": [
+    "harassment",
+    "inappropriate_name_or_avatar",
+    "cheating",
+    "spam",
+    "other"
+   ],
+   "openReports": 2,
+   "results": [
+    {
+     "id": 2,
+     "createdAt": "2026-10-27T20:38:50.636667+00:00",
+     "status": "open",
+     "reason": "harassment",
+     "note": "Kept calling me names",
+     "reporter": {
+      "kind": "registered",
+      "userId": 2,
+      "guestKey": null,
+      "name": "Ann",
+      "nickname": "Ann",
+      "tag": "VV9AUA",
+      "username": "ann_social"
+     },
+     "reported": {
+      "kind": "registered",
+      "userId": 7,
+      "guestKey": null,
+      "name": "Zed",
+      "nickname": "Zed",
+      "tag": "LDHB9P",
+      "username": "zed_social"
+     },
+     "roomCode": null,
+     "gameId": null,
+     "game": null,
+     "resolvedBy": null,
+     "resolvedNote": "",
+     "resolvedAt": null
+    },
+    {
+     "id": 1,
+     "createdAt": "2026-10-27T20:38:50.618856+00:00",
+     "status": "open",
+     "reason": "spam",
+     "note": "",
+     "reporter": {
+      "kind": "registered",
+      "userId": 1,
+      "guestKey": null,
+      "name": "Sam",
+      "nickname": "Sam",
+      "tag": "EXF2BP",
+      "username": "sam_social"
+     },
+     "reported": {
+      "kind": "guest",
+      "userId": null,
+      "guestKey": "c49399e250cd7e8d",
+      "shortKey": "c49399e2",
+      "name": "Gus",
+      "nickname": "Gus",
+      "tag": null,
+      "username": null
+     },
+     "roomCode": "VFAJ",
+     "gameId": "guess_race",
+     "game": {
+      "id": "guess_race",
+      "name": "Guess Race"
+     },
+     "resolvedBy": null,
+     "resolvedNote": "",
+     "resolvedAt": null
+    }
+   ]
+  },
+  "resolveAck": {
+   "ok": true,
+   "report": {
+    "id": 2,
+    "createdAt": "2026-10-27T20:38:50.636667+00:00",
+    "status": "resolved",
+    "reason": "harassment",
+    "note": "Kept calling me names",
+    "reporter": {
+     "kind": "registered",
+     "userId": 2,
+     "guestKey": null,
+     "name": "Ann",
+     "nickname": "Ann",
+     "tag": "VV9AUA",
+     "username": "ann_social"
+    },
+    "reported": {
+     "kind": "registered",
+     "userId": 7,
+     "guestKey": null,
+     "name": "Zed",
+     "nickname": "Zed",
+     "tag": "LDHB9P",
+     "username": "zed_social"
+    },
+    "roomCode": null,
+    "gameId": null,
+    "game": null,
+    "resolvedBy": "boss_social",
+    "resolvedNote": "Warned",
+    "resolvedAt": "2026-10-27T20:38:52.756973+00:00"
+   },
+   "openReports": 1
+  },
+  "listAfter": {
+   "page": 1,
+   "numPages": 1,
+   "count": 2,
+   "pageSize": 50,
+   "query": {
+    "status": "",
+    "reason": ""
+   },
+   "statuses": [
+    "open",
+    "resolved",
+    "dismissed"
+   ],
+   "reasons": [
+    "harassment",
+    "inappropriate_name_or_avatar",
+    "cheating",
+    "spam",
+    "other"
+   ],
+   "openReports": 1,
+   "results": [
+    {
+     "id": 1,
+     "createdAt": "2026-10-27T20:38:50.618856+00:00",
+     "status": "open",
+     "reason": "spam",
+     "note": "",
+     "reporter": {
+      "kind": "registered",
+      "userId": 1,
+      "guestKey": null,
+      "name": "Sam",
+      "nickname": "Sam",
+      "tag": "EXF2BP",
+      "username": "sam_social"
+     },
+     "reported": {
+      "kind": "guest",
+      "userId": null,
+      "guestKey": "c49399e250cd7e8d",
+      "shortKey": "c49399e2",
+      "name": "Gus",
+      "nickname": "Gus",
+      "tag": null,
+      "username": null
+     },
+     "roomCode": "VFAJ",
+     "gameId": "guess_race",
+     "game": {
+      "id": "guess_race",
+      "name": "Guess Race"
+     },
+     "resolvedBy": null,
+     "resolvedNote": "",
+     "resolvedAt": null
+    },
+    {
+     "id": 2,
+     "createdAt": "2026-10-27T20:38:50.636667+00:00",
+     "status": "resolved",
+     "reason": "harassment",
+     "note": "Kept calling me names",
+     "reporter": {
+      "kind": "registered",
+      "userId": 2,
+      "guestKey": null,
+      "name": "Ann",
+      "nickname": "Ann",
+      "tag": "VV9AUA",
+      "username": "ann_social"
+     },
+     "reported": {
+      "kind": "registered",
+      "userId": 7,
+      "guestKey": null,
+      "name": "Zed",
+      "nickname": "Zed",
+      "tag": "LDHB9P",
+      "username": "zed_social"
+     },
+     "roomCode": null,
+     "gameId": null,
+     "game": null,
+     "resolvedBy": "boss_social",
+     "resolvedNote": "Warned",
+     "resolvedAt": "2026-10-27T20:38:52.756973+00:00"
+    }
+   ]
+  },
+  "overviewOpenReports": 1,
+  "sessionOpenReports": 1,
+  "userDetailReports": {
+   "total": 1,
+   "open": 0
+  }
+ },
+ "tags": {
+  "Sam": "EXF2BP",
+  "Ann": "VV9AUA",
+  "Bob": "DGR5BB",
+  "Cat": "GG7AZ3",
+  "Dan": "7TVCZE",
+  "Eve": "PF3LN7",
+  "Zed": "LDHB9P",
+  "Nia": "NMCZKD"
+ }
+}

@@ -10,6 +10,7 @@ import logging
 from collections.abc import Awaitable, Callable
 from typing import Any
 
+from analytics.quota import GuestQuotaStore
 from games import registry
 from games.base import ForfeitReason, GameError, GameEvent, GameModule
 from games.constants import SESSION_POINTS_MAX
@@ -20,12 +21,19 @@ from rooms.models_types import EndReason, Player, Room, RoomError, result_to_pub
 logger = logging.getLogger("rooms.game_flow")
 
 
+def _locked(status: dict[str, Any] | None) -> bool:
+    """Out of free games (a quota status from analytics.quota; None means unknown: allowed)."""
+    return status is not None and status.get("lockedUntil") is not None
+
+
 class GameFlowMixin:
     """Runs the selected game module for a room. Requires the RoomManager attributes."""
 
     rooms: dict[str, Room]
     clock: Callable[[], float]
     send: Callable[[str, dict[str, Any]], Awaitable[None]]
+
+    quota: GuestQuotaStore
 
     def _module(self, room: Room) -> GameModule:
         """The module of the game currently running in `room`."""
@@ -39,13 +47,24 @@ class GameFlowMixin:
         module = registry.get_game(room.selected_game or "")
         if module is None:
             raise RoomError("INVALID_ACTION", "Select a game first.")
-        seated = room.seated()
+        now = self.clock()
+        everyone = room.seated()
+        guests = [p.guest_key for p in everyone if p.user_id is None and p.guest_key]
+        known = await self.quota.read(guests, now)
+        locked = {p.id for p in everyone if p.user_id is None and _locked(known.get(p.guest_key))}
+        seated = [p for p in everyone if p.id not in locked]
+        if locked and len(seated) < module.min_players:
+            names = [p.nickname for p in everyone if p.id in locked]
+            raise RoomError(
+                "GUEST_LIMIT",
+                f"{', '.join(names)} can't play right now.",
+                {"nicknames": names},
+            )
         if not module.min_players <= len(seated) <= module.max_players:
             raise RoomError(
                 "INVALID_ACTION",
                 f"{module.name} needs {module.min_players} to {module.max_players} players.",
             )
-        now = self.clock()
         used = room.used_content.get(module.id, frozenset())
         try:
             state, used = module.start(
@@ -65,10 +84,26 @@ class GameFlowMixin:
         room.game_players = [p.id for p in seated]
         room.forfeits, room.end_reason = {}, None
         self._reset_ready(room)
+        # A game counts when it starts, once per guest who plays in it. Locked guests sit it out.
+        counted = await self.quota.count(
+            [p.guest_key for p in seated if p.user_id is None and p.guest_key], now
+        )
+        quota = {**known, **counted}
         for player in room.players:
-            player.in_game = True
+            player.in_game = player.id not in locked
+            if player.user_id is None and player.guest_key in quota:
+                player.locked = _locked(quota[player.guest_key])
         hooks.on_game_started(room.code, module.id)
         await self._broadcast_room(room)
+        for player in everyone:
+            status = (
+                counted.get(player.guest_key)
+                if player.id not in locked
+                else known.get(player.guest_key)
+            )
+            if player.user_id is None and status and player.online and player.channel:
+                message = {"type": "guest:quota", "data": {**status, "serverNow": now}}
+                await self.send(player.channel, {"type": "push", "message": message})
         await self._apply(room, state, events)
         for player in seated:
             if not player.online:

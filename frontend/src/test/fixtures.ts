@@ -1,6 +1,17 @@
 /** Typed access to fixtures captured from the real backend (see src/test/fixtures/*.json). */
 import type { MeData, MyStats, RecentPlayer } from '../lib/account'
-import type { GameEventPush, PeekData, ProtocolError, RoomPublic, SeatData } from '../types/protocol'
+import type { FriendProfile, FriendsOverview } from '../lib/social'
+import type {
+  FriendRequestEntry,
+  FriendStatus,
+  GameEventPush,
+  InvitePush,
+  PeekData,
+  PresenceMode,
+  ProtocolError,
+  RoomPublic,
+  SeatData,
+} from '../types/protocol'
 import type { GameViewPush } from '../types/views'
 import dotsJson from './fixtures/dotsAndBoxes.json'
 import guessRaceJson from './fixtures/guessRace.json'
@@ -9,6 +20,7 @@ import hangmanJson from './fixtures/hangman.json'
 import nameItJson from './fixtures/nameIt.json'
 import profileJson from './fixtures/profile.json'
 import roomJson from './fixtures/room.json'
+import socialJson from './fixtures/social.json'
 import rpsJson from './fixtures/rps.json'
 
 /** A captured game:view with the receiving player's id and their room state at that moment. */
@@ -54,3 +66,44 @@ export const hangmanFx = hangmanJson as unknown as Record<keyof typeof hangmanJs
 export const dotsFx = dotsJson as unknown as Record<keyof typeof dotsJson, Of<'dots_and_boxes'>>
 export const liarsDiceFx = liarsDiceJson as unknown as Record<keyof typeof liarsDiceJson, Of<'liars_dice'>>
 export const nameItFx = nameItJson as unknown as Record<keyof typeof nameItJson, Of<'name_it'>>
+
+type ApiErrorBody = { error: { code: string; message: string } }
+
+/** Captured friends, presence, invite and admin-report traffic (captured from the real backend):
+ *  Sam's friends are Ann (online), Bob (hosting a lobby) and Cat (offline); Dan asked Sam;
+ *  Sam asked Eve and blocked Zed. */
+export const socialFx = socialJson as unknown as {
+  emptyOverview: FriendsOverview
+  overview: FriendsOverview
+  settings: { presence: PresenceMode }
+  settingsBusy: { presence: PresenceMode }
+  acceptAck: { status: 'friends' }
+  requestSent: { status: 'requested' }
+  blockAck: { ok: true }
+  requestErrors: Record<string, { status: number; body: ApiErrorBody }>
+  helloAck: { presence: PresenceMode }
+  helloUnauthorized: ProtocolError
+  snapshot: { friends: { tag: string; status: FriendStatus }[] }
+  friendProfile: FriendProfile
+  friendProfileForbidden: ApiErrorBody
+  presenceBusy: { tag: string; status: FriendStatus }
+  presenceOnline: { tag: string; status: FriendStatus }
+  acceptedPush: { tag: string; nickname: string }
+  requestPush: { request: FriendRequestEntry }
+  removedPush: { tag: string }
+  recentPlayers: { players: RecentPlayer[] }
+  inviteSendAck: Record<string, never>
+  inviteReceived: InvitePush
+  inviteSendErrors: Record<'RATE_LIMITED' | 'TARGET_UNAVAILABLE' | 'NOT_FRIENDS', ProtocolError>
+  inviteAcceptAck: { code: string }
+  inviteCleared: { inviteId: string }
+  inviteAcceptErrors: { INVITE_INVALID: ProtocolError }
+  inviteExpired: { inviteId: string }
+  inviteAcceptExpired: ProtocolError
+  roomWithAccounts: RoomPublic
+  roomSeats: { sam: string; ann: string; guest: string }
+  byPlayer: { requestAck: ProtocolError; guestRequestError: ProtocolError; reportGuestAck: Record<string, never> }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- typed by the admin page tests
+  admin: any
+  tags: Record<string, string>
+}

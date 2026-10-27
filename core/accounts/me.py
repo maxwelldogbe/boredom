@@ -56,9 +56,12 @@ def stats(user: User) -> dict[str, Any]:
 def recent_players(user: User, now: datetime | None = None) -> list[dict[str, Any]]:
     """Registered players who shared a completed session with `user` in the window, newest first.
 
-    Guests, the requester, disabled accounts and deleted accounts (whose rows have no user)
-    are left out. gamesTogether counts shared completed sessions within the window.
+    Guests, the requester, disabled accounts, deleted accounts (whose rows have no user) and
+    anyone blocked in either direction are left out. gamesTogether counts shared completed
+    sessions within the window; relationship is none, friends, requested or incoming.
     """
+    from social.services import blocked_ids, relationships  # social builds on accounts
+
     since = (now or timezone.now()) - timedelta(days=RECENT_PLAYERS_DAYS)
     mine = GameSession.objects.filter(
         status=GameSession.Status.COMPLETED, ended_at__gte=since, participations__user=user
@@ -66,6 +69,7 @@ def recent_players(user: User, now: datetime | None = None) -> list[dict[str, An
     shared = (
         GameParticipation.objects.filter(session__in=mine, user__isnull=False, user__is_active=True)
         .exclude(user=user)
+        .exclude(user_id__in=blocked_ids(user.pk))
         .values_list("user_id", "session_id", "session__ended_at", "session__game_id")
     )
     together: dict[int, dict[str, Any]] = {}
@@ -78,6 +82,7 @@ def recent_players(user: User, now: datetime | None = None) -> list[dict[str, An
     newest = newest[:RECENT_PLAYERS_MAX]
     profiles = Profile.objects.filter(user_id__in=[uid for uid, _ in newest]).select_related("user")
     by_user = {p.user_id: p for p in profiles}
+    related = relationships(user)
     out = []
     for user_id, entry in newest:
         profile = by_user.get(user_id)
@@ -92,6 +97,7 @@ def recent_players(user: User, now: datetime | None = None) -> list[dict[str, An
                 "lastPlayedAt": iso(entry["last"]),
                 "gamesTogether": len(entry["sessions"]),
                 "lastGameId": entry["game"],
+                "relationship": related.get(user_id, "none"),
             }
         )
     return out

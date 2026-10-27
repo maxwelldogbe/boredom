@@ -4,6 +4,8 @@ import { C } from './constants'
 import { readItem, removeItem, writeItem } from './storage'
 
 export const PROFILE_KEY = 'partypack.profile'
+/** The guest id kept across a profile reset: the server counts free games by it. */
+const KEPT_ID_KEY = 'partypack.profileId'
 
 export interface Stats {
   gamesPlayed: number
@@ -111,13 +113,15 @@ export function saveProfile(profile: Profile): void {
 }
 
 export function resetProfile(): void {
+  const old = getProfile()
+  if (old) writeItem(KEPT_ID_KEY, old.id)
   removeItem(PROFILE_KEY)
 }
 
 /** Build a brand-new guest profile from the setup form. */
 export function createProfile(fields: ProfileFields): Profile {
   return {
-    id: newId(),
+    id: readItem(KEPT_ID_KEY) ?? newId(),
     nickname: fields.nickname.trim(),
     color: fields.color,
     type: 'guest',
@@ -142,10 +146,11 @@ export function exportProfile(profile: Profile): void {
 export type ImportResult = { ok: true; profile: Profile } | { ok: false; error: string }
 
 /** Validate an exported file's text; does not save. */
-export function importProfile(text: string): ImportResult {
+/** `keepId`: the current profile's id, used instead of any id in the file. */
+export function importProfile(text: string, keepId?: string): ImportResult {
   try {
     const profile = parseProfile(JSON.parse(text))
-    if (profile) return { ok: true, profile }
+    if (profile) return { ok: true, profile: keepId ? { ...profile, id: keepId } : profile }
   } catch {
     // fall through
   }

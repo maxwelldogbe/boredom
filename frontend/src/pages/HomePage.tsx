@@ -1,6 +1,9 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '../components/Button'
+import { CommunityLink } from '../components/CommunityLink'
+import { OnlineFriends } from '../components/Invites'
+import { LockWall } from '../components/LockWall'
 import { Logo } from '../components/Logo'
 import { PlayerChip } from '../components/PlayerChip'
 import { RoomCodeInput } from '../components/RoomCodeInput'
@@ -9,18 +12,26 @@ import { getProfile } from '../lib/profileStore'
 import { isRoomCode } from '../lib/roomCode'
 import { SLOW_SERVER_MESSAGE, withSlowNotice } from '../lib/slow'
 import { useRoomActions, useRoomState } from '../state/context'
+import { useGuestQuota } from '../state/guestQuotaContext'
+import { useSocial } from '../state/socialContext'
 
 /** Create a room, or join one with a 4-letter code. */
 export default function HomePage() {
   const navigate = useNavigate()
   const { createRoom, joinRoom } = useRoomActions()
   const { seatLost } = useRoomState()
+  const { signedIn, incomingCount } = useSocial()
   const [profile] = useState(() => getProfile())
   const [joining, setJoining] = useState(false)
   const [code, setCode] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [slow, setSlow] = useState(false)
+  const { locked, refresh, handleError } = useGuestQuota()
+
+  useEffect(() => {
+    if (profile) refresh()
+  }, [profile, refresh])
 
   const create = async () => {
     if (!profile) return navigate('/setup?next=%2F')
@@ -30,6 +41,7 @@ export default function HomePage() {
       const roomCode = await withSlowNotice(createRoom, setSlow)
       navigate(`/room/${roomCode}`)
     } catch (err) {
+      handleError(err)
       setError(friendlyError(err))
       setBusy(false)
     }
@@ -48,6 +60,7 @@ export default function HomePage() {
       await withSlowNotice(() => joinRoom(code), setSlow)
       navigate(`/room/${code}`)
     } catch (err) {
+      handleError(err)
       setError(friendlyError(err, code))
       setBusy(false)
     }
@@ -71,9 +84,10 @@ export default function HomePage() {
         </p>
       )}
 
+      {locked && <LockWall />}
       {!joining ? (
         <div className="stack home__actions">
-          <Button block onClick={create} disabled={busy}>
+          <Button block onClick={create} disabled={busy || locked}>
             {busy ? 'Creating room…' : 'Create room'}
           </Button>
           <Button
@@ -83,7 +97,7 @@ export default function HomePage() {
               setJoining(true)
               setError(null)
             }}
-            disabled={busy}
+            disabled={busy || locked}
           >
             Join room
           </Button>
@@ -92,7 +106,7 @@ export default function HomePage() {
         <form className="stack home__actions" onSubmit={join} noValidate>
           <h2 className="home__join-title">Enter the room code</h2>
           <RoomCodeInput value={code} onChange={setCode} disabled={busy} invalid={Boolean(error)} />
-          <Button type="submit" block disabled={busy || code.length < 4}>
+          <Button type="submit" block disabled={busy || locked || code.length < 4}>
             {busy ? 'Joining…' : 'Join'}
           </Button>
           <Button
@@ -115,6 +129,19 @@ export default function HomePage() {
           {error}
         </p>
       )}
+      {!joining && <CommunityLink note />}
+      {!joining && <OnlineFriends />}
+      {!joining && profile && (
+        <Link to="/friends" className="btn btn--secondary btn--block home__friends">
+          <span aria-hidden="true">👥 </span>
+          Friends
+          {signedIn && incomingCount > 0 && (
+            <span className="count-badge" aria-label={`, ${incomingCount} new request${incomingCount === 1 ? '' : 's'}`}>
+              {incomingCount}
+            </span>
+          )}
+        </Link>
+      )}
       {!joining && (
         <p className="home__account-link">
           {!profile ? (
@@ -122,6 +149,11 @@ export default function HomePage() {
           ) : profile.type === 'guest' ? (
             <Link to="/profile">Save your profile with a free account</Link>
           ) : null}
+        </p>
+      )}
+      {!joining && (
+        <p className="home__about">
+          <Link to="/about">About boredom</Link>
         </p>
       )}
       {slow && (

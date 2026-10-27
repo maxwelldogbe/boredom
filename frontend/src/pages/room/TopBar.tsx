@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button } from '../../components/Button'
+import { CommunityLink } from '../../components/CommunityLink'
 import { Logo } from '../../components/Logo'
 import { Modal } from '../../components/Modal'
 import { ReactionButton } from '../../components/Reactions'
@@ -73,6 +74,7 @@ export function TopBar({ room, me, onLeaving, onLeft, onHowToPlay = () => {} }: 
             <button type="button" aria-pressed={reactionsOff} onClick={() => setReactionsHidden(!reactionsOff)}>
               {reactionsOff ? '✓ ' : ''}Hide reactions
             </button>
+            <CommunityLink variant="menu" onClick={() => setMenuOpen(false)} />
           </div>
         )}
       </div>

@@ -1,14 +1,25 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useSearchParams } from 'react-router-dom'
 import { AccountSync } from './components/AccountSync'
+import { InviteBanners } from './components/Invites'
 import { RequireProfile } from './components/RequireProfile'
 import { ToastHost } from './components/ToastHost'
+import AboutPage from './pages/AboutPage'
+import FriendsPage from './pages/FriendsPage'
 import HomePage from './pages/HomePage'
 import JoinPage from './pages/JoinPage'
 import ProfilePage from './pages/ProfilePage'
 import RoomPage from './pages/RoomPage'
 import SetupPage from './pages/SetupPage'
+import { GuestQuotaProvider } from './state/GuestQuotaProvider'
 import { RoomProvider } from './state/RoomProvider'
+import { SocialProvider } from './state/SocialProvider'
+
+/** /signup: the Create account form on /profile, keeping where to go afterwards. */
+function SignupRedirect() {
+  const next = useSearchParams()[0].get('next')
+  return <Navigate to={next ? `/profile?next=${encodeURIComponent(next)}` : '/profile'} replace />
+}
 
 // The staff dashboard is a separate chunk: players never download it.
 const AdminApp = lazy(() => import('./admin/AdminApp'))
@@ -23,6 +34,23 @@ export function AppRoutes() {
         element={
           <RequireProfile>
             <ProfilePage />
+          </RequireProfile>
+        }
+      />
+      <Route path="/about" element={<AboutPage />} />
+      <Route
+        path="/signup"
+        element={
+          <RequireProfile>
+            <SignupRedirect />
+          </RequireProfile>
+        }
+      />
+      <Route
+        path="/friends"
+        element={
+          <RequireProfile>
+            <FriendsPage />
           </RequireProfile>
         }
       />
@@ -59,9 +87,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <RoomProvider>
-        <AccountSync />
-        <AppRoutes />
-        <ToastHost />
+        <SocialProvider>
+          <GuestQuotaProvider>
+            <AccountSync />
+            <InviteBanners />
+            <AppRoutes />
+            <ToastHost />
+          </GuestQuotaProvider>
+        </SocialProvider>
       </RoomProvider>
     </BrowserRouter>
   )

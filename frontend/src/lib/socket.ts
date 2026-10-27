@@ -17,9 +17,12 @@ export type SocketStatus = 'connecting' | 'connected' | 'disconnected'
 /** A failed request: a protocol error code, or a transport problem. */
 export class RequestError extends Error {
   readonly code: ErrorCode | 'DISCONNECTED' | 'TIMEOUT'
-  constructor(code: RequestError['code'], message: string) {
+  /** Extra details some errors carry (GUEST_LIMIT). */
+  readonly data?: Record<string, unknown>
+  constructor(code: RequestError['code'], message: string, data?: Record<string, unknown>) {
     super(message)
     this.code = code
+    this.data = data
   }
 }
 
@@ -53,6 +56,7 @@ export class GameSocket {
   private pushListeners = new Set<Listener<PushMessage>>()
   private statusListeners = new Set<Listener<SocketStatus>>()
   private openListeners = new Set<Listener<boolean>>()
+  private connectListeners = new Set<Listener<void>>()
   private readonly opts: Required<GameSocketOptions>
 
   constructor(options: GameSocketOptions) {
@@ -77,6 +81,8 @@ export class GameSocket {
       this.everConnected = true
       this.attempts = 0
       this.setStatus('connected')
+      // Requests made here (auth:hello) go out before anything queued while offline.
+      this.connectListeners.forEach((fn) => fn())
       for (const [, p] of this.pending) {
         if (!p.sent) {
           ws.send(p.frame)
@@ -141,6 +147,12 @@ export class GameSocket {
     return () => this.statusListeners.delete(fn)
   }
 
+  /** Called on every successful open, before queued requests are sent. */
+  onConnect(fn: Listener<void>): () => void {
+    this.connectListeners.add(fn)
+    return () => this.connectListeners.delete(fn)
+  }
+
   /** Called on every successful open; the argument is true for re-connections. */
   onOpen(fn: Listener<boolean>): () => void {
     this.openListeners.add(fn)
@@ -162,7 +174,7 @@ export class GameSocket {
       this.pending.delete(msg.id)
       clearTimeout(entry.timer)
       if (msg.ok) entry.resolve(msg.data)
-      else entry.reject(new RequestError(msg.error.code, msg.error.message))
+      else entry.reject(new RequestError(msg.error.code, msg.error.message, msg.error.data))
       return
     }
     this.pushListeners.forEach((fn) => fn(msg as PushMessage))

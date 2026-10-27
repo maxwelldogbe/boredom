@@ -15,6 +15,8 @@ from typing import Any
 from channels.layers import get_channel_layer
 
 from analytics.keys import guest_key
+from analytics.quota import GuestQuotaStore
+from analytics.quota import status as quota_status
 from games import registry
 from games.base import GameError
 from games.constants import (
@@ -36,7 +38,8 @@ from rooms.game_flow import GameFlowMixin
 from rooms.models_types import Player, Profile, Room, RoomError
 from rooms.presence import PresenceMixin
 from rooms.upkeep import UpkeepMixin
-from rooms.validation import unique_nickname
+from rooms.validation import PROFILE_ID_MAX, unique_nickname
+from social.hub import SocialHub
 
 logger = logging.getLogger("rooms.manager")
 
@@ -75,6 +78,8 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
         self.cleanup_interval_ms: float = ROOM_CLEANUP_INTERVAL_MS
         self.reaction_cooldown_ms: float = REACTION_COOLDOWN_MS
         self._cleanup_task: asyncio.Task[None] | None = None
+        self.social = SocialHub(self)  # friends' presence and room invites
+        self.quota = GuestQuotaStore()  # guests' free games
 
     # ----- helpers -------------------------------------------------------------------
 
@@ -138,6 +143,7 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
 
     async def _broadcast_room(self, room: Room) -> None:
         await self._push(room, {"type": "room:state", "data": room.to_public()})
+        await self.social.room_changed(room)
 
     def _new_player(self, room: Room, profile: Profile, channel: str) -> Player:
         nickname = unique_nickname(profile.nickname, [p.nickname for p in room.players])
@@ -156,8 +162,31 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
 
     # ----- requests ------------------------------------------------------------------
 
+    async def _require_free_games(self, profile: Profile) -> None:
+        """A new seat for a guest who has used up their free games: GUEST_LIMIT."""
+        if profile.user_id is not None:
+            return
+        key = guest_key(profile.id)
+        locked_until = (await self.quota.read([key], self.clock())).get(key, {}).get("lockedUntil")
+        if locked_until is not None:
+            raise RoomError(
+                "GUEST_LIMIT",
+                "You've used your games for now.",
+                {"lockedUntil": locked_until},
+            )
+
+    async def guest_quota(self, raw: Any) -> dict[str, Any]:
+        """guest:quota: a guest's free games left, for the home screen."""
+        profile_id = raw.get("id") if isinstance(raw, dict) else None
+        if not isinstance(profile_id, str) or not 0 < len(profile_id.strip()) <= PROFILE_ID_MAX:
+            raise RoomError("INVALID_ACTION", "Profile id is invalid.")
+        key, now = guest_key(profile_id.strip()), self.clock()
+        found = (await self.quota.read([key], now)).get(key)
+        return {**(found or quota_status(None, now)), "serverNow": now}
+
     async def create_room(self, channel: str, profile: Profile) -> dict[str, Any]:
         """Create a room with the sender as host."""
+        await self._require_free_games(profile)
         now = self.clock()
         room = Room(code=self._new_code(), host_id="", created_at=now, last_activity=now)
         self.rooms[room.code] = room
@@ -182,6 +211,15 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
                 room, profile.user_id
             )
             if seat is not None:
+                if (
+                    seat.user_id is None
+                    and profile.user_id is not None
+                    and room.status != "playing"
+                    and self._seat_for_account(room, profile.user_id) is None
+                ):
+                    # A guest who just signed up or logged in keeps the seat (id, nickname,
+                    # avatar, score) and it becomes theirs as an account.
+                    seat.user_id, seat.guest_key = profile.user_id, ""
                 if seat.channel and seat.channel != channel:
                     await self._detach(seat.channel, room.code, "You joined from another tab.")
                 seat.channel, seat.online, seat.offline_since = channel, True, None
@@ -193,6 +231,7 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
                 raise RoomError("GAME_IN_PROGRESS", "A game is in progress. Join when it ends.")
             if len(room.players) >= MAX_PLAYERS:
                 raise RoomError("ROOM_FULL", f"This room is full ({MAX_PLAYERS} players).")
+            await self._require_free_games(profile)
             player = self._new_player(room, profile, channel)
             room.players.append(player)
             await self._broadcast_room(room)

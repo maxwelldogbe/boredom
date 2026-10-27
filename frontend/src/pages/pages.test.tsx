@@ -52,7 +52,7 @@ describe('home', () => {
     fireEvent.paste(screen.getByLabelText('Room code letter 1'), { clipboardData: { getData: () => 'ABIO' } })
     fireEvent.click(screen.getByRole('button', { name: 'Join' }))
     expect(screen.getByRole('alert')).toHaveTextContent("That doesn't look like a room code.")
-    expect(ws.sent).toHaveLength(0)
+    expect(ws.frames().map((f) => f.type)).toEqual(['guest:quota']) // only the free-games check
   })
 
   it('shows ROOM_NOT_FOUND inline', async () => {

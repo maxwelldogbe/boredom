@@ -18,10 +18,23 @@ export type ErrorCode =
   | 'NOT_IN_ROOM'
   | 'UNKNOWN_EVENT'
   | 'BAD_MESSAGE'
+  | 'UNAUTHORIZED'
+  | 'NOT_FRIENDS'
+  | 'TARGET_UNAVAILABLE'
+  | 'INVITE_EXPIRED'
+  | 'INVITE_INVALID'
+  | 'SELF'
+  | 'ALREADY_FRIENDS'
+  | 'ALREADY_REQUESTED'
+  | 'LIMIT_REACHED'
+  | 'INVALID_INPUT'
+  | 'GUEST_LIMIT'
 
 export interface ProtocolError {
   code: ErrorCode
   message: string
+  /** GUEST_LIMIT: {lockedUntil} on room:create / room:join, {nicknames} on game:start. */
+  data?: Record<string, unknown>
 }
 
 /** DiceBear avatar, assigned by the server per seat. The client builds the image URL. */
@@ -51,6 +64,8 @@ export interface Player {
   joinedAt: number
   /** Lobby ready check; always false for the host. Missing from servers before the ready check. */
   ready?: boolean
+  /** A guest out of free games (sits games out). Missing from older servers. */
+  locked?: boolean
 }
 
 export type RoomStatus = 'lobby' | 'playing' | 'between_rounds' | 'finished'
@@ -101,6 +116,46 @@ export interface PeekData {
 
 type Empty = Record<string, never>
 
+// ----- friends, presence and invites (PROTOCOL.md section 9) -----
+
+export type FriendStatus = 'online' | 'in_lobby' | 'in_game' | 'busy' | 'offline'
+export type PresenceMode = 'online' | 'busy' | 'offline'
+export type ReportReason = 'harassment' | 'inappropriate_name_or_avatar' | 'cheating' | 'spam' | 'other'
+
+/** A player named by their public tag (shown as "#" + tag). */
+export interface PlayerCard {
+  tag: string
+  nickname: string
+  avatar: Avatar
+  color: string
+}
+
+export interface FriendRequestEntry extends PlayerCard {
+  requestId: number
+  /** ISO-8601 UTC */
+  createdAt: string
+}
+
+/** invite:received: never contains the room code. */
+export interface InvitePush {
+  inviteId: string
+  fromTag: string
+  fromNickname: string
+  fromAvatar: Avatar
+  gameId: GameId | null
+  /** Server epoch ms; count down `expiresAt - serverNow` from arrival. */
+  expiresAt: number
+  serverNow: number
+}
+
+/** guest:quota ack and push. Times are server epoch ms. */
+export interface GuestQuota {
+  remaining: number
+  limit: number
+  lockedUntil: number | null
+  serverNow: number
+}
+
 /** Every request type with its payload and its ack `data`. */
 export interface RequestMap {
   'room:create': { payload: { profile: WireProfile; authToken?: string }; data: SeatData }
@@ -120,6 +175,14 @@ export interface RequestMap {
   'game:playAgain': { payload: Empty; data: Empty }
   'room:ready': { payload: { ready: boolean }; data: Empty }
   'room:react': { payload: { emoji: string }; data: Empty }
+  'guest:quota': { payload: { profile: { id: string } }; data: GuestQuota }
+  'auth:hello': { payload: { authToken?: string }; data: { presence: PresenceMode } }
+  'invite:send': { payload: { tag: string }; data: Empty }
+  'invite:accept': { payload: { inviteId: string }; data: { code: string } }
+  'invite:decline': { payload: { inviteId: string }; data: Empty }
+  'friends:requestByPlayer': { payload: { playerId: string }; data: { status: 'requested' | 'friends' } }
+  'player:block': { payload: { playerId: string }; data: Empty }
+  'player:report': { payload: { playerId: string; reason: ReportReason; note?: string }; data: Empty }
 }
 
 export type RequestType = keyof RequestMap
@@ -167,5 +230,14 @@ export type PushMessage =
   | { type: 'room:event'; data: RoomEventPush }
   | { type: 'room:reaction'; data: ReactionPush }
   | { type: 'error'; data: ProtocolError }
+  | { type: 'friends:snapshot'; data: { friends: { tag: string; status: FriendStatus }[] } }
+  | { type: 'friends:presence'; data: { tag: string; status: FriendStatus } }
+  | { type: 'friends:request'; data: { request: FriendRequestEntry } }
+  | { type: 'friends:accepted'; data: { tag: string; nickname: string } }
+  | { type: 'friends:removed'; data: { tag: string } }
+  | { type: 'invite:received'; data: InvitePush }
+  | { type: 'invite:expired'; data: { inviteId: string } }
+  | { type: 'invite:cleared'; data: { inviteId: string } }
+  | { type: 'guest:quota'; data: GuestQuota }
 
 export type ServerMessage = AckMessage | PushMessage

@@ -1,13 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../../components/Button'
+import { InviteFriendsButton } from '../../components/Invites'
+import { FreeGamesLeft, LockWall } from '../../components/LockWall'
 import { Modal } from '../../components/Modal'
 import { PlayerCards } from '../../components/PlayerCards'
 import { gameUi } from '../../games/registry'
 import { hasGameInstructions } from '../../games/instructions'
 import { copyText } from '../../lib/clipboard'
 import { C } from '../../lib/constants'
-import { friendlyError } from '../../lib/errors'
+import { errorCode, friendlyError } from '../../lib/errors'
+import { RequestError } from '../../lib/socket'
 import { useRoomActions } from '../../state/context'
+import { useGuestQuota } from '../../state/guestQuotaContext'
+import { useSocial } from '../../state/socialContext'
 import type { RoomPublic } from '../../types/protocol'
 import { GamePicker } from './GamePicker'
 import { InvitePanel } from './InvitePanel'
@@ -16,6 +21,8 @@ import { startBlocker } from './startBlocker'
 
 export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; me: string; onHowToPlay?: () => void }) {
   const { setReady, startGame, toast } = useRoomActions()
+  const { signedIn } = useSocial()
+  const { refresh, handleError } = useGuestQuota()
   const [starting, setStarting] = useState(false)
   const [readyBusy, setReadyBusy] = useState(false)
   const [confirmStart, setConfirmStart] = useState(false)
@@ -26,6 +33,12 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
   const allReady = check !== null && everyoneReady(check)
   const waitingFor = check ? notReady(room) : []
   const imReady = room.players.some((p) => p.id === me && p.ready === true)
+  const canInvite = signedIn && room.players.some((p) => p.id === me && p.type === 'registered')
+  const meLocked = room.players.some((p) => p.id === me && p.locked === true)
+
+  useEffect(() => {
+    if (meLocked) refresh()
+  }, [meLocked, refresh])
 
   const start = async () => {
     setConfirmStart(false)
@@ -33,7 +46,14 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
     try {
       await startGame()
     } catch (err) {
-      toast(friendlyError(err), 'error')
+      handleError(err)
+      const names = err instanceof RequestError ? (err.data?.nicknames as string[] | undefined) : undefined
+      toast(
+        errorCode(err) === 'GUEST_LIMIT' && names?.length
+          ? `${new Intl.ListFormat('en').format(names)} can't play right now. They need an account, or wait until more players join.`
+          : friendlyError(err),
+        'error',
+      )
     } finally {
       setStarting(false)
     }
@@ -54,12 +74,15 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
   }
 
   const notes = (id: string) => {
-    if (id === room.hostId) return ['👑 Host']
-    return room.players.some((p) => p.id === id && p.ready === true) ? ['✓ Ready'] : []
+    const used = room.players.some((p) => p.id === id && p.locked === true) ? ['Games used'] : []
+    if (id === room.hostId) return ['👑 Host', ...used]
+    return room.players.some((p) => p.id === id && p.ready === true) ? ['✓ Ready', ...used] : used
   }
 
   return (
     <div className="stack lobby">
+      <LockWall />
+      <FreeGamesLeft />
       {!isHost && (
         <section className="card stack lobby__next" aria-label="Next game">
           {selected ? (
@@ -103,6 +126,8 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
         <span className="lobby__code-value">{room.code}</span>
         <span className="lobby__code-hint">Tap to copy</span>
       </button>
+
+      {canInvite && <InviteFriendsButton />}
 
       <InvitePanel code={room.code} />
 

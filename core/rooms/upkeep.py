@@ -24,6 +24,7 @@ class UpkeepMixin:
     idle_ttl_ms: float
     cleanup_interval_ms: float
     _cleanup_task: asyncio.Task[None] | None
+    social: Any  # social.hub.SocialHub
 
     # ----- host transfer ---------------------------------------------------------------
 
@@ -109,5 +110,5 @@ class UpkeepMixin:
         for player in room.players:
             if player.channel:
                 await self._detach(player.channel, room.code, "This room was closed.")
+        await self.social.room_changed(room)
         logger.info("Room %s deleted", room.code)
-

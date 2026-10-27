@@ -17,6 +17,7 @@ from games.constants import AVATAR_CHANGE_DAYS, STATS_MAX_IMPORT_GAMES
 from rooms.avatars import SystemAvatarRng, assign_avatar, validate_avatar
 from rooms.models_types import Avatar, RoomError
 from rooms.models_types import Profile as RoomProfile
+from social import notify
 
 logger = logging.getLogger("accounts")
 
@@ -85,13 +86,16 @@ def delete_account(user: User) -> None:
 
     The person's game participations and activity events are kept, so every total stays
     correct, but lose their link to the account and their nickname snapshot. The user, the
-    saved profile and the stats are then deleted.
+    saved profile and the stats are then deleted, and with them (by cascade) the account's
+    friendships, friend requests and blocks. Reports by or about the account are kept with
+    the account link set to null; the reported nickname snapshot stays.
     """
     user_id = user.pk
     with transaction.atomic():
         GameParticipation.objects.filter(user=user).update(user=None, nickname=DELETED_NICKNAME)
         ActivityEvent.objects.filter(user=user).update(user=None)
         user.delete()
+    notify.account_gone(user_id)
     logger.info("Account deleted: user=%s", user_id)
     recorder.record_event("account_deleted")
 

@@ -4,7 +4,9 @@ import type { ReactElement } from 'react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { createProfile, saveProfile } from '../lib/profileStore'
 import { GameSocket } from '../lib/socket'
+import { GuestQuotaProvider } from '../state/GuestQuotaProvider'
 import { RoomProvider } from '../state/RoomProvider'
+import { SocialProvider } from '../state/SocialProvider'
 import { asWebSocket, FakeWebSocket } from './fakeWebSocket'
 
 export function saveTestProfile(nickname = 'Sam') {
@@ -18,10 +20,14 @@ export function renderWithRoom(ui: ReactElement, { route = '/', path = '*' }: { 
   const result = render(
     <MemoryRouter initialEntries={[route]}>
       <RoomProvider socket={socket}>
-        <Routes>
-          <Route path={path} element={ui} />
-          <Route path="*" element={<p>Other page</p>} />
-        </Routes>
+        <SocialProvider>
+          <GuestQuotaProvider>
+            <Routes>
+              <Route path={path} element={ui} />
+              <Route path="*" element={<p>Other page</p>} />
+            </Routes>
+          </GuestQuotaProvider>
+        </SocialProvider>
       </RoomProvider>
     </MemoryRouter>,
   )

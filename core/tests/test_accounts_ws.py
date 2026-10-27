@@ -190,7 +190,7 @@ async def test_room_state_exposes_only_type(connect) -> None:
     for player in state["players"]:
         assert set(player) == {
             "id", "type", "nickname", "color", "avatar", "online", "offlineSince", "inGame",
-            "joinedAt", "ready",
+            "joinedAt", "ready", "locked",
         }
     assert "profileId" not in text and "prof-Ann" not in text
     assert "secret_name" not in text and token not in text
@@ -280,3 +280,42 @@ async def test_tokens_never_logged(connect, caplog) -> None:
     assert token not in caplog.text
     assert "not-a-real-token" not in caplog.text
     assert PASSWORD not in caplog.text
+
+
+async def test_guest_seat_becomes_registered_when_reclaimed_with_a_login(connect) -> None:
+    host, created = await create(connect, None, "Host")
+    code = created["data"]["room"]["code"]
+    guest, ack = await join(connect, code, None, "Ann")
+    before = seat(ack["data"]["room"], ack["data"]["playerId"])
+    assert before["type"] == "guest"
+    _, token = await make_account()
+    _, again = await join(connect, code, token, roomToken=ack["data"]["roomToken"])
+    assert again["ok"], again
+    assert again["data"]["playerId"] == ack["data"]["playerId"]
+    after = seat(again["data"]["room"], again["data"]["playerId"])
+    assert after["type"] == "registered"
+    assert (after["nickname"], after["avatar"]) == (before["nickname"], before["avatar"])
+    assert len(again["data"]["room"]["players"]) == 2
+    # The account now owns the seat: joining with the token alone finds it.
+    _, by_account = await join(connect, code, token)
+    assert by_account["data"]["playerId"] == ack["data"]["playerId"]
+
+
+async def test_guest_seat_is_not_upgraded_mid_game_or_when_the_account_has_a_seat(connect) -> None:
+    _, token = await make_account()
+    host, created = await create(connect, token)
+    code = created["data"]["room"]["code"]
+    _, ann = await join(connect, code, None, "Ann")
+    _, again = await join(connect, code, token, roomToken=ann["data"]["roomToken"])
+    assert again["data"]["playerId"] == ann["data"]["playerId"]
+    assert seat(again["data"]["room"], ann["data"]["playerId"])["type"] == "guest"
+
+    other_host, other = await create(connect, None, "Host")
+    other_code = other["data"]["room"]["code"]
+    _, bob = await join(connect, other_code, None, "Bob")
+    assert (await other_host.request("room:selectGame", {"gameId": "dummy", "settings": {}}))["ok"]
+    assert (await other_host.request("game:start"))["ok"]
+    _, token2 = await make_account("bob_1", "Bob")
+    _, mid = await join(connect, other_code, token2, roomToken=bob["data"]["roomToken"])
+    assert mid["ok"], mid
+    assert seat(mid["data"]["room"], bob["data"]["playerId"])["type"] == "guest"

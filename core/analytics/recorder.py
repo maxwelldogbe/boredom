@@ -13,6 +13,7 @@ a room lock.
 
 import asyncio
 import logging
+import time
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import Decimal
@@ -24,6 +25,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from analytics.models import ActivityEvent, GameParticipation, GameSession
+from analytics.quota import prune_quota
 from analytics.retention import prune_events
 
 logger = logging.getLogger("analytics")
@@ -241,6 +243,9 @@ class Recorder:
                 removed = await database_sync_to_async(prune_events)()
                 if removed:
                     logger.info("Pruned %s old activity events", removed)
+                expired = await database_sync_to_async(prune_quota)(time.time() * 1000)
+                if expired:
+                    logger.info("Pruned %s expired guest quotas", expired)
             except Exception:
                 logger.exception("Activity retention failed")
             await asyncio.sleep(RETENTION_INTERVAL_S)

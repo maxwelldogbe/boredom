@@ -3,10 +3,11 @@ import { forgetAccount, getAuthToken } from '../lib/account'
 import { C } from '../lib/constants'
 import { reactionsHidden } from '../lib/reactionsPref'
 import { wsUrl } from '../lib/endpoints'
+import { countFinishedGame } from '../lib/guestPopup'
 import { getProfile, saveProfile, toWireProfile } from '../lib/profileStore'
 import { clearRoomToken, getRoomToken, setRoomToken } from '../lib/roomTokens'
 import { GameSocket, RequestError } from '../lib/socket'
-import type { SeatData } from '../types/protocol'
+import type { GameResult, SeatData } from '../types/protocol'
 import { RoomActionsContext, RoomStateContext, type RoomActions } from './context'
 import { initialRoomState, roomReducer } from './roomReducer'
 
@@ -117,9 +118,15 @@ export function RoomProvider({ children, socket: given }: { children: ReactNode;
         case 'game:view':
           dispatch({ type: 'gameView', push: msg.data, receivedAt: Date.now() })
           break
-        case 'game:event':
+        case 'game:event': {
           dispatch({ type: 'gameEvent', event: msg.data })
+          // gameOver only comes with a finished game (completed or forfeit), never host_ended.
+          const results = msg.data.kind === 'gameOver' ? (msg.data.data as { results?: GameResult[] }).results : null
+          if (results?.some((r) => r.playerId === stateRef.current.playerId) && getProfile()?.type === 'guest') {
+            countFinishedGame()
+          }
           break
+        }
         case 'room:event': {
           const event = msg.data
           const current = stateRef.current

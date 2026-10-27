@@ -117,3 +117,17 @@ class ActivityEvent(models.Model):
 
     def __str__(self) -> str:
         return f"{self.kind} {self.occurred_at:%Y-%m-%d %H:%M}"
+
+
+class GuestQuota(models.Model):
+    """A guest's free games in the current window (GUEST_FREE_GAMES per GUEST_WINDOW_MS).
+
+    Kept apart from the activity tables, whose queue may drop events: this one enforces.
+    """
+
+    guest_key = models.CharField(max_length=32, unique=True)
+    window_start = models.BigIntegerField()  # epoch ms of the window's first counted game
+    plays = models.PositiveIntegerField(default=0)
+
+    def __str__(self) -> str:
+        return f"{self.guest_key} {self.plays}"

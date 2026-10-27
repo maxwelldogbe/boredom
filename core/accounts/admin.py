@@ -12,6 +12,7 @@ from django.http import HttpRequest
 from django.template.response import TemplateResponse
 
 from accounts import services
+from social import notify
 
 
 def set_active(request: HttpRequest, model_admin: admin.ModelAdmin, users: QuerySet, active: bool):
@@ -19,6 +20,8 @@ def set_active(request: HttpRequest, model_admin: admin.ModelAdmin, users: Query
         if user.is_active != active:
             user.is_active = active
             user.save(update_fields=["is_active"])
+            if not active:
+                notify.account_gone(user.pk)
             model_admin.log_change(
                 request, user, "Enabled account" if active else "Disabled account"
             )
