@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { Button } from '../../components/Button'
 import { Logo } from '../../components/Logo'
 import { Modal } from '../../components/Modal'
+import { ReactionButton } from '../../components/Reactions'
 import { hasGameInstructions } from '../../games/instructions'
 import { friendlyError } from '../../lib/errors'
 import { formatPoints } from '../../lib/format'
+import { setReactionsHidden, useReactionsHidden } from '../../lib/reactionsPref'
 import { useRoomActions } from '../../state/context'
 import type { RoomPublic } from '../../types/protocol'
 
@@ -24,6 +26,7 @@ export function TopBar({ room, me, onLeaving, onLeft, onHowToPlay = () => {} }: 
   const [forfeitBusy, setForfeitBusy] = useState(false)
   const [busy, setBusy] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const reactionsOff = useReactionsHidden()
   const playing = room.status === 'playing'
   const stillPlaying = room.players.some((player) => player.id === me && player.inGame)
   const activeOpponents = room.players.filter((player) => player.inGame && player.id !== me)
@@ -49,13 +52,14 @@ export function TopBar({ room, me, onLeaving, onLeft, onHowToPlay = () => {} }: 
         </span>
       </span>
       <span className="topbar__score">Score: {formatPoints(room.scoreboard[me] ?? 0)}</span>
-      {hasGameInstructions(room.selectedGame) && (
-        <div className="topbar__menu">
-          <Button variant="ghost" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
-            Menu
-          </Button>
-          {menuOpen && (
-            <div className="topbar__menu-panel">
+      <ReactionButton />
+      <div className="topbar__menu">
+        <Button variant="ghost" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
+          Menu
+        </Button>
+        {menuOpen && (
+          <div className="topbar__menu-panel">
+            {hasGameInstructions(room.selectedGame) && (
               <button
                 type="button"
                 onClick={() => {
@@ -65,10 +69,13 @@ export function TopBar({ room, me, onLeaving, onLeft, onHowToPlay = () => {} }: 
               >
                 How to play
               </button>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+            <button type="button" aria-pressed={reactionsOff} onClick={() => setReactionsHidden(!reactionsOff)}>
+              {reactionsOff ? '✓ ' : ''}Hide reactions
+            </button>
+          </div>
+        )}
+      </div>
       {playing && stillPlaying && (
         <Button variant="secondary" className="topbar__forfeit" onClick={() => setForfeitConfirm(true)}>
           🏳️ Forfeit

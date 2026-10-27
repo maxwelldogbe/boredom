@@ -34,6 +34,7 @@ export function guessRaceInstructions(context: InstructionContext): GameInstruct
   const mode = modeFrom(context.settings)
   const rounds = Number(context.settings.rounds) || 10
   const roundSeconds = context.constants.GUESS_ROUND_MS / 1000
+  const windowSeconds = context.constants.GUESS_SOLVED_WINDOW_MS / 1000
   const hint1 = context.constants.GUESS_HINT1_MS / 1000
   const hint2 = context.constants.GUESS_HINT2_MS / 1000
   const first = context.constants.GUESS_RANK_POINTS_FIRST
@@ -76,6 +77,7 @@ export function guessRaceInstructions(context: InstructionContext): GameInstruct
 
   const rules = [
     `You have ${roundSeconds} seconds for each puzzle.`,
+    `Once someone solves it, everyone else has ${windowSeconds} seconds left to solve it too.`,
     pointsRule(context.playerCount, first, step, floor),
     cluesRule(mode, hint1, hint2),
     "Capital letters, spaces, and punctuation don't matter.",
@@ -91,7 +93,7 @@ export function guessRaceInstructions(context: InstructionContext): GameInstruct
       firstStep[mode],
       'Type your guess and press Enter or tap Send. You can guess as many times as you like.',
       'Everyone who solves the puzzle earns points. The faster you solve it, the more points you get.',
-      'The round ends when every player has solved it or time runs out. The answer is shown, then the next puzzle starts.',
+      `As soon as someone solves it, the timer drops to ${windowSeconds} seconds for everyone else. The round ends when that time is up, when every player has solved it, or when the ${roundSeconds} seconds run out. The answer is shown, then the next puzzle starts.`,
       `After ${rounds} puzzles, the player with the most points wins.`,
     ],
     rules,

@@ -14,12 +14,16 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.http import HttpRequest, JsonResponse
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
+from accounts import me as me_data
 from accounts import services
 from accounts.ratelimit import KeyedRateLimiter, login_limiter, register_limiter
+from accounts.tags import ensure_tag
 from accounts.tokens import issue_token, user_id_from_token
-from games.constants import USERNAME_PATTERN
+from games.constants import AVATAR_CHANGE_DAYS, USERNAME_PATTERN
+from rooms.avatars import validate_avatar
 from rooms.models_types import RoomError
 from rooms.validation import validate_color, validate_nickname
 
@@ -79,9 +83,16 @@ def _client_ip(request: HttpRequest) -> str:
 
 
 def api(
-    method: str, *, auth: bool = False, limiter: KeyedRateLimiter | None = None
+    method: str,
+    *,
+    auth: bool = False,
+    limiter: KeyedRateLimiter | None = None,
+    no_store: bool = False,
 ) -> Callable[[View], Callable[[HttpRequest], JsonResponse]]:
-    """Method check, rate limit, JSON body, bearer auth and error rendering for one view."""
+    """Method check, rate limit, JSON body, bearer auth and error rendering for one view.
+
+    `no_store` marks every response, errors included, Cache-Control: no-store.
+    """
 
     def decorate(view: View) -> Callable[[HttpRequest], JsonResponse]:
         @csrf_exempt
@@ -94,9 +105,12 @@ def api(
                     raise ApiError(429, "RATE_LIMITED", "Too many attempts. Wait a minute.")
                 body = _json_body(request)
                 user = _bearer_user(request) if auth else None
-                return view(request, body, user)
+                response = view(request, body, user)
             except ApiError as exc:
-                return exc.response()
+                response = exc.response()
+            if no_store:
+                response["Cache-Control"] = "no-store"
+            return response
 
         return wrapper
 
@@ -171,12 +185,31 @@ def login(request: HttpRequest, body: dict[str, Any], user: User | None) -> Json
     return JsonResponse({**_session(account), "stats": services.public_stats(account)})
 
 
-@api("GET", auth=True)
+@api("GET", auth=True, no_store=True)
 def me(request: HttpRequest, body: dict[str, Any], user: User | None) -> JsonResponse:
+    """The owner's profile and stats, plus the public tag and an ISO-8601 createdAt."""
     assert user is not None
+    profile = user.profile
     return JsonResponse(
-        {"profile": services.public_profile(user.profile), "stats": services.public_stats(user)}
+        {
+            "profile": services.public_profile(profile),
+            "stats": services.public_stats(user),
+            "tag": ensure_tag(profile),
+            "createdAt": me_data.iso(profile.created_at),
+        }
     )
+
+
+@api("GET", auth=True, no_store=True)
+def my_stats(request: HttpRequest, body: dict[str, Any], user: User | None) -> JsonResponse:
+    assert user is not None
+    return JsonResponse(me_data.stats(user))
+
+
+@api("GET", auth=True, no_store=True)
+def recent_players(request: HttpRequest, body: dict[str, Any], user: User | None) -> JsonResponse:
+    assert user is not None
+    return JsonResponse({"players": me_data.recent_players(user)})
 
 
 @api("PATCH", auth=True)
@@ -187,9 +220,25 @@ def update_profile(request: HttpRequest, body: dict[str, Any], user: User | None
         profile.nickname = _field(fields, "nickname", validate_nickname, body["nickname"])
     if "color" in body:
         profile.color = _field(fields, "color", validate_color, body["color"])
+    avatar = _field(fields, "avatar", validate_avatar, body["avatar"]) if "avatar" in body else None
     if fields:
         raise invalid(fields)
-    profile.save(update_fields=["nickname", "color"])
+    update = ["nickname", "color"]
+    now = timezone.now()
+    current = (profile.avatar_style, profile.avatar_seed)
+    if avatar is not None and (avatar.style, avatar.seed) != current:
+        # Checked before anything is saved, so a locked avatar keeps the whole request unsaved.
+        if services.avatar_locked_until(profile, now):
+            raise ApiError(
+                409,
+                "AVATAR_LOCKED",
+                f"You can change your avatar once every {AVATAR_CHANGE_DAYS} days.",
+                {"avatar": f"You can change your avatar once every {AVATAR_CHANGE_DAYS} days."},
+            )
+        profile.avatar_style, profile.avatar_seed = avatar.style, avatar.seed
+        profile.avatar_changed_at = now
+        update += ["avatar_style", "avatar_seed", "avatar_changed_at"]
+    profile.save(update_fields=update)
     return JsonResponse({"profile": services.public_profile(profile)})
 
 

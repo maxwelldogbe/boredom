@@ -1,0 +1,114 @@
+{
+ "me": {
+  "profile": {
+   "username": "sam_proof",
+   "nickname": "Sam",
+   "color": "#3498DB",
+   "avatar": {
+    "style": "cutouts",
+    "seed": "a1b2c3d4"
+   },
+   "type": "registered",
+   "createdAt": 1793101994811
+  },
+  "stats": {
+   "gamesPlayed": 7,
+   "wins": 4,
+   "byGame": {
+    "rps": {
+     "played": 7,
+     "wins": 4
+    }
+   }
+  },
+  "tag": "Y4VUW3",
+  "createdAt": "2026-10-27T11:53:14Z"
+ },
+ "stats": {
+  "totals": {
+   "played": 7,
+   "wins": 4,
+   "losses": 3,
+   "winRate": 0.5714
+  },
+  "favoriteGame": "rps",
+  "perGame": [
+   {
+    "gameId": "rps",
+    "played": 7,
+    "wins": 4,
+    "losses": 3,
+    "winRate": 0.5714
+   }
+  ],
+  "minGamesForRate": 5
+ },
+ "recentPlayers": {
+  "players": [
+   {
+    "tag": "6ZWWF3",
+    "nickname": "Bob",
+    "avatar": {
+     "style": "voxel-art",
+     "seed": "c9d0e1f2"
+    },
+    "color": "#2ECC71",
+    "lastPlayedAt": "2026-10-27T11:53:59Z",
+    "gamesTogether": 1,
+    "lastGameId": "rps"
+   },
+   {
+    "tag": "7VJUFN",
+    "nickname": "Ann",
+    "avatar": {
+     "style": "adventurer-neutral",
+     "seed": "e5f6a7b8"
+    },
+    "color": "#E74C3C",
+    "lastPlayedAt": "2026-10-27T11:53:53Z",
+    "gamesTogether": 6,
+    "lastGameId": "rps"
+   }
+  ]
+ },
+ "newMe": {
+  "profile": {
+   "username": "new_proof",
+   "nickname": "Newbie",
+   "color": "#E84393",
+   "avatar": {
+    "style": "croodles-neutral",
+    "seed": "aa11bb22"
+   },
+   "type": "registered",
+   "createdAt": 1793101997347
+  },
+  "stats": {
+   "gamesPlayed": 0,
+   "wins": 0,
+   "byGame": {}
+  },
+  "tag": "C39NBB",
+  "createdAt": "2026-10-27T11:53:17Z"
+ },
+ "statsEmpty": {
+  "totals": {
+   "played": 0,
+   "wins": 0,
+   "losses": 0,
+   "winRate": null
+  },
+  "favoriteGame": null,
+  "perGame": [],
+  "minGamesForRate": 5
+ },
+ "recentEmpty": {
+  "players": []
+ },
+ "unauthorized": {
+  "error": {
+   "code": "UNAUTHORIZED",
+   "message": "Please log in again."
+  }
+ }
+}

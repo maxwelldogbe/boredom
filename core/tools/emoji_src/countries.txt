@@ -1,0 +1,195 @@
+# Countries for the flag and capital-city puzzles (build_emoji.py).
+# CODE | country | alternatives (;) | flag difficulty | capital | capital alternatives | capital difficulty
+# A capital of "-" means no capital puzzle (disputed, split or several capitals).
+# Left out entirely, because their flags look the same on a phone: Chad/Romania,
+# Indonesia/Monaco, Netherlands/Luxembourg.
+AD | Andorra |  | hard | Andorra la Vella | Andorra la Vella | hard
+AE | United Arab Emirates | UAE; Emirates | medium | Abu Dhabi |  | medium
+AF | Afghanistan |  | hard | Kabul |  | medium
+AG | Antigua and Barbuda | Antigua | hard | Saint John's | St John's; St. John's | hard
+AL | Albania |  | medium | Tirana | Tirane | hard
+AM | Armenia |  | hard | Yerevan |  | hard
+AO | Angola |  | hard | Luanda |  | hard
+AR | Argentina |  | easy | Buenos Aires |  | easy
+AT | Austria |  | medium | Vienna | Wien | easy
+AU | Australia |  | easy | Canberra |  | medium
+AZ | Azerbaijan |  | hard | Baku |  | hard
+BA | Bosnia and Herzegovina | Bosnia | hard | Sarajevo |  | medium
+BB | Barbados |  | hard | Bridgetown |  | hard
+BD | Bangladesh |  | medium | Dhaka | Dacca | medium
+BE | Belgium |  | medium | Brussels | Bruxelles | easy
+BF | Burkina Faso |  | hard | Ouagadougou |  | hard
+BG | Bulgaria |  | hard | Sofia |  | medium
+BH | Bahrain |  | hard | Manama |  | hard
+BI | Burundi |  | hard | - |  |
+BJ | Benin |  | hard | - |  |
+BN | Brunei | Brunei Darussalam | hard | Bandar Seri Begawan |  | hard
+BO | Bolivia |  | hard | - |  |
+BR | Brazil |  | easy | Brasilia | Brasília | medium
+BS | Bahamas | The Bahamas | hard | Nassau |  | medium
+BT | Bhutan |  | hard | Thimphu |  | hard
+BW | Botswana |  | hard | Gaborone |  | hard
+BY | Belarus |  | hard | Minsk |  | medium
+BZ | Belize |  | hard | Belmopan |  | hard
+CA | Canada |  | easy | Ottawa |  | easy
+CD | Democratic Republic of the Congo | DR Congo; DRC; Congo-Kinshasa | hard | Kinshasa |  | hard
+CF | Central African Republic | CAR | hard | Bangui |  | hard
+CG | Republic of the Congo | Congo-Brazzaville; Congo Republic | hard | Brazzaville |  | hard
+CH | Switzerland |  | easy | Bern | Berne | medium
+CI | Côte d'Ivoire | Ivory Coast; Cote d'Ivoire | hard | - |  |
+CL | Chile |  | medium | Santiago | Santiago de Chile | medium
+CM | Cameroon |  | hard | Yaounde | Yaoundé | hard
+CN | China |  | easy | Beijing | Peking | easy
+CO | Colombia |  | medium | Bogota | Bogotá | medium
+CR | Costa Rica |  | hard | San Jose | San José | hard
+CU | Cuba |  | medium | Havana | La Habana | easy
+CV | Cape Verde | Cabo Verde | hard | Praia |  | hard
+CY | Cyprus |  | medium | Nicosia |  | hard
+CZ | Czechia | Czech Republic | medium | Prague | Praha | easy
+DE | Germany |  | easy | Berlin |  | easy
+DJ | Djibouti |  | hard | Djibouti City | Djibouti | hard
+DK | Denmark |  | medium | Copenhagen |  | easy
+DM | Dominica |  | hard | Roseau |  | hard
+DO | Dominican Republic |  | hard | Santo Domingo |  | medium
+DZ | Algeria |  | hard | Algiers |  | medium
+EC | Ecuador |  | hard | Quito |  | medium
+EE | Estonia |  | hard | Tallinn |  | medium
+EG | Egypt |  | medium | Cairo |  | easy
+ER | Eritrea |  | hard | Asmara |  | hard
+ES | Spain |  | easy | Madrid |  | easy
+ET | Ethiopia |  | hard | Addis Ababa |  | medium
+FI | Finland |  | medium | Helsinki |  | easy
+FJ | Fiji |  | hard | Suva |  | hard
+FM | Micronesia | Federated States of Micronesia | hard | Palikir |  | hard
+FR | France |  | easy | Paris |  | easy
+GA | Gabon |  | hard | Libreville |  | hard
+GB | United Kingdom | UK; Great Britain; Britain | easy | London |  | easy
+GD | Grenada |  | hard | Saint George's | St George's; St. George's | hard
+GE | Georgia |  | hard | Tbilisi |  | hard
+GH | Ghana |  | medium | Accra |  | medium
+GM | Gambia | The Gambia | hard | Banjul |  | hard
+GN | Guinea |  | hard | Conakry |  | hard
+GQ | Equatorial Guinea |  | hard | Malabo |  | hard
+GR | Greece |  | easy | Athens |  | easy
+GT | Guatemala |  | hard | Guatemala City |  | medium
+GW | Guinea-Bissau | Guinea Bissau | hard | Bissau |  | hard
+GY | Guyana |  | hard | Georgetown |  | hard
+HN | Honduras |  | hard | Tegucigalpa |  | hard
+HR | Croatia |  | medium | Zagreb |  | medium
+HT | Haiti |  | hard | Port-au-Prince | Port au Prince | medium
+HU | Hungary |  | medium | Budapest |  | easy
+IE | Ireland |  | easy | Dublin |  | easy
+IL | Israel |  | medium | - |  |
+IN | India |  | easy | New Delhi | Delhi | easy
+IQ | Iraq |  | medium | Baghdad |  | medium
+IR | Iran |  | medium | Tehran | Teheran | medium
+IS | Iceland |  | medium | Reykjavik | Reykjavík | medium
+IT | Italy |  | easy | Rome | Roma | easy
+JM | Jamaica |  | easy | Kingston |  | medium
+JO | Jordan |  | hard | Amman |  | medium
+JP | Japan |  | easy | Tokyo |  | easy
+KE | Kenya |  | medium | Nairobi |  | medium
+KG | Kyrgyzstan |  | hard | Bishkek |  | hard
+KH | Cambodia |  | medium | Phnom Penh |  | medium
+KI | Kiribati |  | hard | Tarawa | South Tarawa | hard
+KM | Comoros |  | hard | Moroni |  | hard
+KN | Saint Kitts and Nevis | St Kitts and Nevis; St. Kitts and Nevis | hard | Basseterre |  | hard
+KP | North Korea |  | medium | Pyongyang |  | medium
+KR | South Korea | Korea | easy | Seoul |  | easy
+KW | Kuwait |  | hard | Kuwait City | Kuwait | medium
+KZ | Kazakhstan |  | hard | Astana | Nur-Sultan | hard
+LA | Laos |  | hard | Vientiane |  | hard
+LB | Lebanon |  | medium | Beirut |  | medium
+LC | Saint Lucia | St Lucia; St. Lucia | hard | Castries |  | hard
+LI | Liechtenstein |  | hard | Vaduz |  | hard
+LK | Sri Lanka |  | hard | - |  |
+LR | Liberia |  | hard | Monrovia |  | hard
+LS | Lesotho |  | hard | Maseru |  | hard
+LT | Lithuania |  | hard | Vilnius |  | medium
+LV | Latvia |  | hard | Riga |  | medium
+LY | Libya |  | hard | Tripoli |  | medium
+MA | Morocco |  | medium | Rabat |  | medium
+MD | Moldova |  | hard | Chisinau | Chișinău | hard
+ME | Montenegro |  | hard | Podgorica |  | hard
+MG | Madagascar |  | hard | Antananarivo |  | hard
+MH | Marshall Islands |  | hard | Majuro |  | hard
+MK | North Macedonia | Macedonia | hard | Skopje |  | hard
+ML | Mali |  | hard | Bamako |  | hard
+MM | Myanmar | Burma | hard | Naypyidaw | Nay Pyi Taw | hard
+MN | Mongolia |  | hard | Ulaanbaatar | Ulan Bator | hard
+MR | Mauritania |  | hard | Nouakchott |  | hard
+MT | Malta |  | medium | Valletta |  | medium
+MU | Mauritius |  | hard | Port Louis |  | hard
+MV | Maldives |  | hard | Male | Malé | hard
+MW | Malawi |  | hard | Lilongwe |  | hard
+MX | Mexico |  | easy | Mexico City |  | easy
+MY | Malaysia |  | medium | Kuala Lumpur | KL | medium
+MZ | Mozambique |  | hard | Maputo |  | hard
+NA | Namibia |  | hard | Windhoek |  | hard
+NE | Niger |  | hard | Niamey |  | hard
+NG | Nigeria |  | medium | Abuja |  | medium
+NI | Nicaragua |  | hard | Managua |  | hard
+NO | Norway |  | medium | Oslo |  | easy
+NP | Nepal |  | medium | Kathmandu |  | medium
+NR | Nauru |  | hard | Yaren |  | hard
+NZ | New Zealand |  | medium | Wellington |  | medium
+OM | Oman |  | hard | Muscat |  | hard
+PA | Panama |  | hard | Panama City |  | medium
+PE | Peru |  | medium | Lima |  | medium
+PG | Papua New Guinea | PNG | hard | Port Moresby |  | hard
+PH | Philippines | The Philippines | medium | Manila |  | medium
+PK | Pakistan |  | medium | Islamabad |  | medium
+PL | Poland |  | medium | Warsaw | Warszawa | easy
+PT | Portugal |  | easy | Lisbon | Lisboa | easy
+PW | Palau |  | hard | Ngerulmud |  | hard
+PY | Paraguay |  | hard | Asuncion | Asunción | hard
+QA | Qatar |  | hard | Doha |  | medium
+RS | Serbia |  | hard | Belgrade | Beograd | medium
+RU | Russia | Russian Federation | easy | Moscow | Moskva | easy
+RW | Rwanda |  | hard | Kigali |  | hard
+SA | Saudi Arabia |  | medium | Riyadh |  | medium
+SB | Solomon Islands |  | hard | Honiara |  | hard
+SC | Seychelles |  | hard | Victoria |  | hard
+SD | Sudan |  | hard | Khartoum |  | medium
+SE | Sweden |  | easy | Stockholm |  | easy
+SG | Singapore |  | medium | - |  |
+SI | Slovenia |  | hard | Ljubljana |  | hard
+SK | Slovakia |  | hard | Bratislava |  | medium
+SL | Sierra Leone |  | hard | Freetown |  | hard
+SM | San Marino |  | hard | City of San Marino | San Marino | hard
+SN | Senegal |  | hard | Dakar |  | medium
+SO | Somalia |  | hard | Mogadishu |  | medium
+SR | Suriname | Surinam | hard | Paramaribo |  | hard
+SS | South Sudan |  | hard | Juba |  | hard
+ST | Sao Tome and Principe | São Tomé and Príncipe | hard | Sao Tome | São Tomé | hard
+SV | El Salvador |  | hard | San Salvador |  | hard
+SY | Syria |  | hard | Damascus |  | medium
+SZ | Eswatini | Swaziland | hard | - |  |
+TG | Togo |  | hard | Lome | Lomé | hard
+TH | Thailand |  | medium | Bangkok |  | easy
+TJ | Tajikistan |  | hard | Dushanbe |  | hard
+TL | Timor-Leste | East Timor; Timor Leste | hard | Dili |  | hard
+TM | Turkmenistan |  | hard | Ashgabat |  | hard
+TN | Tunisia |  | hard | Tunis |  | medium
+TO | Tonga |  | hard | Nuku'alofa | Nukualofa | hard
+TR | Türkiye | Turkey; Turkiye | easy | Ankara |  | medium
+TT | Trinidad and Tobago | Trinidad | hard | Port of Spain |  | hard
+TV | Tuvalu |  | hard | Funafuti |  | hard
+TZ | Tanzania |  | hard | - |  |
+UA | Ukraine |  | medium | Kyiv | Kiev | medium
+UG | Uganda |  | hard | Kampala |  | hard
+US | United States | USA; US; America; United States of America | easy | Washington, D.C. | Washington; Washington DC; DC | easy
+UY | Uruguay |  | hard | Montevideo |  | medium
+UZ | Uzbekistan |  | hard | Tashkent |  | hard
+VA | Vatican City | Vatican; Holy See | medium | - |  |
+VC | Saint Vincent and the Grenadines | St Vincent and the Grenadines; St. Vincent | hard | Kingstown |  | hard
+VE | Venezuela |  | medium | Caracas |  | medium
+VN | Vietnam | Viet Nam | medium | Hanoi | Ha Noi | medium
+VU | Vanuatu |  | hard | Port Vila |  | hard
+WS | Samoa |  | hard | Apia |  | hard
+YE | Yemen |  | hard | Sanaa | Sana'a | hard
+ZA | South Africa |  | medium | - |  |
+ZM | Zambia |  | hard | Lusaka |  | hard
+ZW | Zimbabwe |  | hard | Harare |  | hard
+EU | European Union | EU | medium | - |  |
+UN | United Nations | UN | medium | - |  |

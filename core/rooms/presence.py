@@ -24,13 +24,27 @@ class PresenceMixin:
     offline_forfeit_ms: float
 
     async def _room_event(
-        self, room: Room, kind: str, player: Player, data: dict[str, Any] | None = None
+        self,
+        room: Room,
+        kind: str,
+        player: Player,
+        data: dict[str, Any] | None = None,
+        to: list[Player] | None = None,
     ) -> None:
-        """Push a transient `room:event` to everyone online. Never replayed on reconnect."""
+        """Push a transient `room:event` to everyone online (or only to `to`).
+
+        Never replayed on reconnect.
+        """
         event: dict[str, Any] = {"kind": kind, "playerId": player.id, "nickname": player.nickname}
         if data is not None:
             event["data"] = data
-        await self._push(room, {"type": "room:event", "data": event})
+        message = {"type": "room:event", "data": event}
+        if to is None:
+            await self._push(room, message)
+            return
+        for target in to:
+            if target.online and target.channel:
+                await self.send(target.channel, {"type": "push", "message": message})
 
     # ----- offline notice -----------------------------------------------------------------
 

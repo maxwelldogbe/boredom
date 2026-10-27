@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { forgetAccount, getAuthToken } from '../lib/account'
+import { C } from '../lib/constants'
+import { reactionsHidden } from '../lib/reactionsPref'
 import { wsUrl } from '../lib/endpoints'
 import { getProfile, saveProfile, toWireProfile } from '../lib/profileStore'
 import { clearRoomToken, getRoomToken, setRoomToken } from '../lib/roomTokens'
@@ -90,6 +92,12 @@ export function RoomProvider({ children, socket: given }: { children: ReactNode;
       async startGame() {
         await socket.request('game:start', {})
       },
+      async setReady(ready) {
+        await socket.request('room:ready', { ready })
+      },
+      async react(emoji) {
+        await socket.request('room:react', { emoji })
+      },
       async playAgain() {
         await socket.request('game:playAgain', {})
       },
@@ -123,6 +131,20 @@ export function RoomProvider({ children, socket: given }: { children: ReactNode;
                 : `${event.nickname} forfeited`,
             )
           }
+          if (event.kind === 'ready_reset') {
+            actions.toast(
+              event.data?.reason === 'settings_changed'
+                ? 'The settings changed. Tap Ready again.'
+                : 'The host changed the game. Tap Ready again.',
+            )
+          }
+          break
+        }
+        case 'room:reaction': {
+          if (reactionsHidden()) break
+          const reaction = msg.data
+          dispatch({ type: 'reaction', reaction })
+          setTimeout(() => dispatch({ type: 'reactionDone', id: reaction.id }), C.REACTION_DISPLAY_MS)
           break
         }
         case 'error':

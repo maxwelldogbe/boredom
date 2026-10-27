@@ -16,3 +16,15 @@ export function isKnownAvatar(avatar: Avatar | null | undefined): avatar is Avat
     new RegExp(C.AVATAR_SEED_PATTERN).test(avatar.seed)
   )
 }
+
+/** A random allowed avatar for the shuffle button, never equal to `current`. The server
+ *  validates it again and decides whether the change is allowed. */
+export function randomAvatar(current?: Avatar): Avatar {
+  const bytes = new Uint8Array(5)
+  for (;;) {
+    crypto.getRandomValues(bytes)
+    const style = C.AVATAR_STYLES[bytes[0] % C.AVATAR_STYLES.length]
+    const seed = Array.from(bytes.subarray(1), (b) => b.toString(16).padStart(2, '0')).join('')
+    if (style !== current?.style || seed !== current?.seed) return { style, seed }
+  }
+}

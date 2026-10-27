@@ -472,6 +472,56 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
+@media (max-width: 599px) {
+  .player-card {
+    gap: 6px;
+    min-height: 56px;
+    padding: 6px 8px;
+  }
+  .player-card__ring {
+    width: 34px;
+    height: 34px;
+    border-width: 2px;
+  }
+  .player-card__ring .chip__avatar {
+    width: 30px;
+    height: 30px;
+  }
+  .player-card__name {
+    font-size: 15px;
+  }
+  .player-card__notes {
+    font-size: 12px;
+  }
+  .player-card__you {
+    font-size: 10px;
+  }
+  .player-card__value {
+    font-size: 18px;
+  }
+}
+/* Narrow phones: the score moves under the name so the name gets the whole width. */
+@media (max-width: 380px) {
+  .player-card {
+    display: grid;
+    grid-template-areas: 'ring info' 'ring value';
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 6px;
+    row-gap: 0;
+  }
+  .player-card__ring {
+    grid-area: ring;
+  }
+  .player-card__info {
+    grid-area: info;
+  }
+  .player-card__value {
+    grid-area: value;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+}
+
 /* Timers */
 .timer-bar {
   display: flex;

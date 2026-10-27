@@ -33,7 +33,8 @@ class UpkeepMixin:
         candidates = [p for p in others if p.online] or (others if allow_offline else [])
         if not candidates:
             return False
-        room.host_id = min(candidates, key=lambda p: p.joined_at).id
+        new_host = min(candidates, key=lambda p: p.joined_at)
+        room.host_id, new_host.ready = new_host.id, False  # the host is never "ready"
         return True
 
     async def _transfer_host_announced(self, room: Room, allow_offline: bool) -> bool:

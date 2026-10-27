@@ -6,7 +6,7 @@ Rooms and games stay in memory; only accounts live in the database.
 from django.conf import settings
 from django.db import models
 
-from games.constants import NICKNAME_MAX
+from games.constants import NICKNAME_MAX, TAG_LENGTH
 
 COLOR_LENGTH = 7  # "#RRGGBB"
 AVATAR_FIELD_MAX = 32
@@ -14,7 +14,7 @@ GAME_ID_MAX = 32
 
 
 class Profile(models.Model):
-    """The saved profile used in every room. The avatar is kept forever once claimed."""
+    """The profile used in every room. The avatar changes at most once per AVATAR_CHANGE_DAYS."""
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
@@ -24,9 +24,24 @@ class Profile(models.Model):
     avatar_style = models.CharField(max_length=AVATAR_FIELD_MAX)
     avatar_seed = models.CharField(max_length=AVATAR_FIELD_MAX)
     created_at = models.DateTimeField(auto_now_add=True)
+    # When the player last picked a new avatar; null means never (a change is allowed now).
+    avatar_changed_at = models.DateTimeField(null=True, blank=True)
+    # Public "#K7M2QX" code: assigned once (accounts.tags), never changes. Null only until the
+    # backfill migration has run; unique among the rest.
+    tag = models.CharField(max_length=TAG_LENGTH, unique=True, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.nickname
+
+
+class TakenTag(models.Model):
+    """Every tag ever issued. Rows are never deleted, so a deleted account's tag is never reused."""
+
+    tag = models.CharField(max_length=TAG_LENGTH, primary_key=True)
+    issued_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.tag
 
 
 class PlayerStats(models.Model):

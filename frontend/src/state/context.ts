@@ -13,6 +13,10 @@ export interface RoomActions {
   quitGame(): Promise<void>
   selectGame(gameId: GameId, settings: Record<string, unknown>): Promise<void>
   startGame(): Promise<void>
+  /** Lobby ready check (non-host players only). */
+  setReady(ready: boolean): Promise<void>
+  /** Send an emoji reaction (one of REACTION_EMOJIS). */
+  react(emoji: string): Promise<void>
   playAgain(): Promise<void>
   sendAction(action: { type: string } & Record<string, unknown>): Promise<void>
   toast(message: string, tone?: 'info' | 'error'): void

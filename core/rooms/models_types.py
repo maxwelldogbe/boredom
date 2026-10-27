@@ -69,14 +69,16 @@ class Player:
     left: bool = False
     in_game: bool = True  # False once forfeited from the running game (quit, left, offline)
     offline_notified: bool = False  # a player_offline event went out for this disconnect
+    ready: bool = False  # lobby ready check; never counted for the host
+    reacted_at: float | None = None  # last accepted room:react, for the cooldown
 
     @property
     def type(self) -> str:
         """ "registered" for a seat held by an account, else "guest"."""
         return "registered" if self.user_id is not None else "guest"
 
-    def to_public(self) -> dict[str, Any]:
-        """The `Player` wire type."""
+    def to_public(self, host_id: str = "") -> dict[str, Any]:
+        """The `Player` wire type. `ready` is always false for the host."""
         return {
             "id": self.id,
             "type": self.type,
@@ -87,6 +89,7 @@ class Player:
             "offlineSince": self.offline_since,
             "inGame": self.in_game,
             "joinedAt": self.joined_at,
+            "ready": self.ready and self.id != host_id,
         }
 
 
@@ -115,6 +118,7 @@ class Room:
     end_reason: EndReason | None = None
     notice_tasks: dict[str, asyncio.Task[None]] = field(default_factory=dict)
     forfeit_tasks: dict[str, asyncio.Task[None]] = field(default_factory=dict)
+    used_content: dict[str, frozenset[str]] = field(default_factory=dict)  # game id -> keys
 
     def player(self, player_id: str) -> Player | None:
         """Find a seated player by id."""
@@ -128,6 +132,13 @@ class Room:
         """The current host's seat."""
         return self.player(self.host_id)
 
+    def ready_check(self) -> dict[str, int] | None:
+        """Ready count among online non-host players; None while no game is selected."""
+        if self.selected_game is None:
+            return None
+        voters = [p for p in self.seated() if p.online and p.id != self.host_id]
+        return {"count": sum(p.ready for p in voters), "total": len(voters)}
+
     def to_public(self) -> dict[str, Any]:
         """The `RoomPublic` wire type. Contains no tokens, channels or game state.
 
@@ -140,12 +151,13 @@ class Room:
             "code": self.code,
             "hostId": self.host_id,
             "status": self.status,
-            "players": [p.to_public() for p in players],
+            "players": [p.to_public(self.host_id) for p in players],
             "selectedGame": self.selected_game,
             "settings": dict(self.settings),
             "scoreboard": {pid: pts for pid, pts in self.scoreboard.items() if pid in ids},
             "wins": {pid: n for pid, n in self.wins.items() if pid in ids},
             "endReason": self.end_reason,
+            "readyCheck": self.ready_check(),
         }
 
 

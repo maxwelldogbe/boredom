@@ -1,16 +1,19 @@
 """Account operations shared by the HTTP views (and later the WebSocket and admin)."""
 
 import logging
+from datetime import datetime, timedelta
 from typing import Any
 
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.utils import timezone
 
 from accounts.models import PlayerStats, Profile
+from accounts.tags import issue_tag
 from analytics.models import DELETED_NICKNAME, ActivityEvent, GameParticipation
 from analytics.recorder import recorder
 from games import registry
-from games.constants import STATS_MAX_IMPORT_GAMES
+from games.constants import AVATAR_CHANGE_DAYS, STATS_MAX_IMPORT_GAMES
 from rooms.avatars import SystemAvatarRng, assign_avatar, validate_avatar
 from rooms.models_types import Avatar, RoomError
 from rooms.models_types import Profile as RoomProfile
@@ -21,7 +24,7 @@ avatar_rng = SystemAvatarRng()
 
 
 def claim_avatar(raw: Any, nickname: str, color: str) -> Avatar:
-    """The guest's avatar if valid (kept forever from now on), else a fresh random one."""
+    """The guest's avatar if valid (kept until the player changes it), else a fresh random one."""
     if raw is not None:
         try:
             return validate_avatar(raw)
@@ -66,6 +69,7 @@ def create_account(
             color=color,
             avatar_style=avatar.style,
             avatar_seed=avatar.seed,
+            tag=issue_tag(username),
         )
         PlayerStats.objects.bulk_create(
             PlayerStats(user=user, game_id=game_id, played=played, wins=wins)
@@ -92,15 +96,30 @@ def delete_account(user: User) -> None:
     recorder.record_event("account_deleted")
 
 
+def avatar_locked_until(profile: Profile, now: datetime) -> datetime | None:
+    """When the next avatar change is allowed, or None if it is allowed now."""
+    if profile.avatar_changed_at is None:
+        return None
+    until = profile.avatar_changed_at + timedelta(days=AVATAR_CHANGE_DAYS)
+    return until if until > now else None
+
+
+def ms(moment: datetime) -> int:
+    return int(moment.timestamp() * 1000)
+
+
 def public_profile(profile: Profile) -> dict[str, Any]:
     """The owner's own saved profile (only ever sent to the account holder)."""
+    locked_until = avatar_locked_until(profile, timezone.now())
     return {
         "username": profile.user.username,
         "nickname": profile.nickname,
         "color": profile.color,
         "avatar": {"style": profile.avatar_style, "seed": profile.avatar_seed},
         "type": "registered",
-        "createdAt": int(profile.created_at.timestamp() * 1000),
+        "createdAt": ms(profile.created_at),
+        # Epoch ms of the next allowed avatar change; null when a change is allowed now.
+        "avatarLockedUntil": ms(locked_until) if locked_until else None,
     }
 
 

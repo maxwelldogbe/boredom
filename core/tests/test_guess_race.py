@@ -16,6 +16,7 @@ from games.constants import (
     GUESS_RANK_POINTS_STEP,
     GUESS_REVEAL_MS,
     GUESS_ROUND_MS,
+    GUESS_SOLVED_WINDOW_MS,
     GUESS_TEXT_MAX,
 )
 from games.content import EMOJI, WORDS
@@ -93,7 +94,7 @@ def test_every_solver_scores_by_finishing_order() -> None:
     assert events == [] and state.phase == "guessing"
     state, events = guess(state, "d", answer, T0 + 8_000)
     state, _ = guess(state, "c", "nope", T0 + 8_100)
-    state, events = guess(state, "a", answer, T0 + 29_000)
+    state, events = guess(state, "a", answer, T0 + 17_000)
     assert events == [] and state.scores == {"a": 60, "b": 100, "c": 0, "d": 80}
     view = GR.get_view(state, "c")
     assert view["solvers"] == [
@@ -102,13 +103,49 @@ def test_every_solver_scores_by_finishing_order() -> None:
         {"playerId": "a", "rank": 3, "points": 60},
     ]
     assert view["iSolved"] is False and GR.get_view(state, "d")["iSolved"] is True
-    state, events = guess(state, "c", answer, T0 + 29_500)  # the last online player solves
+    state, events = guess(state, "c", answer, T0 + 17_500)  # the last online player solves
     assert events == [{
         "kind": "roundOver",
         "data": {"round": 1, "answer": answer, "solvers": [*view["solvers"],
                  {"playerId": "c", "rank": 4, "points": 40}]},
     }]
-    assert state.phase == "roundOver" and state.deadline == T0 + 29_500 + GUESS_REVEAL_MS
+    assert state.phase == "roundOver" and state.deadline == T0 + 17_500 + GUESS_REVEAL_MS
+
+
+def test_first_correct_guess_leaves_the_others_a_short_window() -> None:
+    state = new(("a", "b", "c"), content="scramble")
+    answer = state.current.answer
+    assert GR.get_view(state, "a")["roundEndsAt"] == T0 + GUESS_ROUND_MS
+    state, _ = guess(state, "a", answer, T0 + 4_000)
+    closes = T0 + 4_000 + GUESS_SOLVED_WINDOW_MS
+    assert GR.get_view(state, "b")["roundEndsAt"] == closes  # every timer jumps to 10 s
+    assert GR.next_deadline(state) == min(T0 + GUESS_HINT1_MS, closes)
+    state, _ = guess(state, "b", answer, closes - 1)  # still inside the window: scores
+    assert state.scores["b"] == 80
+    with pytest.raises(GameError, match="round is over"):
+        GR.handle_action(copy.deepcopy(state), "c", {"type": "guess", "text": answer}, closes)
+    state, events = GR.tick(state, closes)
+    assert events[0]["kind"] == "roundOver" and state.phase == "roundOver"
+    assert state.deadline == closes + GUESS_REVEAL_MS
+    state, _ = GR.tick(state, state.deadline)  # next round: a fresh 30 s
+    assert state.round == 2 and state.closes_at is None
+    assert GR.get_view(state, "a")["roundEndsAt"] == state.started_at + GUESS_ROUND_MS
+
+
+def test_the_window_never_runs_past_the_round_time() -> None:
+    state = new(("a", "b", "c"), content="scramble")
+    late = T0 + GUESS_ROUND_MS - 3_000
+    state, _ = GR.tick(state, late)  # both hints are out by now
+    state, _ = guess(state, "a", state.current.answer, late)
+    assert GR.get_view(state, "b")["roundEndsAt"] == T0 + GUESS_ROUND_MS
+    assert GR.next_deadline(state) == T0 + GUESS_ROUND_MS
+
+
+def test_wrong_guesses_do_not_start_the_window() -> None:
+    state = new(("a", "b"), content="scramble")
+    state, _ = guess(state, "a", "definitely wrong", T0 + 1_000)
+    assert state.closes_at is None
+    assert GR.get_view(state, "a")["roundEndsAt"] == T0 + GUESS_ROUND_MS
 
 
 @pytest.mark.parametrize(

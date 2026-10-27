@@ -28,6 +28,8 @@ export function GuessRaceGame({ view, send, me, room }: GameUiProps<GuessRaceVie
   const input = useRef<HTMLInputElement>(null)
   const guessing = view.phase === 'guessing'
   const wrong = view.myLastGuess !== null && !view.myLastGuess.correct
+  const remaining = useRemainingMs(guessing ? view.roundEndsAt : null)
+  const firstSolver = view.solvers.find((s) => s.rank === 1)
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
@@ -105,6 +107,12 @@ export function GuessRaceGame({ view, send, me, room }: GameUiProps<GuessRaceVie
         </form>
       ) : (
         <RoundOver view={view} me={me} room={room} />
+      )}
+
+      {guessing && firstSolver && !view.iSolved && remaining !== null && (
+        <p className="notice guess__closing" role="status">
+          ⚡ {nameOf(room, firstSolver.playerId)} got it! {Math.ceil(remaining / 1000)}s left to solve it too.
+        </p>
       )}
 
       {guessing && view.solvers.length > 0 && <Solvers view={view} me={me} room={room} />}

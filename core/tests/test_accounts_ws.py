@@ -190,7 +190,7 @@ async def test_room_state_exposes_only_type(connect) -> None:
     for player in state["players"]:
         assert set(player) == {
             "id", "type", "nickname", "color", "avatar", "online", "offlineSince", "inGame",
-            "joinedAt",
+            "joinedAt", "ready",
         }
     assert "profileId" not in text and "prof-Ann" not in text
     assert "secret_name" not in text and token not in text

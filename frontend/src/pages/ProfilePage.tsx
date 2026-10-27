@@ -1,15 +1,15 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { Modal } from '../components/Modal'
-import { PlayerChip } from '../components/PlayerChip'
 import { TextInput } from '../components/TextInput'
-import { GAME_UIS } from '../games/registry'
 import {
   AccountError,
   adoptSession,
   deleteAccount,
   fetchMe,
+  fetchMyStats,
+  fetchRecentPlayers,
   forgetAccount,
   getAuthToken,
   updateAccountProfile,
@@ -23,9 +23,17 @@ import {
   type Profile,
 } from '../lib/profileStore'
 import { useRoomActions } from '../state/context'
-import type { GameId } from '../types/protocol'
+import type { Avatar } from '../types/protocol'
 import { AccountForms } from './AccountForms'
 import { ProfileForm } from './ProfileForm'
+import {
+  ByGameSection,
+  ProfileHeader,
+  RecentPlayersSection,
+  StatsSection,
+  type HeaderData,
+} from './profile/ProfileSections'
+import { useLoad } from './profile/useLoad'
 
 const LOGIN_EXPIRED = 'Your login has expired. Log in again to use your saved profile.'
 
@@ -160,6 +168,7 @@ function AccountProfilePage({ profile, onChange }: PageProps) {
   const [saving, setSaving] = useState(false)
   const [formKey, setFormKey] = useState(0)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [avatarLockedUntil, setAvatarLockedUntil] = useState<number | null>(null)
 
   const expired = () => {
     const guest = forgetAccount()
@@ -167,81 +176,62 @@ function AccountProfilePage({ profile, onChange }: PageProps) {
     toast(LOGIN_EXPIRED, 'error')
   }
 
-  // Refresh the saved profile and stats from the server.
-  useEffect(() => {
-    const token = getAuthToken()
-    if (!token) return
-    let live = true
-    fetchMe(token)
-      .then((me) => {
-        if (!live) return
-        onChange(adoptSession(me))
-        setFormKey((k) => k + 1)
-      })
-      .catch((err: unknown) => {
-        if (live && err instanceof AccountError && err.code === 'UNAUTHORIZED') expired()
-      })
-    return () => {
-      live = false
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per visit
-  }, [])
+  const token = () => {
+    const value = getAuthToken()
+    if (!value) throw new AccountError('UNAUTHORIZED', 'Please log in again.')
+    return value
+  }
+  // The header refreshes the saved profile and stats from the server (and reads the tag);
+  // stats and recent players load on their own, so one failing never hides the others.
+  const [me, retryMe] = useLoad<HeaderData>(async () => {
+    const data = await fetchMe(token())
+    onChange(adoptSession(data))
+    setAvatarLockedUntil(data.profile.avatarLockedUntil ?? null)
+    setFormKey((k) => k + 1)
+    return { tag: data.tag, createdAt: data.createdAt }
+  }, expired)
+  const [stats, retryStats] = useLoad(() => fetchMyStats(token()), expired)
+  const [players, retryPlayers] = useLoad(() => fetchRecentPlayers(token()), expired)
 
-  const save = async (fields: { nickname: string; color: string }) => {
+  const save = async (fields: { nickname: string; color: string }, avatar?: Avatar) => {
     const token = getAuthToken()
     if (!token) return expired()
     setSaving(true)
     try {
-      const saved = await updateAccountProfile(token, fields)
+      const saved = await updateAccountProfile(token, avatar ? { ...fields, avatar } : fields)
       onChange(adoptSession({ profile: saved, stats: profile.stats }))
-      toast('Profile saved.')
+      setAvatarLockedUntil(saved.avatarLockedUntil ?? null)
+      toast(avatar ? 'Profile saved. Enjoy your new avatar!' : 'Profile saved.')
     } catch (err) {
       if (err instanceof AccountError && err.code === 'UNAUTHORIZED') expired()
-      else toast(err instanceof AccountError ? (Object.values(err.fields)[0] ?? err.message) : 'Could not save.', 'error')
+      else if (err instanceof AccountError && err.code === 'AVATAR_LOCKED') {
+        // Changed on another device: show the real lock (this also resets the form).
+        toast(err.fields.avatar ?? err.message, 'error')
+        retryMe()
+      } else toast(err instanceof AccountError ? (Object.values(err.fields)[0] ?? err.message) : 'Could not save.', 'error')
     } finally {
       setSaving(false)
     }
   }
-
-  const byGame = Object.entries(profile.stats.byGame).filter(([, s]) => s.played > 0)
 
   return (
     <main className="page stack">
       <Link to="/" className="back-link">
         ← Home
       </Link>
-      <h1>Your profile</h1>
-      <p className="account__who">
-        <PlayerChip player={{ ...profile, type: 'registered' }} />
-        <span className="muted">Logged in as @{profile.username}</span>
-      </p>
+      <ProfileHeader nickname={profile.nickname} color={profile.color} avatar={profile.avatar} me={me} onRetry={retryMe} />
+      <StatsSection stats={stats} onRetry={retryStats} />
+      <ByGameSection stats={stats} onRetry={retryStats} />
+      <RecentPlayersSection players={players} onRetry={retryPlayers} />
       <ProfileForm
         key={formKey}
         initial={profile}
         savedAvatar={profile.avatar}
+        avatarLockedUntil={avatarLockedUntil}
         submitLabel="Save changes"
         busy={saving}
         onSubmit={save}
       />
-      <section className="stack" aria-labelledby="stats-heading">
-        <h2 id="stats-heading">Your stats</h2>
-        <p>
-          {profile.stats.gamesPlayed} game{profile.stats.gamesPlayed === 1 ? '' : 's'} played,{' '}
-          {profile.stats.wins} win{profile.stats.wins === 1 ? '' : 's'}.
-        </p>
-        {byGame.length > 0 && (
-          <ul className="account__stats">
-            {byGame.map(([id, s]) => (
-              <li key={id}>
-                <span>{GAME_UIS[id as GameId]?.name ?? id}</span>
-                <span className="muted">
-                  {s.wins} / {s.played} won
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
       <section className="stack">
         <h2>Account</h2>
         <Button

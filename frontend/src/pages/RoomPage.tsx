@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { EmptyState, Loading } from '../components/EmptyState'
 import { HowToPlayModal } from '../components/HowToPlayModal'
+import { ReactionLayer } from '../components/Reactions'
 import { gameInstructions, hasGameInstructions } from '../games/instructions'
 import { C } from '../lib/constants'
 import { friendlyError } from '../lib/errors'
@@ -166,6 +167,7 @@ export default function RoomPage() {
         )
       )}
       {room.status === 'finished' && <FinalResults room={room} me={state.playerId} />}
+      <ReactionLayer room={room} />
       {instructionsOpen && content && (
         <HowToPlayModal
           content={content}

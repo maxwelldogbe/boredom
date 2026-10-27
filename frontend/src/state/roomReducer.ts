@@ -1,6 +1,7 @@
-/** Pure reducer for connection, room, game view, events and toasts. */
+/** Pure reducer for connection, room, game view, events, reactions and toasts. */
+import { C } from '../lib/constants'
 import type { SocketStatus } from '../lib/socket'
-import type { GameEventPush, GameResult, RoomPublic } from '../types/protocol'
+import type { GameEventPush, GameResult, ReactionPush, RoomPublic } from '../types/protocol'
 import type { GameViewPush } from '../types/views'
 
 export interface Toast {
@@ -19,6 +20,8 @@ export interface RoomState {
   events: GameEventPush[]
   lastResults: GameResult[] | null
   toasts: Toast[]
+  /** Reactions on screen now, oldest first (at most REACTION_MAX_ON_SCREEN). */
+  reactions: ReactionPush[]
   /** Set when the server says this socket lost its seat (closed room, another tab). */
   seatLost: string | null
 }
@@ -33,6 +36,8 @@ export type RoomAction =
   | { type: 'seatLost'; message: string }
   | { type: 'toast'; toast: Toast }
   | { type: 'dismissToast'; id: number }
+  | { type: 'reaction'; reaction: ReactionPush }
+  | { type: 'reactionDone'; id: string }
 
 export const MAX_EVENTS = 20
 
@@ -45,6 +50,7 @@ export const initialRoomState: RoomState = {
   events: [],
   lastResults: null,
   toasts: [],
+  reactions: [],
   seatLost: null,
 }
 
@@ -94,5 +100,9 @@ export function roomReducer(state: RoomState, action: RoomAction): RoomState {
       return { ...state, toasts: [...state.toasts, action.toast].slice(-3) }
     case 'dismissToast':
       return { ...state, toasts: state.toasts.filter((t) => t.id !== action.id) }
+    case 'reaction':
+      return { ...state, reactions: [...state.reactions, action.reaction].slice(-C.REACTION_MAX_ON_SCREEN) }
+    case 'reactionDone':
+      return { ...state, reactions: state.reactions.filter((r) => r.id !== action.id) }
   }
 }
