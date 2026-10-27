@@ -16,6 +16,11 @@ GAME_ID_MAX = 32
 class Profile(models.Model):
     """The profile used in every room. The avatar changes at most once per AVATAR_CHANGE_DAYS."""
 
+    class PresenceMode(models.TextChoices):
+        ONLINE = "online"
+        BUSY = "busy"
+        OFFLINE = "offline"  # "appear offline" to friends
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
     )
@@ -29,6 +34,10 @@ class Profile(models.Model):
     # Public "#K7M2QX" code: assigned once (accounts.tags), never changes. Null only until the
     # backfill migration has run; unique among the rest.
     tag = models.CharField(max_length=TAG_LENGTH, unique=True, null=True, blank=True)
+    # What friends see (social.presence); set through PATCH /api/me/settings.
+    presence_mode = models.CharField(
+        max_length=8, choices=PresenceMode.choices, default=PresenceMode.ONLINE
+    )
 
     def __str__(self) -> str:
         return self.nickname

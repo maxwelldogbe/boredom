@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { Modal } from '../components/Modal'
 import { TextInput } from '../components/TextInput'
@@ -22,6 +22,9 @@ import {
   saveProfile,
   type Profile,
 } from '../lib/profileStore'
+import { friendlyError } from '../lib/errors'
+import { resetPopupDismissals } from '../lib/guestPopup'
+import { safeNext } from '../lib/navigation'
 import { useRoomActions } from '../state/context'
 import type { Avatar } from '../types/protocol'
 import { AccountForms } from './AccountForms'
@@ -34,6 +37,7 @@ import {
   type HeaderData,
 } from './profile/ProfileSections'
 import { useLoad } from './profile/useLoad'
+import { WhatWeSave } from './profile/WhatWeSave'
 
 const LOGIN_EXPIRED = 'Your login has expired. Log in again to use your saved profile.'
 
@@ -62,7 +66,8 @@ interface PageProps {
 
 function GuestProfilePage({ profile, onChange }: PageProps) {
   const navigate = useNavigate()
-  const { toast } = useRoomActions()
+  const [params] = useSearchParams()
+  const { toast, joinRoom } = useRoomActions()
   const [formKey, setFormKey] = useState(0)
   const [importError, setImportError] = useState<string | null>(null)
   const [confirmReset, setConfirmReset] = useState(false)
@@ -71,7 +76,7 @@ function GuestProfilePage({ profile, onChange }: PageProps) {
     const file = e.target.files?.[0]
     e.target.value = ''
     if (!file) return
-    const result = importProfile(await file.text())
+    const result = importProfile(await file.text(), profile.id)
     if (!result.ok) {
       setImportError(result.error)
       return
@@ -83,6 +88,22 @@ function GuestProfilePage({ profile, onChange }: PageProps) {
     setFormKey((k) => k + 1)
     setImportError(null)
     toast('Profile imported.')
+  }
+
+  /** Back to where the player was. A room is re-joined first with the stored roomToken and the
+   *  new login, so the guest seat becomes the account's seat; if it is gone, go home. */
+  const returnTo = async (next: string) => {
+    const room = next.match(/^\/room\/([A-Za-z]+)$/)
+    if (room) {
+      try {
+        await joinRoom(room[1])
+      } catch (err) {
+        toast(`We couldn't take you back to room ${room[1].toUpperCase()}. ${friendlyError(err, room[1].toUpperCase())}`, 'error')
+        navigate('/', { replace: true })
+        return
+      }
+    }
+    navigate(next, { replace: true })
   }
 
   return (
@@ -110,12 +131,17 @@ function GuestProfilePage({ profile, onChange }: PageProps) {
         </p>
         <AccountForms
           allowSignup
+          initialMode={params.get('mode') === 'login' ? 'login' : 'signup'}
           onSignedIn={(saved, mode) => {
-            onChange(saved)
+            if (mode === 'signup') resetPopupDismissals()
             toast(mode === 'signup' ? 'Account created. Your profile is saved.' : `Welcome back, ${saved.nickname}!`)
+            const next = params.get('next')
+            if (!next) return onChange(saved)
+            void returnTo(safeNext(next))
           }}
         />
       </section>
+      <WhatWeSave registered={false} />
       <section className="stack">
         <h2>Backup</h2>
         <Button variant="secondary" block onClick={() => exportProfile(profile)}>
@@ -232,6 +258,7 @@ function AccountProfilePage({ profile, onChange }: PageProps) {
         busy={saving}
         onSubmit={save}
       />
+      <WhatWeSave registered />
       <section className="stack">
         <h2>Account</h2>
         <Button

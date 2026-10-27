@@ -1,13 +1,17 @@
 /** The registered profile page's sections: header, stats, by game and recent players.
  *  Every number comes from the server; each section loads (and fails) on its own. */
 import { useState, type CSSProperties } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Avatar } from '../../components/Avatar'
 import { Button } from '../../components/Button'
 import { CopyButton } from '../../components/CopyButton'
 import { Modal } from '../../components/Modal'
+import { PlayerDialogs, type PlayerDialogKind } from '../../components/PlayerDialogs'
 import { gameUi } from '../../games/registry'
 import type { MyStats, RecentPlayer } from '../../lib/account'
 import { formatRate, monthYear, timeAgo } from '../../lib/format'
+import { friendRequestError, sendFriendRequest } from '../../lib/social'
+import { useRoomActions } from '../../state/context'
 import type { Avatar as AvatarData, GameId } from '../../types/protocol'
 import type { Load } from './useLoad'
 
@@ -21,7 +25,7 @@ function Skeleton({ label, lines = 2 }: { label: string; lines?: number }) {
   )
 }
 
-function LoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
+export function LoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
     <div className="profile__error" role="alert">
       <p>{message}</p>
@@ -191,19 +195,25 @@ function PlayerLines({ player }: { player: RecentPlayer }) {
   )
 }
 
+type Relationship = NonNullable<RecentPlayer['relationship']>
+
 export function RecentPlayersSection({ players, onRetry }: { players: Load<RecentPlayer[]>; onRetry: () => void }) {
   const [open, setOpen] = useState<RecentPlayer | null>(null)
+  const [dialog, setDialog] = useState<{ kind: PlayerDialogKind; friend: RecentPlayer } | null>(null)
+  const [changed, setChanged] = useState<Record<string, Relationship>>({})
+  const [blocked, setBlocked] = useState<string[]>([])
+  const list = players.status === 'ready' ? players.data.filter((p) => !blocked.includes(p.tag)) : []
   return (
     <section className="stack" aria-labelledby="recent-heading">
       <h2 id="recent-heading">Recent players</h2>
       {players.status === 'loading' && <Skeleton label="Loading recent players" lines={2} />}
       {players.status === 'error' && <LoadError message={players.message} onRetry={onRetry} />}
       {players.status === 'ready' &&
-        (players.data.length === 0 ? (
+        (list.length === 0 ? (
           <p className="muted profile__empty">Players you play with will show up here</p>
         ) : (
           <ul className="recent">
-            {players.data.map((p) => (
+            {list.map((p) => (
               <li key={p.tag}>
                 <button type="button" className="recent__card" onClick={() => setOpen(p)}>
                   <RingAvatar avatar={p.avatar} nickname={p.nickname} color={p.color} size={48} />
@@ -223,9 +233,24 @@ export function RecentPlayersSection({ players, onRetry }: { players: Load<Recen
           title={open.nickname}
           onClose={() => setOpen(null)}
           actions={
-            <Button variant="secondary" block onClick={() => setOpen(null)}>
-              Close
-            </Button>
+            <>
+              <FriendAction
+                player={open}
+                relationship={changed[open.tag] ?? open.relationship ?? 'none'}
+                onChange={(r) => setChanged((c) => ({ ...c, [open.tag]: r }))}
+              />
+              <div className="recent__more">
+                <Button variant="secondary" onClick={() => (setOpen(null), setDialog({ kind: 'block', friend: open }))}>
+                  Block
+                </Button>
+                <Button variant="secondary" onClick={() => (setOpen(null), setDialog({ kind: 'report', friend: open }))}>
+                  Report
+                </Button>
+              </div>
+              <Button variant="ghost" block onClick={() => setOpen(null)}>
+                Close
+              </Button>
+            </>
           }
         >
           <div className="recent__detail">
@@ -235,6 +260,60 @@ export function RecentPlayersSection({ players, onRetry }: { players: Load<Recen
           </div>
         </Modal>
       )}
+      <PlayerDialogs dialog={dialog} onClose={() => setDialog(null)} onBlocked={(tag) => setBlocked((b) => [...b, tag])} />
     </section>
+  )
+}
+
+/** Add friend, "Request sent", "Friends" or "Respond", by the relationship with this player. */
+function FriendAction({
+  player,
+  relationship,
+  onChange,
+}: {
+  player: RecentPlayer
+  relationship: Relationship
+  onChange: (r: Relationship) => void
+}) {
+  const navigate = useNavigate()
+  const { toast } = useRoomActions()
+  const [busy, setBusy] = useState(false)
+  if (relationship === 'friends')
+    return (
+      <p className="recent__relation">
+        <span aria-hidden="true">✓ </span>Friends
+      </p>
+    )
+  if (relationship === 'requested')
+    return (
+      <Button block disabled>
+        Request sent
+      </Button>
+    )
+  if (relationship === 'incoming')
+    return (
+      <Button block onClick={() => navigate('/friends?tab=requests')}>
+        Respond to their request
+      </Button>
+    )
+  return (
+    <Button
+      block
+      disabled={busy}
+      onClick={async () => {
+        setBusy(true)
+        try {
+          const { status } = await sendFriendRequest(player.tag)
+          onChange(status === 'friends' ? 'friends' : 'requested')
+          toast(status === 'friends' ? "You're now friends!" : 'Request sent')
+        } catch (err) {
+          toast(friendRequestError(err), 'error')
+        } finally {
+          setBusy(false)
+        }
+      }}
+    >
+      {busy ? 'Sending…' : 'Add friend'}
+    </Button>
   )
 }

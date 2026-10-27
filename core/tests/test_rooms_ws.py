@@ -43,6 +43,7 @@ async def test_create_room_ack_and_state(connect):
         "inGame",
         "joinedAt",
         "ready",
+        "locked",
     }
     assert room["scoreboard"] == {} and room["wins"] == {} and room["selectedGame"] is None
     assert room["readyCheck"] is None and room["players"][0]["ready"] is False

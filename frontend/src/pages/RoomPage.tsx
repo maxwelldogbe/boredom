@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { EmptyState, Loading } from '../components/EmptyState'
 import { HowToPlayModal } from '../components/HowToPlayModal'
+import { LockWall } from '../components/LockWall'
 import { ReactionLayer } from '../components/Reactions'
 import { gameInstructions, hasGameInstructions } from '../games/instructions'
 import { C } from '../lib/constants'
@@ -163,7 +164,10 @@ export default function RoomPage() {
         room.players.some((player) => player.id === state.playerId && player.inGame) ? (
           <GameScreen room={room} me={state.playerId} />
         ) : (
-          <ForfeitWaiting room={room} me={state.playerId} />
+          <>
+            <LockWall />
+            <ForfeitWaiting room={room} me={state.playerId} />
+          </>
         )
       )}
       {room.status === 'finished' && <FinalResults room={room} me={state.playerId} />}

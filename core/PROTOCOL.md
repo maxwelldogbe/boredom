@@ -30,6 +30,22 @@
 > `GET /api/auth/me` gains top-level `tag` and ISO-8601 `createdAt`; new
 > `GET /api/me/stats` and `GET /api/me/recent-players` (8.3). The tag is never sent over the
 > WebSocket.
+>
+> **Additions (guest free games):** guests get `GUEST_FREE_GAMES` (7) game starts per
+> `GUEST_WINDOW_MS` (2 h), section 11. New request and push `guest:quota`, error code
+> `GUEST_LIMIT` (with `error.data`), `Player.locked`; `game:start` leaves out locked guests.
+>
+> **Additions (guest signup in a room):** `room:join` with a guest seat's `roomToken` and a valid
+> `authToken` turns that seat into the account's seat, outside a running game (4.2).
+>
+> **Additions (friends, presence, invites):** additive only. HTTP endpoints for friends, blocks,
+> reports and the presence setting (8.7); `RecentPlayer.relationship`. Over the WebSocket: new
+> requests `auth:hello`, `invite:send`, `invite:accept`, `invite:decline`,
+> `friends:requestByPlayer`, `player:block`, `player:report`; new pushes `friends:snapshot`,
+> `friends:presence`, `friends:request`, `friends:accepted`, `friends:removed`,
+> `invite:received`, `invite:expired`, `invite:cleared`; new error codes (3). Section 9. Tags
+> are now sent over the WebSocket, but only to the account's friends (and with a friend
+> request or invite to its recipient). `room:state` is unchanged.
 
 ## 1. Transport
 
@@ -74,7 +90,8 @@ Failure:
 {"type": "ack", "id": 7, "ok": false, "error": {"code": "ROOM_NOT_FOUND", "message": "We couldn't find room ABCD."}}
 ```
 
-`message` is human-readable English and may change; code against `code`.
+`message` is human-readable English and may change; code against `code`. Some errors also
+carry `error.data` (only `GUEST_LIMIT` so far, section 11).
 
 ### 2.3 Server → client: pushes (no `id`)
 
@@ -86,6 +103,7 @@ Failure:
 | `room:event` | `data: {kind, playerId, nickname, data?}` | Transient room moments (6.6). Never replayed on reconnect. |
 | `room:reaction` | `data: {id, playerId, nickname, emoji}` | Someone sent an emoji reaction (4.10). To everyone online in the room, the sender included. Never stored or replayed. |
 | `error` | `data: {code, message}` | A problem not tied to a request (see below). |
+| `friends:*`, `invite:*` | see 9 | Friends' presence, friend requests and room invites, to signed-in accounts only (9.3). |
 
 `serverNow` is the server's epoch-ms clock when the view was sent. Compute countdowns as
 `deadline - serverNow`, measured from when the view arrived, so a wrong phone clock doesn't matter.
@@ -121,6 +139,13 @@ Example push:
 | `NOT_IN_ROOM` | Request needs a room but this connection has no seat (never joined, left, or was detached). |
 | `UNKNOWN_EVENT` | `type` is not a known request type. |
 | `BAD_MESSAGE` | Frame is not valid JSON, or the envelope is malformed. |
+| `UNAUTHORIZED` | `auth:hello` with a missing, invalid or expired token, or a disabled or deleted account (9.1). |
+| `NOT_FRIENDS` | `invite:send` to someone who is not your friend (or an unknown tag). |
+| `GUEST_LIMIT` | A guest out of free games (11): `room:create` / `room:join` for a new seat, with `data: {lockedUntil}`; `game:start` when too few players are left, with `data: {nicknames}`. |
+| `TARGET_UNAVAILABLE` | `invite:send` to a friend who is not exactly `online` (offline, appearing offline, busy, in a room), blocked, or disabled. Always the same message. |
+| `INVITE_EXPIRED` | `invite:accept` after the invite ran out, or its room started a game, closed, or the sender left. |
+| `INVITE_INVALID` | `invite:accept` for an invite that is not yours, was already used, never existed (or was lost in a server restart), or after a block. |
+| `SELF`, `ALREADY_FRIENDS`, `ALREADY_REQUESTED`, `LIMIT_REACHED`, `INVALID_INPUT` | From the by-player actions (9.5), with the meaning they have in the HTTP API (8.7). `RATE_LIMITED` is also used for invite and friend-request limits. |
 
 ## 4. Requests
 
@@ -169,6 +194,10 @@ Payload: `{ "code": "ABCD", "profile": Profile, "roomToken"?: string, "authToken
 - With a valid `authToken` for an account that already holds a seat here: reclaims that seat
   exactly like a `roomToken` (same `playerId` and `roomToken` in the ack, older socket detached).
   One account never holds two seats in a room.
+- With a `roomToken` for a **guest** seat plus a valid `authToken` (the guest just signed up or
+  logged in): the seat becomes the account's (`type` turns `"registered"`; same `playerId`,
+  nickname, color, avatar and score), unless the room is `playing` or the account already holds
+  another seat here, in which case it is reclaimed unchanged as a guest seat.
 - Without a valid token: takes a new seat with a **newly assigned avatar** (5.1). Rejected with
   `GAME_IN_PROGRESS` while the room is `playing`; allowed in `lobby` and `finished`. An unknown or
   stale token is simply ignored.
@@ -223,7 +252,9 @@ Payload: `{}`. Only in `lobby`. Requires a selected game and a seated-player cou
 min/max (offline players count and take part). Everyone receives `room:state` (status `playing`)
 then their first `game:view`.
 Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `INVALID_ACTION` (no game selected, wrong
-player count, room `finished`), `GAME_IN_PROGRESS`.
+player count, room `finished`), `GAME_IN_PROGRESS`, `GUEST_LIMIT` (11).
+Locked guests (11) sit the game out (`inGame: false` from the start) and are not counted in the
+player count.
 
 ### 4.7 `game:action`
 
@@ -304,6 +335,7 @@ type Player = {
   online: boolean;
   joinedAt: number;         // epoch ms
   ready: boolean;           // lobby ready check (4.9); always false for the host
+  locked: boolean;          // a guest out of free games (11); always false for registered seats
 };
 
 type RoomStatus = 'lobby' | 'playing' | 'between_rounds' | 'finished';
@@ -1023,6 +1055,7 @@ type RecentPlayer = {            // GET /api/me/recent-players
   lastPlayedAt: string;          // ISO-8601 UTC: end of the newest shared completed game
   gamesTogether: number;         // shared completed games within the window
   lastGameId: GameId;            // the game of that newest shared session
+  relationship: 'none' | 'friends' | 'requested' | 'incoming';  // requested: you asked them
 };
 ```
 
@@ -1081,13 +1114,14 @@ The account's own totals, favorite game and per-game rows from the same counters
 
 Up to `RECENT_PLAYERS_MAX` (30) distinct **registered** players who finished a **completed**
 game with the account holder that ended in the last `RECENT_PLAYERS_DAYS` (30) days, newest
-first. Never the account holder, guests, disabled accounts or deleted accounts. No login
+first. Never the account holder, guests, disabled accounts, deleted accounts, or anyone blocked
+in either direction (8.7). No login
 usernames, ids, emails or guest keys are ever included. `Cache-Control: no-store`.
 
 ```json
 {"players": [{"tag": "K7M2QX", "nickname": "Ann", "avatar": {"style": "cutouts", "seed": "1b2c3d4e"},
               "color": "#E74C3C", "lastPlayedAt": "2026-10-26T18:04:11Z", "gamesTogether": 3,
-              "lastGameId": "liars_dice"}]}
+              "lastGameId": "liars_dice", "relationship": "none"}]}
 ```
 
 **`PATCH /api/auth/profile`** (Bearer) `{"nickname"?, "color"?, "avatar"?}` → `200 {profile}`
@@ -1106,7 +1140,9 @@ old values; the change applies from the next `room:create` / `room:join`.
 
 **`DELETE /api/auth/account`** (Bearer) `{"password"}` → `200 {"ok": true}`
 
-Deletes the account, its saved profile and its stats. The token stops working.
+Deletes the account, its saved profile and its stats, plus its friendships, friend requests and
+blocks (8.7). Reports by or about the account are kept for staff with the account link removed
+and the reported nickname snapshot kept. The token stops working.
 
 ### 8.4 Stats
 
@@ -1142,5 +1178,248 @@ Every registered account has a public tag: `TAG_LENGTH` (6) characters from `TAG
 (`ABCDEFGHJKLMNPQRSTUVWXYZ23456789`, no I, O, 0 or 1), shown as `#K7M2QX`. It is random
 (`secrets`), unique, assigned at registration, never changes (not even with the nickname), and
 is never reused after the account is deleted. It is not the login username and never contains
-it. It is returned only by `GET /api/auth/me` and `GET /api/me/recent-players`, never in
-`room:state` or any WebSocket message.
+it. It is returned only by `GET /api/auth/me`, `GET /api/me/recent-players` and the friends
+endpoints (8.7), and over the WebSocket only in the social pushes of section 9, never in
+`room:state`.
+
+### 8.7 Friends, blocks, reports and settings
+
+Registered accounts only (guests have no token). Every endpoint needs the Bearer token, answers
+`Cache-Control: no-store` and uses the error format of 8.5. Players are always named by their
+public tag; no response contains a login username, user id, profile id or email. A tag in a
+body or URL is normalized: surrounding spaces and a leading `#` are dropped and it is
+uppercased (`"#k7m2qx"` → `"K7M2QX"`). A value that cannot be a tag is `400 INVALID_INPUT`.
+
+```ts
+type PlayerCard = {tag: string; nickname: string; avatar: Avatar; color: string};
+type FriendStatus = 'online' | 'in_lobby' | 'in_game' | 'busy' | 'offline';
+type Friend = PlayerCard & {status: FriendStatus};
+type FriendRequest = PlayerCard & {requestId: number; createdAt: string};  // ISO-8601 UTC
+type PresenceMode = 'online' | 'busy' | 'offline';                        // offline = appear offline
+type ReportReason = 'harassment' | 'inappropriate_name_or_avatar' | 'cheating' | 'spam' | 'other';
+```
+
+**`GET /api/friends`** → `200 {friends: Friend[], incoming: FriendRequest[], outgoing: FriendRequest[], blocked: PlayerCard[]}`
+
+`friends` are sorted by status (online, in_lobby, in_game, busy, offline), then nickname.
+Requests and blocks are newest first. In requests, the card is the *other* player. Disabled
+accounts are left out of `friends`, `incoming` and `outgoing`.
+
+**`POST /api/friends/requests`** `{"tag"}` → `200 {"status": "requested" | "friends"}`
+
+If that player already sent you a request, it is accepted instead (`"friends"`). If either of
+you blocked the other, or their account is disabled, the answer is `{"status": "requested"}`
+exactly as for a real request, but nothing is created.
+
+| Status | `code` | When |
+| --- | --- | --- |
+| 400 | `SELF` | Your own tag. |
+| 404 | `NOT_FOUND` | No account has that tag. |
+| 409 | `ALREADY_FRIENDS` | You are friends already. |
+| 409 | `ALREADY_REQUESTED` | Your request to them is still pending. |
+| 409 | `LIMIT_REACHED` | You (or they, on an auto-accept) have `MAX_FRIENDS` (100) friends, you have `MAX_PENDING_OUTGOING` (30) requests waiting, or they have `MAX_PENDING_INCOMING` (50). |
+| 429 | `RATE_LIMITED` | More than `FRIEND_REQUESTS_PER_HOUR` (20) attempts in the last hour. |
+
+**`POST /api/friends/requests/<requestId>/accept`** → `200 {"status": "friends"}` ·
+**`POST /api/friends/requests/<requestId>/decline`** → `200 {"ok": true}`
+
+Recipient only; anyone else (or a request that is gone) gets `404 NOT_FOUND`. Accepting can
+fail with `409 LIMIT_REACHED` when either side has `MAX_FRIENDS`. Declining is not told to the
+sender.
+
+**`DELETE /api/friends/requests/<requestId>`** → `200 {"ok": true}`: cancel your own outgoing
+request (`404 NOT_FOUND` otherwise).
+
+**`DELETE /api/friends/<tag>`** → `200 {"ok": true}`: remove a friend. The other player is not
+told; you simply disappear from each other's lists. `404 NOT_FOUND` if you are not friends.
+
+**`GET /api/friends/<tag>/profile`** → `200 PlayerCard & {memberSince: string, stats: MyStats}`
+
+Friends only: anyone else, including unknown tags and disabled accounts, gets
+`403 FORBIDDEN` and no stats. `memberSince` is ISO-8601 UTC; `stats` has the shape of
+`GET /api/me/stats`.
+
+**`POST /api/blocks`** `{"tag"}` → `200 {"ok": true}` · **`DELETE /api/blocks/<tag>`** → `200 {"ok": true}`
+
+Blocking is silent and idempotent. It removes any friendship and pending requests in both
+directions. From then on the two players are left out of each other's friend lists, requests
+and recent players, and cannot invite each other (9.4). Blocks never affect room membership.
+Errors: `400 SELF`, `404 NOT_FOUND` (unknown tag; on DELETE also "not blocked").
+
+**`POST /api/reports`** `{"tag", "reason", "note"?}` → `200 {"ok": true}`
+
+`reason` is one of `REPORT_REASONS`. `note` is optional text for staff only, at most
+`REPORT_NOTE_MAX` (200) characters; line breaks become spaces and control or invisible
+formatting characters are removed. It is never shown to other players. Each reporter may file
+`REPORTS_PER_DAY` (10) new reports per 24 hours (`429 RATE_LIMITED`). Reporting the same player
+again within `REPORT_DUPLICATE_WINDOW_HOURS` (24) while your report is still open is accepted
+but merged into it (a missing note is filled in) and does not count toward the limit. Errors:
+`400 INVALID_INPUT` (`fields.reason` or `fields.note`), `400 SELF`, `404 NOT_FOUND`.
+
+**`GET /api/me/settings`** → `200 {"presence": PresenceMode}` ·
+**`PATCH /api/me/settings`** `{"presence"}` → `200 {"presence": PresenceMode}`
+
+The default is `"online"`. `"busy"` shows friends a busy status and `"offline"` makes the
+account appear offline. An unknown value is `400 INVALID_INPUT` with `fields.presence`.
+
+## 9. Friends, presence and invites (WebSocket)
+
+For registered accounts. Guests never send or receive any of this, and nothing here changes
+`room:state`. Pushes carry a tag only to that account's friends (and, with a friend request or
+an invite, to its recipient). No push or ack carries a login username, user id, profile id,
+email, room contents, or (except the `invite:accept` ack) a room code.
+
+### 9.1 `auth:hello`
+
+```json
+{"id": 1, "type": "auth:hello", "payload": {"authToken": "eyJhbGciOi..."}}
+```
+
+Ack: `{"presence": PresenceMode}` (the saved setting, 8.7). Binds this connection to the account
+for presence and invites, then pushes `friends:snapshot` and an `invite:received` for every
+invite still pending for the account. Send it after **every** (re)connect while signed in,
+before anything else. A missing, invalid or expired token, or a disabled or deleted account,
+is `UNAUTHORIZED` and the connection stays (or becomes) a guest connection. `room:create` and
+`room:join` with `authToken` work exactly as before and do not bind presence.
+
+### 9.2 Status
+
+| Status | When |
+| --- | --- |
+| `offline` | No signed-in connection, or the presence setting is `"offline"` (appear offline). |
+| `busy` | The presence setting is `"busy"`. |
+| `in_game` | Seated in a room whose status is `"playing"` and still in the game (`inGame`). |
+| `in_lobby` | Seated in a room in any other state (including after quitting a running game). |
+| `online` | Otherwise. |
+
+An account is connected while it has at least one signed-in connection. When the last one
+closes it keeps its status for `PRESENCE_OFFLINE_DELAY_MS` (5000), so a quick reconnect
+causes no offline flicker. Changing the setting with `PATCH /api/me/settings` applies at once.
+
+### 9.3 Pushes
+
+| `type` | `data` | To |
+| --- | --- | --- |
+| `friends:snapshot` | `{friends: {tag, status}[]}` | The connection, after `auth:hello`. |
+| `friends:presence` | `{tag, status}` | The account's signed-in friends, when its status changes; also to both sides right after they become friends. |
+| `friends:request` | `{request: FriendRequest}` (8.7) | The recipient, when a request arrives. |
+| `friends:accepted` | `{tag, nickname}` | **Both** new friends (each gets the other's card), on accept or auto-accept. |
+| `friends:removed` | `{tag}` | Both former friends, when either removes or blocks the other; every friend of an account that is disabled or deleted. Show nothing; just drop the row. |
+| `invite:received` | `{inviteId, fromTag, fromNickname, fromAvatar, gameId, expiresAt, serverNow}` | Every signed-in connection of the recipient. `gameId` is the selected game or `null`. `expiresAt` and `serverNow` are server epoch ms: count down `expiresAt - serverNow` from arrival. **No room code.** |
+| `invite:expired` | `{inviteId}` | The recipient, when the invite ran out (`INVITE_TTL_MS`, 120000) or its room started a game, closed, filled, or the sender left, or a newer invite replaced it. |
+| `invite:cleared` | `{inviteId}` | The recipient's *other* connections, after they accepted or declined it on one. Remove the banner silently. |
+
+### 9.4 Invites
+
+Invites live in server memory only: they expire after `INVITE_TTL_MS` and a server restart
+drops them all.
+
+**`invite:send`** `{tag}` → ack `{}`. The sender's seat must be registered, in a room in the
+`lobby` with space (fewer seated players than `MAX_PLAYERS` and the selected game's maximum),
+and the target a friend whose status is exactly `online`. Errors, in the order checked:
+`NOT_IN_ROOM`, `INVALID_ACTION` (guest seat, or the room is not in the lobby), `ROOM_FULL`,
+`NOT_FRIENDS`, `RATE_LIMITED` (the same friend again within `INVITE_COOLDOWN_MS` (30000), or more
+than `INVITES_PER_MINUTE` (10) per minute), `TARGET_UNAVAILABLE`. A friend holds at most
+`MAX_PENDING_INVITES_PER_USER` (5) pending invites; the oldest is expired to make room, and a new
+invite from the same sender replaces their older one.
+
+**`invite:accept`** `{inviteId}` → ack `{code}`. Recipient only (on a connection that sent
+`auth:hello`), before expiry, with the room still in the lobby and not full, and no block
+between the two. The invite is used up; then join with the normal `room:join` and that code.
+Errors: `INVITE_INVALID`, `INVITE_EXPIRED`, `ROOM_FULL`.
+
+**`invite:decline`** `{inviteId}` → ack `{}` always. The sender is never told.
+
+### 9.5 Actions on a player in your room
+
+For the lobby and results screens. Both seats must be in the sender's room (`NOT_IN_ROOM`
+when the sender has none; `INVALID_ACTION` when the target is not in it or is the sender), and
+the sender's seat must be registered (`INVALID_ACTION` otherwise). They use the same rules,
+limits and generic answers as the HTTP API (8.7), so a block is never revealed.
+
+| Request | Payload | Ack | Notes |
+| --- | --- | --- | --- |
+| `friends:requestByPlayer` | `{playerId}` | `{status: "requested" \| "friends"}` | Target must be registered (`INVALID_ACTION`). |
+| `player:block` | `{playerId}` | `{}` | Target must be registered. Never changes the room. |
+| `player:report` | `{playerId, reason, note?}` | `{}` | Guests may be reported: their pseudonymous guest key and nickname are stored. The room code and game are stored with the report for staff. |
+
+## 10. Admin reports API (staff)
+
+Part of the staff JSON API under `/api/admin/` used by the `/admin` dashboard. Same rules as the
+rest of it: staff only (anonymous `401`, non-staff `403`, both with `loginUrl`), the Django admin
+session cookie, CSRF token from `GET /api/admin/session` in `X-CSRFToken` on every POST, and
+`X-Robots-Tag: noindex, nofollow`. The report endpoints also send `Cache-Control: no-store`.
+Resolving and dismissing are written to the Django admin log (`LogEntry`), like disabling and
+deleting accounts. Staff may see login usernames here; passwords, tokens and emails are never
+included.
+
+```ts
+type ReportPerson = {
+  kind: 'registered' | 'guest' | 'deleted';  // deleted: the account is gone, only the snapshot is left
+  userId: number | null;         // registered: link to /admin/users/u/<userId>
+  guestKey: string | null;       // guest: link to /admin/users/g/<guestKey>
+  shortKey?: string;             // guest only
+  name: string;
+  nickname: string;              // reported: the nickname when reported; reporter: current nickname
+  tag: string | null;            // registered only
+  username: string | null;       // registered only
+};
+
+type AdminReport = {
+  id: number;
+  createdAt: string;             // ISO-8601
+  status: 'open' | 'resolved' | 'dismissed';
+  reason: ReportReason;          // 8.7
+  note: string;                  // the reporter's note ("" if none)
+  reporter: ReportPerson | null; // null once the reporter's account is deleted
+  reported: ReportPerson;
+  roomCode: string | null;       // set for reports made inside a room (9.5)
+  gameId: GameId | null;
+  game: {id: GameId; name: string} | null;
+  resolvedBy: string | null;     // staff username
+  resolvedNote: string;
+  resolvedAt: string | null;
+};
+```
+
+**`GET /api/admin/reports?status=&reason=&page=`** →
+`200 {page, numPages, count, pageSize, query: {status, reason}, statuses, reasons, openReports, results: AdminReport[]}`
+
+Open reports first, then newest first. Unknown filter values are ignored. `pageSize` is
+`DASHBOARD_PAGE_SIZE` (50).
+
+**`POST /api/admin/reports/<id>/resolve`** `{"action": "resolved" | "dismissed", "note"?}` →
+`200 {ok: true, report: AdminReport, openReports}`
+
+`note` is at most 500 characters (control characters removed). Errors: `400 INVALID_INPUT`,
+`403 FORBIDDEN` (staff without the "change report" permission; superusers have it), `404
+NOT_FOUND`, `409 NOT_OPEN` (already resolved or dismissed).
+
+**Counts elsewhere:** `GET /api/admin/session` and `GET /api/admin/overview` include
+`openReports` (never cached; `null` in the session for non-staff). The user detail endpoints
+(`/api/admin/users/u/<id>` and `/users/g/<key>`) include `reportsAgainst: {total, open}`.
+
+## 11. Guest free games
+
+Guests get `GUEST_FREE_GAMES` (7) games per `GUEST_WINDOW_MS` (7200000, 2 hours), enforced by
+the server per guest (by profile id). Registered seats are never counted or locked.
+
+- **Window:** starts at the guest's first counted game. Once `now >= windowStart +
+  GUEST_WINDOW_MS`, the next counted game starts a new window. A guest is **locked** while
+  `plays >= GUEST_FREE_GAMES` in the current window; `lockedUntil = windowStart + GUEST_WINDOW_MS`.
+- **Counting:** at `game:start`, once per guest who plays in it. Forfeits and host-ended games
+  are not refunded; a running game is never interrupted.
+- **`game:start`:** locked guests are left out (`inGame: false`, like a forfeited player) and
+  everyone else is counted. If fewer than the game's minimum remain, the start fails with
+  `GUEST_LIMIT`, `data: {nicknames: string[]}` (the locked guests), and nobody is counted.
+- **New seats:** `room:create` and `room:join` for a new seat by a locked guest fail with
+  `GUEST_LIMIT`, `data: {lockedUntil}`. Reclaiming a seat (`roomToken` or account) always works.
+- **`Player.locked`:** true for a guest seat found locked at the last `game:start` (or locked by
+  it). Locked players are left out of `readyCheck`.
+- If the quota store fails, play is allowed (fail open) and the error is logged.
+
+**`guest:quota`** `{profile: {id}}` → ack `{remaining, limit, lockedUntil, serverNow}`
+(`lockedUntil` is epoch ms or `null`). No seat needed (for the home screen).
+
+**Push `guest:quota`** `{remaining, limit, lockedUntil, serverNow}`: after each game start, to
+every guest who was counted or left out. Count down `lockedUntil - serverNow` from arrival.

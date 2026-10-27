@@ -10,7 +10,7 @@ export interface FetchCall {
 
 type Reply = { status: number; body: unknown } | 'network'
 
-/** /api/me/* answers by URL (default: empty), so the profile page's own requests don't take
+/** /api/me/* and /api/friends answer by URL (default: empty), so background requests don't take
  *  replies queued for other calls. They are recorded in `meCalls`, not `calls`. */
 const ME_DEFAULTS: Record<string, Reply> = {
   '/api/me/stats': {
@@ -18,6 +18,8 @@ const ME_DEFAULTS: Record<string, Reply> = {
     body: { totals: { played: 0, wins: 0, losses: 0, winRate: null }, favoriteGame: null, perGame: [], minGamesForRate: 5 },
   },
   '/api/me/recent-players': { status: 200, body: { players: [] } },
+  '/api/friends': { status: 200, body: { friends: [], incoming: [], outgoing: [], blocked: [] } },
+  '/api/me/settings': { status: 200, body: { presence: 'online' } },
 }
 
 export function fakeFetch() {

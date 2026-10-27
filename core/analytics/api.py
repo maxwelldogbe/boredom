@@ -8,6 +8,7 @@ The numbers come from the same functions as the server-rendered dashboard, so bo
 No response contains passwords, tokens, raw profile ids, seat ids or IP addresses.
 """
 
+import json
 from collections.abc import Callable
 from datetime import date, datetime
 from decimal import Decimal
@@ -19,6 +20,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.paginator import Paginator
+from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpRequest, JsonResponse
 from django.middleware.csrf import get_token
 from django.urls import reverse
@@ -29,7 +31,10 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from accounts import admin as accounts_admin
 from analytics import dashboard, metrics, people
 from analytics.models import ActivityEvent, GameSession
-from games.constants import DASHBOARD_MIN_GAMES_FOR_RATES, DASHBOARD_PAGE_SIZE
+from games.constants import DASHBOARD_MIN_GAMES_FOR_RATES, DASHBOARD_PAGE_SIZE, REPORT_REASONS
+from social.errors import SocialError
+from social.models import RESOLVED_NOTE_MAX, Report
+from social.services import clean_note
 
 View = Callable[..., JsonResponse]
 
@@ -146,6 +151,7 @@ def session(request: HttpRequest) -> JsonResponse:
             },
             "timeZone": settings.TIME_ZONE,
             "minGamesForRates": DASHBOARD_MIN_GAMES_FOR_RATES,
+            "openReports": open_reports() if staff else None,
         }
     )
 
@@ -180,6 +186,7 @@ def overview(request: HttpRequest) -> JsonResponse:
             "perDay": _per_day(data["per_day"]),
             "live": dashboard.live_rooms(),
             "cachedSeconds": dashboard.OVERVIEW_CACHE_SECONDS,
+            "openReports": open_reports(),  # never cached
         }
     )
 
@@ -305,6 +312,7 @@ def _detail_payload(
                 "change": bool(user and model_admin.has_change_permission(request, user)),
                 "delete": bool(user and model_admin.has_delete_permission(request, user)),
             },
+            "reportsAgainst": reports_against(user, actor.guest_key),
             "minGamesForRates": DASHBOARD_MIN_GAMES_FOR_RATES,
             "totals": {
                 "games": t["games"],
@@ -484,3 +492,148 @@ def activity(request: HttpRequest) -> JsonResponse:
             ],
         }
     )
+
+
+# ----- Reports -----------------------------------------------------------------------
+
+
+def open_reports() -> int:
+    return Report.objects.filter(status=Report.Status.OPEN).count()
+
+
+def reports_against(user: User | None, guest_key: str) -> dict[str, int]:
+    """{total, open} reports about a registered account or a guest key."""
+    who = Q(reported_user=user) if user is not None else Q(reported_guest_key=guest_key)
+    rows = Report.objects.filter(who, ~Q(reported_guest_key="") | Q(reported_user__isnull=False))
+    return {
+        "total": rows.count(),
+        "open": rows.filter(status=Report.Status.OPEN).count(),
+    }
+
+
+def _no_store(response: JsonResponse) -> JsonResponse:
+    response["Cache-Control"] = "no-store"
+    return response
+
+
+def _report_person(user: User | None, nickname: str) -> dict[str, Any]:
+    profile = getattr(user, "profile", None) if user else None
+    return {
+        **_actor(user.pk if user else None, "", nickname),
+        "nickname": nickname,
+        "tag": profile.tag if profile else None,
+        "username": user.username if user else None,
+    }
+
+
+def _reported(r: Report) -> dict[str, Any]:
+    if r.reported_user is not None:
+        return _report_person(r.reported_user, r.reported_nickname)
+    if r.reported_guest_key:
+        return {
+            **_actor(None, r.reported_guest_key, r.reported_nickname),
+            "nickname": r.reported_nickname,
+            "tag": None,
+            "username": None,
+        }
+    # the reported account was deleted since: only the nickname snapshot is left
+    return {
+        "kind": "deleted",
+        "userId": None,
+        "guestKey": None,
+        "name": r.reported_nickname,
+        "nickname": r.reported_nickname,
+        "tag": None,
+        "username": None,
+    }
+
+
+def _report_row(r: Report) -> dict[str, Any]:
+    reporter = r.reporter
+    return {
+        "id": r.pk,
+        "createdAt": r.created_at,
+        "status": r.status,
+        "reason": r.reason,
+        "note": r.note,
+        "reporter": _report_person(reporter, reporter.profile.nickname)
+        if reporter is not None and hasattr(reporter, "profile")
+        else None,
+        "reported": _reported(r),
+        "roomCode": r.room_code or None,
+        "gameId": r.game_id or None,
+        "game": _game_ref(r.game_id or None),
+        "resolvedBy": r.resolved_by.get_username() if r.resolved_by else None,
+        "resolvedNote": r.resolved_note,
+        "resolvedAt": r.resolved_at,
+    }
+
+
+@staff_api()
+def reports(request: HttpRequest) -> JsonResponse:
+    """Open reports first, then newest first; filters ?status= and ?reason=."""
+    status = request.GET.get("status", "")
+    status = status if status in Report.Status.values else ""
+    reason = request.GET.get("reason", "")
+    reason = reason if reason in REPORT_REASONS else ""
+    rows = Report.objects.select_related(
+        "reporter__profile", "reported_user__profile", "resolved_by"
+    ).annotate(
+        open_first=Case(
+            When(status=Report.Status.OPEN, then=Value(0)),
+            default=Value(1),
+            output_field=IntegerField(),
+        )
+    )
+    if status:
+        rows = rows.filter(status=status)
+    if reason:
+        rows = rows.filter(reason=reason)
+    page, meta = _page(request, rows.order_by("open_first", "-created_at", "-id"))
+    return _no_store(
+        ok(
+            {
+                **meta,
+                "query": {"status": status, "reason": reason},
+                "statuses": list(Report.Status.values),
+                "reasons": list(REPORT_REASONS),
+                "openReports": open_reports(),
+                "results": [_report_row(r) for r in page.object_list],
+            }
+        )
+    )
+
+
+@staff_api("POST")
+def resolve_report(request: HttpRequest, report_id: int) -> JsonResponse:
+    """{action: "resolved" | "dismissed", note?}: close an open report (audit-logged)."""
+    report = Report.objects.filter(pk=report_id).first()
+    if report is None:
+        return _no_store(fail(404, "NOT_FOUND", "No such report."))
+    model_admin = admin.site._registry[Report]
+    if not model_admin.has_change_permission(request, report):
+        return _no_store(fail(403, "FORBIDDEN", "You may not handle reports."))
+    try:
+        body = json.loads(request.body or b"{}")
+    except ValueError:
+        body = None
+    action = body.get("action") if isinstance(body, dict) else None
+    if action not in (Report.Status.RESOLVED, Report.Status.DISMISSED):
+        return _no_store(fail(400, "INVALID_INPUT", "Choose resolved or dismissed."))
+    try:
+        note = clean_note(body.get("note"))
+    except SocialError as exc:
+        return _no_store(fail(400, "INVALID_INPUT", exc.message))
+    if len(note) > RESOLVED_NOTE_MAX:
+        return _no_store(fail(400, "INVALID_INPUT", "The note is too long."))
+    if report.status != Report.Status.OPEN:
+        return _no_store(fail(409, "NOT_OPEN", "This report was already handled."))
+    report.status, report.resolved_note = action, note
+    report.resolved_by, report.resolved_at = request.user, timezone.now()
+    report.save(update_fields=["status", "resolved_note", "resolved_by", "resolved_at"])
+    verb = "Resolved" if action == Report.Status.RESOLVED else "Dismissed"
+    model_admin.log_change(request, report, f"{verb} report" + (f": {note}" if note else ""))
+    report = Report.objects.select_related(
+        "reporter__profile", "reported_user__profile", "resolved_by"
+    ).get(pk=report.pk)
+    return _no_store(ok({"ok": True, "report": _report_row(report), "openReports": open_reports()}))

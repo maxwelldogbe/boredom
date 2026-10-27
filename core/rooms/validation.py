@@ -23,6 +23,7 @@ from rooms.models_types import Profile, RoomError
 REQUEST_TYPES = frozenset(
     {
         "room:create",
+        "guest:quota",
         "room:join",
         "room:peek",
         "room:leave",
@@ -34,6 +35,13 @@ REQUEST_TYPES = frozenset(
         "game:end",
         "room:ready",
         "room:react",
+        "auth:hello",
+        "invite:send",
+        "invite:accept",
+        "invite:decline",
+        "friends:requestByPlayer",
+        "player:block",
+        "player:report",
     }
 )
 MAX_MESSAGE_CHARS = 8192

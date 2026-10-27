@@ -31,7 +31,8 @@ USERNAME_RE = re.compile(USERNAME_PATTERN)
 PASSWORD_MAX = 128
 BAD_CREDENTIALS = "Wrong username or password."
 
-View = Callable[[HttpRequest, dict[str, Any], User | None], JsonResponse]
+# (request, body, user, **url kwargs)
+View = Callable[..., JsonResponse]
 
 
 class ApiError(Exception):
@@ -88,16 +89,17 @@ def api(
     auth: bool = False,
     limiter: KeyedRateLimiter | None = None,
     no_store: bool = False,
-) -> Callable[[View], Callable[[HttpRequest], JsonResponse]]:
+) -> Callable[[View], Callable[..., JsonResponse]]:
     """Method check, rate limit, JSON body, bearer auth and error rendering for one view.
 
-    `no_store` marks every response, errors included, Cache-Control: no-store.
+    `no_store` marks every response, errors included, Cache-Control: no-store. URL kwargs
+    are passed on to the view.
     """
 
-    def decorate(view: View) -> Callable[[HttpRequest], JsonResponse]:
+    def decorate(view: View) -> Callable[..., JsonResponse]:
         @csrf_exempt
         @wraps(view)
-        def wrapper(request: HttpRequest) -> JsonResponse:
+        def wrapper(request: HttpRequest, **kwargs: Any) -> JsonResponse:
             try:
                 if request.method != method:
                     raise ApiError(405, "METHOD_NOT_ALLOWED", f"Use {method}.")
@@ -105,7 +107,7 @@ def api(
                     raise ApiError(429, "RATE_LIMITED", "Too many attempts. Wait a minute.")
                 body = _json_body(request)
                 user = _bearer_user(request) if auth else None
-                response = view(request, body, user)
+                response = view(request, body, user, **kwargs)
             except ApiError as exc:
                 response = exc.response()
             if no_store:
@@ -115,6 +117,22 @@ def api(
         return wrapper
 
     return decorate
+
+
+def by_method(**views: Callable[..., JsonResponse]) -> Callable[..., JsonResponse]:
+    """One URL served by several `api` views, picked by HTTP method (get=..., patch=...)."""
+    allowed = ", ".join(m.upper() for m in views)
+
+    @csrf_exempt
+    def dispatch(request: HttpRequest, **kwargs: Any) -> JsonResponse:
+        view = views.get((request.method or "").lower())
+        if view is None:
+            response = ApiError(405, "METHOD_NOT_ALLOWED", f"Use {allowed}.").response()
+            response["Cache-Control"] = "no-store"
+            return response
+        return view(request, **kwargs)
+
+    return dispatch
 
 
 def _field(fields: dict[str, str], name: str, check: Callable[[Any], Any], raw: Any) -> Any:

@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { Button } from '../../components/Button'
+import { CommunityLink } from '../../components/CommunityLink'
+import { GuestSignupPopup } from '../../components/GuestSignupPopup'
+import { FreeGamesLeft } from '../../components/LockWall'
 import { PlayerCards } from '../../components/PlayerCards'
 import { gameUi } from '../../games/registry'
 import { friendlyError } from '../../lib/errors'
@@ -42,6 +45,7 @@ export function FinalResults({ room, me }: { room: RoomPublic; me: string }) {
   return (
     <div className="stack results">
       <h1>Game over</h1>
+      <FreeGamesLeft results />
       {lastResults && (
         <section className="card stack" aria-labelledby="results-title">
           <h2 id="results-title" className="section-title">
@@ -93,6 +97,10 @@ export function FinalResults({ room, me }: { room: RoomPublic; me: string }) {
       ) : (
         <p className="lobby__waiting">⏳ Waiting for the host to play again or return to the lobby.</p>
       )}
+      <div className="results__community">
+        <CommunityLink variant="small" />
+      </div>
+      <GuestSignupPopup roomCode={room.code} results={lastResults} />
     </div>
   )
 }

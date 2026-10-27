@@ -15,4 +15,6 @@ urlpatterns = [
     path("users/u/<int:user_id>/<slug:action>", api.user_action, name="admin-api-user-action"),
     path("leaderboards", api.leaderboards, name="admin-api-leaderboards"),
     path("activity", api.activity, name="admin-api-activity"),
+    path("reports", api.reports, name="admin-api-reports"),
+    path("reports/<int:report_id>/resolve", api.resolve_report, name="admin-api-report-resolve"),
 ]

@@ -7,6 +7,7 @@ from typing import Any
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 from accounts.rooms import account_profile
+from accounts.tokens import user_id_from_token
 from rooms import manager as manager_module
 from rooms.manager import RoomManager
 from rooms.models_types import Profile, RoomError
@@ -20,6 +21,9 @@ from rooms.validation import (
     parse_request,
     validate_profile,
 )
+from social import hub as social_hub
+
+SOCIAL_BY_PLAYER = ("friends:requestByPlayer", "player:block", "player:report")
 
 logger = logging.getLogger("rooms.consumers")
 
@@ -43,6 +47,7 @@ class RoomConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code: int) -> None:
         if self.room_code:
             await get_manager().disconnect(self.room_code, self.player_id, self.channel_name)
+        await get_manager().social.unbind(self.channel_name)
 
     async def receive(self, text_data: str | None = None, bytes_data: bytes | None = None) -> None:
         try:
@@ -60,6 +65,8 @@ class RoomConsumer(AsyncWebsocketConsumer):
             if exc.code == "NOT_IN_ROOM":
                 self.room_code = self.player_id = None
             error = {"code": exc.code, "message": exc.message}
+            if exc.data is not None:
+                error["data"] = exc.data
             await self._send({"type": "ack", "id": request.id, "ok": False, "error": error})
             return
         except Exception:
@@ -79,6 +86,15 @@ class RoomConsumer(AsyncWebsocketConsumer):
                 return manager.peek(normalize_code(payload.get("code")))
             except RoomError:
                 return manager.peek(None)
+        if request.type == "auth:hello":
+            return await self._hello(payload)
+        if request.type == "invite:accept":
+            return await manager.social.accept_invite(self.channel_name, payload.get("inviteId"))
+        if request.type == "invite:decline":
+            await manager.social.decline_invite(self.channel_name, payload.get("inviteId"))
+            return {}
+        if request.type == "guest:quota":
+            return await manager.guest_quota(payload.get("profile"))
         if request.type in ("room:create", "room:join"):
             if self.room_code and self.room_code in manager.rooms:
                 raise RoomError("INVALID_ACTION", "Leave your current room first.")
@@ -113,7 +129,28 @@ class RoomConsumer(AsyncWebsocketConsumer):
             await manager.set_ready(code, pid, payload.get("ready"))
         elif request.type == "room:react":
             await manager.react(code, pid, payload.get("emoji"))
+        elif request.type == "invite:send":
+            await manager.social.send_invite(code, pid, payload.get("tag"))
+        elif request.type in SOCIAL_BY_PLAYER:
+            room, me, target = manager.social.seat_pair(code, pid, payload.get("playerId"))
+            assert me.user_id is not None
+            try:
+                return await social_hub.player_action(
+                    request.type, me.user_id, target, room, payload
+                )
+            except social_hub.SocialError as exc:
+                raise RoomError(exc.code, exc.message) from None
         return {}
+
+    async def _hello(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """Bind this connection to the account in authToken (presence and invites)."""
+        hub = get_manager().social
+        user_id = user_id_from_token(payload.get("authToken"))
+        info = await social_hub.load_account(user_id) if user_id is not None else None
+        if info is None:
+            await hub.unbind(self.channel_name)
+            raise RoomError("UNAUTHORIZED", "Please sign in again.")
+        return await hub.hello(self.channel_name, info)
 
     @staticmethod
     async def _profile(payload: dict[str, Any]) -> tuple[Profile, str | None]:

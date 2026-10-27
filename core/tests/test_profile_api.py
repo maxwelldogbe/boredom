@@ -297,6 +297,7 @@ def test_recent_players_shape_and_counts(client: Client) -> None:
         "lastPlayedAt",
         "gamesTogether",
         "lastGameId",
+        "relationship",
     }
     assert first["tag"] == ann.profile.tag and first["gamesTogether"] == 3
     assert first["lastGameId"] == "liars_dice"

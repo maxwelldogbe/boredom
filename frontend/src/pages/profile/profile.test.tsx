@@ -158,7 +158,7 @@ describe('recent players', () => {
     expect(within(dialog).getByRole('button', { name: 'Copy tag' })).toBeInTheDocument()
     expect(within(dialog).getByText('Played together 6 times')).toBeInTheDocument()
     expect(within(dialog).getByText(/^Last played/)).toBeInTheDocument()
-    expect(within(dialog).getAllByRole('button').map((b) => b.textContent)).toEqual(['Copy', 'Close'])
+    expect(within(dialog).getAllByRole('button').map((b) => b.textContent)).toEqual(['Copy', 'Add friend', 'Block', 'Report', 'Close'])
     expect(dialog.textContent).not.toMatch(/won|Win rate|\d+ played/)
 
     const copy = within(dialog).getByRole('button', { name: 'Copy tag' })

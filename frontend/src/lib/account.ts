@@ -33,6 +33,12 @@ export type AccountErrorCode =
   | 'METHOD_NOT_ALLOWED'
   | 'NETWORK'
   | 'SERVER'
+  | 'NOT_FOUND'
+  | 'FORBIDDEN'
+  | 'SELF'
+  | 'ALREADY_FRIENDS'
+  | 'ALREADY_REQUESTED'
+  | 'LIMIT_REACHED'
 
 /** A failed account request. `fields` maps a form field to a message to show next to it. */
 export class AccountError extends Error {
@@ -47,16 +53,28 @@ export class AccountError extends Error {
 
 // ----- token -------------------------------------------------------------------------
 
+const authListeners = new Set<() => void>()
+
+/** Called whenever this device logs in or out (the socket re-sends auth:hello). */
+export function onAuthChange(fn: () => void): () => void {
+  authListeners.add(fn)
+  return () => authListeners.delete(fn)
+}
+
 export function getAuthToken(): string | null {
   return readItem(AUTH_KEY)
 }
 
 export function setAuthToken(token: string): void {
+  const changed = readItem(AUTH_KEY) !== token
   writeItem(AUTH_KEY, token)
+  if (changed) authListeners.forEach((fn) => fn())
 }
 
 export function clearAuthToken(): void {
+  const changed = readItem(AUTH_KEY) !== null
   removeItem(AUTH_KEY)
+  if (changed) authListeners.forEach((fn) => fn())
 }
 
 // ----- validation shared with the forms ----------------------------------------------
@@ -86,7 +104,7 @@ const FRIENDLY: Partial<Record<AccountErrorCode, string>> = {
 }
 
 /** `path` is under /api/auth/, or a full path starting with "/" (e.g. /api/me/stats). */
-async function call<T>(method: Method, path: string, body?: unknown, token?: string | null): Promise<T> {
+export async function apiCall<T>(method: Method, path: string, body?: unknown, token?: string | null): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   if (token) headers.Authorization = `Bearer ${token}`
@@ -119,7 +137,7 @@ const EMPTY_STATS: AccountStats = { gamesPlayed: 0, wins: 0, byGame: {} }
 
 /** Create an account from the guest profile: its avatar is claimed and its stats imported. */
 export async function register(username: string, password: string, guest: Profile): Promise<Session> {
-  const data = await call<{ token: string; profile: AccountProfile }>('POST', 'register', {
+  const data = await apiCall<{ token: string; profile: AccountProfile }>('POST', 'register', {
     username,
     password,
     profile: {
@@ -135,7 +153,7 @@ export async function register(username: string, password: string, guest: Profil
 }
 
 export function login(username: string, password: string): Promise<Session> {
-  return call<Session>('POST', 'login', { username, password })
+  return apiCall<Session>('POST', 'login', { username, password })
 }
 
 export interface MeData {
@@ -148,7 +166,7 @@ export interface MeData {
 }
 
 export function fetchMe(token: string): Promise<MeData> {
-  return call('GET', 'me', undefined, token)
+  return apiCall('GET', 'me', undefined, token)
 }
 
 export interface GameTotals {
@@ -174,25 +192,27 @@ export interface RecentPlayer {
   lastPlayedAt: string
   gamesTogether: number
   lastGameId: GameId
+  /** requested: you asked them; incoming: they asked you. Missing from older servers. */
+  relationship?: 'none' | 'friends' | 'requested' | 'incoming'
 }
 
 export function fetchMyStats(token: string): Promise<MyStats> {
-  return call('GET', '/api/me/stats', undefined, token)
+  return apiCall('GET', '/api/me/stats', undefined, token)
 }
 
 export async function fetchRecentPlayers(token: string): Promise<RecentPlayer[]> {
-  return (await call<{ players: RecentPlayer[] }>('GET', '/api/me/recent-players', undefined, token)).players
+  return (await apiCall<{ players: RecentPlayer[] }>('GET', '/api/me/recent-players', undefined, token)).players
 }
 
 export async function updateAccountProfile(
   token: string,
   fields: { nickname?: string; color?: string; avatar?: Avatar },
 ): Promise<AccountProfile> {
-  return (await call<{ profile: AccountProfile }>('PATCH', 'profile', fields, token)).profile
+  return (await apiCall<{ profile: AccountProfile }>('PATCH', 'profile', fields, token)).profile
 }
 
 export async function deleteAccount(token: string, password: string): Promise<void> {
-  await call('DELETE', 'account', { password }, token)
+  await apiCall('DELETE', 'account', { password }, token)
 }
 
 // ----- local profile -----------------------------------------------------------------

@@ -1,0 +1,342 @@
+/* Friends, presence and player menus. Tokens come from theme.css. */
+
+.count-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  margin-left: 8px;
+  padding: 0 6px;
+  border-radius: 12px;
+  background: var(--danger);
+  color: var(--surface);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.home__friends {
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* The friends tabs carry counts: keep full tap height. */
+.friends .tabs__tab {
+  min-height: var(--tap);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+/* Status: an icon plus words, never color alone */
+.status-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+.status-label--online {
+  color: var(--success);
+  font-weight: 600;
+}
+.status-label__icon {
+  font-size: 0.875rem;
+}
+
+/* Presence setting: a segmented control that stacks on narrow screens */
+.presence {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.presence__legend {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.presence__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.presence__option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: var(--tap);
+  padding: 8px 10px;
+  border: 0;
+  border-radius: calc(var(--radius) - 4px);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.presence__option[aria-checked='true'] {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 2px var(--primary);
+}
+.presence__option[aria-checked='true'] .presence__label::before {
+  content: '✓ ';
+}
+.presence__label {
+  font-weight: 700;
+}
+.presence__hint {
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+
+/* Add a friend */
+.add-friend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.add-friend__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.add-friend__hash {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.add-friend__input {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Rows of players */
+.friend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.friend-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.friend-row__who {
+  display: flex;
+  flex: 1 1 96px;
+  flex-direction: column;
+  min-width: 0;
+}
+.friend-row__name {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.friend-row__tag {
+  font-family: ui-monospace, monospace;
+  font-size: 0.875rem;
+}
+.friend-row__end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+.friend-row__buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* "⋯" menu */
+.menu {
+  position: relative;
+}
+.menu__button {
+  min-width: var(--tap);
+  min-height: var(--tap);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.menu__list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 10;
+  min-width: 176px;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.18);
+  list-style: none;
+}
+.menu__item {
+  display: block;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 12px;
+  border: 0;
+  border-radius: calc(var(--radius) - 4px);
+  background: transparent;
+  color: var(--text);
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+}
+.menu__item:hover,
+.menu__item:focus-visible {
+  background: var(--bg);
+}
+.menu__item--danger {
+  color: var(--danger);
+}
+
+/* Report dialog */
+.report__reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.report__reasons legend {
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+.report__reason {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  cursor: pointer;
+}
+.report__reason input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--primary);
+}
+.report__note {
+  resize: vertical;
+}
+
+/* Friend profile modal */
+.friend-profile__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.friend-profile__tag {
+  margin: 0;
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+}
+
+/* Recent players: actions in the detail dialog */
+.recent__more {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+.recent__relation {
+  margin: 0;
+  font-weight: 700;
+  text-align: center;
+  color: var(--success);
+}
+
+.what-we-save ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+.what-we-save li + li {
+  margin-top: 4px;
+}
+
+/* Invites: the lobby button, its bottom sheet, and banners for invites received */
+.invite-friends {
+  min-height: var(--tap);
+}
+.modal--sheet {
+  place-items: end center;
+  padding: 0;
+}
+.modal--sheet .modal__box {
+  max-width: 480px;
+  max-height: 85dvh;
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+}
+.invite-banners {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 8px 16px 0;
+  box-sizing: border-box;
+}
+.invite-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.invite-banner__text {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+.invite-banner__title,
+.invite-banner__time {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.invite-banner__time {
+  font-size: 0.875rem;
+}
+.invite-banner__left {
+  font-variant-numeric: tabular-nums;
+}
+.invite-banner__buttons {
+  display: flex;
+  flex: 1 1 100%;
+  gap: 8px;
+}
+.invite-banner__buttons .btn {
+  flex: 1;
+}
+.home__online {
+  margin-top: 16px;
+}

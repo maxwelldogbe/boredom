@@ -89,6 +89,16 @@ class WsClient:
         await self.comm.disconnect()
 
 
+class NoQuota:
+    """Stands in for GuestQuotaStore in tests without the database."""
+
+    async def read(self, keys: list[str], now: float) -> dict:
+        return {}
+
+    async def count(self, keys: list[str], now: float) -> dict:
+        return {}
+
+
 @pytest.fixture(scope="session")
 def django_db_modify_db_settings(django_db_modify_db_settings_parallel_suffix: None) -> None:
     """Test SQLite as a file, not in memory: in-memory connections are never closed, so one
@@ -135,12 +145,19 @@ def dummy_game() -> AsyncIterator[DummyGame]:
 
 
 @pytest.fixture
-async def manager(monkeypatch: pytest.MonkeyPatch) -> AsyncIterator[RoomManager]:
-    """A fresh RoomManager installed as the process-wide one."""
+async def manager(
+    monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureRequest
+) -> AsyncIterator[RoomManager]:
+    """A fresh RoomManager installed as the process-wide one.
+
+    Without database access the guest quota is skipped (as if nobody had played yet).
+    """
     fresh = RoomManager()
+    if request.node.get_closest_marker("django_db") is None:
+        fresh.quota = NoQuota()  # type: ignore[assignment]
     monkeypatch.setattr(manager_module, "manager", fresh)
     yield fresh
-    tasks = [fresh._cleanup_task]
+    tasks = [fresh._cleanup_task, *fresh.social.tasks()]
     for room in fresh.rooms.values():
         tasks += [room.timer_task, room.host_task]
         tasks += [*room.notice_tasks.values(), *room.forfeit_tasks.values()]

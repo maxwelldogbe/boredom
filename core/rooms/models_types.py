@@ -13,10 +13,11 @@ EndReason = Literal["completed", "forfeit", "host_ended"]
 class RoomError(Exception):
     """A rejected room request. `code` is a protocol error code such as NOT_HOST."""
 
-    def __init__(self, code: str, message: str) -> None:
+    def __init__(self, code: str, message: str, data: dict[str, Any] | None = None) -> None:
         super().__init__(message)
         self.code = code
         self.message = message
+        self.data = data  # extra error details sent as `error.data` (e.g. GUEST_LIMIT)
 
 
 @dataclass(frozen=True)
@@ -71,6 +72,7 @@ class Player:
     offline_notified: bool = False  # a player_offline event went out for this disconnect
     ready: bool = False  # lobby ready check; never counted for the host
     reacted_at: float | None = None  # last accepted room:react, for the cooldown
+    locked: bool = False  # a guest out of free games (from the quota at the last game start)
 
     @property
     def type(self) -> str:
@@ -90,6 +92,7 @@ class Player:
             "inGame": self.in_game,
             "joinedAt": self.joined_at,
             "ready": self.ready and self.id != host_id,
+            "locked": self.locked and self.user_id is None,
         }
 
 
@@ -136,7 +139,11 @@ class Room:
         """Ready count among online non-host players; None while no game is selected."""
         if self.selected_game is None:
             return None
-        voters = [p for p in self.seated() if p.online and p.id != self.host_id]
+        voters = [
+            p
+            for p in self.seated()
+            if p.online and p.id != self.host_id and not (p.locked and p.user_id is None)
+        ]
         return {"count": sum(p.ready for p in voters), "total": len(voters)}
 
     def to_public(self) -> dict[str, Any]:

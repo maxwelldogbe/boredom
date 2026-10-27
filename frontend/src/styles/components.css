@@ -600,3 +600,69 @@ a {
 .logo--on-dark .logo__word {
   color: #ffffff;
 }
+
+/* "Join our WhatsApp community" */
+.community {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  text-decoration: none;
+}
+.community__icon {
+  flex-shrink: 0;
+}
+.community--small {
+  align-self: center;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+}
+.community--menu {
+  justify-content: flex-start;
+  width: 100%;
+  padding: 0 6px;
+  color: var(--text);
+  font-size: 1rem;
+  white-space: nowrap;
+}
+.community-block {
+  display: grid;
+  gap: 4px;
+}
+.community__note {
+  margin: 0;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.results__community {
+  display: flex;
+  justify-content: center;
+}
+.home__about {
+  margin: 0;
+  text-align: center;
+}
+
+/* Guest signup popup: the flyer shrinks so both buttons stay on screen */
+.guest-popup__flyer {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+  max-height: 60dvh;
+  object-fit: contain;
+}
+.guest-popup__offer {
+  margin: 12px 0 0;
+  overflow-wrap: anywhere;
+}
+
+/* Guests out of free games */
+.lock-wall h2 {
+  margin: 0;
+}
+.lock-wall p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}

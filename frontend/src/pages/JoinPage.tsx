@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { EmptyState, Loading } from '../components/EmptyState'
+import { LockWall } from '../components/LockWall'
 import { Logo } from '../components/Logo'
 import { C } from '../lib/constants'
 import { errorCode, friendlyError } from '../lib/errors'
 import { isRoomCode } from '../lib/roomCode'
 import { SLOW_SERVER_MESSAGE, withSlowNotice } from '../lib/slow'
 import { useRoomActions } from '../state/context'
+import { useGuestQuota } from '../state/guestQuotaContext'
 
 type JoinStatus = 'joining' | 'notFound' | 'full' | 'inProgress' | 'error'
 
@@ -23,6 +25,9 @@ export default function JoinPage() {
   const [attempt, setAttempt] = useState(0)
   const started = useRef<string | null>(null)
   const valid = isRoomCode(code)
+  const { locked, refresh, handleError } = useGuestQuota()
+
+  useEffect(() => refresh(), [refresh])
 
   useEffect(() => {
     const key = `${code}#${attempt}`
@@ -38,13 +43,14 @@ export default function JoinPage() {
       await joinRoom(code)
       navigate(`/room/${code}`, { replace: true })
     }, setSlow).catch((err: unknown) => {
+      handleError(err)
       const c = errorCode(err)
       setMessage(friendlyError(err, code))
       setStatus(
         c === 'ROOM_NOT_FOUND' ? 'notFound' : c === 'ROOM_FULL' ? 'full' : c === 'GAME_IN_PROGRESS' ? 'inProgress' : 'error',
       )
     })
-  }, [code, valid, attempt, peek, joinRoom, navigate])
+  }, [code, valid, attempt, peek, joinRoom, navigate, handleError])
 
   const home = (
     <Button variant="secondary" block onClick={() => navigate('/')}>
@@ -72,6 +78,15 @@ export default function JoinPage() {
         <EmptyState icon="🤔" title="That doesn't look like a room code" actions={home}>
           Room codes are {C.ROOM_CODE_LENGTH} letters, like ABCD.
         </EmptyState>
+      </main>
+    )
+  }
+
+  if (locked) {
+    return (
+      <main className="page">
+        {brand}
+        <LockWall />
       </main>
     )
   }
