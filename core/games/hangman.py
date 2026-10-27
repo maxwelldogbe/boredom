@@ -7,6 +7,10 @@ Every round is worth a fixed pot of HANGMAN_POT points, whatever the word:
 - the setter never sets a word: the guessers share the whole POT.
 After a played round, any guesser may flag the word as not real (3+ players only); the
 other guessers then vote (see games/hangman_flag.py).
+
+Forfeits: a setter who forfeits before their round is scored has it skipped with no points,
+and a forfeiter's own setter turn still to come is dropped. A guesser who forfeits leaves
+the guessing, the pot sharing and any open flag vote.
 """
 
 import random
@@ -14,7 +18,14 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-from games.base import GameError, GameEvent, GameModule, GameResult, competition_placements
+from games.base import (
+    ForfeitReason,
+    GameError,
+    GameEvent,
+    GameModule,
+    GameResult,
+    competition_placements,
+)
 from games.constants import (
     HANGMAN_FLAG_WINDOW_MS,
     HANGMAN_HINT_MAX,
@@ -26,9 +37,15 @@ from games.constants import (
     HANGMAN_WORD_MIN,
     HANGMAN_WRONG_COST,
     NICKNAME_ALLOWED_PATTERN,
-    OFFLINE_FORFEIT_MS,
 )
-from games.hangman_flag import FLAG_MIN_PLAYERS, close_vote, flag_view, start_flag, vote
+from games.hangman_flag import (
+    FLAG_MIN_PLAYERS,
+    close_vote,
+    drop_voter,
+    flag_view,
+    start_flag,
+    vote,
+)
 
 WORD_RE = re.compile(rf"^[A-Za-z]{{{HANGMAN_WORD_MIN},{HANGMAN_WORD_MAX}}}$")
 HINT_RE = re.compile(NICKNAME_ALLOWED_PATTERN)
@@ -49,14 +66,14 @@ class HangmanState:
     award: dict[str, float] = field(default_factory=dict)  # this round's points
     flag_until: float | None = None  # a guesser may flag until then (roundOver)
     flag: dict[str, Any] | None = None  # {flaggerId, voters, votes (secret), upheld?}
-    offline_since: dict[str, float] = field(default_factory=dict)
+    forfeited: list[str] = field(default_factory=list)
 
     @property
     def setter(self) -> str:
         return self.order[self.round_index]
 
     def guessers(self) -> list[str]:
-        return [p for p in self.order if p != self.setter]
+        return [p for p in self.order if p != self.setter and p not in self.forfeited]
 
 
 def round_award(state: HangmanState, result: str) -> dict[str, float]:
@@ -142,6 +159,8 @@ class Hangman(GameModule):
     def _guess(self, state: HangmanState, player_id: str, action: dict, now: float) -> list:
         if player_id == state.setter:
             raise GameError("INVALID_ACTION", "The setter can't guess.")
+        if player_id in state.forfeited:
+            raise GameError("INVALID_ACTION", "You are out of this game.")
         if state.phase != "guessing":
             raise GameError("NOT_YOUR_TURN", "No word to guess right now.")
         letter = action.get("letter")
@@ -161,11 +180,15 @@ class Hangman(GameModule):
             return [self._end_round(state, "setter", now)]
         return []
 
-    def _end_round(self, state: HangmanState, result: str, now: float) -> GameEvent:
+    def _end_round(
+        self, state: HangmanState, result: str, now: float, scored: bool = True
+    ) -> GameEvent:
+        """Score the round (unless the setter forfeited it) and open the flag window."""
         state.phase, state.result = "roundOver", result
-        state.award = round_award(state, result)
+        state.award = round_award(state, result) if scored else {}
         apply_award(state, state.award)
-        flaggable = result != "skipped" and len(state.order) >= FLAG_MIN_PLAYERS
+        players = len(state.guessers()) + 1
+        flaggable = result != "skipped" and players >= FLAG_MIN_PLAYERS
         state.flag_until = now + HANGMAN_FLAG_WINDOW_MS if flaggable else None
         state.deadline = max(now + HANGMAN_REVEAL_MS, state.flag_until or 0)
         data = {"round": state.round_index + 1, "setterId": state.setter, "word": state.word}
@@ -195,10 +218,6 @@ class Hangman(GameModule):
     def tick(self, state: HangmanState, now) -> tuple[Any, list[GameEvent]]:
         if state.phase == "setting" and state.deadline is not None and now >= state.deadline:
             return state, [self._end_round(state, "skipped", now)]
-        if state.phase == "guessing":
-            gone_at = self._all_guessers_gone_at(state)
-            if gone_at is not None and now >= gone_at:
-                return state, [self._end_round(state, "setter", now)]
         if state.phase == "flagVote" and state.deadline is not None and now >= state.deadline:
             events = close_vote(state)
             self._next_round(state, now)
@@ -207,24 +226,26 @@ class Hangman(GameModule):
             self._next_round(state, now)
         return state, []
 
-    def _all_guessers_gone_at(self, state: HangmanState) -> float | None:
-        """When every guesser will have been offline for OFFLINE_FORFEIT_MS, else None."""
-        guessers = state.guessers()
-        if not all(g in state.offline_since for g in guessers):
-            return None
-        return max(state.offline_since[g] for g in guessers) + OFFLINE_FORFEIT_MS
-
-    def on_presence(self, state: HangmanState, player_id, online, now) -> tuple[Any, list]:
-        if online:
-            state.offline_since.pop(player_id, None)
-        else:
-            state.offline_since.setdefault(player_id, now)
-        return state, []
+    def forfeit(
+        self, state: HangmanState, player_id: str, now: float, reason: ForfeitReason
+    ) -> tuple[Any, list[GameEvent]]:
+        if state.phase == "done" or player_id in state.forfeited:
+            return state, []
+        events: list[GameEvent] = []
+        is_setter = player_id == state.setter
+        state.forfeited.append(player_id)
+        if state.order.index(player_id) > state.round_index:
+            state.order.remove(player_id)  # their setter turn is still to come: drop it
+        if is_setter and state.phase in ("setting", "guessing"):
+            events.append(self._end_round(state, "skipped", now, scored=False))
+        elif not is_setter and state.phase == "flagVote" and state.flag is not None:
+            events += drop_voter(state, player_id)
+            if "upheld" in state.flag:
+                self._next_round(state, now)
+        return state, events
 
     def next_deadline(self, state: HangmanState) -> float | None:
-        if state.phase == "guessing":
-            return self._all_guessers_gone_at(state)
-        return state.deadline
+        return None if state.phase == "guessing" else state.deadline
 
     # ----- views and results -------------------------------------------------------------------
 

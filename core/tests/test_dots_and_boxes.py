@@ -177,40 +177,65 @@ def test_auto_move_falls_back_to_unsafe_line_when_no_safe_one() -> None:
     assert state.last_move["lineId"] in keep and state.last_move["auto"] == "timeout"
 
 
-def test_offline_player_is_auto_played_after_forfeit_delay() -> None:
+def test_offline_alone_changes_nothing_before_the_turn_timeout() -> None:
     state = new()
-    state, _ = DB.on_presence(state, "a", False, T0 + 1000)
-    assert DB.next_deadline(state) == T0 + 1000 + OFFLINE_FORFEIT_MS
-    state, _ = DB.tick(state, T0 + 1000 + OFFLINE_FORFEIT_MS)
-    assert state.last_move["auto"] == "offline" and state.current == "b"
-    state = draw(state, "h:4:3", now=T0 + 40_000)
-    # Already offline long enough: a's next turn is played at once.
-    assert DB.next_deadline(state) == T0 + 1000 + OFFLINE_FORFEIT_MS
-    state, _ = DB.tick(state, T0 + 40_000)
-    assert state.current == "b" and state.last_move["playerId"] == "a"
-    state, _ = DB.on_presence(state, "a", True, T0 + 41_000)
-    state = draw(state, "h:4:2", now=T0 + 41_000)
-    assert DB.next_deadline(state) == T0 + 41_000 + DOTS_TURN_MS
-
-
-def test_everyone_offline_plays_out_to_the_end() -> None:
-    state = new(("a", "b", "c"), size=5)
-    for pid in "abc":
-        state, _ = DB.on_presence(state, pid, False, T0)
+    state, _ = DB.on_presence(state, "a", False, T0)
+    assert DB.next_deadline(state) == T0 + DOTS_TURN_MS
     state, _ = DB.tick(state, T0 + OFFLINE_FORFEIT_MS)
-    assert DB.is_over(state) and len(state.lines) == len(all_lines(5))
-    assert sum(r["score"] for r in DB.get_results(state)) == 25
+    assert state.lines == {} and state.current == "a"
 
 
-def test_same_seed_same_auto_moves() -> None:
+@pytest.mark.parametrize("reason", ["quit", "left", "offline"])
+def test_forfeit_on_your_turn_passes_it_on(reason) -> None:
+    state = draw(new(("a", "b", "c")), "h:0:0")  # b's turn
+    state, events = DB.forfeit(state, "b", T0 + 500, reason)
+    assert events == [] and state.current == "c"
+    assert state.turn_deadline == T0 + 500 + DOTS_TURN_MS
+    state = draw(state, "h:0:1", now=T0 + 600)
+    assert state.current == "a"  # b is skipped from now on
+    state = draw(state, "h:0:2", now=T0 + 700)
+    assert state.current == "c"
+    with pytest.raises(GameError):
+        draw(state, "h:0:3", pid="b")
+
+
+def test_forfeit_off_turn_keeps_the_turn_and_the_board() -> None:
+    state = new(("a", "b", "c"))
+    sides = box_sides(0, 0)
+    for line in sides[:3]:
+        state = draw(state, line)
+    assert state.current == "a"
+    state = draw(state, sides[3])  # a closes (0,0) and keeps the turn
+    state, _ = DB.forfeit(state, "c", T0 + 1, "quit")
+    assert state.current == "a" and state.turn_deadline == T0 + DOTS_TURN_MS
+    view = DB.get_view(state, "a")
+    assert view["boxes"][0][0] == "a" and view["lines"][sides[1]] == "b"
+    assert view["order"] == ["a", "b", "c"] and view["scores"]["a"] == 1
+
+
+def test_forfeiters_lines_and_boxes_stay() -> None:
+    state = new(("a", "b", "c"))
+    sides = box_sides(0, 0)
+    state = draw(state, sides[0])
+    state = draw(state, sides[1])
+    state = draw(state, sides[2])
+    state = draw(state, sides[3], pid="a")  # a closes it
+    state, _ = DB.forfeit(state, "a", T0 + 1, "left")
+    assert state.boxes[0][0] == 0 and state.lines[sides[0]] == 0
+    assert DB.get_results(state)[0] == {"player_id": "a", "placement": 1, "score": 1}
+    assert state.current == "b"
+
+
+def test_timeouts_play_out_to_the_end_and_repeat_with_the_same_seed() -> None:
     def play(seed):
-        state = new(seed=seed)
-        state, _ = DB.on_presence(state, "a", False, T0)
-        state, _ = DB.on_presence(state, "b", False, T0)
-        state, _ = DB.tick(state, T0 + OFFLINE_FORFEIT_MS)
-        return dict(state.lines)
+        state = new(("a", "b", "c"), size=4, seed=seed)
+        while not DB.is_over(state):
+            state, _ = DB.tick(state, DB.next_deadline(state))
+        return state
 
-    assert play(7) == play(7)
+    first = play(7)
+    assert len(first.lines) == len(all_lines(4)) and first.lines == play(7).lines
+    assert sum(r["score"] for r in DB.get_results(first)) == 16
 
 
 def test_view_is_public_and_serializable() -> None:

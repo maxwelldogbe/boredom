@@ -237,3 +237,53 @@ def test_view_shape_and_turn_flags() -> None:
 
 def test_same_seed_same_dice() -> None:
     assert new(seed=9).dice == new(seed=9).dice
+
+
+@pytest.mark.parametrize("reason", ["quit", "left", "offline"])
+def test_forfeit_voids_the_round_and_everyone_rerolls(reason) -> None:
+    state = rig(new(("a", "b", "c", "d")), a=[2, 2, 2], b=[5, 5], c=[2, 6, 6, 6], d=[1, 1, 3])
+    state = bid(state, 3, 2)  # true only with c's twos
+    state = bid(state, 4, 2)
+    assert state.turn == "c"
+    state, events = LD.forfeit(state, "b", T0 + 100, reason)
+    voided = {"round": 1, "playerId": "b", "starterId": "c"}
+    assert events == [{"kind": "roundVoided", "data": voided}]
+    assert state.round == 2 and state.bid is None and state.history == []
+    assert state.counts == {"a": 3, "b": 0, "c": 4, "d": 3} and state.eliminated == ["b"]
+    assert [len(state.dice[p]) for p in "abcd"] == [3, 0, 4, 3]
+    assert state.turn == "c" and state.deadline == T0 + 100 + DICE_TURN_MS
+    assert LD.get_view(state, "a")["totalDice"] == 10
+    for viewer in "abcd":  # each view holds only the viewer's own new dice
+        view = LD.get_view(state, viewer)
+        assert view["myDice"] == state.dice[viewer] and view["lastReveal"] is None
+
+
+def test_forfeit_of_the_player_to_move_passes_the_start_on() -> None:
+    state = bid(new(("a", "b", "c")), 1, 2)
+    assert state.turn == "b"
+    state, _ = LD.forfeit(state, "b", T0 + 1, "quit")
+    assert state.turn == "c" and state.bid is None
+
+
+def test_forfeit_during_a_reveal_keeps_the_result() -> None:
+    state = rig(new(("a", "b", "c")), a=[3, 3], b=[4, 4], c=[5, 5])
+    state = bid(state, 3, 3)
+    state, _ = act(state, {"type": "callLiar"})  # b calls, a loses a die and starts next
+    assert state.phase == "reveal" and state.next_starter == "a"
+    state, events = LD.forfeit(state, "a", T0 + 1, "left")
+    assert events == [] and state.phase == "reveal" and state.next_starter == "b"
+    assert state.counts["a"] == 0 and state.last_reveal["loserId"] == "a"
+    state, _ = LD.tick(state, state.deadline)
+    assert state.round == 2 and state.turn == "b" and state.counts == {"a": 0, "b": 2, "c": 2}
+
+
+def test_forfeit_down_to_one_player_ends_the_game() -> None:
+    state, _ = LD.forfeit(new(("a", "b")), "a", T0, "quit")
+    assert LD.is_over(state) and LD.get_results(state)[0]["player_id"] == "b"
+
+
+def test_forfeit_after_elimination_changes_nothing() -> None:
+    state, _ = LD.forfeit(new(("a", "b", "c")), "c", T0, "quit")
+    snapshot = (dict(state.counts), list(state.eliminated), state.round)
+    state, events = LD.forfeit(state, "c", T0 + 1, "offline")
+    assert events == [] and (state.counts, state.eliminated, state.round) == snapshot

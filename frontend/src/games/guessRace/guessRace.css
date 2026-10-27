@@ -73,11 +73,6 @@
   font-size: 1.6rem;
   font-weight: 700;
 }
-.scores-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
 .guess__solvers {
   display: grid;
   gap: 2px;

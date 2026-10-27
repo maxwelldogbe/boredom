@@ -36,6 +36,16 @@ class UpkeepMixin:
         room.host_id = min(candidates, key=lambda p: p.joined_at).id
         return True
 
+    async def _transfer_host_announced(self, room: Room, allow_offline: bool) -> bool:
+        """Transfer host and, if it moved, tell everyone with a host_changed event."""
+        previous = room.host_id
+        if not self._transfer_host(room, allow_offline):
+            return False
+        host = room.host()
+        assert host is not None
+        await self._room_event(room, "host_changed", host, {"previousHostId": previous})
+        return True
+
     def _schedule_host_check(self, room: Room) -> None:
         if room.host_task is not None:
             room.host_task.cancel()
@@ -49,7 +59,7 @@ class UpkeepMixin:
             host = room.host()
             if self.rooms.get(room.code) is not room or host is None or host.online:
                 return
-            if self._transfer_host(room, allow_offline=False):
+            if await self._transfer_host_announced(room, allow_offline=False):
                 await self._broadcast_room(room)
 
     # ----- cleanup -----------------------------------------------------------------------
@@ -88,7 +98,9 @@ class UpkeepMixin:
                 hooks.on_game_abandoned(hooks.game_record(room, room.game_id, self.clock(), None))
             except Exception:
                 logger.exception("Game-abandoned hook failed: room=%s", room.code)
-        self._cancel_timer(room)
+        self._end_game_timers(room)
+        for player_id in list(room.notice_tasks):
+            self._cancel_notice(room, player_id)
         if room.host_task is not None:
             room.host_task.cancel()
             room.host_task = None

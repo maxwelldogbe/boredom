@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { PlayerCards } from '../../components/PlayerCards'
 import { PlayerChip } from '../../components/PlayerChip'
 import { TimerBar } from '../../components/TimerBar'
 import { C } from '../../lib/constants'
@@ -35,9 +36,15 @@ export function RpsGame({ view, send, me, room }: GameUiProps<RpsView>) {
         Best of {view.bestOf} (first to {Math.floor(view.bestOf / 2) + 1})
       </p>
 
-      {match && opponent && view.phase !== 'matchOver' && view.phase !== 'done' && (
-        <MatchScore match={match} me={me} opponentName={oppName} />
-      )}
+      <PlayerCards
+        room={room}
+        me={me}
+        entries={room.players.map((p) => {
+          const m = view.matches.find((x) => x.a === p.id || x.b === p.id)
+          const notes = view.eliminated.includes(p.id) ? ['✖ out'] : m?.winner === p.id ? ['✓ won'] : m && m.b === null ? ['bye'] : []
+          return { id: p.id, value: m ? (m.scores[p.id] ?? 0) : undefined, notes }
+        })}
+      />
 
       {view.phase === 'picking' && match && opponent && (
         <>
@@ -95,19 +102,6 @@ export function RpsGame({ view, send, me, room }: GameUiProps<RpsView>) {
       )}
 
       {view.mode === 'bracket' && <BracketList view={view} me={me} room={room} />}
-    </div>
-  )
-}
-
-function MatchScore({ match, me, opponentName }: { match: RpsMatch; me: string; opponentName: string }) {
-  const opp = match.a === me ? match.b : match.a
-  return (
-    <div className="rps__score" aria-label={`Score: you ${match.scores[me] ?? 0}, ${opponentName} ${opp ? match.scores[opp] ?? 0 : 0}`}>
-      <span>You</span>
-      <strong>
-        {match.scores[me] ?? 0} – {opp ? match.scores[opp] ?? 0 : 0}
-      </strong>
-      <span>{opponentName}</span>
     </div>
   )
 }

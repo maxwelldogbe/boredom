@@ -68,20 +68,3 @@
   margin: 0;
   text-align: center;
 }
-.name-it__players {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.name-it__player {
-  border-radius: 999px;
-}
-.name-it__player--turn {
-  box-shadow: 0 0 0 2px var(--primary);
-}
-.name-it__player--out {
-  opacity: 0.5;
-}

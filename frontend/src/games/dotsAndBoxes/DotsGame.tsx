@@ -1,11 +1,12 @@
-import { useState, type KeyboardEvent } from 'react'
+import { useEffect, useState, type KeyboardEvent } from 'react'
+import { PlayerCards } from '../../components/PlayerCards'
 import { TimerBar } from '../../components/TimerBar'
 import { C } from '../../lib/constants'
 import { nameOf, playerById } from '../../lib/players'
+import { seatColor } from '../../lib/seatColors'
 import type { RoomPublic } from '../../types/protocol'
 import type { DotsView } from '../../types/views'
 import type { GameUiProps } from '../types'
-import { playerColors } from './colors'
 import './dots.css'
 
 const GAP = 40 // viewBox units between dots
@@ -43,7 +44,6 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
   const canDraw = view.isYourTurn && pending === null
   const extent = PAD * 2 + view.size * GAP
   const at = (n: number) => PAD + n * GAP
-  const colors = playerColors(view.order)
 
   const draw = async (id: string) => {
     if (!canDraw || view.lines[id]) return
@@ -63,6 +63,14 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
       <TurnBanner view={view} me={me} room={room} />
       {view.phase === 'playing' && <TimerBar deadline={view.turnDeadline} totalMs={C.DOTS_TURN_MS} label="Turn time left" />}
 
+      <PlayerCards
+        room={room}
+        me={me}
+        activeId={view.currentPlayerId}
+        label="Players and boxes"
+        entries={view.order.map((id) => ({ id, value: view.scores[id] ?? 0, valueLabel: `${view.scores[id] ?? 0} boxes` }))}
+      />
+
       <svg
         className="dots__board"
         viewBox={`0 0 ${extent} ${extent}`}
@@ -76,12 +84,12 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
             const p = playerById(room, owner)
             return (
               <g key={`b${r}:${c}`} aria-label={`Box owned by ${nameOf(room, owner, me)}`}>
-                <rect x={at(c)} y={at(r)} width={GAP} height={GAP} fill={colors[owner]} fillOpacity={1} className="dots__box" />
                 <text
                   x={at(c) + GAP / 2}
                   y={at(r) + GAP / 2}
                   className="dots__initial"
-                  fill={colors[owner] === '#FFD500' ? '#1A1A1A' : '#FFFFFF'}
+                  fill={seatColor(room, owner)}
+                  fillOpacity={1}
                 >
                   {p.nickname.charAt(0).toUpperCase()}
                 </text>
@@ -98,11 +106,10 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
               <line
                 {...pick(line)}
                 className={`dots__line${owner ? ' dots__line--drawn' : ''}${isLast ? ' dots__line--last' : ''}`}
-                stroke={owner ? colors[owner] : undefined}
-                strokeOpacity={owner ? 1 : undefined}
+                stroke="#000000"
                 strokeWidth={owner ? 8 : 2}
                 strokeDasharray={owner ? undefined : '4 6'}
-                strokeLinecap="round"
+                strokeLinecap={owner ? 'butt' : 'round'}
               />
               {free && canDraw && (
                 <line
@@ -119,26 +126,10 @@ export function DotsGame({ view, send, me, room }: GameUiProps<DotsView>) {
           )
         })}
         {Array.from({ length: (view.size + 1) ** 2 }, (_, i) => (
-          <circle key={i} cx={at(i % (view.size + 1))} cy={at(Math.floor(i / (view.size + 1)))} r={4} className="dots__dot" />
+          <circle key={i} cx={at(i % (view.size + 1))} cy={at(Math.floor(i / (view.size + 1)))} r={5} fill="#A3A3A3" className="dots__dot" />
         ))}
       </svg>
 
-      <ul className="dots__legend" aria-label="Players and boxes">
-        {view.order.map((pid) => (
-          <li
-            key={pid}
-            className={`dots__legend-item${pid === view.currentPlayerId ? ' dots__legend-item--turn' : ''}`}
-            style={{ color: colors[pid], borderColor: pid === view.currentPlayerId ? colors[pid] : undefined }}
-          >
-            <span className="dots__swatch" style={{ background: colors[pid] }} aria-hidden="true" />
-            <span className="dots__avatar" style={{ borderColor: colors[pid] }} aria-hidden="true">
-              {nameOf(room, pid, me).charAt(0).toUpperCase()}
-            </span>
-            <span>{nameOf(room, pid, me)}</span>
-            <strong aria-label={`${view.scores[pid] ?? 0} boxes`}>{view.scores[pid] ?? 0}</strong>
-          </li>
-        ))}
-      </ul>
     </div>
   )
 }
@@ -148,23 +139,21 @@ function pick({ x1, y1, x2, y2 }: LineGeom) {
 }
 
 function TurnBanner({ view, me, room }: { view: DotsView; me: string; room: RoomPublic }) {
-  const colors = playerColors(view.order)
-  const auto = view.lastMove?.auto
+  const [visibleAutoMove, setVisibleAutoMove] = useState(view.lastMove?.auto ? view.lastMove : null)
   const autoWho = view.lastMove ? nameOf(room, view.lastMove.playerId, me) : ''
+  useEffect(() => {
+    if (!view.lastMove?.auto) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setVisibleAutoMove(view.lastMove)
+    const timer = window.setTimeout(() => setVisibleAutoMove(null), 4000)
+    return () => window.clearTimeout(timer)
+  }, [view.lastMove])
   return (
     <div className="stack dots__banner" role="status">
-      {view.phase === 'done' ? (
-        <p className="dots__turn">All boxes are claimed! Results coming up…</p>
-      ) : view.isYourTurn ? (
-        <p className="dots__turn dots__turn--me" style={{ color: colors[me] }}>Your turn: draw a line</p>
-      ) : (
-        <p className="dots__turn" style={{ color: view.currentPlayerId ? colors[view.currentPlayerId] : undefined }}>
-          {nameOf(room, view.currentPlayerId, me)}'s turn
-        </p>
-      )}
-      {auto && (
+      {view.phase === 'done' && <p className="dots__turn">All boxes are claimed! Results coming up…</p>}
+      {visibleAutoMove && (
         <p className="muted dots__note">
-          {auto === 'timeout' ? '⌛ Time ran out' : '📴 Offline'}: a line was drawn for {autoWho === 'You' ? 'you' : autoWho}.
+          {visibleAutoMove.auto === 'timeout' ? '⌛ Time ran out' : '📴 Offline'}: a line was drawn for {autoWho === 'You' ? 'you' : autoWho}.
         </p>
       )}
       {view.phase === 'playing' && view.lastMove && view.lastMove.boxes.length > 0 && (

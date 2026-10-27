@@ -104,3 +104,39 @@ def test_module_is_pure() -> None:
     source = open(scoring.__file__, encoding="utf-8").read()
     for banned in ("django", "asyncio", "time.", "random"):
         assert banned not in source
+
+
+def _rows(placements: dict[str, int]) -> list:
+    return [{"player_id": p, "placement": n, "score": 10 - n} for p, n in placements.items()]
+
+
+def test_forfeiters_rank_below_everyone_who_stayed_whatever_their_score() -> None:
+    results = _rows({"a": 1, "b": 2, "c": 3, "d": 4})
+    ranked = scoring.rank_with_forfeits(results, {"a": 5.0, "b": 9.0}, ["a", "b", "c", "d"])
+    assert [(r["player_id"], r["placement"]) for r in ranked] == [
+        ("c", 1), ("d", 2), ("b", 3), ("a", 4),
+    ]
+    assert {r["player_id"]: r["score"] for r in ranked}["a"] == 9  # raw score kept
+    points = {r["player_id"]: r["points"] for r in score_results(ranked, M)}
+    assert points == {"c": 100, "d": 66.67, "b": 33.33, "a": 0}
+
+
+def test_stayers_keep_ties_and_simultaneous_forfeits_share_a_placement() -> None:
+    results = _rows({"a": 1, "b": 1, "c": 3, "d": 4, "e": 5})
+    ranked = scoring.rank_with_forfeits(results, {"d": 7.0, "e": 7.0}, list("abcde"))
+    assert {r["player_id"]: r["placement"] for r in ranked} == {
+        "a": 1, "b": 1, "c": 3, "d": 4, "e": 4,
+    }
+
+
+def test_players_missing_from_the_game_results_still_get_a_row() -> None:
+    ranked = scoring.rank_with_forfeits(_rows({"a": 1}), {"b": 1.0}, ["a", "b"])
+    assert ranked == [
+        {"player_id": "a", "placement": 1, "score": 9},
+        {"player_id": "b", "placement": 2, "score": 0},
+    ]
+
+
+def test_no_forfeits_changes_nothing() -> None:
+    results = _rows({"a": 1, "b": 2, "c": 2})
+    assert scoring.rank_with_forfeits(results, {}, ["a", "b", "c"]) == results

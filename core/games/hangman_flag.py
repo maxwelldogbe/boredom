@@ -41,19 +41,32 @@ def vote(state: "HangmanState", player_id: str, valid: Any, now: float) -> list[
     return []
 
 
+def drop_voter(state: "HangmanState", player_id: str) -> list[GameEvent]:
+    """A guesser forfeited mid-vote: their vote and seat in the vote go, then recount."""
+    flag = state.flag
+    assert flag is not None
+    if player_id not in flag["voters"]:
+        return []
+    flag["voters"] = [v for v in flag["voters"] if v != player_id]
+    flag["votes"].pop(player_id, None)
+    if len(flag["votes"]) == len(flag["voters"]):
+        return close_vote(state)
+    return []
+
+
 def close_vote(state: "HangmanState") -> list[GameEvent]:
     """Decide the flag and, if upheld, move the round's pot to the guessers."""
     flag = state.flag
     assert flag is not None
     votes = list(flag["votes"].values())
     invalid, valid = votes.count(False), votes.count(True)
-    upheld = invalid * 2 > len(flag["voters"])
+    upheld = bool(flag["voters"]) and invalid * 2 > len(flag["voters"])
     flag["upheld"] = upheld
     if upheld:
         guessers = state.guessers()
         new_award = {state.setter: 0.0, **dict.fromkeys(guessers, HANGMAN_POT / len(guessers))}
-        for pid in state.award:
-            state.scores[pid] += new_award[pid] - state.award[pid]
+        for pid in set(state.award) | set(new_award):
+            state.scores[pid] += new_award.get(pid, 0.0) - state.award.get(pid, 0.0)
         state.award = new_award
     data = {
         "round": state.round_index + 1,

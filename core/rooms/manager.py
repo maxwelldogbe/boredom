@@ -20,6 +20,8 @@ from games.base import GameError
 from games.constants import (
     HOST_TRANSFER_MS,
     MAX_PLAYERS,
+    OFFLINE_FORFEIT_MS,
+    OFFLINE_NOTICE_DELAY_MS,
     ROOM_CLEANUP_INTERVAL_MS,
     ROOM_CODE_ALPHABET,
     ROOM_CODE_LENGTH,
@@ -30,6 +32,7 @@ from rooms import hooks
 from rooms.avatars import AvatarRng, SystemAvatarRng, assign_avatar
 from rooms.game_flow import GameFlowMixin
 from rooms.models_types import Player, Profile, Room, RoomError
+from rooms.presence import PresenceMixin
 from rooms.upkeep import UpkeepMixin
 from rooms.validation import unique_nickname
 
@@ -48,7 +51,7 @@ def wall_clock_ms() -> float:
     return time.time() * 1000
 
 
-class RoomManager(UpkeepMixin, GameFlowMixin):
+class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
     """Owns every room. Methods raise RoomError for protocol errors."""
 
     def __init__(
@@ -64,6 +67,8 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
         self.rng_factory = rng_factory
         self.avatar_rng: AvatarRng = avatar_rng or SystemAvatarRng()
         self.host_transfer_ms: float = HOST_TRANSFER_MS
+        self.offline_notice_ms: float = OFFLINE_NOTICE_DELAY_MS
+        self.offline_forfeit_ms: float = OFFLINE_FORFEIT_MS
         self.idle_ttl_ms: float = ROOM_IDLE_TTL_MS
         self.cleanup_interval_ms: float = ROOM_CLEANUP_INTERVAL_MS
         self._cleanup_task: asyncio.Task[None] | None = None
@@ -177,6 +182,7 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
                 if seat.channel and seat.channel != channel:
                     await self._detach(seat.channel, room.code, "You joined from another tab.")
                 seat.channel, seat.online, seat.offline_since = channel, True, None
+                await self._back_online(room, seat)
                 await self._broadcast_room(room)
                 await self._presence_changed(room, seat.id, True)
                 return self._seat_reply(room, seat)
@@ -204,13 +210,18 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
         }
 
     async def leave_room(self, code: str | None, player_id: str | None) -> None:
-        """Leave voluntarily. Mid-game the seat stays (offline) until the game ends."""
+        """Leave voluntarily: the seat is released at once and a running game is forfeited.
+
+        Mid-game the player stays listed (offline, out of the game) until the game ends, so
+        views and results can still name them.
+        """
         room = self._room(code)
         async with room.lock:
             player = self._member(room, player_id)
             room.last_activity = self.clock()
             player.channel, player.online, player.offline_since = None, False, self.clock()
             player.token = ""
+            self._cancel_notice(room, player.id)
             hooks.on_room_event("room_left", room.code, player)
             if room.status == "playing":
                 player.left = True
@@ -218,13 +229,15 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
                 room.players.remove(player)
                 room.scoreboard.pop(player.id, None)
                 room.wins.pop(player.id, None)
+            await self._room_event(room, "player_left", player)
+            if room.status == "playing" and player.in_game and player.id in room.game_players:
+                await self._forfeit(room, player, "left")
             if not room.seated():
                 await self._delete_room(room)
                 return
             if room.host_id == player.id:
-                self._transfer_host(room, allow_offline=True)
+                await self._transfer_host_announced(room, allow_offline=True)
             await self._broadcast_room(room)
-            await self._presence_changed(room, player.id, False)
 
     async def disconnect(self, code: str | None, player_id: str | None, channel: str) -> None:
         """Socket closed: mark the seat offline (if this socket still owns it)."""
@@ -236,8 +249,11 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
             if player is None or player.left or player.channel != channel:
                 return
             player.channel, player.online, player.offline_since = None, False, self.clock()
+            player.offline_notified = False
             if room.host_id == player.id:
                 self._schedule_host_check(room)
+            self._schedule_offline_notice(room, player)
+            self._schedule_forfeit(room, player)
             await self._broadcast_room(room)
             await self._presence_changed(room, player.id, False)
 
@@ -282,6 +298,31 @@ class RoomManager(UpkeepMixin, GameFlowMixin):
         async with room.lock:
             self._member(room, player_id)
             await self._game_action(room, player_id or "", action, allow)
+
+    async def quit_game(self, code: str | None, player_id: str | None) -> None:
+        """Forfeit the running game and stay in the room."""
+        room = self._room(code)
+        async with room.lock:
+            player = self._member(room, player_id)
+            if room.status != "playing":
+                raise RoomError("INVALID_ACTION", "No game is running.")
+            if player.id not in room.game_players or not player.in_game:
+                raise RoomError("INVALID_ACTION", "You are not playing in this game.")
+            room.last_activity = self.clock()
+            await self._room_event(room, "player_quit", player)
+            await self._forfeit(room, player, "quit")
+            await self._broadcast_room(room)
+
+    async def end_game(self, code: str | None, player_id: str | None) -> None:
+        """Host ends the running game for everyone: back to the lobby, no results."""
+        room = self._room(code)
+        async with room.lock:
+            player = self._member(room, player_id)
+            self._require_host(room, player)
+            if room.status != "playing":
+                raise RoomError("INVALID_ACTION", "No game is running.")
+            await self._room_event(room, "game_ended_by_host", player)
+            await self._abandon(room, "host_ended")
 
     async def play_again(self, code: str | None, player_id: str | None) -> None:
         """Host returns a finished room to the lobby; scoreboard and selection are kept."""

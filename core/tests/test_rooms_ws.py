@@ -39,9 +39,13 @@ async def test_create_room_ack_and_state(connect):
         "avatar",
         "color",
         "online",
+        "offlineSince",
+        "inGame",
         "joinedAt",
     }
     assert room["scoreboard"] == {} and room["wins"] == {} and room["selectedGame"] is None
+    assert room["endReason"] is None and room["players"][0]["inGame"] is True
+    assert room["players"][0]["offlineSince"] is None
     assert data["roomToken"] and data["roomToken"] not in json.dumps(room)
     state = await client.wait_push("room:state")
     assert state["code"] == room["code"]

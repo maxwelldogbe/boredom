@@ -11,6 +11,7 @@ export function playerById(room: RoomPublic, id: string | null | undefined): Pla
       color: '#607D8B',
       avatar: { style: '', seed: '' }, // not a known style, so the initial is shown
       online: false,
+      inGame: false,
       joinedAt: 0,
     }
   )

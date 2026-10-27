@@ -1,14 +1,18 @@
 .dots__banner {
-  gap: 4px;
-  text-align: center;
+  gap: 8px;
+  align-items: center;
 }
 .dots__turn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
   margin: 0;
+  color: var(--text);
   font-weight: 700;
-  font-size: 1.15rem;
-}
-.dots__turn--me {
-  color: var(--primary);
+  font-size: 18px;
 }
 .dots__note {
   margin: 0;
@@ -19,20 +23,12 @@
   max-width: 480px;
   margin: 0 auto;
   touch-action: manipulation;
-  padding: 8px;
-  border-radius: 12px;
+  padding: 4px;
   background: #ffffff;
 }
-.dots__dot {
-  fill: #1f2937;
-}
 .dots__line {
-  stroke-width: 2;
-  stroke-dasharray: 4 6;
-  stroke-linecap: round;
-}
-.dots__line:not(.dots__line--drawn) {
-  stroke: #667085;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 6;
 }
 .dots__line--drawn {
   stroke-width: 8;
@@ -49,52 +45,10 @@
   stroke-opacity: 0.35;
   outline: none;
 }
-.dots__box {
-  fill-opacity: 1;
-}
 .dots__initial {
-  fill: #ffffff;
   font-size: 18px;
   font-weight: 700;
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
-}
-.dots__legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.dots__legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 36px;
-  padding: 4px 10px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-}
-.dots__legend-item--turn {
-  border-color: currentColor;
-}
-.dots__avatar {
-  display: inline-grid;
-  width: 24px;
-  height: 24px;
-  place-items: center;
-  border: 2px solid;
-  border-radius: 50%;
-  color: currentColor;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-.dots__swatch {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
 }

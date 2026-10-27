@@ -30,6 +30,9 @@ class _Tiny(GameModule):
     def tick(self, state, now) -> tuple[Any, list[GameEvent]]:
         return state, []
 
+    def forfeit(self, state, player_id, now, reason) -> tuple[Any, list[GameEvent]]:
+        return state, []
+
     def get_view(self, state, player_id) -> dict[str, Any]:
         return {}
 
@@ -46,6 +49,11 @@ class _Tiny(GameModule):
 def test_base_is_abstract() -> None:
     with pytest.raises(TypeError):
         GameModule()  # type: ignore[abstract]
+
+
+def test_forfeit_is_part_of_the_contract() -> None:
+    assert "forfeit" in GameModule.__abstractmethods__
+    assert all(type(g).forfeit is not GameModule.forfeit for g in registry.all_games().values())
 
 
 def test_game_error_carries_code_and_message() -> None:

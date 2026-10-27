@@ -184,3 +184,34 @@ describe('Hangman flag (real backend views)', () => {
     expect(screen.getByText(/Votes in: 1\/2/)).toBeInTheDocument()
   })
 })
+
+describe('shared player cards in every game', () => {
+  const cardsIn = () => within(screen.getByRole('list', { name: 'Players' })).getAllByRole('listitem')
+
+  it('RPS shows each player with their match score', () => {
+    const fx = rpsFx.duelReveal
+    renderWithRoom(<RpsGame {...props(fx)} />)
+    expect(cardsIn()).toHaveLength(fx.room.players.length)
+    const match = fx.push.view.matches[0]
+    expect(cardsIn().map((c) => c.querySelector('.player-card__value')?.textContent)).toEqual(
+      fx.room.players.map((p) => String(match.scores[p.id] ?? 0)),
+    )
+  })
+
+  it('Hangman shows scores and marks the setter, no active card', () => {
+    const fx = hangmanFx.guessingGuesser
+    renderWithRoom(<HangmanGame {...props(fx)} />)
+    expect(cardsIn()).toHaveLength(Object.keys(fx.push.view.scores).length)
+    const setter = fx.room.players.find((p) => p.id === fx.push.view.setterId)!
+    const card = cardsIn().find((c) => within(c).queryByText(setter.nickname))!
+    expect(within(card).getByText('sets the word')).toBeInTheDocument()
+    expect(cardsIn().some((c) => c.classList.contains('player-card--active'))).toBe(false)
+  })
+
+  it('Guess Race shows every score in seat order', () => {
+    const fx = guessRaceFx.scrambleGuessing
+    renderWithRoom(<GuessRaceGame {...props(fx)} />)
+    const seated = fx.room.players.filter((p) => p.id in fx.push.view.scores)
+    expect(cardsIn().map((c) => c.querySelector('.player-card__name')?.firstChild?.textContent)).toEqual(seated.map((p) => p.nickname))
+  })
+})

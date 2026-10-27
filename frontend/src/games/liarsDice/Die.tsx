@@ -24,8 +24,3 @@ export function Die({ face, size = 'lg', highlight = false }: DieProps) {
     </span>
   )
 }
-
-/** A face-down die (an opponent's hidden die). */
-export function HiddenDie() {
-  return <span className="die die--sm die--hidden" aria-hidden="true" />
-}

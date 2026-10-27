@@ -201,33 +201,73 @@ def test_seeded_pairing_is_deterministic() -> None:
     )
 
 
-def test_offline_forfeit_after_30s() -> None:
+@pytest.mark.parametrize("reason", ["quit", "left", "offline"])
+def test_duel_forfeit_hands_the_match_to_the_opponent(reason) -> None:
+    state, _ = pick(new(), "a", "rock")
+    state, events = RPS.forfeit(state, "a", T0 + 1, reason)
+    assert RPS.is_over(state) and state.champion == "b"
+    assert events[0]["data"] == {
+        "matchIndex": 0, "winnerId": "b", "loserId": "a", "reason": "forfeit",
+    }
+    assert RPS.next_deadline(state) is None
+    assert "rock" not in json.dumps(RPS.get_view(state, "b"))  # a's pick stays secret
+
+
+def test_forfeit_during_reveal_still_gives_the_opponent_the_match() -> None:
+    state = new(bestOf=3)
+    state, _, now = play_round(state, "rock", "scissors")
+    state, _ = pick(state, "a", "rock", now)
+    state, _ = pick(state, "b", "scissors", now)  # a would win the match at the reveal
+    state, _ = RPS.forfeit(state, "a", now + 1, "quit")
+    assert state.champion == "b"
+
+
+def bracket(players=("a", "b", "c", "d", "e"), seed=3):
+    return new(players, mode="bracket", seed=seed)
+
+
+def test_bracket_forfeit_lets_the_opponent_advance_and_others_play_on() -> None:
+    state = bracket(("a", "b", "c", "d"))
+    m0, m1 = state.matches
+    state, events = RPS.forfeit(state, m0.a, T0 + 1, "left")
+    assert state.matches[0].winner == m0.b and m0.a not in state.alive
+    assert state.matches[1].phase == "picking" and not RPS.is_over(state)
+    assert [e["kind"] for e in events] == ["matchOver"]
+    state, _, now = play_round(state, "rock", "scissors", a=m1.a, b=m1.b)
+    state, _, now = play_round(state, "rock", "scissors", a=m1.a, b=m1.b, now=now)
+    state, _ = RPS.tick(state, now)
+    assert state.bracket_round == 2 and {m.a for m in state.matches} | {
+        m.b for m in state.matches
+    } == {m0.b, m1.a}
+
+
+def test_bye_is_untouched_until_the_next_pairing() -> None:
+    state = bracket()
+    bye = next(m.a for m in state.matches if m.b is None)
+    others = [m for m in state.matches if m.b is not None]
+    state, events = RPS.forfeit(state, bye, T0 + 1, "quit")
+    assert events == [] and bye not in state.alive
+    assert all(m.phase == "picking" for m in state.matches if m.b is not None)
+    for m in others:
+        state, _ = RPS.forfeit(state, m.b, T0 + 2, "quit")  # each match decided
+    assert state.bracket_round == 2
+    paired = {p for m in state.matches for p in m.players()}
+    assert bye not in paired and paired == {m.a for m in others}
+
+
+def test_forfeit_after_losing_changes_nothing() -> None:
+    state, _ = RPS.forfeit(bracket(("a", "b", "c", "d")), "a", T0, "quit")
+    before = (list(state.alive), dict(state.out_round))
+    state, events = RPS.forfeit(state, "a", T0 + 1, "offline")
+    assert events == [] and (state.alive, state.out_round) == before
+
+
+def test_no_offline_rule_left_in_the_module() -> None:
     state = new()
     state, _ = RPS.on_presence(state, "b", False, T0)
     assert RPS.next_deadline(state) == T0 + RPS_PICK_TIMEOUT_MS
-    now = T0
-    while not RPS.is_over(state):  # replays of timed-out rounds until forfeit
-        now = RPS.next_deadline(state)
-        state, events = RPS.tick(state, now)
-    assert now == T0 + OFFLINE_FORFEIT_MS
-    assert state.champion == "a"
-    assert any(e["data"].get("reason") == "forfeit" for e in events)
-
-
-def test_reconnect_cancels_forfeit() -> None:
-    state = new()
-    state, _ = RPS.on_presence(state, "b", False, T0)
-    state, _ = RPS.on_presence(state, "b", True, T0 + 5_000)
-    state, _ = RPS.tick(state, T0 + OFFLINE_FORFEIT_MS)
-    assert not RPS.is_over(state)
-
-
-def test_both_offline_later_leaver_wins() -> None:
-    state = new()
-    state, _ = RPS.on_presence(state, "a", False, T0)
-    state, _ = RPS.on_presence(state, "b", False, T0 + 1_000)
-    state, _ = RPS.tick(state, T0 + OFFLINE_FORFEIT_MS + 1_000)
-    assert state.champion == "b"
+    state, _ = RPS.tick(state, T0 + OFFLINE_FORFEIT_MS + 1)
+    assert not RPS.is_over(state)  # the room manager forfeits offline players, not the game
 
 
 def test_view_hides_opponent_pick_until_reveal() -> None:

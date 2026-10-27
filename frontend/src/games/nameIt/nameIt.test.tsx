@@ -52,6 +52,20 @@ describe('NameItGame (real backend views)', () => {
     expect(p.send).toHaveBeenCalledWith({ type: 'submitAnswer', text: 'Apple' })
   })
 
+  it('the current player card is highlighted; no turn text', () => {
+    for (const fx of [nameItFx.myTurn, nameItFx.canChallenge]) {
+      const { unmount } = renderWithRoom(<NameItGame {...props(fx)} />)
+      const current = fx.room.players.find((pl) => pl.id === fx.push.view.currentPlayerId)!
+      const active = within(screen.getByRole('list', { name: 'Players' }))
+        .getAllByRole('listitem')
+        .filter((li) => li.classList.contains('player-card--active'))
+      expect(active).toHaveLength(1)
+      expect(within(active[0]).getByText(current.nickname)).toBeInTheDocument()
+      expect(screen.queryByText(/turn|is answering/i)).not.toBeInTheDocument()
+      unmount()
+    }
+  })
+
   it('challenge button shows only inside the window', async () => {
     const fx = nameItFx.canChallenge
     const until = fx.push.view.challengeWindow!.until

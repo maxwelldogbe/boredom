@@ -4,13 +4,21 @@ Everyone guesses at once. Every player who solves the round scores by finishing 
 (server arrival order): rank k earns max(FLOOR, FIRST - STEP x (k - 1)). A round ends when
 every online player has solved it or after GUESS_ROUND_MS. Hints appear at GUESS_HINT1_MS
 and GUESS_HINT2_MS; the answer stays on screen for GUESS_REVEAL_MS before the next round.
+A forfeiting player takes no further part: they can't guess and no round waits for them.
 """
 
 import random
 from dataclasses import dataclass, field
 from typing import Any
 
-from games.base import GameError, GameEvent, GameModule, GameResult, competition_placements
+from games.base import (
+    ForfeitReason,
+    GameError,
+    GameEvent,
+    GameModule,
+    GameResult,
+    competition_placements,
+)
 from games.constants import (
     GUESS_HINT1_MS,
     GUESS_HINT2_MS,
@@ -51,6 +59,7 @@ class GuessRaceState:
     solvers: list[dict[str, Any]] = field(default_factory=list)  # {playerId, rank, points}
     last_guess: dict[str, dict[str, Any]] = field(default_factory=dict)
     offline: list[str] = field(default_factory=list)
+    forfeited: list[str] = field(default_factory=list)
 
     @property
     def current(self) -> Prompt:
@@ -131,6 +140,8 @@ class GuessRace(GameModule):
         text = action.get("text")
         if not isinstance(text, str) or not text.strip() or len(text) > GUESS_TEXT_MAX:
             raise GameError("INVALID_ACTION", f"Guess must be 1 to {GUESS_TEXT_MAX} characters.")
+        if player_id in state.forfeited:
+            raise GameError("INVALID_ACTION", "You are out of this game.")
         if state.phase != "guessing" or now >= state.started_at + GUESS_ROUND_MS:
             raise GameError("INVALID_ACTION", "This round is over.")
         if any(s["playerId"] == player_id for s in state.solvers):
@@ -147,7 +158,8 @@ class GuessRace(GameModule):
 
     def _end_if_all_solved(self, state: GuessRaceState, now: float) -> list[GameEvent]:
         solved = {s["playerId"] for s in state.solvers}
-        online = [p for p in state.scores if p not in state.offline]
+        gone = set(state.offline) | set(state.forfeited)
+        online = [p for p in state.scores if p not in gone]
         if state.phase == "guessing" and online and all(p in solved for p in online):
             return [self._end_round(state, now)]
         return []
@@ -158,6 +170,13 @@ class GuessRace(GameModule):
             return state, []
         if player_id not in state.offline:
             state.offline.append(player_id)
+        return state, self._end_if_all_solved(state, now)
+
+    def forfeit(
+        self, state: GuessRaceState, player_id: str, now: float, reason: ForfeitReason
+    ) -> tuple[Any, list[GameEvent]]:
+        if player_id not in state.forfeited:
+            state.forfeited.append(player_id)
         return state, self._end_if_all_solved(state, now)
 
     def tick(self, state: GuessRaceState, now) -> tuple[Any, list[GameEvent]]:

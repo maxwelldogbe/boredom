@@ -34,10 +34,12 @@ export function RoomProvider({ children, socket: given }: { children: ReactNode;
   const [socket] = useState(() => given ?? new GameSocket({ url: wsUrl() }))
   const [state, dispatch] = useReducer(roomReducer, initialRoomState)
   const roomCode = useRef<string | null>(null)
+  const stateRef = useRef(state)
 
   useEffect(() => {
+    stateRef.current = state
     roomCode.current = state.room?.code ?? null
-  }, [state.room?.code])
+  }, [state])
 
   const actions = useMemo<RoomActions>(() => {
     const toast: RoomActions['toast'] = (message, tone = 'info') =>
@@ -79,6 +81,9 @@ export function RoomProvider({ children, socket: given }: { children: ReactNode;
         roomCode.current = null
         dispatch({ type: 'left' })
       },
+      async quitGame() {
+        await socket.request('game:quit', {})
+      },
       async selectGame(gameId, settings) {
         await socket.request('room:selectGame', { gameId, settings })
       },
@@ -107,6 +112,19 @@ export function RoomProvider({ children, socket: given }: { children: ReactNode;
         case 'game:event':
           dispatch({ type: 'gameEvent', event: msg.data })
           break
+        case 'room:event': {
+          const event = msg.data
+          const current = stateRef.current
+          if (event.kind === 'player_quit' && event.playerId !== current.playerId) {
+            const activePlayers = current.room?.players.filter((player) => player.inGame).length ?? 0
+            actions.toast(
+              activePlayers === 2
+                ? `${event.nickname} forfeited. You win!`
+                : `${event.nickname} forfeited`,
+            )
+          }
+          break
+        }
         case 'error':
           if (msg.data.code === 'NOT_IN_ROOM') {
             roomCode.current = null

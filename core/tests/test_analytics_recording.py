@@ -170,8 +170,7 @@ async def test_forfeit_counts_as_left_early_loss(connect, recording) -> None:
     await start([host, ann, bob])
     await host.request("game:action", {"type": "score"})
     await ann.request("game:action", {"type": "score"})
-    assert (await bob.request("room:leave"))["ok"]
-    await host.wait_push("game:event", lambda d: d["kind"] == "timeout", timeout=3)
+    assert (await bob.request("room:leave"))["ok"]  # Bob's turn passes back to Host
     assert (await host.request("game:action", {"type": "score"}))["ok"]
     await ann.wait_push("game:event", lambda d: d["kind"] == "gameOver")
     await hooks.drain()
@@ -183,16 +182,28 @@ async def test_forfeit_counts_as_left_early_loss(connect, recording) -> None:
 
 
 @pytest.mark.django_db(transaction=True)
-async def test_everyone_leaving_mid_game_records_abandoned(connect, recording) -> None:
+async def test_leaving_a_two_player_game_hands_the_win_over(connect, recording) -> None:
     code, (host, ann) = await seat_room(connect, ["Host", "Ann"])
     await start([host, ann])
     assert (await ann.request("room:leave"))["ok"]
+    await host.wait_push("game:event", lambda d: d["kind"] == "gameOver")
+    await hooks.drain()
+    assert await db(lambda: GameSession.objects.get().status) == "completed"
+    rows = await db(lambda: {p.nickname: p for p in GameParticipation.objects.all()})
+    assert rows["Host"].is_win and rows["Host"].placement == 1 and not rows["Host"].left_early
+    assert rows["Ann"].left_early and rows["Ann"].placement == 2 and not rows["Ann"].is_win
+
+
+@pytest.mark.django_db(transaction=True)
+async def test_last_player_leaving_mid_game_records_abandoned(connect, recording) -> None:
+    code, (host,) = await seat_room(connect, ["Host"])
+    await start([host])
     assert (await host.request("room:leave"))["ok"]
     await hooks.drain()
     session = await db(lambda: GameSession.objects.get())
     assert session.status == "abandoned"
     parts = await db(lambda: list(GameParticipation.objects.all()))
-    assert len(parts) == 2
+    assert len(parts) == 1
     assert all(p.placement is None and not p.is_win and p.session_points is None for p in parts)
     assert all(p.left_early for p in parts)
     assert (await db(kinds))[-1] == "game_abandoned"

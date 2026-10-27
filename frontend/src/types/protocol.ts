@@ -47,6 +47,7 @@ export interface Player {
   color: string
   avatar: Avatar
   online: boolean
+  inGame: boolean
   joinedAt: number
 }
 
@@ -99,6 +100,7 @@ export interface RequestMap {
   }
   'room:peek': { payload: { code: string }; data: PeekData }
   'room:leave': { payload: Empty; data: Empty }
+  'game:quit': { payload: Empty; data: Empty }
   'room:selectGame': {
     payload: { gameId: GameId; settings: Record<string, unknown> }
     data: Empty
@@ -127,6 +129,13 @@ export interface GameEventPush {
   data: Record<string, unknown>
 }
 
+export interface RoomEventPush {
+  kind: string
+  playerId: string
+  nickname: string
+  data?: Record<string, unknown>
+}
+
 export interface GameOverData {
   results: GameResult[]
 }
@@ -135,6 +144,7 @@ export type PushMessage =
   | { type: 'room:state'; data: RoomPublic }
   | { type: 'game:view'; data: GameViewPush }
   | { type: 'game:event'; data: GameEventPush }
+  | { type: 'room:event'; data: RoomEventPush }
   | { type: 'error'; data: ProtocolError }
 
 export type ServerMessage = AckMessage | PushMessage

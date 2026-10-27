@@ -4,6 +4,10 @@ A player is out on a timeout, a repeated answer (after normalization) or a lost 
 Then the used list resets and the eliminated player picks the next topic (once). The first
 topic is picked by the first player in seat order, from NAMEIT_TOPIC_SUGGESTIONS random
 topics (typed topics only with allowCustomTopics). The last survivor wins.
+
+A forfeiting player is out at once (reason "forfeit") without picking a topic: their turn
+passes on, a topic they were choosing is picked at random, a challenge on their answer is
+cancelled and their vote is withdrawn.
 """
 
 import random
@@ -11,7 +15,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-from games.base import GameError, GameEvent, GameModule, GameResult
+from games.base import ForfeitReason, GameError, GameEvent, GameModule, GameResult
 from games.constants import (
     NAMEIT_CHALLENGE_WINDOW_MS,
     NAMEIT_TOPIC_MS,
@@ -242,6 +246,50 @@ class NameIt(GameModule):
         else:
             self._select_topic(state, player_id, state.next_alive(player_id), now)
         return [event]
+
+    # ----- forfeits -----------------------------------------------------------------------------
+
+    def forfeit(
+        self, state: NameItState, player_id: str, now: float, reason: ForfeitReason
+    ) -> tuple[Any, list[GameEvent]]:
+        if state.phase == "done":
+            return state, []
+        events: list[GameEvent] = []
+        if player_id in state.alive:
+            state.alive.remove(player_id)
+            state.eliminated.append(player_id)
+            state.last_elimination = {"playerId": player_id, "reason": "forfeit", "text": None}
+            data = {**state.last_elimination, "topic": state.topic}
+            events.append({"kind": "eliminated", "data": data})
+            if len(state.alive) <= 1:
+                state.phase = "done"
+                state.topic_deadline = state.turn_deadline = state.paused_ms = None
+                state.current, state.challenge, state.window_until = None, None, None
+                return state, events
+        if state.used and state.used[-1]["playerId"] == player_id:
+            state.window_until = None  # nobody can challenge an answer of a player who left
+        challenge = state.challenge
+        if state.phase == "challenge" and challenge is not None:
+            if challenge["answererId"] == player_id:
+                state.phase, state.challenge = "turn", None
+                state.turn_deadline, state.paused_ms = now + (state.paused_ms or 0.0), None
+            elif player_id in challenge["voters"]:
+                challenge["voters"].remove(player_id)
+                challenge["votes"].pop(player_id, None)
+                if len(challenge["votes"]) == len(challenge["voters"]):
+                    events += self._resolve(state, now)
+        if state.current == player_id and state.phase in ("turn", "challenge"):
+            state.current = state.next_alive(player_id)
+            if state.phase == "turn":
+                state.turn_deadline = now + state.turn_ms()
+            else:
+                state.paused_ms = state.turn_ms()
+        if state.phase == "topicSelect":
+            if state.starter == player_id:
+                state.starter = state.next_alive(player_id)
+            if state.chooser == player_id:
+                self._start_turns(state, state.rng.choice(state.suggestions), now)
+        return state, events
 
     # ----- timers ------------------------------------------------------------------------------
 

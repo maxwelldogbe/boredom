@@ -1,4 +1,4 @@
-import { act, fireEvent, screen } from '@testing-library/react'
+import { act, fireEvent, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { clearMemoryStorage } from '../../lib/storage'
 import { FakeWebSocket } from '../../test/fakeWebSocket'
@@ -8,6 +8,7 @@ import type { RoomPublic } from '../../types/protocol'
 import { FinalResults } from './FinalResults'
 import { Lobby } from './Lobby'
 import { startBlocker } from './startBlocker'
+import { TopBar } from './TopBar'
 
 beforeEach(() => FakeWebSocket.reset())
 afterEach(() => {
@@ -36,7 +37,8 @@ describe('Lobby', () => {
     expect(screen.getByRole('link', { name: 'Send on WhatsApp' })).toHaveAttribute('href', expect.stringContaining('wa.me'))
     expect(screen.getByText('Show QR code')).toBeInTheDocument()
     expect(screen.getByText(`Players (2/10)`)).toBeInTheDocument()
-    expect(screen.getByText('host')).toBeInTheDocument()
+    expect(screen.getByText('👑 host')).toBeInTheDocument()
+    expect(within(screen.getByRole('list', { name: 'Players' })).getAllByRole('listitem')).toHaveLength(2)
     expect(screen.getByRole('button', { name: /Rock-Paper-Scissors/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Dots and Boxes/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Liar's Dice/ })).toBeInTheDocument()
@@ -82,6 +84,44 @@ describe('FinalResults', () => {
     expect(ws.lastFrame().type).toBe('game:playAgain')
     await act(async () => ws.ack({}))
     expect(ws.lastFrame().type).toBe('game:start')
+  })
+
+  describe('TopBar forfeit', () => {
+    const gameIds = ['rps', 'guess_race', 'hangman', 'dots_and_boxes', 'liars_dice', 'name_it'] as const
+
+    it.each(gameIds)('shows the forfeit button for %s and sends game:quit only after confirmation', (gameId) => {
+      const playing = {
+        ...roomFx.roomPlayingWithLeaver,
+        selectedGame: gameId,
+        players: roomFx.roomPlayingWithLeaver.players.map((player) => ({ ...player, inGame: true })),
+      }
+      const { ws, unmount } = renderWithRoom(
+        <TopBar room={playing} me={playing.hostId} onLeaving={() => {}} onLeft={() => {}} />,
+      )
+      expect(screen.getByRole('button', { name: /Forfeit/ })).toBeInTheDocument()
+      fireEvent.click(screen.getByRole('button', { name: /Forfeit/ }))
+      expect(screen.getByRole('dialog', { name: 'Forfeit this game?' })).toBeInTheDocument()
+      expect(ws.lastFrame().type).not.toBe('game:quit')
+      fireEvent.click(screen.getByRole('button', { name: 'Forfeit', exact: true }))
+      expect(ws.lastFrame()).toMatchObject({ type: 'game:quit', payload: {} })
+      unmount()
+    })
+
+    it('names the opponent in a two-player confirmation and hides the button after forfeiting', () => {
+      const base = roomFx.roomPlayingWithLeaver
+      const playing = {
+        ...base,
+        players: base.players.slice(0, 2).map((player) => ({ ...player, inGame: true })),
+      }
+      const { ws } = renderWithRoom(
+        <TopBar room={playing} me={playing.hostId} onLeaving={() => {}} onLeft={() => {}} />,
+      )
+      fireEvent.click(screen.getByRole('button', { name: /Forfeit/ }))
+      expect(screen.getByText(`${playing.players[1].nickname} will win the game. You'll wait in the room.`)).toBeInTheDocument()
+      fireEvent.click(screen.getByRole('button', { name: 'Keep playing' }))
+      expect(screen.queryByRole('dialog', { name: 'Forfeit this game?' })).not.toBeInTheDocument()
+      expect(ws.lastFrame().type).not.toBe('game:quit')
+    })
   })
 
   it('non-host waits', () => {

@@ -38,22 +38,6 @@
   text-align: center;
   color: var(--muted);
 }
-.rps__score {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 8px;
-  text-align: center;
-}
-.rps__score strong {
-  font-size: 1.6rem;
-  font-variant-numeric: tabular-nums;
-}
-.rps__score span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 .rps__reveal-row {
   display: grid;
   grid-template-columns: 1fr auto 1fr;

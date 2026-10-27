@@ -30,6 +30,7 @@ class GameRecord:
     ended_at_ms: float
     seats: tuple[Player, ...]
     results: tuple[ScoredResult, ...] | None
+    forfeited: frozenset[str] = frozenset()  # seats that quit, left or timed out offline
 
     @property
     def accounts(self) -> dict[str, int]:
@@ -49,6 +50,7 @@ def game_record(
         ended_at_ms=now,
         seats=tuple(room.players),
         results=tuple(results) if results is not None else None,
+        forfeited=frozenset(room.forfeits),
     )
 
 
@@ -76,7 +78,7 @@ def on_game_finished(game: GameRecord) -> None:
                 user_id=player.user_id,
                 guest_key=player.guest_key,
                 nickname=player.nickname,
-                left_early=player.left or not player.online,
+                left_early=player.left or not player.online or player.id in game.forfeited,
                 placement=result["placement"] if result else None,
                 raw_score=float(result["score"]) if result else None,
                 points=result["points"] if result else None,
@@ -98,7 +100,12 @@ def on_game_abandoned(game: GameRecord) -> None:
     """Called when a room is removed mid-game: no placements, nobody wins."""
     logger.info("Game abandoned: room=%s game=%s", game.room_code, game.game_id)
     seats = [
-        SeatRecord(user_id=p.user_id, guest_key=p.guest_key, nickname=p.nickname, left_early=p.left)
+        SeatRecord(
+            user_id=p.user_id,
+            guest_key=p.guest_key,
+            nickname=p.nickname,
+            left_early=p.left or p.id in game.forfeited,
+        )
         for p in game.seats
     ]
     _record(game, "abandoned", seats, "game_abandoned")

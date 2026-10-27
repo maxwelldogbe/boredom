@@ -5,13 +5,17 @@ On Liar, all dice are revealed: if the actual count reaches the bid the caller l
 else the bidder does. With spot-on enabled, an exact count gains the caller a die (up to
 startingDice), otherwise the caller loses one. A random player opens the first round;
 the loser starts each later one.
+
+A forfeiting player is eliminated and their dice leave the table. That can change whether
+the standing bid is true, so a round still being bid is voided: everyone re-rolls, the bid
+is cleared, nobody loses a die, and the next alive player after the forfeiter starts.
 """
 
 import random
 from dataclasses import dataclass, field
 from typing import Any
 
-from games.base import GameError, GameEvent, GameModule, GameResult
+from games.base import ForfeitReason, GameError, GameEvent, GameModule, GameResult
 from games.constants import DICE_REVEAL_MS, DICE_TURN_MS
 
 FACES = range(1, 7)
@@ -210,6 +214,30 @@ class LiarsDice(GameModule):
 
     def next_deadline(self, state: DiceState) -> float | None:
         return state.deadline
+
+    def forfeit(
+        self, state: DiceState, player_id: str, now: float, reason: ForfeitReason
+    ) -> tuple[Any, list[GameEvent]]:
+        if state.phase == "done" or state.counts.get(player_id, 0) == 0:
+            return state, []
+        state.counts[player_id] = 0
+        state.dice[player_id] = []
+        state.eliminated.append(player_id)
+        starter = state.next_alive(player_id)
+        if len(state.alive()) <= 1:
+            state.phase, state.deadline, state.last_reveal = "done", None, None
+            return state, []
+        if state.phase == "reveal":  # the round is already settled; just fix who starts
+            if state.next_starter == player_id:
+                state.next_starter = starter
+            return state, []
+        voided = state.round
+        self._new_round(state, starter, now)
+        event: GameEvent = {
+            "kind": "roundVoided",
+            "data": {"round": voided, "playerId": player_id, "starterId": starter},
+        }
+        return state, [event]
 
     # ----- views and results -------------------------------------------------------------------
 

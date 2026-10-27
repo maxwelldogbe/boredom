@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import { Button } from '../../components/Button'
 import { CountdownRing } from '../../components/CountdownRing'
-import { PlayerChip } from '../../components/PlayerChip'
+import { PlayerCards } from '../../components/PlayerCards'
 import { TextInput } from '../../components/TextInput'
 import { TimerBar } from '../../components/TimerBar'
 import { C } from '../../lib/constants'
-import { nameOf, playerById } from '../../lib/players'
+import { nameOf } from '../../lib/players'
 import { useRemainingMs } from '../../state/useCountdown'
 import type { NameItView } from '../../types/views'
 import type { GameUiProps } from '../types'
@@ -27,7 +27,7 @@ export function NameItGame({ view, send, me, room }: GameUiProps<NameItView>) {
             <span className="muted">Topic</span>
             <strong>{view.topic}</strong>
           </div>
-          <TurnStatus view={view} me={me} room={room} />
+          <TurnStatus view={view} />
           {view.phase === 'challenge' && view.challenge && <VotePanel view={view} send={send} me={me} room={room} />}
           {view.isYourTurn && <AnswerForm key={view.used.length} send={send} />}
           <ChallengeButton view={view} send={send} me={me} room={room} />
@@ -35,7 +35,12 @@ export function NameItGame({ view, send, me, room }: GameUiProps<NameItView>) {
         </>
       )}
       {view.phase === 'done' && <p className="name-it__status">Last one standing! Results coming up…</p>}
-      <Players view={view} me={me} room={room} />
+      <PlayerCards
+        room={room}
+        me={me}
+        activeId={view.phase === 'turn' || view.phase === 'challenge' ? view.currentPlayerId : null}
+        entries={view.order.map((id) => ({ id, notes: view.alive.includes(id) ? [] : ['✖ out'] }))}
+      />
     </div>
   )
 }
@@ -101,18 +106,12 @@ function TopicSelect({ view, send, me, room }: ActPart) {
   )
 }
 
-function TurnStatus({ view, me, room }: Part) {
+function TurnStatus({ view }: Pick<Part, 'view'>) {
   const totalMs = view.settings.turnSeconds * 1000
   return (
     <div className="name-it__turn" role="status">
       {view.phase === 'turn' && <CountdownRing deadline={view.turnDeadline} totalMs={totalMs} />}
-      <p>
-        {view.phase === 'challenge'
-          ? '⏸ Paused for a challenge'
-          : view.isYourTurn
-            ? 'Your turn! Name something.'
-            : `${nameOf(room, view.currentPlayerId, me)} is answering…`}
-      </p>
+      {view.phase === 'challenge' && <p>⏸ Paused for a challenge</p>}
     </div>
   )
 }
@@ -209,21 +208,5 @@ function UsedList({ view, me, room }: Part) {
         ))}
       </ol>
     </section>
-  )
-}
-
-function Players({ view, me, room }: Part) {
-  return (
-    <ul className="name-it__players" aria-label="Players">
-      {view.order.map((pid) => {
-        const out = !view.alive.includes(pid)
-        const current = pid === view.currentPlayerId
-        return (
-          <li key={pid} className={`name-it__player${out ? ' name-it__player--out' : ''}${current ? ' name-it__player--turn' : ''}`}>
-            <PlayerChip player={playerById(room, pid)} isMe={pid === me} size="sm" extra={out ? '✖ out' : undefined} />
-          </li>
-        )
-      })}
-    </ul>
   )
 }

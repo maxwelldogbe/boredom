@@ -10,6 +10,7 @@ export interface RoomActions {
   joinRoom(code: string): Promise<RoomPublic>
   peek(code: string): Promise<PeekData>
   leaveRoom(): Promise<void>
+  quitGame(): Promise<void>
   selectGame(gameId: GameId, settings: Record<string, unknown>): Promise<void>
   startGame(): Promise<void>
   playAgain(): Promise<void>

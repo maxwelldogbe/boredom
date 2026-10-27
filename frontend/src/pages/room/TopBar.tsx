@@ -18,11 +18,15 @@ interface TopBarProps {
 
 /** Room code, your session score and Leave (with confirmation). */
 export function TopBar({ room, me, onLeaving, onLeft, onHowToPlay = () => {} }: TopBarProps) {
-  const { leaveRoom, toast } = useRoomActions()
+  const { leaveRoom, quitGame, toast } = useRoomActions()
   const [confirm, setConfirm] = useState(false)
+  const [forfeitConfirm, setForfeitConfirm] = useState(false)
+  const [forfeitBusy, setForfeitBusy] = useState(false)
   const [busy, setBusy] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const playing = room.status === 'playing'
+  const stillPlaying = room.players.some((player) => player.id === me && player.inGame)
+  const activeOpponents = room.players.filter((player) => player.inGame && player.id !== me)
 
   const leave = async () => {
     setBusy(true)
@@ -65,9 +69,51 @@ export function TopBar({ room, me, onLeaving, onLeft, onHowToPlay = () => {} }: 
           )}
         </div>
       )}
+      {playing && stillPlaying && (
+        <Button variant="secondary" className="topbar__forfeit" onClick={() => setForfeitConfirm(true)}>
+          🏳️ Forfeit
+        </Button>
+      )}
       <Button variant="ghost" onClick={() => setConfirm(true)}>
         Leave
       </Button>
+      {forfeitConfirm && playing && stillPlaying && (
+        <Modal
+          title="Forfeit this game?"
+          onClose={() => !forfeitBusy && setForfeitConfirm(false)}
+          actions={
+            <>
+              <Button variant="primary" block onClick={() => setForfeitConfirm(false)} disabled={forfeitBusy}>
+                Keep playing
+              </Button>
+              <Button
+                variant="danger"
+                block
+                disabled={forfeitBusy}
+                onClick={async () => {
+                  setForfeitBusy(true)
+                  try {
+                    await quitGame()
+                    setForfeitConfirm(false)
+                  } catch (err) {
+                    toast(friendlyError(err), 'error')
+                  } finally {
+                    setForfeitBusy(false)
+                  }
+                }}
+              >
+                {forfeitBusy ? 'Forfeiting…' : 'Forfeit'}
+              </Button>
+            </>
+          }
+        >
+          <p>
+            {activeOpponents.length === 1 && room.players.filter((player) => player.inGame).length === 2
+              ? `${activeOpponents[0].nickname} will win the game. You'll wait in the room.`
+              : "You'll be ranked last and wait in the room until the game ends. The others keep playing."}
+          </p>
+        </Modal>
+      )}
       {confirm && (
         <Modal
           title="Leave this room?"

@@ -149,6 +149,38 @@ def test_going_offline_can_end_the_round() -> None:
     assert events == []
 
 
+@pytest.mark.parametrize("reason", ["quit", "left", "offline"])
+def test_forfeit_ends_a_round_waiting_only_on_the_forfeiter(reason) -> None:
+    state = new(("a", "b", "c"), content="scramble")
+    state, _ = guess(state, "a", state.current.answer, T0 + 100)
+    state, _ = guess(state, "b", state.current.answer, T0 + 200)
+    state, events = GR.forfeit(state, "c", T0 + 300, reason)
+    assert events[0]["kind"] == "roundOver"
+    assert [s["playerId"] for s in events[0]["data"]["solvers"]] == ["a", "b"]
+
+
+def test_forfeiter_is_out_of_every_later_round() -> None:
+    state = new(("a", "b", "c"), content="scramble", rounds=5)
+    state, events = GR.forfeit(state, "c", T0 + 100, "quit")
+    assert events == [] and state.phase == "guessing"
+    with pytest.raises(GameError):
+        guess(state, "c", state.current.answer, T0 + 200)
+    assert state.current.answer not in json.dumps(GR.get_view(state, "c"))  # still secret
+    state = finish_round(state, T0 + 200)
+    state, _ = guess(state, "a", state.current.answer, state.started_at + 10)
+    state, events = guess(state, "b", state.current.answer, state.started_at + 20)
+    assert events[0]["kind"] == "roundOver"  # nobody waits for c
+    assert state.scores["c"] == 0
+
+
+def test_coming_back_online_does_not_undo_a_forfeit() -> None:
+    state, _ = GR.forfeit(new(("a", "b", "c"), content="scramble"), "c", T0, "offline")
+    state, _ = GR.on_presence(state, "c", True, T0 + 50)
+    state, _ = guess(state, "a", state.current.answer, T0 + 100)
+    state, events = guess(state, "b", state.current.answer, T0 + 200)
+    assert events[0]["kind"] == "roundOver"
+
+
 def test_emoji_alternatives_and_normalization() -> None:
     state = new(content="emoji", rounds=15, seed=3)
     puzzle = next(p for p in EMOJI if p.answer == state.current.answer)

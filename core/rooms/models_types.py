@@ -7,6 +7,7 @@ from typing import Any, Literal
 from games.scoring import ScoredResult
 
 RoomStatus = Literal["lobby", "playing", "between_rounds", "finished"]
+EndReason = Literal["completed", "forfeit", "host_ended"]
 
 
 class RoomError(Exception):
@@ -66,6 +67,8 @@ class Player:
     user_id: int | None = None
     guest_key: str = ""  # pseudonymous id for activity records (guests only)
     left: bool = False
+    in_game: bool = True  # False once forfeited from the running game (quit, left, offline)
+    offline_notified: bool = False  # a player_offline event went out for this disconnect
 
     @property
     def type(self) -> str:
@@ -81,6 +84,8 @@ class Player:
             "color": self.color,
             "avatar": self.avatar.to_public(),
             "online": self.online,
+            "offlineSince": self.offline_since,
+            "inGame": self.in_game,
             "joinedAt": self.joined_at,
         }
 
@@ -105,6 +110,11 @@ class Room:
     timer_task: asyncio.Task[None] | None = None
     host_task: asyncio.Task[None] | None = None
     game_started_at: float | None = None
+    game_players: list[str] = field(default_factory=list)  # who started the running game
+    forfeits: dict[str, float] = field(default_factory=dict)  # player -> forfeit time
+    end_reason: EndReason | None = None
+    notice_tasks: dict[str, asyncio.Task[None]] = field(default_factory=dict)
+    forfeit_tasks: dict[str, asyncio.Task[None]] = field(default_factory=dict)
 
     def player(self, player_id: str) -> Player | None:
         """Find a seated player by id."""
@@ -135,6 +145,7 @@ class Room:
             "settings": dict(self.settings),
             "scoreboard": {pid: pts for pid, pts in self.scoreboard.items() if pid in ids},
             "wins": {pid: n for pid, n in self.wins.items() if pid in ids},
+            "endReason": self.end_reason,
         }
 
 

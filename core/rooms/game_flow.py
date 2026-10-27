@@ -1,4 +1,4 @@
-"""Game half of the room manager: start, actions, presence, timers, finish.
+"""Game half of the room manager: start, actions, presence, forfeits, timers, finish.
 
 Mixed into RoomManager. Every method here expects the caller to hold `room.lock`,
 except the timer task, which takes the lock itself.
@@ -11,11 +11,11 @@ from collections.abc import Awaitable, Callable
 from typing import Any
 
 from games import registry
-from games.base import GameError, GameEvent, GameModule
+from games.base import ForfeitReason, GameError, GameEvent, GameModule
 from games.constants import SESSION_POINTS_MAX
-from games.scoring import score_results
+from games.scoring import rank_with_forfeits, score_results
 from rooms import hooks
-from rooms.models_types import Room, RoomError, result_to_public
+from rooms.models_types import EndReason, Player, Room, RoomError, result_to_public
 
 logger = logging.getLogger("rooms.game_flow")
 
@@ -58,9 +58,16 @@ class GameFlowMixin:
         room.game_id = module.id
         room.status = "playing"
         room.game_started_at = now
+        room.game_players = [p.id for p in seated]
+        room.forfeits, room.end_reason = {}, None
+        for player in room.players:
+            player.in_game = True
         hooks.on_game_started(room.code, module.id)
         await self._broadcast_room(room)
         await self._apply(room, state, events)
+        for player in seated:
+            if not player.online:
+                self._schedule_forfeit(room, player)
 
     async def _game_action(
         self, room: Room, player_id: str, action: dict[str, Any], allow: Callable[[], bool]
@@ -70,6 +77,9 @@ class GameFlowMixin:
             raise RoomError("INVALID_ACTION", "No game is running.")
         if not allow():
             raise RoomError("RATE_LIMITED", "Slow down a little.")
+        player = room.player(player_id)
+        if player is None or player.id not in room.game_players or not player.in_game:
+            raise RoomError("INVALID_ACTION", "You are not playing in this game.")
         module = self._module(room)
         try:
             state, events = module.handle_action(
@@ -80,25 +90,65 @@ class GameFlowMixin:
         await self._apply(room, state, events)
 
     async def _presence_changed(self, room: Room, player_id: str, online: bool) -> None:
-        """Tell the running game a player went offline or came back."""
-        if room.status != "playing":
+        """Tell the running game a player went offline or came back.
+
+        Players out of the game are not reported; one who comes back just gets the views.
+        """
+        player = room.player(player_id)
+        if room.status != "playing" or player is None:
             return
         module = self._module(room)
+        if not player.in_game:
+            await self._send_views(room, module)
+            return
         state, events = module.on_presence(
             copy.deepcopy(room.game_state), player_id, online, self.clock()
         )
         await self._apply(room, state, events)
 
-    async def _apply(self, room: Room, state: Any, events: list[GameEvent]) -> None:
-        """Store new game state, send views and events, then finish or reschedule."""
+    def _active_players(self, room: Room) -> list[str]:
+        """Players of the running game who have not forfeited it."""
+        return [
+            pid for pid in room.game_players if (p := room.player(pid)) is not None and p.in_game
+        ]
+
+    async def _forfeit(self, room: Room, player: Player, reason: ForfeitReason) -> None:
+        """Remove a player from the running game (quit, left or offline timeout).
+
+        One player left: they win at once. Nobody left: the session is abandoned.
+        """
+        now = self.clock()
+        player.in_game = False
+        room.forfeits[player.id] = now
+        self._cancel_forfeit(room, player.id)
+        module = self._module(room)
+        state, events = module.forfeit(copy.deepcopy(room.game_state), player.id, now, reason)
+        active = self._active_players(room)
+        if not active:
+            await self._abandon(room, "forfeit")
+            return
+        await self._apply(room, state, events, "forfeit", force_end=len(active) == 1)
+
+    async def _apply(
+        self,
+        room: Room,
+        state: Any,
+        events: list[GameEvent],
+        end_reason: EndReason = "completed",
+        force_end: bool = False,
+    ) -> None:
+        """Store new game state, send views and events, then finish or reschedule.
+
+        A game that ends right after a forfeit (or with one player left) ends as "forfeit".
+        """
         module = self._module(room)
         room.game_state = state
         room.last_activity = self.clock()
         await self._send_views(room, module)
         for event in events:
             await self._push(room, {"type": "game:event", "data": event})
-        if module.is_over(state):
-            await self._finish(room, module)
+        if force_end or module.is_over(state):
+            await self._finish(room, module, end_reason)
         else:
             self._reschedule(room, module)
 
@@ -114,31 +164,67 @@ class GameFlowMixin:
                 }
                 await self.send(player.channel, {"type": "push", "message": message})
 
-    async def _finish(self, room: Room, module: GameModule) -> None:
-        """Record results on the scoreboard, announce them and drop players who left."""
-        self._cancel_timer(room)
-        results = score_results(module.get_results(room.game_state), SESSION_POINTS_MAX)
+    async def _finish(self, room: Room, module: GameModule, reason: EndReason) -> None:
+        """Record results on the scoreboard, announce them and drop players who left.
+
+        Forfeiters rank below everyone who stayed, whatever their score.
+        """
+        self._end_game_timers(room)
+        ranked = rank_with_forfeits(
+            module.get_results(room.game_state), room.forfeits, room.game_players
+        )
+        results = score_results(ranked, SESSION_POINTS_MAX)
         finished = hooks.game_record(room, module.id, self.clock(), results)
         for result in results:
             pid = result["player_id"]
             room.scoreboard[pid] = round(room.scoreboard.get(pid, 0) + result["points"], 2)
             if result["placement"] == 1:
                 room.wins[pid] = room.wins.get(pid, 0) + 1
-        room.status = "finished"
+        room.status, room.end_reason = "finished", reason
         public = [result_to_public(r) for r in results]
         await self._push(
             room,
             {"type": "game:event", "data": {"kind": "gameOver", "data": {"results": public}}},
         )
-        for player in [p for p in room.players if p.left]:
-            room.players.remove(player)
-            room.scoreboard.pop(player.id, None)
-            room.wins.pop(player.id, None)
+        self._release_game_seats(room)
         await self._broadcast_room(room)
         try:
             hooks.on_game_finished(finished)
         except Exception:
             logger.exception("Game-finished hook failed: room=%s game=%s", room.code, module.id)
+
+    async def _abandon(self, room: Room, reason: EndReason) -> None:
+        """End the running game with no results (host ended it, or nobody is left in it).
+
+        The room returns to the lobby, the scoreboard is unchanged and the session is
+        recorded as abandoned.
+        """
+        game_id = room.game_id or ""
+        self._end_game_timers(room)
+        try:
+            hooks.on_game_abandoned(hooks.game_record(room, game_id, self.clock(), None))
+        except Exception:
+            logger.exception("Game-abandoned hook failed: room=%s game=%s", room.code, game_id)
+        room.status, room.game_id, room.game_state = "lobby", None, None
+        room.end_reason = reason
+        room.last_activity = self.clock()
+        self._release_game_seats(room)
+        await self._broadcast_room(room)
+
+    def _release_game_seats(self, room: Room) -> None:
+        """After a game: drop players who left during it; everyone else is back in."""
+        for player in [p for p in room.players if p.left]:
+            room.players.remove(player)
+            room.scoreboard.pop(player.id, None)
+            room.wins.pop(player.id, None)
+        for player in room.players:
+            player.in_game = True
+
+    def _end_game_timers(self, room: Room) -> None:
+        """Stop the game timer and every pending offline forfeit."""
+        self._cancel_timer(room)
+        for player_id in list(room.forfeit_tasks):
+            self._cancel_forfeit(room, player_id)
 
     def _cancel_timer(self, room: Room) -> None:
         """Cancel the room's pending game timer, unless it is the task running now."""
