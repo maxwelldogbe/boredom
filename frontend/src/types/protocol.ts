@@ -49,6 +49,8 @@ export interface Player {
   online: boolean
   inGame: boolean
   joinedAt: number
+  /** Lobby ready check; always false for the host. Missing from servers before the ready check. */
+  ready?: boolean
 }
 
 export type RoomStatus = 'lobby' | 'playing' | 'between_rounds' | 'finished'
@@ -62,6 +64,14 @@ export interface RoomPublic {
   settings: Record<string, unknown>
   scoreboard: Record<string, number>
   wins: Record<string, number>
+  /** Online non-host players who are ready, out of all of them. Null while no game is selected;
+   *  missing from servers before the ready check. */
+  readyCheck?: ReadyCheck | null
+}
+
+export interface ReadyCheck {
+  count: number
+  total: number
 }
 
 export interface GameResult {
@@ -108,6 +118,8 @@ export interface RequestMap {
   'game:start': { payload: Empty; data: Empty }
   'game:action': { payload: { type: string } & Record<string, unknown>; data: Empty }
   'game:playAgain': { payload: Empty; data: Empty }
+  'room:ready': { payload: { ready: boolean }; data: Empty }
+  'room:react': { payload: { emoji: string }; data: Empty }
 }
 
 export type RequestType = keyof RequestMap
@@ -136,6 +148,14 @@ export interface RoomEventPush {
   data?: Record<string, unknown>
 }
 
+/** An emoji reaction, pushed to everyone in the room (the sender too). Never replayed. */
+export interface ReactionPush {
+  id: string
+  playerId: string
+  nickname: string
+  emoji: string
+}
+
 export interface GameOverData {
   results: GameResult[]
 }
@@ -145,6 +165,7 @@ export type PushMessage =
   | { type: 'game:view'; data: GameViewPush }
   | { type: 'game:event'; data: GameEventPush }
   | { type: 'room:event'; data: RoomEventPush }
+  | { type: 'room:reaction'; data: ReactionPush }
   | { type: 'error'; data: ProtocolError }
 
 export type ServerMessage = AckMessage | PushMessage

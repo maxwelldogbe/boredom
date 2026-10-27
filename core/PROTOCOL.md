@@ -20,6 +20,16 @@
 > profile and avatar, and an invalid token falls back to guest with `authStatus: "invalid"` in
 > the ack. `Player.profileId` was **removed** from `room:state` (it leaked every player's
 > persistent browser id); `Player.type` (`"guest"` | `"registered"`) was added.
+>
+> **Additions (ready check and reactions):** additive only; nothing was renamed or removed.
+> New requests `room:ready` (4.9) and `room:react` (4.10); new push `room:reaction`;
+> `Player.ready` and `RoomPublic.readyCheck` in `room:state`; `room:event` kind `ready_reset`
+> (6.6). Older clients can ignore all of it.
+>
+> **Additions (profile page):** additive only. Every account has a public `tag` (8.6);
+> `GET /api/auth/me` gains top-level `tag` and ISO-8601 `createdAt`; new
+> `GET /api/me/stats` and `GET /api/me/recent-players` (8.3). The tag is never sent over the
+> WebSocket.
 
 ## 1. Transport
 
@@ -73,6 +83,8 @@ Failure:
 | `room:state` | `data: RoomPublic` | After every room change, to everyone online in the room. |
 | `game:view` | `data: {gameId, view, serverNow}` | After every game change, to each online player separately (personalized). |
 | `game:event` | `data: {kind, data}` | Transient moments: reveal, round over, elimination, challenge opened, game over. Same for everyone. |
+| `room:event` | `data: {kind, playerId, nickname, data?}` | Transient room moments (6.6). Never replayed on reconnect. |
+| `room:reaction` | `data: {id, playerId, nickname, emoji}` | Someone sent an emoji reaction (4.10). To everyone online in the room, the sender included. Never stored or replayed. |
 | `error` | `data: {code, message}` | A problem not tied to a request (see below). |
 
 `serverNow` is the server's epoch-ms clock when the view was sent. Compute countdowns as
@@ -105,7 +117,7 @@ Example push:
 | `NOT_YOUR_TURN` | A game action out of turn. |
 | `INVALID_ACTION` | Invalid payload, profile, settings, or game move. Also used for an unexpected server error ("Something went wrong."). |
 | `GAME_IN_PROGRESS` | Joining a room mid-game without a valid `roomToken` for a seat. |
-| `RATE_LIMITED` | More than `ACTION_RATE_LIMIT_PER_SEC` (5) game actions per second on this connection. |
+| `RATE_LIMITED` | More than `ACTION_RATE_LIMIT_PER_SEC` (5) game actions per second on this connection, or a `room:react` within `REACTION_COOLDOWN_MS` of the player's previous one. |
 | `NOT_IN_ROOM` | Request needs a room but this connection has no seat (never joined, left, or was detached). |
 | `UNKNOWN_EVENT` | `type` is not a known request type. |
 | `BAD_MESSAGE` | Frame is not valid JSON, or the envelope is malformed. |
@@ -201,6 +213,10 @@ game module and completed with defaults; the stored result appears in `RoomPubli
 Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `INVALID_ACTION` (unknown game, bad settings,
 room `finished`), `GAME_IN_PROGRESS`.
 
+Picking a different game, or changing at least one stored setting value, clears every ready flag
+(4.9) and sends `ready_reset` to the players whose flag was set. Sending the same game with
+settings that validate to the same values changes nothing.
+
 ### 4.6 `game:start` (host only)
 
 Payload: `{}`. Only in `lobby`. Requires a selected game and a seated-player count within its
@@ -223,6 +239,42 @@ Ack data: `{}`.
 Payload: `{}`. Returns a `finished` (or `lobby`) room to `lobby`, keeping the selected game,
 settings, scoreboard and wins.
 Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `GAME_IN_PROGRESS`.
+
+### 4.9 `room:ready` (non-host players)
+
+Payload: `{ "ready": boolean }`. Marks the sender ready (or not) for the selected game. Allowed
+only while the room is `lobby`, a game is selected, and the sender is **not** the host.
+On a change everyone receives `room:state`. Ack data: `{}`.
+Errors: `NOT_IN_ROOM`, `INVALID_ACTION` (not a boolean, sender is host, no game selected,
+room not in `lobby`).
+
+The ready check is advisory: `game:start` is **never** blocked by it.
+
+| Rule | Detail |
+| --- | --- |
+| `Player.ready` | The seat's flag. Always `false` for the host. |
+| `RoomPublic.readyCheck` | `{count, total}`: `total` = online non-host seated players, `count` = those of them who are ready. Offline players are left out of both numbers but keep their flag. `null` while no game is selected. |
+| Reset to `false` for everyone | The host selects a different game or changes a setting value (sends `ready_reset`, 6.6); a game starts; the room returns to `lobby` (`game:playAgain`, `game:end`, or a game abandoned by forfeits). |
+| Seats | A new seat starts `false`. A seat reclaimed by `roomToken` or account keeps its flag. A player who becomes host loses their flag. |
+
+### 4.10 `room:react`
+
+Payload: `{ "emoji": string }`. `emoji` must be exactly one of `REACTION_EMOJIS`
+(`👏 😂 😮 🔥 😭 🤔 🎉 ❤️`; `❤️` includes U+FE0F). Allowed in every room status, including for a
+player who forfeited the running game. A player who left the room cannot react.
+
+Each player may react once per `REACTION_COOLDOWN_MS` (700 ms); a faster request gets
+`RATE_LIMITED` and is not delivered. On success everyone online in the room, the sender
+included, receives:
+
+```json
+{"type": "room:reaction", "data": {"id": "r_3f9a0c1b2d4e", "playerId": "p_x1", "nickname": "Sam", "emoji": "🔥"}}
+```
+
+`id` is unique per reaction (for client-side keys). Reactions are not part of room state: they
+are never stored, never replayed on reconnect, never recorded in activity or analytics, and do
+not count as room activity for cleanup (6.4).
+Ack data: `{}`. Errors: `NOT_IN_ROOM`, `INVALID_ACTION` (unknown emoji), `RATE_LIMITED`.
 
 ## 5. Types
 
@@ -251,6 +303,7 @@ type Player = {
   avatar: Avatar;           // assigned by the server when the seat is created
   online: boolean;
   joinedAt: number;         // epoch ms
+  ready: boolean;           // lobby ready check (4.9); always false for the host
 };
 
 type RoomStatus = 'lobby' | 'playing' | 'between_rounds' | 'finished';
@@ -264,6 +317,7 @@ type RoomPublic = {
   settings: Record<string, unknown>;
   scoreboard: Record<string, number>;   // playerId -> session points, up to 2 decimals (only players with points recorded)
   wins: Record<string, number>;         // playerId -> games won (placement 1) this session
+  readyCheck: { count: number; total: number } | null;  // 4.9; null while no game is selected
 };
 
 type GameResult = {
@@ -349,6 +403,24 @@ Connected sockets of a deleted room get an `error` push `NOT_IN_ROOM`.
 `game:action` only: at most `ACTION_RATE_LIMIT_PER_SEC` (5) actions per rolling second per
 connection, counting every action that reaches the limiter (moves the game then rejects count
 too). Excess actions get `RATE_LIMITED` and change nothing.
+
+`room:react` has its own per-player cooldown instead (4.10).
+
+### 6.6 Room events
+
+`room:event` pushes announce transient room moments. `playerId` and `nickname` name the player
+the event is about (or who caused it); `data` is present only for kinds that need it. They are
+sent to everyone online in the room unless noted, and are never replayed on reconnect.
+
+| `kind` | About | `data` |
+| --- | --- | --- |
+| `player_left` | The player who sent `room:leave`. | |
+| `player_offline` | A player still offline `OFFLINE_NOTICE_DELAY_MS` after disconnecting. | |
+| `player_online` | That player came back. | |
+| `host_changed` | The new host. | `{previousHostId}` |
+| `player_quit` | The player who sent `game:quit`. | |
+| `game_ended_by_host` | The host who sent `game:end`. | |
+| `ready_reset` | The host whose change cleared the flags. Sent **only** to players whose ready flag was `true` and was cleared by that change. | `{reason: "game_changed" \| "settings_changed"}` |
 
 ## 7. Games **(B2–B7)**
 
@@ -472,9 +544,13 @@ and not blank. Wrong guesses are allowed without limit, apart from the rate limi
 | `INVALID_ACTION` | Unknown `type`, bad `text`, you already solved this round, or the round is no longer accepting guesses. |
 
 **Rules**
-- Content never repeats within a game. Everyone sees the same prompt.
+- Content never repeats within a game, nor across games in the same room: the server remembers
+  what a room has played and only reuses a pool (a word band, or the emoji puzzles) once all
+  of it has been played. Everyone sees the same prompt.
 - A guess is correct if `normalize(text)` equals the normalized answer or one of its
   alternatives. normalize: lowercase, trim, drop a leading "the ", then remove all punctuation and whitespace.
+  For a scramble, every listed word made of the same letters is correct (LISTEN, SILENT,
+  ENLIST); `answer` shows the one that was picked. The scrambled letters are never a listed word.
 - **Everyone can score.** Each player who solves the round earns points by finishing order
   (the order the server received the correct guesses, so there are no exact ties): rank `k`
   earns `max(GUESS_RANK_POINTS_FLOOR, GUESS_RANK_POINTS_FIRST − GUESS_RANK_POINTS_STEP × (k − 1))`,
@@ -482,9 +558,11 @@ and not blank. Wrong guesses are allowed without limit, apart from the rate limi
   Once you solve it you can't guess again that round.
 - Hint 1 at `GUESS_HINT1_MS` (10 s): the category (emoji) or the letter count (scramble).
   Hint 2 at `GUESS_HINT2_MS` (20 s): the first letter of the answer, ignoring a leading "The".
-- The round ends when every **online** player has solved it (going offline can end it too) or
-  at `GUESS_ROUND_MS` (30 s). The answer is then shown for `GUESS_REVEAL_MS` (3 s), and the
-  next round starts.
+- The first correct guess of a round leaves everyone else `GUESS_SOLVED_WINDOW_MS` (10 s) to
+  solve it too, never past the usual end; the view's `roundEndsAt` moves to that earlier time.
+  The round ends then, when every **online** player has solved it (going offline can end it
+  too), or at `GUESS_ROUND_MS` (30 s), whichever comes first. The answer is then shown for
+  `GUESS_REVEAL_MS` (3 s), and the next round starts.
 
 **View:**
 
@@ -886,7 +964,7 @@ last. `score` is the number of players they outlasted (`n − placement`), for d
 ## 8. Account HTTP API
 
 Optional permanent accounts. Guests never need any of this. Plain JSON over HTTP under
-`/api/auth/`; send `Content-Type: application/json`. Authenticated requests carry
+`/api/auth/` and `/api/me/`; send `Content-Type: application/json`. Authenticated requests carry
 `Authorization: Bearer <token>` (allowed by CORS from `CORS_ALLOWED_ORIGINS`). No cookies or
 CSRF tokens are involved.
 
@@ -922,6 +1000,30 @@ type AccountStats = {            // same shape as the guest Stats kept in the br
 };
 
 type ApiError = {error: {code: string; message: string; fields?: Record<string, string>}};
+
+type MyStats = {                 // GET /api/me/stats; computed by the server from PlayerStats
+  totals: GameTotals;
+  favoriteGame: GameId | null;   // most played; ties: more wins, then game id A-Z; null if none
+  perGame: (GameTotals & {gameId: GameId})[];  // games with played > 0, in favorite order
+  minGamesForRate: number;       // DASHBOARD_MIN_GAMES_FOR_RATES
+};
+
+type GameTotals = {
+  played: number;
+  wins: number;                  // placement-1 finishes (ties share the win)
+  losses: number;                // played - wins
+  winRate: number | null;        // wins / played (0..1, 4 decimals); null while played < minGamesForRate
+};
+
+type RecentPlayer = {            // GET /api/me/recent-players
+  tag: string;                   // public code, shown as "#" + tag
+  nickname: string;              // their current saved nickname
+  avatar: Avatar;
+  color: string;
+  lastPlayedAt: string;          // ISO-8601 UTC: end of the newest shared completed game
+  gamesTogether: number;         // shared completed games within the window
+  lastGameId: GameId;            // the game of that newest shared session
+};
 ```
 
 ### 8.3 Endpoints
@@ -936,14 +1038,15 @@ type ApiError = {error: {code: string; message: string; fields?: Record<string, 
 
 ```json
 {"token": "eyJhbGciOi...", "profile": {"username": "sam_1", "nickname": "Sam", "color": "#F1C40F",
- "avatar": {"style": "cutouts", "seed": "9c41e07b"}, "type": "registered", "createdAt": 1792324569015}}
+ "avatar": {"style": "cutouts", "seed": "9c41e07b"}, "type": "registered", "createdAt": 1792324569015,
+ "avatarLockedUntil": null}}
 ```
 
 - `username` matches `USERNAME_PATTERN` (3–20 letters, digits, `_`) and is unique **ignoring case**.
 - `password`: at least `PASSWORD_MIN_LENGTH` (8) characters and passes Django's validators
   (not too common, not all digits, not too similar to the username).
 - `profile.nickname` / `profile.color`: the same rules as room profiles (5).
-- `profile.avatar` (optional): the guest's current avatar is **claimed and kept forever** when
+- `profile.avatar` (optional): the guest's current avatar is **claimed** (kept until the player changes it, see `PATCH /api/auth/profile`) when
   valid (5.1 rules). Missing or invalid: a random one is assigned. Send it so the player keeps
   the face they know.
 - `profile.stats` (optional): the guest's browser stats, imported for fun. Only `byGame` is read.
@@ -956,14 +1059,50 @@ type ApiError = {error: {code: string; message: string; fields?: Record<string, 
 The username is matched ignoring case. Wrong username and wrong password get the **same**
 `401 INVALID_CREDENTIALS` response.
 
-**`GET /api/auth/me`** (Bearer) → `200 {profile, stats}`
+**`GET /api/auth/me`** (Bearer) → `200 {profile, stats, tag, createdAt}`
 
-Use it on startup to check a stored token and refresh the saved profile and stats.
+Use it on startup to check a stored token and refresh the saved profile and stats. `tag` is the
+account's public tag (8.6) and `createdAt` the registration time as ISO-8601 UTC
+(`"2026-10-27T11:31:05Z"`); `profile.createdAt` stays epoch ms. `Cache-Control: no-store`.
 
-**`PATCH /api/auth/profile`** (Bearer) `{"nickname"?, "color"?}` → `200 {profile}`
+**`GET /api/me/stats`** (Bearer) → `200 MyStats` (8.2)
 
-Only the fields present change. The avatar and username cannot be changed. Rooms already
-joined keep the old values; the change applies from the next `room:create` / `room:join`.
+The account's own totals, favorite game and per-game rows from the same counters as `stats`
+(8.4). The client never computes any of these. `Cache-Control: no-store`.
+
+```json
+{"totals": {"played": 12, "wins": 5, "losses": 7, "winRate": 0.4167}, "favoriteGame": "rps",
+ "perGame": [{"gameId": "rps", "played": 8, "wins": 4, "losses": 4, "winRate": 0.5},
+             {"gameId": "hangman", "played": 4, "wins": 1, "losses": 3, "winRate": null}],
+ "minGamesForRate": 5}
+```
+
+**`GET /api/me/recent-players`** (Bearer) → `200 {players: RecentPlayer[]}` (8.2)
+
+Up to `RECENT_PLAYERS_MAX` (30) distinct **registered** players who finished a **completed**
+game with the account holder that ended in the last `RECENT_PLAYERS_DAYS` (30) days, newest
+first. Never the account holder, guests, disabled accounts or deleted accounts. No login
+usernames, ids, emails or guest keys are ever included. `Cache-Control: no-store`.
+
+```json
+{"players": [{"tag": "K7M2QX", "nickname": "Ann", "avatar": {"style": "cutouts", "seed": "1b2c3d4e"},
+              "color": "#E74C3C", "lastPlayedAt": "2026-10-26T18:04:11Z", "gamesTogether": 3,
+              "lastGameId": "liars_dice"}]}
+```
+
+**`PATCH /api/auth/profile`** (Bearer) `{"nickname"?, "color"?, "avatar"?}` → `200 {profile}`
+
+Only the fields present change. The username cannot be changed. Rooms already joined keep the
+old values; the change applies from the next `room:create` / `room:join`.
+
+- `avatar` is `{style, seed}` (validated like registration: `style` in `AVATAR_STYLES`, `seed`
+  matching `AVATAR_SEED_PATTERN`). The client picks it, e.g. by shuffling random ones.
+- A **new** avatar can be saved at most once every `AVATAR_CHANGE_DAYS` (30) days. While
+  locked, a request with a different avatar is refused with `409 AVATAR_LOCKED`
+  (`fields.avatar` set) and **nothing** in it is saved. Sending the current avatar again is
+  not a change: allowed, and the lock does not restart. A new account can change it at once.
+- Every `profile` object (register, login, me, this endpoint) has `avatarLockedUntil`: epoch
+  ms of the next allowed change, or `null` when a change is allowed now.
 
 **`DELETE /api/auth/account`** (Bearer) `{"password"}` → `200 {"ok": true}`
 
@@ -978,14 +1117,15 @@ counted anywhere on the server.
 ### 8.5 Errors
 
 Every error response is `{"error": {"code", "message", "fields"?}}`. `fields` maps a request
-field (`username`, `password`, `nickname`, `color`) to a message to show next to it.
+field (`username`, `password`, `nickname`, `color`, `avatar`) to a message to show next to it.
 
 | Status | `code` | When |
 | --- | --- | --- |
 | 400 | `INVALID_INPUT` | Missing, malformed or weak input, or a body that is not a JSON object. Has `fields` when tied to fields. |
 | 401 | `INVALID_CREDENTIALS` | Login failed (one generic message), or wrong password on account deletion. |
-| 401 | `UNAUTHORIZED` | Missing, invalid or expired Bearer token. Forget the token and offer login. |
+| 401 | `UNAUTHORIZED` | Missing, invalid or expired Bearer token, or a disabled or deleted account. Forget the token and offer login. |
 | 405 | `METHOD_NOT_ALLOWED` | Wrong HTTP method for the endpoint. |
+| 409 | `AVATAR_LOCKED` | `PATCH /api/auth/profile` with a new avatar within `AVATAR_CHANGE_DAYS` of the last change. `fields.avatar` is set. |
 | 409 | `USERNAME_TAKEN` | Registration with a username already in use (ignoring case). `fields.username` is set. |
 | 429 | `RATE_LIMITED` | More than `AUTH_RATE_LIMIT_PER_MIN` (10) register or login requests per minute from one IP. |
 
@@ -995,3 +1135,12 @@ Example:
 {"error": {"code": "INVALID_INPUT", "message": "Some fields need fixing.",
            "fields": {"password": "This password is too common."}}}
 ```
+
+### 8.6 Tags
+
+Every registered account has a public tag: `TAG_LENGTH` (6) characters from `TAG_ALPHABET`
+(`ABCDEFGHJKLMNPQRSTUVWXYZ23456789`, no I, O, 0 or 1), shown as `#K7M2QX`. It is random
+(`secrets`), unique, assigned at registration, never changes (not even with the nickname), and
+is never reused after the account is deleted. It is not the login username and never contains
+it. It is returned only by `GET /api/auth/me` and `GET /api/me/recent-players`, never in
+`room:state` or any WebSocket message.

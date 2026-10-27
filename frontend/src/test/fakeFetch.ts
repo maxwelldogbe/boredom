@@ -8,24 +8,50 @@ export interface FetchCall {
   body: unknown
 }
 
+type Reply = { status: number; body: unknown } | 'network'
+
+/** /api/me/* answers by URL (default: empty), so the profile page's own requests don't take
+ *  replies queued for other calls. They are recorded in `meCalls`, not `calls`. */
+const ME_DEFAULTS: Record<string, Reply> = {
+  '/api/me/stats': {
+    status: 200,
+    body: { totals: { played: 0, wins: 0, losses: 0, winRate: null }, favoriteGame: null, perGame: [], minGamesForRate: 5 },
+  },
+  '/api/me/recent-players': { status: 200, body: { players: [] } },
+}
+
 export function fakeFetch() {
   const calls: FetchCall[] = []
-  const replies: Array<{ status: number; body: unknown } | 'network'> = []
+  const meCalls: FetchCall[] = []
+  const replies: Reply[] = []
+  const routes: Record<string, Reply[]> = {}
+  const answer = (reply: Reply | undefined, url: string) => {
+    if (!reply) throw new Error(`No canned reply for ${url}`)
+    if (reply === 'network') throw new TypeError('Failed to fetch')
+    return { ok: reply.status < 400, status: reply.status, json: async () => reply.body } as Response
+  }
   const fn = vi.fn(async (url: string, init: RequestInit = {}) => {
-    calls.push({
+    const call = {
       url,
       method: init.method ?? 'GET',
       headers: (init.headers ?? {}) as Record<string, string>,
       body: init.body ? JSON.parse(init.body as string) : undefined,
-    })
-    const reply = replies.shift()
-    if (!reply) throw new Error(`No canned reply for ${url}`)
-    if (reply === 'network') throw new TypeError('Failed to fetch')
-    return { ok: reply.status < 400, status: reply.status, json: async () => reply.body } as Response
+    }
+    if (url in ME_DEFAULTS) {
+      meCalls.push(call)
+      return answer(routes[url]?.shift() ?? ME_DEFAULTS[url], url)
+    }
+    calls.push(call)
+    return answer(replies.shift(), url)
   })
   vi.stubGlobal('fetch', fn)
   return {
     calls,
+    meCalls,
+    /** Queue a reply for one /api/me/* URL (used once, then the default applies again). */
+    route(url: string, status: number | 'network', body?: unknown) {
+      ;(routes[url] ??= []).push(status === 'network' ? 'network' : { status, body })
+    },
     reply(status: number, body: unknown) {
       replies.push({ status, body })
     },

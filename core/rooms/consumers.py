@@ -109,6 +109,10 @@ class RoomConsumer(AsyncWebsocketConsumer):
             await manager.quit_game(code, pid)
         elif request.type == "game:end":
             await manager.end_game(code, pid)
+        elif request.type == "room:ready":
+            await manager.set_ready(code, pid, payload.get("ready"))
+        elif request.type == "room:react":
+            await manager.react(code, pid, payload.get("emoji"))
         return {}
 
     @staticmethod

@@ -42,8 +42,10 @@ async def test_create_room_ack_and_state(connect):
         "offlineSince",
         "inGame",
         "joinedAt",
+        "ready",
     }
     assert room["scoreboard"] == {} and room["wins"] == {} and room["selectedGame"] is None
+    assert room["readyCheck"] is None and room["players"][0]["ready"] is False
     assert room["endReason"] is None and room["players"][0]["inGame"] is True
     assert room["players"][0]["offlineSince"] is None
     assert data["roomToken"] and data["roomToken"] not in json.dumps(room)

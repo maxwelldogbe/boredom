@@ -2,7 +2,7 @@
  * Optional permanent accounts (core/PROTOCOL.md section 8): the HTTP API client, the stored
  * access token, and mapping the saved account onto the local profile.
  */
-import type { Avatar } from '../types/protocol'
+import type { Avatar, GameId } from '../types/protocol'
 import { C } from './constants'
 import { apiUrl } from './endpoints'
 import { getProfile, newId, saveProfile, toGuest, type Profile, type Stats } from './profileStore'
@@ -17,6 +17,8 @@ export interface AccountProfile {
   avatar: Avatar
   type: 'registered'
   createdAt: number
+  /** Epoch ms of the next allowed avatar change; null (or missing on old servers) means now. */
+  avatarLockedUntil?: number | null
 }
 
 export type AccountStats = Stats
@@ -26,6 +28,7 @@ export type AccountErrorCode =
   | 'INVALID_CREDENTIALS'
   | 'UNAUTHORIZED'
   | 'USERNAME_TAKEN'
+  | 'AVATAR_LOCKED'
   | 'RATE_LIMITED'
   | 'METHOD_NOT_ALLOWED'
   | 'NETWORK'
@@ -82,13 +85,14 @@ const FRIENDLY: Partial<Record<AccountErrorCode, string>> = {
   RATE_LIMITED: 'Too many attempts. Wait a minute and try again.',
 }
 
+/** `path` is under /api/auth/, or a full path starting with "/" (e.g. /api/me/stats). */
 async function call<T>(method: Method, path: string, body?: unknown, token?: string | null): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   if (token) headers.Authorization = `Bearer ${token}`
   let response: Response
   try {
-    response = await fetch(apiUrl(`/api/auth/${path}`), {
+    response = await fetch(apiUrl(path.startsWith('/') ? path : `/api/auth/${path}`), {
       method,
       headers,
       body: body === undefined ? undefined : JSON.stringify(body),
@@ -134,13 +138,55 @@ export function login(username: string, password: string): Promise<Session> {
   return call<Session>('POST', 'login', { username, password })
 }
 
-export function fetchMe(token: string): Promise<{ profile: AccountProfile; stats: AccountStats }> {
+export interface MeData {
+  profile: AccountProfile
+  stats: AccountStats
+  /** Public tag, shown as "#" + tag. Missing from servers before the profile page. */
+  tag?: string
+  /** Registration time, ISO-8601 UTC. Missing from servers before the profile page. */
+  createdAt?: string
+}
+
+export function fetchMe(token: string): Promise<MeData> {
   return call('GET', 'me', undefined, token)
+}
+
+export interface GameTotals {
+  played: number
+  wins: number
+  losses: number
+  /** 0..1; null until `minGamesForRate` games. Computed by the server. */
+  winRate: number | null
+}
+
+export interface MyStats {
+  totals: GameTotals
+  favoriteGame: GameId | null
+  perGame: (GameTotals & { gameId: GameId })[]
+  minGamesForRate: number
+}
+
+export interface RecentPlayer {
+  tag: string
+  nickname: string
+  avatar: Avatar
+  color: string
+  lastPlayedAt: string
+  gamesTogether: number
+  lastGameId: GameId
+}
+
+export function fetchMyStats(token: string): Promise<MyStats> {
+  return call('GET', '/api/me/stats', undefined, token)
+}
+
+export async function fetchRecentPlayers(token: string): Promise<RecentPlayer[]> {
+  return (await call<{ players: RecentPlayer[] }>('GET', '/api/me/recent-players', undefined, token)).players
 }
 
 export async function updateAccountProfile(
   token: string,
-  fields: { nickname?: string; color?: string },
+  fields: { nickname?: string; color?: string; avatar?: Avatar },
 ): Promise<AccountProfile> {
   return (await call<{ profile: AccountProfile }>('PATCH', 'profile', fields, token)).profile
 }

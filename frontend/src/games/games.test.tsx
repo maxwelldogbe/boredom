@@ -142,6 +142,19 @@ describe('Guess Race fair scoring (real backend views)', () => {
     expect(screen.getByText(new RegExp(`1st: ${solver.nickname}`))).toBeInTheDocument()
   })
 
+  it('others solved: a notice says who got it and how long is left', () => {
+    const fx = guessRaceFx.scrambleOthersSolved
+    const view = { ...fx.push.view, roundEndsAt: Date.now() + 7_000 }
+    renderWithRoom(<GuessRaceGame {...props(fx)} view={view} />)
+    const solver = fx.room.players.find((pl) => pl.id === view.solvers[0].playerId)!
+    expect(screen.getByText(new RegExp(`${solver.nickname} got it! [67]s left to solve it too.`))).toBeInTheDocument()
+  })
+
+  it('after solving: no countdown notice for me', () => {
+    renderWithRoom(<GuessRaceGame {...props(guessRaceFx.scrambleSolvedMe)} />)
+    expect(screen.queryByText(/left to solve it too/)).not.toBeInTheDocument()
+  })
+
   it('round over lists every solver in finishing order', () => {
     renderWithRoom(<GuessRaceGame {...props(guessRaceFx.scrambleRoundOver)} />)
     const items = within(screen.getByRole('list', { name: 'Solved' })).getAllByRole('listitem')

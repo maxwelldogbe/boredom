@@ -61,7 +61,8 @@ describe('guest profile page: save your profile', () => {
     type('Password', 'correct horse', card)
     fireEvent.click(within(card).getByRole('button', { name: 'Create account' }))
 
-    expect(await screen.findByText('Logged in as @sam_1')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Sam' })).toBeInTheDocument()
+    expect(document.body.textContent).not.toContain('sam_1') // the login username is never shown
     expect(api.calls[0].body).toMatchObject({ profile: { avatar: { style: 'cutouts', seed: 'saved1' } } })
     expect(screen.getByText('Account created. Your profile is saved.')).toBeInTheDocument()
     expect(getAuthToken()).toBe('jwt-1')
@@ -104,7 +105,8 @@ describe('guest profile page: save your profile', () => {
     api.reply(200, { profile: accountProfile, stats: accountStats })
     type('Password', 'correct horse', card)
     fireEvent.click(within(card).getByRole('button', { name: 'Log in' }))
-    expect(await screen.findByText('Logged in as @sam_1')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Sam' })).toBeInTheDocument()
+    expect(document.body.textContent).not.toContain('sam_1') // the login username is never shown
     expect(screen.getByText('Welcome back, Sam!')).toBeInTheDocument()
     expect(getProfile()?.nickname).toBe('Sam') // the saved nickname replaces the guest one
   })
@@ -114,11 +116,18 @@ describe('registered profile page', () => {
   it('refreshes from the server, shows stats and saves changes to the account', async () => {
     signIn()
     api.reply(200, { profile: accountProfile, stats: { ...accountStats, gamesPlayed: 4, wins: 2 } })
+    api.route('/api/me/stats', 200, {
+      totals: { played: 4, wins: 2, losses: 2, winRate: null },
+      favoriteGame: 'rps',
+      perGame: [{ gameId: 'rps', played: 4, wins: 2, losses: 2, winRate: null }],
+      minGamesForRate: 5,
+    })
     app('/profile')
-    expect(screen.getByText('Logged in as @sam_1')).toBeInTheDocument()
-    expect(await screen.findByText('4 games played, 2 wins.')).toBeInTheDocument()
-    expect(screen.getByText('Rock-Paper-Scissors')).toBeInTheDocument()
-    expect(screen.getByText(/Your avatar is saved with your account/)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Sam' })).toBeInTheDocument()
+    const byGame = await screen.findByRole('region', { name: 'By game' })
+    expect(within(byGame).getByText('Rock-Paper-Scissors')).toBeInTheDocument()
+    expect(document.body.textContent).not.toContain('sam_1')
+    expect(screen.getByRole('group', { name: 'Avatar' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Export profile' })).not.toBeInTheDocument()
 
     api.reply(200, { profile: { ...accountProfile, nickname: 'Samwise' } })

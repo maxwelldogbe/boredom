@@ -236,5 +236,195 @@
    "code": "BAD_MESSAGE",
    "message": "Message is not valid JSON."
   }
+ },
+ "roomLobbyReadySome": {
+  "code": "VUMQ",
+  "hostId": "p_93e52db959c3",
+  "status": "lobby",
+  "players": [
+   {
+    "id": "p_93e52db959c3",
+    "type": "guest",
+    "nickname": "Host",
+    "color": "#E74C3C",
+    "avatar": {
+     "style": "croodles-neutral",
+     "seed": "a608469d"
+    },
+    "online": true,
+    "offlineSince": null,
+    "inGame": true,
+    "joinedAt": 1793089273132.9543,
+    "ready": false
+   },
+   {
+    "id": "p_a114edf62c9e",
+    "type": "guest",
+    "nickname": "Ann",
+    "color": "#E67E22",
+    "avatar": {
+     "style": "cutouts",
+     "seed": "d32a2e3a"
+    },
+    "online": true,
+    "offlineSince": null,
+    "inGame": true,
+    "joinedAt": 1793089273133.2327,
+    "ready": true
+   },
+   {
+    "id": "p_84499b84d8c3",
+    "type": "guest",
+    "nickname": "Bob",
+    "color": "#F1C40F",
+    "avatar": {
+     "style": "adventurer-neutral",
+     "seed": "d67a7a35"
+    },
+    "online": true,
+    "offlineSince": null,
+    "inGame": true,
+    "joinedAt": 1793089273133.3235,
+    "ready": false
+   },
+   {
+    "id": "p_e64763763616",
+    "type": "guest",
+    "nickname": "Cat",
+    "color": "#2ECC71",
+    "avatar": {
+     "style": "voxel-art",
+     "seed": "f7d999ff"
+    },
+    "online": false,
+    "offlineSince": 1793089273133.633,
+    "inGame": true,
+    "joinedAt": 1793089273133.425,
+    "ready": true
+   },
+   {
+    "id": "p_3be1da634c3d",
+    "type": "guest",
+    "nickname": "Dan",
+    "color": "#1ABC9C",
+    "avatar": {
+     "style": "croodles-neutral",
+     "seed": "87d0ff8f"
+    },
+    "online": true,
+    "offlineSince": null,
+    "inGame": true,
+    "joinedAt": 1793089273133.4934,
+    "ready": false
+   }
+  ],
+  "selectedGame": "guess_race",
+  "settings": {
+   "content": "mixed",
+   "rounds": 10,
+   "difficulty": "mixed"
+  },
+  "scoreboard": {},
+  "wins": {},
+  "endReason": null,
+  "readyCheck": {
+   "count": 1,
+   "total": 3
+  }
+ },
+ "roomLobbyReadyAll": {
+  "code": "VUMQ",
+  "hostId": "p_93e52db959c3",
+  "status": "lobby",
+  "players": [
+   {
+    "id": "p_93e52db959c3",
+    "type": "guest",
+    "nickname": "Host",
+    "color": "#E74C3C",
+    "avatar": {
+     "style": "croodles-neutral",
+     "seed": "a608469d"
+    },
+    "online": true,
+    "offlineSince": null,
+    "inGame": true,
+    "joinedAt": 1793089273132.9543,
+    "ready": false
+   },
+   {
+    "id": "p_a114edf62c9e",
+    "type": "guest",
+    "nickname": "Ann",
+    "color": "#E67E22",
+    "avatar": {
+     "style": "cutouts",
+     "seed": "d32a2e3a"
+    },
+    "online": true,
+    "offlineSince": null,
+    "inGame": true,
+    "joinedAt": 1793089273133.2327,
+    "ready": true
+   },
+   {
+    "id": "p_84499b84d8c3",
+    "type": "guest",
+    "nickname": "Bob",
+    "color": "#F1C40F",
+    "avatar": {
+     "style": "adventurer-neutral",
+     "seed": "d67a7a35"
+    },
+    "online": true,
+    "offlineSince": null,
+    "inGame": true,
+    "joinedAt": 1793089273133.3235,
+    "ready": true
+   },
+   {
+    "id": "p_e64763763616",
+    "type": "guest",
+    "nickname": "Cat",
+    "color": "#2ECC71",
+    "avatar": {
+     "style": "voxel-art",
+     "seed": "f7d999ff"
+    },
+    "online": false,
+    "offlineSince": 1793089273133.633,
+    "inGame": true,
+    "joinedAt": 1793089273133.425,
+    "ready": true
+   },
+   {
+    "id": "p_3be1da634c3d",
+    "type": "guest",
+    "nickname": "Dan",
+    "color": "#1ABC9C",
+    "avatar": {
+     "style": "croodles-neutral",
+     "seed": "87d0ff8f"
+    },
+    "online": true,
+    "offlineSince": null,
+    "inGame": true,
+    "joinedAt": 1793089273133.4934,
+    "ready": true
+   }
+  ],
+  "selectedGame": "guess_race",
+  "settings": {
+   "content": "mixed",
+   "rounds": 10,
+   "difficulty": "mixed"
+  },
+  "scoreboard": {},
+  "wins": {},
+  "endReason": null,
+  "readyCheck": {
+   "count": 3,
+   "total": 3
+  }
  }
 }

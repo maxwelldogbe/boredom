@@ -84,6 +84,9 @@ describe('How to play modal', () => {
     expect(screen.getByText('Unscramble the letters to find the hidden word before everyone else.')).toBeInTheDocument()
     expect(screen.getAllByText((_, el) => Boolean(el?.textContent?.includes('PLEPA = APPLE')))).not.toHaveLength(0)
     expect(screen.getByText(`You have ${C.GUESS_ROUND_MS / 1000} seconds for each puzzle.`)).toBeInTheDocument()
+    expect(
+      screen.getByText(`Once someone solves it, everyone else has ${C.GUESS_SOLVED_WINDOW_MS / 1000} seconds left to solve it too.`),
+    ).toBeInTheDocument()
     expect(screen.getByText(new RegExp(`first to solve earns ${C.GUESS_RANK_POINTS_FIRST} points`, 'i'))).toBeInTheDocument()
     expect(screen.getByText(new RegExp(`second earns ${C.GUESS_RANK_POINTS_FIRST - C.GUESS_RANK_POINTS_STEP}`, 'i'))).toBeInTheDocument()
     expect(screen.queryByText(/third earns/i)).not.toBeInTheDocument()

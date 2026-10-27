@@ -1,0 +1,931 @@
+# Single emoji named for what they are (names adapted from Unicode CLDR / emoji-test.txt).
+# emojis | answer | alternatives (;) | difficulty
+# Only emoji with one clearly right everyday name. Look-alikes (dog face vs dog, the many
+# moons, clocks, arrows, hearts and buttons) are left out.
+
+# category: Animal
+🐒 | Monkey | Chimp | easy
+🦍 | Gorilla |  | easy
+🦧 | Orangutan | Orang-utan | medium
+🦮 | Guide dog | Seeing eye dog; Service dog | medium
+🐩 | Poodle |  | medium
+🐺 | Wolf |  | easy
+🦊 | Fox |  | easy
+🦝 | Raccoon | Racoon | medium
+🐈 | Cat | Kitty | easy
+🦁 | Lion |  | easy
+🐅 | Tiger |  | easy
+🐆 | Leopard | Cheetah; Jaguar | medium
+🐎 | Horse |  | easy
+🦓 | Zebra |  | easy
+🦌 | Deer | Stag; Reindeer | easy
+🦬 | Bison | Buffalo | medium
+🐂 | Ox | Bull; Oxen | medium
+🐃 | Water buffalo | Buffalo | medium
+🐄 | Cow |  | easy
+🐖 | Pig | Hog | easy
+🐗 | Boar | Wild boar; Warthog | medium
+🐏 | Ram |  | medium
+🐑 | Sheep | Ewe; Lamb | easy
+🐐 | Goat |  | easy
+🐫 | Camel | Two-hump camel; Bactrian camel | easy
+🦙 | Llama | Alpaca | easy
+🦒 | Giraffe |  | easy
+🐘 | Elephant |  | easy
+🦣 | Mammoth | Woolly mammoth | medium
+🦏 | Rhinoceros | Rhino | easy
+🦛 | Hippopotamus | Hippo | easy
+🐁 | Mouse | Mice | easy
+🐀 | Rat |  | easy
+🐹 | Hamster |  | easy
+🐇 | Rabbit | Bunny; Hare | easy
+🐿️ | Chipmunk | Squirrel | medium
+🦫 | Beaver |  | medium
+🦔 | Hedgehog |  | easy
+🦇 | Bat |  | easy
+🐻 | Bear | Brown bear | easy
+🐨 | Koala | Koala bear | easy
+🐼 | Panda | Giant panda; Panda bear | easy
+🦥 | Sloth |  | medium
+🦦 | Otter |  | medium
+🦨 | Skunk |  | medium
+🦘 | Kangaroo |  | easy
+🦡 | Badger |  | medium
+🐾 | Paw prints | Paws; Pawprints; Paw print | easy
+🦃 | Turkey |  | easy
+🐔 | Chicken | Hen | easy
+🐓 | Rooster | Cockerel | easy
+🐣 | Hatching chick | Hatching egg; Hatching | medium
+🐤 | Baby chick | Chick | easy
+🐦 | Bird |  | easy
+🐧 | Penguin |  | easy
+🕊️ | Dove | Pigeon; Peace dove | easy
+🦅 | Eagle |  | easy
+🦆 | Duck |  | easy
+🦢 | Swan |  | easy
+🦉 | Owl |  | easy
+🦤 | Dodo |  | hard
+🪶 | Feather |  | easy
+🦩 | Flamingo |  | easy
+🦚 | Peacock |  | easy
+🦜 | Parrot |  | easy
+🐸 | Frog | Toad | easy
+🐊 | Crocodile | Alligator; Croc | easy
+🐢 | Turtle | Tortoise | easy
+🦎 | Lizard | Gecko | easy
+🐍 | Snake | Serpent | easy
+🐉 | Dragon |  | easy
+🦕 | Dinosaur | Sauropod; Brontosaurus; Diplodocus | easy
+🦖 | T-Rex | T Rex; Tyrannosaurus; Tyrannosaurus Rex | easy
+🐋 | Whale |  | easy
+🐬 | Dolphin |  | easy
+🦭 | Seal | Sea lion | easy
+🐟 | Fish |  | easy
+🐠 | Tropical fish | Clownfish; Clown fish | medium
+🐡 | Pufferfish | Blowfish; Puffer fish | medium
+🦈 | Shark |  | easy
+🐙 | Octopus |  | easy
+🐚 | Seashell | Shell; Spiral shell; Sea shell | easy
+🐌 | Snail |  | easy
+🦋 | Butterfly |  | easy
+🐛 | Bug | Caterpillar | easy
+🐜 | Ant |  | easy
+🐝 | Bee | Honeybee; Honey bee; Bumblebee | easy
+🪲 | Beetle |  | medium
+🦗 | Cricket | Grasshopper | medium
+🪳 | Cockroach | Roach | medium
+🕷️ | Spider |  | easy
+🕸️ | Spider web | Cobweb; Web | easy
+🦂 | Scorpion |  | easy
+🦟 | Mosquito |  | easy
+🪰 | Fly | Housefly | easy
+🪱 | Worm | Earthworm | easy
+🦠 | Microbe | Germ; Virus; Bacteria | medium
+🦀 | Crab |  | easy
+🦞 | Lobster |  | easy
+🦐 | Shrimp | Prawn | easy
+🦑 | Squid |  | easy
+🦪 | Oyster |  | medium
+
+# category: Plant
+💐 | Bouquet | Flowers; Bunch of flowers | easy
+🌸 | Cherry blossom | Sakura; Blossom | medium
+🌹 | Rose |  | easy
+🥀 | Wilted flower | Dead flower; Wilted rose; Dead rose | medium
+🌺 | Hibiscus |  | hard
+🌻 | Sunflower |  | easy
+🌷 | Tulip |  | easy
+🌱 | Seedling | Sprout; Seed | medium
+🪴 | Potted plant | Houseplant; Pot plant; Plant | easy
+🌲 | Evergreen tree | Pine tree; Fir tree; Evergreen; Pine | medium
+🌳 | Tree | Deciduous tree; Oak tree | easy
+🌴 | Palm tree | Palm | easy
+🌵 | Cactus |  | easy
+🌾 | Rice plant | Sheaf of rice; Wheat; Grain | hard
+🌿 | Herb | Herbs | medium
+☘️ | Shamrock |  | medium
+🍀 | Four leaf clover | Four-leaf clover; Clover; Lucky clover | easy
+🍁 | Maple leaf | Maple | easy
+🍂 | Fallen leaves | Fallen leaf; Autumn leaves; Leaves | medium
+🍄 | Mushroom | Toadstool | easy
+
+# category: Food
+🍇 | Grapes | Grape | easy
+🍈 | Melon | Cantaloupe; Honeydew | medium
+🍉 | Watermelon |  | easy
+🍊 | Orange | Tangerine; Mandarin | easy
+🍋 | Lemon |  | easy
+🍌 | Banana |  | easy
+🍍 | Pineapple |  | easy
+🥭 | Mango |  | easy
+🍏 | Green apple | Apple | easy
+🍐 | Pear |  | easy
+🍑 | Peach |  | easy
+🍒 | Cherries | Cherry | easy
+🍓 | Strawberry |  | easy
+🫐 | Blueberries | Blueberry | easy
+🥝 | Kiwi | Kiwi fruit; Kiwifruit | easy
+🍅 | Tomato |  | easy
+🫒 | Olive | Olives | easy
+🥥 | Coconut |  | easy
+🥑 | Avocado |  | easy
+🍆 | Eggplant | Aubergine | easy
+🥔 | Potato |  | easy
+🥕 | Carrot |  | easy
+🌽 | Corn | Ear of corn; Corn on the cob; Maize; Sweetcorn | easy
+🌶️ | Chili pepper | Chilli; Chili; Hot pepper; Chilli pepper | easy
+🫑 | Bell pepper | Pepper; Capsicum; Green pepper | easy
+🥒 | Cucumber | Pickle; Gherkin | easy
+🥬 | Lettuce | Leafy greens; Cabbage; Bok choy | medium
+🥦 | Broccoli |  | easy
+🧄 | Garlic |  | easy
+🧅 | Onion |  | easy
+🥜 | Peanuts | Peanut; Nuts | easy
+🌰 | Chestnut | Acorn | medium
+🍞 | Bread | Loaf; Loaf of bread | easy
+🥐 | Croissant |  | easy
+🥖 | Baguette | French bread; French stick | easy
+🫓 | Flatbread | Naan; Pita | hard
+🥨 | Pretzel |  | easy
+🥯 | Bagel |  | easy
+🥞 | Pancakes | Pancake | easy
+🧇 | Waffle | Waffles | easy
+🧀 | Cheese | Cheese wedge | easy
+🍖 | Meat on the bone | Meat on bone; Rib; Meat | medium
+🍗 | Chicken leg | Drumstick; Poultry leg; Chicken drumstick | easy
+🥩 | Steak | Cut of meat; Meat | easy
+🥓 | Bacon |  | easy
+🍔 | Hamburger | Burger | easy
+🍟 | French fries | Fries; Chips | easy
+🍕 | Pizza | Pizza slice | easy
+🥪 | Sandwich |  | easy
+🌮 | Taco |  | easy
+🌯 | Burrito | Wrap | easy
+🫔 | Tamale |  | hard
+🥙 | Kebab | Gyro; Doner; Stuffed flatbread; Pita | hard
+🧆 | Falafel |  | hard
+🥚 | Egg |  | easy
+🍳 | Fried egg | Frying pan; Cooking | easy
+🥘 | Paella | Shallow pan of food | hard
+🍲 | Stew | Pot of food; Soup; Hotpot | medium
+🫕 | Fondue |  | hard
+🥣 | Cereal | Bowl with spoon; Bowl of cereal; Porridge | medium
+🥗 | Salad | Green salad | easy
+🍿 | Popcorn |  | easy
+🧈 | Butter |  | easy
+🧂 | Salt | Salt shaker | easy
+🥫 | Canned food | Tin can; Can; Soup can; Tin | medium
+🍱 | Bento box | Bento; Lunch box | medium
+🍘 | Rice cracker |  | hard
+🍙 | Rice ball | Onigiri | medium
+🍚 | Rice | Cooked rice; Bowl of rice | easy
+🍛 | Curry | Curry rice; Curry and rice | easy
+🍜 | Ramen | Noodles; Noodle soup | easy
+🍝 | Spaghetti | Pasta | easy
+🍠 | Sweet potato | Roasted sweet potato; Yam | medium
+🍢 | Oden | Skewer | hard
+🍣 | Sushi |  | easy
+🍤 | Fried shrimp | Tempura; Prawn tempura; Shrimp tempura | medium
+🍥 | Fish cake | Narutomaki | hard
+🥮 | Mooncake | Moon cake | hard
+🍡 | Dango |  | hard
+🥟 | Dumpling | Dumplings; Gyoza | easy
+🥠 | Fortune cookie |  | easy
+🥡 | Takeout box | Takeaway; Takeout; Chinese takeout | medium
+🍦 | Ice cream cone | Soft serve; Ice cream; Soft ice cream; Cone | easy
+🍧 | Shaved ice | Snow cone | medium
+🍩 | Doughnut | Donut | easy
+🍪 | Cookie | Biscuit | easy
+🎂 | Birthday cake | Cake | easy
+🍰 | Slice of cake | Cake; Shortcake; Cheesecake | easy
+🧁 | Cupcake | Muffin | easy
+🥧 | Pie |  | easy
+🍫 | Chocolate bar | Chocolate | easy
+🍬 | Candy | Sweet; Sweets | easy
+🍭 | Lollipop | Lolly | easy
+🍮 | Pudding | Custard; Flan; Creme caramel | medium
+🍯 | Honey pot | Honey | easy
+
+# category: Drink
+🍼 | Baby bottle | Bottle; Milk bottle | easy
+🥛 | Glass of milk | Milk | easy
+☕ | Coffee | Hot drink; Hot beverage; Tea; Hot chocolate | easy
+🫖 | Teapot | Tea pot | easy
+🍵 | Green tea | Tea; Teacup; Matcha | medium
+🍶 | Sake |  | hard
+🍾 | Champagne | Bottle with popping cork; Popping cork; Champagne bottle | easy
+🍷 | Wine | Red wine; Wine glass | easy
+🍸 | Martini | Cocktail; Cocktail glass | medium
+🍹 | Tropical drink | Cocktail; Pina colada | medium
+🍺 | Beer | Beer mug; Pint | easy
+🍻 | Cheers | Clinking beer mugs; Beers | medium
+🥂 | Clinking glasses | Cheers; Toast; Champagne glasses | medium
+🥃 | Whiskey | Whisky; Tumbler; Scotch; Bourbon | medium
+🥤 | Soda | Soft drink; Cup with straw; Pop; Fizzy drink | easy
+🧋 | Bubble tea | Boba; Boba tea; Pearl milk tea | medium
+🧃 | Juice box | Juice; Beverage box; Carton | easy
+🧉 | Mate | Yerba mate | hard
+🧊 | Ice | Ice cube; Ice cubes | easy
+
+# category: Kitchen
+🥢 | Chopsticks |  | easy
+🍽️ | Plate | Dinner plate; Fork and knife with plate; Dinner | medium
+🍴 | Fork and knife | Cutlery; Knife and fork; Silverware | easy
+🥄 | Spoon |  | easy
+🔪 | Kitchen knife | Knife | easy
+🏺 | Amphora | Vase; Urn | hard
+
+# category: Place
+🗺️ | World map | Map | easy
+🗾 | Map of Japan |  | hard
+🧭 | Compass |  | easy
+🌋 | Volcano |  | easy
+🗻 | Mount Fuji | Fuji; Mt Fuji; Mt. Fuji | medium
+🏕️ | Camping | Campsite; Camp | easy
+🏖️ | Beach | Beach umbrella; Seaside | easy
+🏜️ | Desert |  | easy
+🏝️ | Desert island | Island | easy
+🏞️ | National park | Park | medium
+🏟️ | Stadium | Arena | easy
+🧱 | Brick | Bricks; Brick wall; Wall | easy
+🪨 | Rock | Stone; Boulder | easy
+🪵 | Wood | Log; Logs; Firewood | easy
+🛖 | Hut | Shack; Cabin | medium
+🏚️ | Haunted house | Derelict house; Abandoned house; Old house | medium
+🏠 | House | Home | easy
+🏢 | Office building | Office; Skyscraper; Building | medium
+🏥 | Hospital |  | easy
+🏦 | Bank |  | easy
+🏨 | Hotel |  | easy
+🏪 | Convenience store | Shop; Store; Corner shop | medium
+🏫 | School |  | easy
+🏬 | Department store | Shopping mall; Mall | medium
+🏭 | Factory |  | easy
+🏰 | Castle |  | easy
+💒 | Wedding chapel | Chapel; Wedding church | medium
+🗼 | Tokyo Tower |  | hard
+⛪ | Church | Chapel | easy
+🕌 | Mosque |  | medium
+🛕 | Hindu temple | Temple | hard
+🕍 | Synagogue |  | medium
+⛩️ | Torii gate | Shinto shrine; Torii; Shrine | hard
+🕋 | Kaaba |  | hard
+⛲ | Fountain |  | easy
+⛺ | Tent |  | easy
+🌁 | Foggy bridge | Fog; Foggy; Golden Gate Bridge | hard
+🌃 | Starry night | Night with stars; Night city; City at night | medium
+🌅 | Sunrise | Sunset; Dawn | easy
+🌉 | Bridge at night | Bridge | medium
+♨️ | Hot springs | Hot spring; Onsen | hard
+🎠 | Carousel | Merry-go-round; Carousel horse; Merry go round | medium
+🎡 | Ferris wheel | Big wheel | easy
+🎢 | Roller coaster | Rollercoaster | easy
+💈 | Barber pole | Barber; Barbershop; Barber shop | medium
+🎪 | Circus tent | Circus; Big top | easy
+
+# category: Transport
+🚂 | Steam train | Locomotive; Train; Steam engine | easy
+🚄 | High-speed train | Bullet train; Fast train | medium
+🚇 | Metro | Subway; Underground; Tube | medium
+🚉 | Train station | Station; Railway station | medium
+🚊 | Tram | Streetcar; Trolley | medium
+🚝 | Monorail |  | medium
+🚌 | Bus |  | easy
+🚎 | Trolleybus | Trolley bus | hard
+🚐 | Minibus | Van; Minivan | medium
+🚑 | Ambulance |  | easy
+🚒 | Fire engine | Fire truck | easy
+🚓 | Police car | Cop car | easy
+🚕 | Taxi | Cab; Taxi cab | easy
+🚗 | Car | Automobile | easy
+🚙 | SUV | Sport utility vehicle; Jeep; 4x4 | medium
+🛻 | Pickup truck | Pickup; Pick-up truck; Ute | medium
+🚚 | Delivery truck | Truck; Lorry; Van | easy
+🚛 | Lorry | Articulated lorry; Semi truck; Truck; Semi; Eighteen wheeler | medium
+🚜 | Tractor |  | easy
+🏎️ | Racing car | Race car; Formula One; F1 car; Formula 1 | easy
+🏍️ | Motorcycle | Motorbike | easy
+🛵 | Scooter | Motor scooter; Moped; Vespa | easy
+🦽 | Wheelchair | Manual wheelchair | easy
+🛺 | Tuk-tuk | Tuk tuk; Auto rickshaw; Rickshaw | hard
+🚲 | Bicycle | Bike; Cycle | easy
+🛴 | Kick scooter | Scooter | medium
+🛹 | Skateboard |  | easy
+🛼 | Roller skate | Roller skates; Roller skating; Rollerskate | easy
+🚏 | Bus stop |  | medium
+🛣️ | Motorway | Highway; Freeway; Road | medium
+🛤️ | Railway track | Train track; Railroad; Railway; Tracks | medium
+🛢️ | Oil drum | Barrel; Oil barrel | medium
+⛽ | Petrol pump | Fuel pump; Gas pump; Gas station; Petrol station | easy
+🚨 | Siren | Police light; Police siren; Alarm | easy
+🚦 | Traffic light | Traffic lights; Stoplight; Stop light | easy
+🛑 | Stop sign | Stop | easy
+🚧 | Roadworks | Construction; Road works; Construction barrier; Barrier | medium
+⚓ | Anchor |  | easy
+⛵ | Sailboat | Sailing boat; Yacht; Boat | easy
+🛶 | Canoe | Kayak | easy
+🚤 | Speedboat | Speed boat; Motorboat | easy
+🛳️ | Cruise ship | Passenger ship; Ship; Cruise liner | medium
+⛴️ | Ferry |  | medium
+🚢 | Ship | Ocean liner; Steamship | easy
+✈️ | Airplane | Aeroplane; Plane; Aircraft; Jet | easy
+🛫 | Takeoff | Airplane departure; Departure; Departures; Take off | medium
+🛬 | Landing | Airplane arrival; Arrival; Arrivals | medium
+🪂 | Parachute | Skydiving; Paragliding | easy
+💺 | Seat | Airplane seat; Plane seat | medium
+🚁 | Helicopter | Chopper | easy
+🚠 | Cable car | Gondola; Mountain cableway; Ski lift | medium
+🛰️ | Satellite |  | easy
+🚀 | Rocket | Spaceship; Rocket ship | easy
+🛸 | UFO | Flying saucer; Spaceship | easy
+
+# category: Object
+🛎️ | Service bell | Bellhop bell; Desk bell; Reception bell | medium
+🧳 | Suitcase | Luggage | easy
+⏳ | Hourglass | Sand timer; Egg timer | easy
+⌚ | Watch | Wristwatch; Wrist watch | easy
+⏰ | Alarm clock | Alarm; Clock | easy
+⏱️ | Stopwatch | Timer | easy
+🌡️ | Thermometer |  | easy
+☂️ | Umbrella |  | easy
+🎈 | Balloon |  | easy
+🎉 | Party popper | Party; Popper; Celebration | easy
+🎊 | Confetti | Confetti ball | medium
+🎀 | Ribbon | Bow | easy
+🎁 | Present | Gift; Wrapped gift | easy
+🎟️ | Tickets | Ticket; Admission tickets | easy
+🏆 | Trophy | Cup | easy
+🏅 | Medal | Sports medal | easy
+🥇 | Gold medal | First place; 1st place; Gold; First place medal | easy
+🥈 | Silver medal | Second place; 2nd place; Silver | easy
+🥉 | Bronze medal | Third place; 3rd place; Bronze | easy
+🎯 | Bullseye | Dartboard; Darts; Target | easy
+🪀 | Yo-yo | Yoyo; Yo yo | easy
+🪁 | Kite |  | easy
+🎱 | Eight ball | 8 ball; Pool; Billiards; Snooker | medium
+🔮 | Crystal ball | Fortune teller | easy
+🪄 | Magic wand | Wand | easy
+🎮 | Video game | Game controller; Controller; Gamepad; Video games | easy
+🕹️ | Joystick | Arcade | medium
+🎰 | Slot machine | Slots; Fruit machine; Jackpot | medium
+🎲 | Dice | Die; Game die | easy
+🧩 | Jigsaw | Puzzle piece; Puzzle; Jigsaw puzzle | easy
+🧸 | Teddy bear | Teddy | easy
+🪅 | Piñata | Pinata | medium
+🪆 | Nesting dolls | Russian dolls; Matryoshka; Russian doll; Matryoshka dolls | medium
+♟️ | Chess | Chess pawn; Pawn | easy
+🃏 | Joker | Joker card; Wild card | easy
+🎭 | Theatre | Theater; Drama; Performing arts; Masks; Comedy and tragedy | medium
+🖼️ | Picture frame | Framed picture; Painting; Picture | medium
+🎨 | Paint palette | Artist palette; Palette; Painting; Art | easy
+🧵 | Thread | Spool of thread; Cotton reel | medium
+🪡 | Sewing needle | Needle | medium
+🧶 | Yarn | Ball of yarn; Wool; Ball of wool | easy
+🪢 | Knot | Rope | medium
+👓 | Glasses | Spectacles; Eyeglasses | easy
+🕶️ | Sunglasses | Shades; Sunnies | easy
+🥽 | Goggles | Swimming goggles; Ski goggles | easy
+🥼 | Lab coat | White coat | medium
+🦺 | Safety vest | High-vis vest; Hi-vis vest; Hi vis; Reflective vest | medium
+👔 | Necktie | Tie; Shirt and tie | easy
+👕 | T-shirt | Tshirt; Tee; Shirt; T shirt | easy
+👖 | Jeans | Denim; Trousers; Pants | easy
+🧣 | Scarf |  | easy
+🧤 | Gloves | Glove | easy
+🧥 | Coat | Jacket | easy
+🧦 | Socks | Sock | easy
+👗 | Dress |  | easy
+👘 | Kimono |  | medium
+🥻 | Sari | Saree | hard
+🩱 | Swimsuit | One-piece swimsuit; Bathing suit; Swimming costume | medium
+🩳 | Shorts |  | easy
+👙 | Bikini |  | easy
+👛 | Purse | Coin purse | medium
+👜 | Handbag | Bag | easy
+🛍️ | Shopping bags | Shopping; Shopping bag | easy
+🎒 | Backpack | Rucksack; School bag; Schoolbag | easy
+🩴 | Flip-flops | Flip flops; Thong sandal; Sandals; Thongs; Jandals | medium
+👟 | Sneaker | Running shoe; Trainers; Sneakers; Trainer; Running shoes | easy
+🥾 | Hiking boot | Boot; Hiking boots; Walking boot | medium
+👠 | High heels | High heel; Stiletto; Heels; High-heeled shoe | easy
+🩰 | Ballet shoes | Ballet slippers; Pointe shoes | medium
+👢 | Boot | Boots; Cowboy boot | easy
+👑 | Crown |  | easy
+🎩 | Top hat |  | easy
+🎓 | Graduation cap | Mortarboard; Graduation; Grad cap | easy
+🧢 | Baseball cap | Cap; Billed cap | easy
+🪖 | Military helmet | Helmet; Army helmet | medium
+💄 | Lipstick |  | easy
+💍 | Ring | Engagement ring; Diamond ring | easy
+💎 | Diamond | Gem; Gem stone; Gemstone; Jewel | easy
+📢 | Loudspeaker | Speaker; Megaphone; Public address | medium
+📣 | Megaphone | Cheering megaphone; Bullhorn | medium
+🔔 | Bell |  | easy
+🎵 | Music note | Musical note; Note; Music | easy
+🎤 | Microphone | Mic; Karaoke | easy
+🎧 | Headphones | Headphone; Headset | easy
+📻 | Radio |  | easy
+🎷 | Saxophone | Sax | easy
+🪗 | Accordion |  | medium
+🎸 | Guitar | Electric guitar | easy
+🎹 | Piano | Keyboard; Musical keyboard | easy
+🎺 | Trumpet |  | easy
+🎻 | Violin | Fiddle | easy
+🪕 | Banjo |  | medium
+🥁 | Drum | Drums; Snare drum | easy
+📱 | Mobile phone | Phone; Cell phone; Smartphone; Mobile; Cellphone | easy
+☎️ | Telephone | Phone; Landline | easy
+📟 | Pager | Beeper | hard
+📠 | Fax machine | Fax | medium
+🔋 | Battery |  | easy
+🔌 | Plug | Electric plug; Power plug | easy
+💻 | Laptop | Computer; Notebook | easy
+🖥️ | Desktop computer | Computer; Monitor; Desktop; PC | easy
+🖨️ | Printer |  | easy
+⌨️ | Keyboard | Computer keyboard | easy
+🖱️ | Computer mouse | Mouse | medium
+💾 | Floppy disk | Save; Diskette; Floppy | medium
+💿 | CD | Compact disc; Disc; Optical disk | easy
+🧮 | Abacus |  | medium
+🎥 | Movie camera | Film camera; Camera | easy
+🎞️ | Film strip | Film; Film frames; Filmstrip | medium
+📽️ | Film projector | Projector | medium
+🎬 | Clapperboard | Clapper board; Clapper; Action | medium
+📺 | Television | TV; Telly | easy
+📷 | Camera | Photo camera | easy
+📹 | Video camera | Camcorder | medium
+📼 | VHS tape | Videocassette; Video tape; VHS; Cassette | medium
+🔍 | Magnifying glass | Search; Magnifier | easy
+🕯️ | Candle |  | easy
+💡 | Light bulb | Lightbulb; Idea; Bulb | easy
+🔦 | Flashlight | Torch | easy
+🏮 | Paper lantern | Red paper lantern; Lantern; Chinese lantern | medium
+🪔 | Diya lamp | Diya; Oil lamp | hard
+📖 | Open book | Book; Reading | easy
+📚 | Books | Stack of books; Library | easy
+📓 | Notebook | Exercise book; Composition book | medium
+📜 | Scroll |  | easy
+📰 | Newspaper | News; Paper | easy
+🔖 | Bookmark |  | medium
+🏷️ | Price tag | Label; Tag | medium
+💰 | Money bag | Bag of money; Moneybag; Sack of money | easy
+🪙 | Coin | Coins | easy
+💵 | Dollar bill | Dollar; Banknote; Cash; Dollar banknote | easy
+💸 | Flying money | Money with wings; Spending money; Money | medium
+💳 | Credit card | Card; Bank card; Debit card | easy
+🧾 | Receipt | Bill | medium
+✉️ | Envelope | Letter; Mail | easy
+📧 | Email | E-mail | easy
+📦 | Package | Parcel; Box; Delivery | easy
+📫 | Mailbox | Letterbox; Post box; Mail box | medium
+📮 | Postbox | Post box; Mailbox; Pillar box | medium
+🗳️ | Ballot box | Vote; Voting; Election | medium
+✏️ | Pencil |  | easy
+🖋️ | Fountain pen | Pen; Ink pen | medium
+🖊️ | Pen | Ballpoint pen; Biro | easy
+🖌️ | Paintbrush | Paint brush; Brush | easy
+🖍️ | Crayon |  | easy
+📝 | Memo | Notes; Note; Writing | medium
+💼 | Briefcase | Work bag; Business | easy
+📁 | Folder | File folder; File | easy
+📅 | Calendar | Date | easy
+📈 | Chart going up | Chart increasing; Growth; Graph; Line graph; Stocks up | medium
+📉 | Chart going down | Chart decreasing; Decline; Stocks down; Loss | medium
+📊 | Bar chart | Bar graph; Chart; Graph; Statistics | medium
+📋 | Clipboard |  | easy
+📌 | Pushpin | Pin; Drawing pin; Thumbtack; Thumb tack | easy
+📎 | Paperclip | Paper clip | easy
+📏 | Ruler | Straight ruler | easy
+📐 | Set square | Triangular ruler; Triangle ruler | hard
+✂️ | Scissors |  | easy
+🗄️ | Filing cabinet | File cabinet; Cabinet | medium
+🗑️ | Wastebasket | Trash can; Bin; Rubbish bin; Waste basket; Trash | easy
+🔒 | Padlock | Lock; Locked | easy
+🔑 | Key |  | easy
+🗝️ | Old key | Skeleton key; Antique key; Key | medium
+🔨 | Hammer |  | easy
+🪓 | Axe | Ax; Hatchet | easy
+⛏️ | Pickaxe | Pick; Pick axe | easy
+🗡️ | Dagger | Knife; Sword | easy
+⚔️ | Crossed swords | Swords; Sword fight; Swordfight | easy
+🔫 | Water pistol | Water gun; Squirt gun | medium
+🪃 | Boomerang |  | easy
+🏹 | Bow and arrow | Archery; Bow | easy
+🛡️ | Shield |  | easy
+🪚 | Saw | Carpentry saw; Handsaw; Hand saw | easy
+🔧 | Wrench | Spanner | easy
+🪛 | Screwdriver | Screw driver | easy
+🔩 | Nut and bolt | Bolt; Nuts and bolts; Screw | medium
+⚙️ | Gear | Cog; Settings; Cogwheel | easy
+🗜️ | Clamp | Vice; Vise | hard
+⚖️ | Scales | Balance scale; Justice; Scale; Scales of justice | medium
+🦯 | White cane | Cane; Walking stick | hard
+🔗 | Link | Chain link; Chain | medium
+⛓️ | Chains | Chain | easy
+🪝 | Hook |  | easy
+🧰 | Toolbox | Tool box; Tools | easy
+🧲 | Magnet |  | easy
+🪜 | Ladder |  | easy
+⚗️ | Alembic | Distillation; Still | hard
+🧪 | Test tube | Chemistry; Experiment | easy
+🧫 | Petri dish |  | medium
+🧬 | DNA | Double helix; Genes | easy
+🔬 | Microscope |  | easy
+🔭 | Telescope |  | easy
+📡 | Satellite dish | Antenna; Dish; Satellite antenna | medium
+💉 | Syringe | Injection; Needle; Vaccine; Jab | easy
+🩸 | Drop of blood | Blood; Blood drop | easy
+💊 | Pill | Medicine; Tablet; Capsule; Pills | easy
+🩹 | Plaster | Band-aid; Bandaid; Bandage; Adhesive bandage | easy
+🩺 | Stethoscope | Doctor | easy
+🚪 | Door |  | easy
+🛗 | Elevator | Lift | medium
+🪞 | Mirror |  | easy
+🪟 | Window |  | easy
+🛏️ | Bed |  | easy
+🛋️ | Sofa | Couch; Couch and lamp; Living room | easy
+🪑 | Chair |  | easy
+🚽 | Toilet | Loo; WC | easy
+🪠 | Plunger |  | easy
+🚿 | Shower |  | easy
+🛁 | Bathtub | Bath; Tub | easy
+🪤 | Mousetrap | Mouse trap; Trap | easy
+🪒 | Razor | Shaver | easy
+🧴 | Lotion | Lotion bottle; Sunscreen; Shampoo | medium
+🧷 | Safety pin | Pin; Nappy pin | easy
+🧹 | Broom | Broomstick; Sweeping brush | easy
+🧺 | Basket | Laundry basket; Picnic basket | easy
+🧻 | Toilet paper | Toilet roll; Roll of paper; Paper towel; Loo roll | easy
+🪣 | Bucket | Pail | easy
+🧼 | Soap | Bar of soap | easy
+🪥 | Toothbrush |  | easy
+🧽 | Sponge |  | easy
+🧯 | Fire extinguisher | Extinguisher | easy
+🛒 | Shopping cart | Trolley; Shopping trolley; Cart | easy
+⚰️ | Coffin | Casket | medium
+🪦 | Gravestone | Headstone; Tombstone; Grave | medium
+🗿 | Moai | Easter Island statue; Easter Island head; Stone head; Statue | hard
+🪧 | Placard | Sign; Protest sign; Picket sign | hard
+🧿 | Evil eye | Nazar amulet; Nazar | hard
+
+# category: Weather
+☀️ | Sun | Sunny; Sunshine | easy
+🌕 | Full moon | Moon | easy
+🌙 | Crescent moon | Moon; Crescent; Half moon | easy
+🪐 | Saturn | Ringed planet; Planet | easy
+⭐ | Star |  | easy
+🌠 | Shooting star | Falling star; Meteor | easy
+🌌 | Milky Way | Galaxy | medium
+☁️ | Cloud | Cloudy | easy
+⛅ | Partly cloudy | Sun behind cloud; Sun and cloud; Partly sunny | easy
+⛈️ | Thunderstorm | Storm; Thunder and lightning; Thunder | easy
+🌧️ | Rain | Rainy; Rain cloud | easy
+🌨️ | Snow | Snowing; Snow cloud | easy
+🌪️ | Tornado | Twister; Whirlwind | easy
+🌫️ | Fog | Foggy; Mist; Misty | medium
+🌬️ | Wind | Windy; Wind face; Blowing | medium
+🌀 | Cyclone | Hurricane; Typhoon; Spiral | medium
+🌈 | Rainbow |  | easy
+⚡ | Lightning | Lightning bolt; High voltage; Thunderbolt; Electricity | easy
+❄️ | Snowflake |  | easy
+☃️ | Snowman | Frosty | easy
+☄️ | Comet | Meteor | medium
+🔥 | Fire | Flame; Flames | easy
+💧 | Water drop | Droplet; Drop; Raindrop; Water | easy
+🌊 | Wave | Water wave; Ocean; Sea; Tsunami | easy
+
+# category: Sport
+⚽ | Soccer | Football; Soccer ball | easy
+⚾ | Baseball |  | easy
+🥎 | Softball |  | medium
+🏀 | Basketball |  | easy
+🏐 | Volleyball |  | easy
+🏈 | American football | Football; Gridiron | easy
+🏉 | Rugby | Rugby ball; Rugby football | easy
+🎾 | Tennis | Tennis ball | easy
+🥏 | Frisbee | Flying disc | easy
+🎳 | Bowling | Ten pin bowling; Ten-pin bowling | easy
+🏏 | Cricket bat | Cricket game | medium
+🏑 | Field hockey | Hockey | medium
+🏒 | Ice hockey | Hockey | easy
+🥍 | Lacrosse |  | hard
+🏓 | Ping pong | Table tennis | easy
+🏸 | Badminton | Shuttlecock | easy
+🥊 | Boxing | Boxing glove; Boxing gloves | easy
+🥋 | Martial arts | Karate; Judo; Taekwondo; Martial arts uniform | medium
+🥅 | Goal | Goal net; Net | easy
+⛳ | Golf | Flag in hole; Golf course; Hole | easy
+⛸️ | Ice skating | Ice skate; Skate; Figure skating; Skating | easy
+🎣 | Fishing | Fishing rod; Fishing pole | easy
+🤿 | Scuba diving | Diving mask; Snorkel; Snorkeling; Diving | medium
+🎿 | Skiing | Skis; Ski | easy
+🛷 | Sled | Sledge; Toboggan; Sledding | easy
+🥌 | Curling | Curling stone | hard
+🤺 | Fencing | Fencer | medium
+🏇 | Horse racing | Jockey; Horse race | easy
+⛷️ | Skier | Downhill skiing | easy
+🏂 | Snowboarding | Snowboarder; Snowboard | easy
+🏌️ | Golfer | Golfing | easy
+🏄 | Surfer | Surf | easy
+🚣 | Rowing | Rowing boat; Row boat; Rower | easy
+🏊 | Swimming | Swimmer; Swim | easy
+⛹️ | Basketball player | Dribbling; Bouncing ball | medium
+🏋️ | Weightlifting | Weight lifting; Weightlifter; Lifting weights; Gym | easy
+🚴 | Cycling | Cyclist; Biking | easy
+🚵 | Mountain biking | Mountain bike; Mountain biker | medium
+🤸 | Cartwheel | Gymnastics; Gymnast; Cartwheeling | easy
+🤼 | Wrestling | Wrestlers | easy
+🤽 | Water polo |  | hard
+🤾 | Handball |  | hard
+🤹 | Juggling | Juggler | easy
+🧗 | Rock climbing | Climbing; Climber; Bouldering | easy
+🧘 | Yoga | Meditation; Lotus position; Meditating | easy
+
+# category: Body
+💪 | Flexed biceps | Muscle; Muscles; Biceps; Strong; Flex | easy
+🦾 | Robot arm | Mechanical arm; Bionic arm; Prosthetic arm | medium
+🦿 | Mechanical leg | Prosthetic leg; Robot leg; Bionic leg | medium
+🦵 | Leg | Knee | easy
+🦶 | Foot | Feet | easy
+👂 | Ear |  | easy
+🦻 | Hearing aid | Ear with hearing aid | medium
+👃 | Nose |  | easy
+🧠 | Brain |  | easy
+🫀 | Anatomical heart | Human heart; Heart | medium
+🫁 | Lungs | Lung | easy
+🦷 | Tooth | Teeth; Molar | easy
+🦴 | Bone | Dog bone | easy
+👀 | Eyes | Looking | easy
+👅 | Tongue |  | easy
+👄 | Mouth | Lips | easy
+👣 | Footprints | Footsteps; Footprint | easy
+👋 | Waving hand | Wave; Hello; Hi; Goodbye; Bye | easy
+🖖 | Vulcan salute | Live long and prosper; Spock; Vulcan | medium
+👌 | OK hand | OK; Okay; Perfect | easy
+🤌 | Pinched fingers | Italian hand gesture; Chef's kiss | hard
+🤏 | Pinching hand | Tiny; A little bit; Small amount; A little | medium
+✌️ | Peace sign | Victory hand; Peace; Victory; V sign | easy
+🤞 | Crossed fingers | Fingers crossed; Good luck | easy
+🤟 | I love you | Love you gesture; Love-you gesture; ILY | medium
+🤘 | Rock on | Sign of the horns; Horns; Metal; Rock | medium
+🤙 | Call me | Call me hand; Shaka; Hang loose | medium
+👍 | Thumbs up | Like; Approve; Good | easy
+👎 | Thumbs down | Dislike; Disapprove; Bad | easy
+✊ | Raised fist | Fist; Power; Solidarity | easy
+👊 | Fist bump | Punch; Oncoming fist; Fist | easy
+👏 | Clapping | Clapping hands; Applause; Clap | easy
+🙌 | Raising hands | Hooray; Celebrate; Praise; Hallelujah | medium
+🤲 | Palms up | Palms up together; Cupped hands; Begging | hard
+🤝 | Handshake | Shaking hands; Deal; Agreement | easy
+🙏 | Praying hands | Folded hands; Please; Thank you; Prayer; Pray | easy
+✍️ | Writing hand | Writing; Write; Signing | easy
+💅 | Nail polish | Nail varnish; Manicure; Nails | easy
+🤳 | Selfie |  | easy
+
+# category: Person
+👶 | Baby | Infant | easy
+👴 | Old man | Grandpa; Grandfather; Granddad | easy
+👵 | Old woman | Grandma; Grandmother; Granny; Nan | easy
+👮 | Police officer | Policeman; Police; Cop; Policewoman | easy
+🕵️ | Detective | Spy; Private investigator; Sleuth | easy
+💂 | Royal guard | Guard; Guardsman; Beefeater; Queen's guard; King's guard | medium
+🥷 | Ninja |  | easy
+👷 | Construction worker | Builder; Workman | easy
+🤴 | Prince |  | easy
+👸 | Princess |  | easy
+🤵 | Groom | Bridegroom; Person in tuxedo; Man in tuxedo; Tuxedo | medium
+👰 | Bride | Person with veil; Bride with veil | easy
+🤰 | Pregnant woman | Pregnant; Pregnancy | easy
+👼 | Baby angel | Angel; Cherub; Cupid | easy
+🎅 | Santa Claus | Santa; Father Christmas; Saint Nick | easy
+🤶 | Mrs. Claus | Mrs Claus; Mother Christmas | medium
+🦸 | Superhero | Super hero; Hero | easy
+🦹 | Supervillain | Villain; Super villain | medium
+🧙 | Wizard | Mage; Witch; Sorcerer; Merlin | easy
+🧚 | Fairy |  | easy
+🧛 | Vampire | Dracula | easy
+🧜 | Mermaid | Merperson; Merman | easy
+🧝 | Elf |  | easy
+🧞 | Genie | Djinn | easy
+🧟 | Zombie |  | easy
+💃 | Dancer | Woman dancing; Dancing; Flamenco; Salsa | easy
+🕺 | Man dancing | Disco; Dancing; Dancer; Disco dancer | medium
+💆 | Massage | Head massage; Spa; Person getting massage | medium
+💇 | Haircut | Hairdresser; Person getting haircut; Hair salon | medium
+🏃 | Running | Runner; Jogging; Jogger; Run | easy
+🚶 | Walking | Walker; Pedestrian; Walk | easy
+🧎 | Kneeling | Kneel; Person kneeling | medium
+🛌 | Sleeping in bed | Bedtime; Sleeping; Sleep; Person in bed | medium
+🛀 | Bath time | Taking a bath; Bath; Bathing | medium
+🧖 | Sauna | Steam room; Spa | medium
+🙇 | Bowing | Bow; Person bowing; Sorry | medium
+🤦 | Facepalm | Face palm; Person facepalming | easy
+🤷 | Shrug | Shrugging; I don't know; Person shrugging; Whatever | easy
+🙋 | Raising hand | Raised hand; Hand up; Me; Pick me | medium
+🗣️ | Speaking | Speaking head; Talking; Speak; Shouting | medium
+👤 | Silhouette | Bust in silhouette; Shadow; User; Profile | hard
+👪 | Family |  | easy
+🫂 | Hug | People hugging; Hugging; Embrace | easy
+
+# category: Face
+😂 | Tears of joy | Laughing; LOL; Laughing crying; Crying laughing | easy
+🤣 | Rolling on the floor laughing | ROFL; Rolling on floor laughing; Laughing | easy
+😉 | Wink | Winking; Winking face | easy
+😇 | Halo | Angel; Innocent; Angel face | easy
+😍 | Heart eyes | In love; Love; Heart-eyes | easy
+😘 | Blowing a kiss | Kiss; Blow a kiss; Air kiss | easy
+😋 | Yummy | Delicious; Tasty; Savoring food; Yum | easy
+🤪 | Zany | Crazy; Goofy; Silly; Wacky | medium
+🤑 | Money mouth | Rich; Money-mouth face; Greedy | medium
+🤫 | Shush | Shh; Shushing; Quiet; Be quiet; Secret | easy
+🤔 | Thinking | Hmm; Thinking face; Think; Pondering | easy
+🤐 | Zipped lips | Zipper mouth; My lips are sealed; Lips sealed; Zip it | medium
+🤨 | Raised eyebrow | Suspicious; Skeptical; Doubtful | medium
+🙄 | Eye roll | Rolling eyes; Eyeroll | easy
+😬 | Grimace | Grimacing; Awkward; Yikes; Cringe | medium
+🤥 | Liar | Lying; Pinocchio; Lying face | easy
+😴 | Sleeping | Asleep; Sleep; Sleepy | easy
+🤤 | Drooling | Drool | easy
+😷 | Face mask | Mask; Medical mask; Sick | easy
+🤒 | Fever | Thermometer; Sick; Ill; Temperature | easy
+🤕 | Injured | Head bandage; Hurt; Head injury | medium
+🤢 | Nauseated | Nausea; Sick; Queasy; Green face | easy
+🤧 | Sneezing | Sneeze; Achoo; Cold; Atishoo | easy
+🥵 | Hot face | Hot; Overheated; Heatwave | easy
+🥶 | Cold face | Cold; Freezing; Frozen | easy
+🥴 | Woozy | Dizzy; Tipsy; Drunk | medium
+🤯 | Mind blown | Exploding head; Mindblown; Mind-blown | easy
+🤠 | Cowboy | Cowboy hat; Cowgirl; Yeehaw | easy
+🥳 | Party face | Partying face; Party; Celebrating; Celebration | easy
+🥸 | Disguise | Disguised face; Undercover; Incognito | medium
+😎 | Cool | Sunglasses face; Cool face | easy
+🤓 | Nerd | Geek; Nerdy; Nerd face | easy
+🧐 | Monocle | Face with monocle; Posh; Fancy; Inspecting | medium
+😱 | Scream | Screaming; Terrified; Shocked; Horrified | easy
+🥺 | Pleading face | Pleading; Puppy eyes; Puppy dog eyes; Please | easy
+😭 | Sobbing | Loudly crying; Crying; Bawling | easy
+🥱 | Yawn | Yawning; Bored; Tired | easy
+😡 | Furious | Angry; Rage; Mad; Pouting face | easy
+🤬 | Swearing | Cursing; Symbols on mouth; Censored | medium
+😈 | Devil | Little devil; Imp; Smiling face with horns; Mischievous | easy
+💀 | Skull |  | easy
+☠️ | Skull and crossbones | Jolly Roger; Poison; Danger; Pirate flag | easy
+🤡 | Clown |  | easy
+👹 | Ogre | Oni; Demon; Monster | hard
+👺 | Goblin | Tengu | hard
+👻 | Ghost | Boo | easy
+👽 | Alien | Extraterrestrial | easy
+👾 | Space invader | Alien monster; Space invaders; Arcade alien | medium
+🤖 | Robot | Bot | easy
+🙈 | See no evil | See-no-evil monkey; See no evil monkey | easy
+🙉 | Hear no evil | Hear-no-evil monkey; Hear no evil monkey | easy
+🙊 | Speak no evil | Speak-no-evil monkey; Speak no evil monkey | easy
+
+# category: Symbol
+💋 | Kiss mark | Lipstick kiss; Kiss; Lips | easy
+💌 | Love letter | Valentine; Valentine card | easy
+💘 | Cupid's arrow | Heart with arrow; Struck by love | medium
+💝 | Heart with ribbon | Heart gift; Gift of love | medium
+💯 | Hundred points | 100; One hundred; 100 percent; Perfect score; Keep it 100 | easy
+💥 | Explosion | Collision; Boom; Bang; Crash; Kaboom | easy
+💫 | Dizzy | Seeing stars; Stars | medium
+💦 | Sweat drops | Sweat droplets; Splash; Water drops | medium
+💨 | Dashing away | Dash; Gust of wind; Puff of smoke; Speed; Whoosh | medium
+🕳️ | Hole |  | easy
+💣 | Bomb |  | easy
+💬 | Speech bubble | Speech balloon; Chat; Message; Comment | easy
+💭 | Thought bubble | Thought balloon; Thinking; Thought | easy
+💤 | Sleeping zzz | Zzz; Snoring; Sleepy; Sleep | easy
+⚠️ | Warning | Caution; Warning sign; Danger | easy
+🚸 | Children crossing | School crossing; Kids crossing | medium
+⛔ | No entry | Do not enter; Forbidden; Stop | easy
+🚭 | No smoking | Non-smoking; Smoke free | easy
+☢️ | Radioactive | Radiation; Nuclear | easy
+☣️ | Biohazard | Bio hazard; Toxic | medium
+☮️ | Peace symbol | Peace; Peace sign | easy
+☯️ | Yin yang | Yin and yang; Ying yang | easy
+🕎 | Menorah | Hanukkah; Chanukah | medium
+✡️ | Star of David | Jewish star; Magen David | medium
+⚛️ | Atom | Atom symbol; Atomic; Science | medium
+🔱 | Trident | Poseidon; Neptune | medium
+⚜️ | Fleur-de-lis | Fleur de lis; Fleur-de-lys | hard
+♻️ | Recycling | Recycle; Recycling symbol | easy
+✅ | Check mark | Tick; Checkmark; Done; Correct; Yes | easy
+❌ | Cross mark | Cross; X; Wrong; No; Incorrect | easy
+➕ | Plus | Plus sign; Add; Addition | easy
+➖ | Minus | Minus sign; Subtract; Subtraction | easy
+➗ | Divide | Division; Division sign; Divided by | easy
+✖️ | Multiply | Times; Multiplication; Multiplication sign | easy
+♾️ | Infinity | Infinite; Forever | easy
+❓ | Question mark | Question | easy
+❗ | Exclamation mark | Exclamation point; Exclamation | easy
+‼️ | Double exclamation mark | Double exclamation; Double exclamation point | medium
+©️ | Copyright | Copyright symbol; Copyright sign | medium
+®️ | Registered trademark | Registered; Registered sign | hard
+™️ | Trademark | Trade mark; TM | medium
+♀️ | Female sign | Female; Woman; Venus symbol | medium
+♂️ | Male sign | Male; Man; Mars symbol | medium
+🆘 | SOS | Help; Mayday; Emergency | easy
+🆒 | Cool button | Cool | easy
+🆓 | Free | Free button | easy
+🆕 | New | New button | easy
+🆗 | OK button | OK; Okay | easy
+🆚 | Versus | VS; Vs button | easy
+🏧 | ATM | Cash machine; Cashpoint; ATM sign | easy
+♿ | Wheelchair symbol | Accessible; Disabled access; Wheelchair access; Accessibility | medium
+🚻 | Restroom | Toilets; Bathroom; Restrooms; Public toilet | easy
+🚼 | Baby changing | Baby symbol; Baby room; Baby change | medium
+🛂 | Passport control | Passport; Immigration; Border control | medium
+🛃 | Customs |  | hard
+🛄 | Baggage claim | Baggage reclaim; Luggage claim | medium
+🚰 | Drinking water | Potable water; Water tap; Tap water | medium
+🎦 | Cinema | Movie theater; Movies | medium
+📶 | Signal bars | Antenna bars; Signal; Phone signal; Reception; Signal strength | medium
+📳 | Vibrate mode | Vibration mode; Vibrate; Vibration | medium
+🔇 | Muted | Mute; Muted speaker; Silent; Sound off | easy
+🔊 | Loud | Volume up; Speaker high volume; Sound on; Loudspeaker | medium
+⏸️ | Pause | Pause button | easy
+▶️ | Play button | Play | easy
+⏩ | Fast forward | Fast-forward; Fast forward button | easy
+⏪ | Rewind | Fast reverse; Rewind button | easy
+🔁 | Repeat | Repeat button; Loop | medium
+🔀 | Shuffle | Shuffle button; Shuffle tracks | medium
+⏏️ | Eject | Eject button | medium
+⏺️ | Record button | Record; Recording | medium
+⏹️ | Stop button | Stop | medium
+🔴 | Red circle | Red dot; Red | easy
+🟢 | Green circle | Green dot; Green | easy
+🔵 | Blue circle | Blue dot; Blue | easy
+🟡 | Yellow circle | Yellow dot; Yellow | easy
+🟣 | Purple circle | Purple dot; Purple | easy
+🟠 | Orange circle | Orange dot; Orange | easy
+🟤 | Brown circle | Brown dot; Brown | easy
+⚫ | Black circle | Black dot; Black | easy
+⚪ | White circle | White dot; White | easy
+🔺 | Red triangle | Triangle; Red triangle pointing up | easy
+🔷 | Blue diamond | Diamond; Large blue diamond | easy
+💕 | Two hearts | Hearts; Love | easy
+❤️ | Red heart | Heart; Love | easy
+🖤 | Black heart |  | easy
+🤍 | White heart |  | easy
+💚 | Green heart |  | easy
+💙 | Blue heart |  | easy
+💜 | Purple heart |  | easy
+💛 | Yellow heart |  | easy
+🧡 | Orange heart |  | easy
+🤎 | Brown heart |  | easy
+♠️ | Spades | Spade; Spade suit | easy
+♥️ | Hearts | Heart suit | easy
+♦️ | Diamonds | Diamond suit | easy
+♣️ | Clubs | Club; Club suit | easy
+
+# category: Zodiac sign
+♈ | Aries | Ram | medium
+♉ | Taurus | Bull | medium
+♊ | Gemini | Twins | medium
+♋ | Cancer | Crab | medium
+♌ | Leo | Lion | medium
+♍ | Virgo | Virgin; Maiden | medium
+♎ | Libra | Scales | medium
+♏ | Scorpio | Scorpion | medium
+♐ | Sagittarius | Archer | hard
+♑ | Capricorn | Goat; Sea goat | hard
+♒ | Aquarius | Water bearer | hard
+♓ | Pisces | Fish | medium
+⛎ | Ophiuchus | Serpent bearer | hard
+
+# category: Holiday
+🎃 | Jack-o'-lantern | Jack o lantern; Jack-o-lantern; Pumpkin; Halloween pumpkin | easy
+🎄 | Christmas tree | Xmas tree | easy
+🎆 | Fireworks | Firework | easy
+🎇 | Sparkler | Sparklers | easy
+🧨 | Firecracker | Banger; Dynamite; Cracker | easy
+✨ | Sparkles | Sparkle; Glitter; Magic | easy
+🎋 | Tanabata tree | Tanabata; Bamboo; Wishing tree | hard
+🎍 | Pine decoration | Kadomatsu | hard
+🎎 | Japanese dolls | Hina dolls; Hinamatsuri | hard
+🎏 | Carp streamer | Koinobori; Carp kite | hard
+🎐 | Wind chime | Windchime; Wind bell | medium
+🎑 | Moon viewing | Moon viewing ceremony; Tsukimi | hard
+🧧 | Red envelope | Red packet; Hongbao; Lucky money | medium
+🎗️ | Awareness ribbon | Reminder ribbon; Ribbon | medium

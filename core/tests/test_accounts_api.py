@@ -11,6 +11,7 @@ import pytest
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import Client
+from django.utils import timezone
 
 from accounts import ratelimit, services
 from accounts.models import PlayerStats, Profile
@@ -18,6 +19,7 @@ from accounts.tokens import issue_token, user_id_from_token
 from games.constants import (
     AUTH_RATE_LIMIT_PER_MIN,
     AUTH_TOKEN_DAYS,
+    AVATAR_CHANGE_DAYS,
     AVATAR_SEED_PATTERN,
     AVATAR_STYLES,
     PLAYER_COLORS,
@@ -291,13 +293,78 @@ def test_patch_profile(client: Client) -> None:
     assert (profile.nickname, profile.color) == ("Samwise", PLAYER_COLORS[5])
 
 
-def test_patch_profile_partial_and_ignores_avatar(client: Client) -> None:
+def test_patch_profile_partial(client: Client) -> None:
     token = register(client)["token"]
-    body = {"color": PLAYER_COLORS[1], "avatar": {"style": "voxel-art", "seed": "zz"}}
-    response = call(client, "patch", "profile", body, token)
+    response = call(client, "patch", "profile", {"color": PLAYER_COLORS[1]}, token)
     assert response.json()["profile"]["nickname"] == "Sam"
     assert response.json()["profile"]["color"] == PLAYER_COLORS[1]
     assert response.json()["profile"]["avatar"] == AVATAR
+
+
+# Avatar change: allowed once per AVATAR_CHANGE_DAYS
+
+NEW_AVATAR = {"style": "voxel-art", "seed": "a1b2c3d4"}
+
+
+def test_new_account_can_change_avatar_and_is_then_locked(client: Client) -> None:
+    session = register(client)
+    token = session["token"]
+    assert session["profile"]["avatarLockedUntil"] is None
+    before = datetime.now(UTC)
+    response = call(client, "patch", "profile", {"avatar": NEW_AVATAR}, token)
+    assert response.status_code == 200
+    profile = response.json()["profile"]
+    assert profile["avatar"] == NEW_AVATAR
+    until = datetime.fromtimestamp(profile["avatarLockedUntil"] / 1000, UTC)
+    expected = before + timedelta(days=AVATAR_CHANGE_DAYS)
+    assert expected - timedelta(seconds=5) < until < expected + timedelta(seconds=5)
+    assert call(client, "get", "me", token=token).json()["profile"]["avatar"] == NEW_AVATAR
+
+
+def test_locked_avatar_change_is_refused_and_saves_nothing(client: Client) -> None:
+    token = register(client)["token"]
+    call(client, "patch", "profile", {"avatar": NEW_AVATAR}, token)
+    body = {"nickname": "Bob", "avatar": {"style": "cutouts", "seed": "ffff0000"}}
+    response = call(client, "patch", "profile", body, token)
+    assert response.status_code == 409
+    assert error(response)["code"] == "AVATAR_LOCKED"
+    assert "avatar" in error(response)["fields"]
+    profile = Profile.objects.get()
+    assert (profile.nickname, profile.avatar_seed) == ("Sam", NEW_AVATAR["seed"])
+
+
+def test_locked_account_can_still_edit_name_and_resend_same_avatar(client: Client) -> None:
+    token = register(client)["token"]
+    call(client, "patch", "profile", {"avatar": NEW_AVATAR}, token)
+    changed_at = Profile.objects.get().avatar_changed_at
+    body = {"nickname": "Bob", "avatar": NEW_AVATAR}
+    response = call(client, "patch", "profile", body, token)
+    assert response.status_code == 200
+    assert response.json()["profile"]["nickname"] == "Bob"
+    assert Profile.objects.get().avatar_changed_at == changed_at  # the lock does not restart
+
+
+def test_avatar_unlocks_after_the_window(client: Client) -> None:
+    token = register(client)["token"]
+    call(client, "patch", "profile", {"avatar": NEW_AVATAR}, token)
+    Profile.objects.update(
+        avatar_changed_at=timezone.now() - timedelta(days=AVATAR_CHANGE_DAYS, seconds=1)
+    )
+    assert call(client, "get", "me", token=token).json()["profile"]["avatarLockedUntil"] is None
+    response = call(client, "patch", "profile", {"avatar": AVATAR}, token)
+    assert response.status_code == 200
+    assert response.json()["profile"]["avatar"] == AVATAR
+
+
+@pytest.mark.parametrize(
+    "avatar", [None, {"style": "pixel-art", "seed": "abc"}, {"style": "cutouts", "seed": "a b"}, 7]
+)
+def test_invalid_avatar_change_rejected(client: Client, avatar: Any) -> None:
+    token = register(client)["token"]
+    response = call(client, "patch", "profile", {"avatar": avatar}, token)
+    assert response.status_code == 400
+    assert set(error(response)["fields"]) == {"avatar"}
+    assert Profile.objects.get().avatar_changed_at is None
 
 
 def test_patch_profile_invalid(client: Client) -> None:

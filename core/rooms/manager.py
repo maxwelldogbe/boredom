@@ -22,6 +22,8 @@ from games.constants import (
     MAX_PLAYERS,
     OFFLINE_FORFEIT_MS,
     OFFLINE_NOTICE_DELAY_MS,
+    REACTION_COOLDOWN_MS,
+    REACTION_EMOJIS,
     ROOM_CLEANUP_INTERVAL_MS,
     ROOM_CODE_ALPHABET,
     ROOM_CODE_LENGTH,
@@ -71,6 +73,7 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
         self.offline_forfeit_ms: float = OFFLINE_FORFEIT_MS
         self.idle_ttl_ms: float = ROOM_IDLE_TTL_MS
         self.cleanup_interval_ms: float = ROOM_CLEANUP_INTERVAL_MS
+        self.reaction_cooldown_ms: float = REACTION_COOLDOWN_MS
         self._cleanup_task: asyncio.Task[None] | None = None
 
     # ----- helpers -------------------------------------------------------------------
@@ -274,9 +277,57 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
                 cleaned = module.validate_settings(settings)
             except GameError as exc:
                 raise RoomError(exc.code, exc.message) from None
+            if room.selected_game != module.id:
+                reason: str | None = "game_changed"
+            elif room.settings != cleaned:
+                reason = "settings_changed"
+            else:
+                reason = None
             room.selected_game, room.settings = module.id, cleaned
             room.last_activity = self.clock()
+            reset = self._reset_ready(room) if reason else []
             await self._broadcast_room(room)
+            if reset:
+                host = self._member(room, player_id)
+                await self._room_event(room, "ready_reset", host, {"reason": reason}, to=reset)
+
+    async def set_ready(self, code: str | None, player_id: str | None, ready: Any) -> None:
+        """A non-host player marks themselves ready (or not) for the selected game."""
+        room = self._room(code)
+        async with room.lock:
+            player = self._member(room, player_id)
+            if not isinstance(ready, bool):
+                raise RoomError("INVALID_ACTION", "ready must be true or false.")
+            if room.status != "lobby" or room.selected_game is None:
+                raise RoomError("INVALID_ACTION", "You can only get ready in the lobby.")
+            if room.host_id == player.id:
+                raise RoomError("INVALID_ACTION", "The host doesn't need to get ready.")
+            if player.ready == ready:
+                return
+            player.ready = ready
+            room.last_activity = self.clock()
+            await self._broadcast_room(room)
+
+    async def react(self, code: str | None, player_id: str | None, emoji: Any) -> None:
+        """Show an emoji to everyone in the room. Never stored, logged or replayed."""
+        room = self._room(code)
+        async with room.lock:
+            player = self._member(room, player_id)
+            if not isinstance(emoji, str) or emoji not in REACTION_EMOJIS:
+                raise RoomError("INVALID_ACTION", "Pick one of the reaction emojis.")
+            now = self.clock()
+            if player.reacted_at is not None and now - player.reacted_at < (
+                self.reaction_cooldown_ms
+            ):
+                raise RoomError("RATE_LIMITED", "Slow down a little.")
+            player.reacted_at = now
+            reaction = {
+                "id": "r_" + secrets.token_hex(6),
+                "playerId": player.id,
+                "nickname": player.nickname,
+                "emoji": emoji,
+            }
+            await self._push(room, {"type": "room:reaction", "data": reaction})
 
     async def start_game(self, code: str | None, player_id: str | None) -> None:
         """Host starts the selected game."""
@@ -333,6 +384,7 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
                 raise RoomError("GAME_IN_PROGRESS", "A game is still in progress.")
             room.status, room.game_id, room.game_state = "lobby", None, None
             room.last_activity = self.clock()
+            self._reset_ready(room)
             await self._broadcast_room(room)
 
     @staticmethod

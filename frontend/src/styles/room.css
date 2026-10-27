@@ -46,11 +46,128 @@
 }
 .topbar__menu-panel button {
   width: 100%;
+  min-height: 44px;
   border: 0;
   background: transparent;
   color: var(--text);
+  font-size: 1rem;
   text-align: left;
+  white-space: nowrap;
   cursor: pointer;
+}
+
+/* Reactions: the 😀 picker in the top bar, and the floating layer. */
+.reactions-picker__toggle {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  font-size: 1.4rem;
+}
+.reactions-picker__panel {
+  position: fixed;
+  left: 8px;
+  right: 8px;
+  z-index: 19; /* above the reaction layer, below dialogs (20) and toasts (30) */
+  display: flex;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.18);
+}
+.reactions-picker__panel button {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.reactions-picker__panel button:hover,
+.reactions-picker__panel button:focus-visible {
+  background: var(--bg);
+}
+.reactions {
+  position: fixed;
+  right: 8px;
+  bottom: 12vh;
+  z-index: 15; /* below the picker, dialogs and toasts */
+  width: 96px;
+  height: 38vh;
+  pointer-events: none;
+}
+.reaction {
+  position: absolute;
+  bottom: 0;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  opacity: 0;
+  animation: reaction-float linear forwards;
+}
+.reaction__emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+.reaction__who {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 96px;
+  padding: 1px 6px 1px 1px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.15);
+}
+.reaction__who .chip__avatar {
+  width: 20px;
+  height: 20px;
+}
+.reaction__name {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@keyframes reaction-float {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  10% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30vh);
+  }
+}
+/* Reduced motion: a small static stack instead of floating emoji. */
+.reactions--still {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  gap: 4px;
+  height: auto;
+}
+.reactions--still .reaction {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 1;
+  animation: none;
+}
+.reactions--still .reaction__emoji {
+  font-size: 1.25rem;
 }
 
 .lobby__code {
@@ -107,6 +224,29 @@
   margin: 0;
   text-align: center;
   font-weight: 600;
+}
+
+/* Ready check */
+.lobby__ready {
+  min-height: 56px;
+  font-size: 1.15rem;
+}
+.lobby__ready--on {
+  border-color: var(--success);
+  color: var(--success);
+}
+.lobby__ready-count {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+}
+.lobby__ready-count--all {
+  color: var(--success);
+}
+.lobby__start-btn--all-ready {
+  background: var(--success);
+  box-shadow: 0 0 0 3px var(--surface), 0 0 0 6px var(--success);
 }
 
 .game-cards {

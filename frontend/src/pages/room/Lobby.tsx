@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button } from '../../components/Button'
+import { Modal } from '../../components/Modal'
 import { PlayerCards } from '../../components/PlayerCards'
 import { gameUi } from '../../games/registry'
 import { hasGameInstructions } from '../../games/instructions'
@@ -10,16 +11,24 @@ import { useRoomActions } from '../../state/context'
 import type { RoomPublic } from '../../types/protocol'
 import { GamePicker } from './GamePicker'
 import { InvitePanel } from './InvitePanel'
+import { everyoneReady, notReady, notReadyMessage, readyCheck } from './readyCheck'
 import { startBlocker } from './startBlocker'
 
 export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; me: string; onHowToPlay?: () => void }) {
-  const { startGame, toast } = useRoomActions()
+  const { setReady, startGame, toast } = useRoomActions()
   const [starting, setStarting] = useState(false)
+  const [readyBusy, setReadyBusy] = useState(false)
+  const [confirmStart, setConfirmStart] = useState(false)
   const isHost = room.hostId === me
   const selected = gameUi(room.selectedGame)
   const blocker = startBlocker(room)
+  const check = readyCheck(room)
+  const allReady = check !== null && everyoneReady(check)
+  const waitingFor = check ? notReady(room) : []
+  const imReady = room.players.some((p) => p.id === me && p.ready === true)
 
   const start = async () => {
+    setConfirmStart(false)
     setStarting(true)
     try {
       await startGame()
@@ -30,8 +39,60 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
     }
   }
 
+  // Start is never blocked by the ready check: the host is only asked to confirm.
+  const tapStart = () => (waitingFor.length > 0 ? setConfirmStart(true) : start())
+
+  const toggleReady = async () => {
+    setReadyBusy(true)
+    try {
+      await setReady(!imReady)
+    } catch (err) {
+      toast(friendlyError(err), 'error')
+    } finally {
+      setReadyBusy(false)
+    }
+  }
+
+  const notes = (id: string) => {
+    if (id === room.hostId) return ['👑 Host']
+    return room.players.some((p) => p.id === id && p.ready === true) ? ['✓ Ready'] : []
+  }
+
   return (
     <div className="stack lobby">
+      {!isHost && (
+        <section className="card stack lobby__next" aria-label="Next game">
+          {selected ? (
+            <>
+              <p>
+                Next game: <strong>{selected.name}</strong> {selected.icon}
+              </p>
+              {check && (
+                <Button
+                  block
+                  variant={imReady ? 'secondary' : 'primary'}
+                  className={`lobby__ready${imReady ? ' lobby__ready--on' : ''}`}
+                  aria-pressed={imReady}
+                  disabled={readyBusy}
+                  onClick={toggleReady}
+                >
+                  {imReady ? 'Ready ✓' : "I'm ready"}
+                </Button>
+              )}
+              {check && imReady && <p className="muted lobby__reason">Tap again if you're not ready after all.</p>}
+              {hasGameInstructions(room.selectedGame) && (
+                <Button variant="secondary" onClick={onHowToPlay}>
+                  How to play
+                </Button>
+              )}
+            </>
+          ) : (
+            <p className="muted">The host hasn't picked a game yet.</p>
+          )}
+          <p className="lobby__waiting">⏳ Waiting for the host to start.</p>
+        </section>
+      )}
+
       <button
         type="button"
         className="lobby__code"
@@ -52,38 +113,50 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
         <PlayerCards
           room={room}
           me={me}
-          entries={room.players.map((p) => ({ id: p.id, notes: p.id === room.hostId ? ['👑 host'] : [] }))}
+          entries={room.players.map((p) => ({ id: p.id, notes: notes(p.id) }))}
         />
       </section>
 
-      {isHost ? (
+      {isHost && (
         <>
           <GamePicker room={room} onHowToPlay={onHowToPlay} />
           <div className="lobby__start">
-            <Button block onClick={start} disabled={Boolean(blocker) || starting}>
+            {check && (
+              <p className={`lobby__ready-count${allReady ? ' lobby__ready-count--all' : ''}`} role="status">
+                {allReady && check.total > 0 ? '✓ ' : ''}
+                {check.count} of {check.total} ready
+              </p>
+            )}
+            <Button
+              block
+              className={allReady && check.total > 0 ? 'lobby__start-btn--all-ready' : undefined}
+              onClick={tapStart}
+              disabled={Boolean(blocker) || starting}
+            >
               {starting ? 'Starting…' : 'Start game'}
             </Button>
             {blocker && <p className="muted lobby__reason">{blocker}</p>}
           </div>
         </>
-      ) : (
-        <section className="card stack">
-          {selected ? (
+      )}
+
+      {confirmStart && (
+        <Modal
+          title="Start without everyone?"
+          onClose={() => setConfirmStart(false)}
+          actions={
             <>
-              <p>
-                Next game: <strong>{selected.name}</strong> {selected.icon}
-              </p>
-              {hasGameInstructions(room.selectedGame) && (
-                <Button variant="secondary" onClick={onHowToPlay}>
-                  How to play
-                </Button>
-              )}
+              <Button block onClick={() => setConfirmStart(false)}>
+                Wait
+              </Button>
+              <Button variant="secondary" block onClick={start}>
+                Start anyway
+              </Button>
             </>
-          ) : (
-            <p className="muted">The host hasn't picked a game yet.</p>
-          )}
-          <p className="lobby__waiting">⏳ Waiting for the host to start.</p>
-        </section>
+          }
+        >
+          <p>{notReadyMessage(waitingFor)}</p>
+        </Modal>
       )}
     </div>
   )

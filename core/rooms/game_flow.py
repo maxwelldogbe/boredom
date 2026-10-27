@@ -46,10 +46,14 @@ class GameFlowMixin:
                 f"{module.name} needs {module.min_players} to {module.max_players} players.",
             )
         now = self.clock()
+        used = room.used_content.get(module.id, frozenset())
         try:
-            state = module.init([p.id for p in seated], dict(room.settings), self._rng(), now)
+            state, used = module.start(
+                [p.id for p in seated], dict(room.settings), self._rng(), now, used
+            )
         except GameError as exc:
             raise RoomError(exc.code, exc.message) from None
+        room.used_content[module.id] = used  # survives across games, never sent to anyone
         events: list[GameEvent] = []
         for player in seated:
             if not player.online:
@@ -60,6 +64,7 @@ class GameFlowMixin:
         room.game_started_at = now
         room.game_players = [p.id for p in seated]
         room.forfeits, room.end_reason = {}, None
+        self._reset_ready(room)
         for player in room.players:
             player.in_game = True
         hooks.on_game_started(room.code, module.id)
@@ -209,7 +214,16 @@ class GameFlowMixin:
         room.end_reason = reason
         room.last_activity = self.clock()
         self._release_game_seats(room)
+        self._reset_ready(room)
         await self._broadcast_room(room)
+
+    @staticmethod
+    def _reset_ready(room: Room) -> list[Player]:
+        """Clear every ready flag. Returns the non-host players whose flag was set."""
+        was_ready = [p for p in room.players if p.ready and p.id != room.host_id]
+        for player in room.players:
+            player.ready = False
+        return was_ready
 
     def _release_game_seats(self, room: Room) -> None:
         """After a game: drop players who left during it; everyone else is back in."""

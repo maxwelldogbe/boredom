@@ -1,0 +1,98 @@
+# Flag combinations (build_emoji.py). emojis | answer | alternatives (;) | difficulty
+# Flag + speaking head = the main language of that country; flag + money bag = its currency.
+# Only countries with one clear national language or currency are used.
+
+# category: Language
+🇬🇧🗣️ | English |  | easy
+🇫🇷🗣️ | French |  | easy
+🇩🇪🗣️ | German |  | easy
+🇪🇸🗣️ | Spanish | Castilian | easy
+🇮🇹🗣️ | Italian |  | easy
+🇵🇹🗣️ | Portuguese |  | easy
+🇯🇵🗣️ | Japanese |  | easy
+🇨🇳🗣️ | Chinese | Mandarin; Mandarin Chinese | easy
+🇰🇷🗣️ | Korean |  | easy
+🇷🇺🗣️ | Russian |  | easy
+🇬🇷🗣️ | Greek |  | easy
+🇹🇷🗣️ | Turkish |  | easy
+🇵🇱🗣️ | Polish |  | medium
+🇸🇪🗣️ | Swedish |  | medium
+🇳🇴🗣️ | Norwegian |  | medium
+🇩🇰🗣️ | Danish |  | medium
+🇫🇮🗣️ | Finnish |  | medium
+🇮🇸🗣️ | Icelandic |  | medium
+🇹🇭🗣️ | Thai |  | medium
+🇻🇳🗣️ | Vietnamese |  | medium
+🇮🇱🗣️ | Hebrew |  | medium
+🇮🇷🗣️ | Persian | Farsi | medium
+🇸🇦🗣️ | Arabic |  | medium
+🇭🇺🗣️ | Hungarian | Magyar | medium
+🇨🇿🗣️ | Czech |  | medium
+🇺🇦🗣️ | Ukrainian |  | medium
+🇭🇷🗣️ | Croatian |  | hard
+🇷🇸🗣️ | Serbian |  | hard
+🇧🇬🗣️ | Bulgarian |  | hard
+🇵🇭🗣️ | Filipino | Tagalog | medium
+🇲🇾🗣️ | Malay | Bahasa Melayu; Malaysian | hard
+🇬🇪🗣️ | Georgian |  | hard
+🇦🇲🗣️ | Armenian |  | hard
+🇦🇱🗣️ | Albanian |  | hard
+🇲🇳🗣️ | Mongolian |  | hard
+🇱🇹🗣️ | Lithuanian |  | hard
+🇱🇻🗣️ | Latvian |  | hard
+🇪🇪🗣️ | Estonian |  | hard
+🇸🇰🗣️ | Slovak |  | hard
+🇸🇮🗣️ | Slovenian | Slovene | hard
+🇵🇰🗣️ | Urdu |  | hard
+🇧🇩🗣️ | Bengali | Bangla | hard
+🇳🇵🗣️ | Nepali | Nepalese | hard
+🇪🇹🗣️ | Amharic |  | hard
+🇰🇭🗣️ | Khmer | Cambodian | hard
+🇱🇦🗣️ | Lao | Laotian | hard
+
+# category: Currency
+🇯🇵💰 | Yen | Japanese yen | easy
+🇬🇧💰 | Pound | Pound sterling; Sterling; British pound; Pounds | easy
+🇺🇸💰 | US dollar | Dollar; Dollars; American dollar; USD | easy
+🇪🇺💰 | Euro | Euros | easy
+🇨🇳💰 | Yuan | Renminbi; Chinese yuan; RMB | medium
+🇮🇳💰 | Rupee | Indian rupee; Rupees | medium
+🇷🇺💰 | Ruble | Rouble; Russian ruble | medium
+🇨🇭💰 | Swiss franc | Franc; Francs | medium
+🇨🇦💰 | Canadian dollar | Dollar; Loonie | medium
+🇦🇺💰 | Australian dollar | Dollar; Aussie dollar | medium
+🇲🇽💰 | Peso | Mexican peso; Pesos | medium
+🇰🇷💰 | Won | South Korean won; Korean won | medium
+🇧🇷💰 | Real | Brazilian real; Reais | hard
+🇿🇦💰 | Rand | South African rand | hard
+🇹🇷💰 | Lira | Turkish lira | hard
+🇸🇪💰 | Krona | Swedish krona; Kronor | hard
+🇳🇴💰 | Krone | Norwegian krone | hard
+🇵🇱💰 | Zloty | Złoty; Polish zloty | hard
+🇹🇭💰 | Baht | Thai baht | hard
+🇻🇳💰 | Dong | Vietnamese dong | hard
+🇮🇱💰 | Shekel | New shekel; Israeli shekel; Shekels | hard
+🇳🇬💰 | Naira | Nigerian naira | hard
+🇭🇺💰 | Forint | Hungarian forint | hard
+🇮🇩💰 | Rupiah | Indonesian rupiah | hard
+🇬🇭💰 | Cedi | Ghanaian cedi; Ghana cedi | hard
+🇰🇪💰 | Shilling | Kenyan shilling | hard
+🇪🇬💰 | Egyptian pound |  | hard
+🇸🇦💰 | Riyal | Saudi riyal | hard
+🇦🇪💰 | Dirham | UAE dirham; Emirati dirham | hard
+🇧🇩💰 | Taka | Bangladeshi taka | hard
+
+# category: Flag
+🇭🇰 | Hong Kong |  | medium
+🇬🇱 | Greenland |  | hard
+🇵🇷 | Puerto Rico |  | hard
+🇧🇲 | Bermuda |  | hard
+🇰🇾 | Cayman Islands | Caymans | hard
+🇬🇮 | Gibraltar |  | hard
+🇮🇲 | Isle of Man |  | hard
+🇫🇴 | Faroe Islands | Faroes; Faeroe Islands | hard
+🇦🇼 | Aruba |  | hard
+🇨🇼 | Curaçao | Curacao | hard
+🇫🇰 | Falkland Islands | Falklands | hard
+🇲🇴 | Macao | Macau | hard
+🇦🇶 | Antarctica |  | hard

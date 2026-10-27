@@ -65,6 +65,22 @@ class GameModule(ABC):
         Raise GameError(INVALID_ACTION) if the game cannot start with these players/settings.
         """
 
+    def start(
+        self,
+        players: list[str],
+        settings: dict[str, Any],
+        rng: random.Random,
+        now: float,
+        used: frozenset[str],
+    ) -> tuple[Any, frozenset[str]]:
+        """`init`, avoiding content this room has already played.
+
+        `used` holds the content keys this room has seen in earlier games of this module; the
+        result is the initial state and the room's new used set. Pure: the room manager keeps
+        the set between games. Default: plain `init`, nothing tracked.
+        """
+        return self.init(players, settings, rng, now), used
+
     @abstractmethod
     def handle_action(
         self, state: Any, player_id: str, action: dict[str, Any], now: float
