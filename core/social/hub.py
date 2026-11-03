@@ -25,6 +25,7 @@ from channels.db import database_sync_to_async
 from accounts.ratelimit import KeyedRateLimiter
 from games import registry
 from games.constants import (
+    DISCOVER_MAX,
     INVITE_COOLDOWN_MS,
     INVITE_TTL_MS,
     INVITES_PER_MINUTE,
@@ -56,6 +57,8 @@ class Account:
     friends: set[int]
     channels: set[str] = field(default_factory=set)
     linger: asyncio.Task[None] | None = None
+    discoverable: bool = False  # opted in to "People online"
+    color: str = ""
 
 
 @dataclass
@@ -155,6 +158,8 @@ class SocialHub:
         if seat is None:
             return "online"
         room, player = seat
+        if room.solo:
+            return "in_game"
         return "in_game" if room.status == "playing" and player.in_game else "in_lobby"
 
     def _watchers(self, user_id: int) -> list[Account]:
@@ -207,6 +212,8 @@ class SocialHub:
             info["avatar"],
             info["mode"],
         )
+        account.discoverable = info.get("discoverable", False)
+        account.color = info.get("color", "")
         account.friends = set(info["friends"])
         if account.linger is not None:
             account.linger.cancel()
@@ -244,6 +251,46 @@ class SocialHub:
         await self.refresh(account.user_id)
 
     # ----- events from HTTP and database code (via call_soon) ---------------------------------
+
+    async def discoverable_changed(self, user_id: int, discoverable: bool) -> None:
+        account = self.accounts.get(user_id)
+        if account is not None:
+            account.discoverable = discoverable
+
+    async def discover(self, channel: str) -> dict[str, Any]:
+        """friends:discover: players online now who opted in to "People online" (not you, your
+        friends, busy or hidden players, or anyone blocked either way), newest first."""
+        user_id = self.owners.get(channel)
+        if user_id is None:
+            raise RoomError("UNAUTHORIZED", "Sign in to find players.")
+        me = self.accounts.get(user_id)
+        candidates = [
+            a
+            for a in reversed(list(self.accounts.values()))
+            if a.discoverable
+            and a.user_id != user_id
+            and a.channels
+            and a.user_id not in (me.friends if me else set())
+            and self.status(a.user_id) in ("online", "in_lobby", "in_game")
+        ]
+        hidden, relations = await discover_filters(user_id)
+        players = []
+        for a in candidates:
+            if a.user_id in hidden or relations.get(a.user_id) == "friends":
+                continue
+            players.append(
+                {
+                    "tag": a.tag,
+                    "nickname": a.nickname,
+                    "avatar": dict(a.avatar),
+                    "color": a.color,
+                    "status": self.status(a.user_id),
+                    "relationship": relations.get(a.user_id, "none"),
+                }
+            )
+            if len(players) >= DISCOVER_MAX:
+                break
+        return {"players": players}
 
     async def mode_changed(self, user_id: int, mode: str) -> None:
         account = self.accounts.get(user_id)
@@ -312,7 +359,7 @@ class SocialHub:
         """Why the invite can no longer be used: INVITE_EXPIRED or ROOM_FULL; None if fine."""
         room = self.manager.rooms.get(invite.room_code)
         sender = room.player(invite.sender_player_id) if room else None
-        if room is None or room.status != "lobby" or sender is None or sender.left:
+        if room is None or room.solo or room.status != "lobby" or sender is None or sender.left:
             return "INVITE_EXPIRED"
         if self.manager.clock() >= invite.expires_at:
             return "INVITE_EXPIRED"
@@ -349,6 +396,8 @@ class SocialHub:
         return room, player
 
     def _check_lobby(self, room: Room) -> None:
+        if room.solo:
+            raise RoomError("INVALID_ACTION", "You can't invite friends to a solo game.")
         if room.status != "lobby":
             raise RoomError("INVALID_ACTION", "You can only invite friends from the lobby.")
         if self.room_full(room):
@@ -498,7 +547,22 @@ def load_account(user_id: int) -> dict[str, Any] | None:
         "avatar": {"style": profile.avatar_style, "seed": profile.avatar_seed},
         "mode": profile.presence_mode,
         "friends": {p.user_id: ensure_tag(p) for p in friends},
+        "discoverable": profile.discoverable,
+        "color": profile.color,
     }
+
+
+@database_sync_to_async
+def discover_filters(user_id: int) -> tuple[set[int], dict[int, str]]:
+    """Who `user_id` must not see (blocked either way) and their relationships with others."""
+    from django.contrib.auth.models import User
+
+    from social.services import blocked_ids, relationships
+
+    user = User.objects.filter(pk=user_id).first()
+    if user is None:
+        return set(), {}
+    return blocked_ids(user_id), relationships(user)
 
 
 @database_sync_to_async

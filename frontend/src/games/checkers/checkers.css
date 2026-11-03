@@ -1,0 +1,83 @@
+.ck__label {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+.ck__timer .timer-bar__fill,
+.ck__timer .timer-bar__fill--low {
+  background: var(--muted);
+}
+.ck__board {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  border: 2px solid #5c3a1a;
+  border-radius: 6px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.ck__board--waiting {
+  opacity: 0.85;
+}
+.ck__sq {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  aspect-ratio: 1;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+.ck__sq--light {
+  background: #f3e5c7;
+}
+.ck__sq--dark {
+  background: #8b5a2b;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.ck__sq--dark:disabled {
+  cursor: default;
+}
+.ck__sq--dark:focus-visible {
+  z-index: 1;
+  outline: 3px solid var(--primary);
+  outline-offset: -3px;
+}
+.ck__sq--last {
+  box-shadow: inset 0 0 0 3px #ffd500;
+}
+.ck__sq--selected {
+  box-shadow: inset 0 0 0 4px #ffffff;
+}
+.ck__piece {
+  display: grid;
+  width: 78%;
+  height: 78%;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.85), inset 0 0 0 5px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+.ck__piece--must {
+  outline: 3px dashed #ffffff;
+  outline-offset: 1px;
+}
+.ck__king {
+  color: #ffffff;
+  font-size: clamp(14px, 4.5vw, 26px);
+  line-height: 1;
+}
+.ck__dest {
+  position: absolute;
+  width: 34%;
+  height: 34%;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}

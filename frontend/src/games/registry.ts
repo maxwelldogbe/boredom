@@ -2,12 +2,16 @@
  * Game UI registry keyed by backend game id: picker metadata plus the screen for each game.
  */
 import type { GameId } from '../types/protocol'
+import { CheckersGame } from './checkers/CheckersGame'
+import { ConnectFourGame } from './connectFour/ConnectFourGame'
 import { DotsGame } from './dotsAndBoxes/DotsGame'
 import { GuessRaceGame } from './guessRace/GuessRaceGame'
 import { HangmanGame } from './hangman/HangmanGame'
 import { LiarsDiceGame } from './liarsDice/LiarsDiceGame'
 import { NameItGame } from './nameIt/NameItGame'
+import { PenaltyKickGame } from './penaltyKick/PenaltyKickGame'
 import { RpsGame } from './rps/RpsGame'
+import { TicTacToeGame } from './ticTacToe/TicTacToeGame'
 import type { GameUi, ImplementedGameId } from './types'
 
 type Registry = { [G in ImplementedGameId]: GameUi<G> }
@@ -129,6 +133,61 @@ export const GAME_UIS: Registry = {
       },
     ],
     Component: NameItGame,
+  },
+  tic_tac_toe: {
+    id: 'tic_tac_toe',
+    name: 'Tic-Tac-Toe',
+    icon: '❌',
+    description: 'Three in a row wins. Duel or knockout bracket, everyone else watches.',
+    minPlayers: 2,
+    maxPlayers: 10,
+    settings: [{ key: 'bestOf', label: 'Match length', options: [1, 3, 5].map((n) => ({ value: n, label: `Best of ${n}` })) }],
+    Component: TicTacToeGame,
+  },
+  connect_four: {
+    id: 'connect_four',
+    name: 'Connect Four',
+    icon: '🔴',
+    description: 'Drop discs, line up four. Duel or knockout bracket, everyone else watches.',
+    minPlayers: 2,
+    maxPlayers: 10,
+    settings: [{ key: 'bestOf', label: 'Match length', options: [1, 3, 5].map((n) => ({ value: n, label: `Best of ${n}` })) }],
+    Component: ConnectFourGame,
+  },
+  penalty_kick: {
+    id: 'penalty_kick',
+    name: 'Penalty Kick',
+    icon: '⚽',
+    description: 'Swipe to shoot, swipe to save. Duel or knockout bracket, everyone else watches.',
+    minPlayers: 2,
+    maxPlayers: 10,
+    settings: [
+      { key: 'kicksPerPlayer', label: 'Kicks each', options: [3, 5].map((n) => ({ value: n, label: `${n} kicks` })) },
+      {
+        key: 'keeperSpeed',
+        label: 'Keeper speed',
+        options: [
+          { value: 'easy', label: 'Easy' },
+          { value: 'normal', label: 'Normal' },
+          { value: 'hard', label: 'Hard' },
+        ],
+      },
+    ],
+    Component: PenaltyKickGame,
+  },
+  checkers: {
+    id: 'checkers',
+    name: 'Checkers',
+    icon: '⛀',
+    description: 'Jump, capture, crown a king. Duel or knockout bracket, everyone else watches.',
+    minPlayers: 2,
+    maxPlayers: 10,
+    settings: [
+      { key: 'bestOf', label: 'Match length', options: [1, 3].map((n) => ({ value: n, label: `Best of ${n}` })) },
+      { key: 'flyingKings', label: 'Flying kings', options: [{ value: false, label: 'Off' }, { value: true, label: 'On' }] },
+      { key: 'backwardCapture', label: 'Men capture backward', options: [{ value: false, label: 'Off' }, { value: true, label: 'On' }] },
+    ],
+    Component: CheckersGame,
   },
 }
 

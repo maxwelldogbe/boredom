@@ -81,6 +81,16 @@ def create_account(
     return user
 
 
+class HasFunds(Exception):
+    """The account still has Nemesis funds, open money requests or open matches."""
+
+
+def deletion_blocked(user: User) -> bool:
+    from nemesis.wallet import open_money  # nemesis builds on accounts
+
+    return open_money(user)
+
+
 def delete_account(user: User) -> None:
     """The one deletion path (public endpoint and admin): anonymise, then delete.
 
@@ -88,10 +98,17 @@ def delete_account(user: User) -> None:
     correct, but lose their link to the account and their nickname snapshot. The user, the
     saved profile and the stats are then deleted, and with them (by cascade) the account's
     friendships, friend requests and blocks. Reports by or about the account are kept with
-    the account link set to null; the reported nickname snapshot stays.
+    the account link set to null; the reported nickname snapshot stays. ID verification images
+    are removed at once and their personal fields blanked (the rows stay, without the user).
+    Raises HasFunds (nothing deleted) while the account has Nemesis funds or open requests.
     """
+    from nemesis import ids  # nemesis builds on accounts
+
+    if deletion_blocked(user):
+        raise HasFunds
     user_id = user.pk
     with transaction.atomic():
+        ids.forget_user(user)
         GameParticipation.objects.filter(user=user).update(user=None, nickname=DELETED_NICKNAME)
         ActivityEvent.objects.filter(user=user).update(user=None)
         user.delete()

@@ -11,17 +11,24 @@ import type {
   ProtocolError,
   RoomPublic,
   SeatData,
+  SoloRecordRow,
 } from '../types/protocol'
 import type { GameViewPush } from '../types/views'
+import checkersJson from './fixtures/checkers.json'
+import connectFourJson from './fixtures/connectFour.json'
 import dotsJson from './fixtures/dotsAndBoxes.json'
 import guessRaceJson from './fixtures/guessRace.json'
 import liarsDiceJson from './fixtures/liarsDice.json'
 import hangmanJson from './fixtures/hangman.json'
 import nameItJson from './fixtures/nameIt.json'
+import penaltyKickJson from './fixtures/penaltyKick.json'
 import profileJson from './fixtures/profile.json'
+import registeredOnlyJson from './fixtures/registeredOnly.json'
 import roomJson from './fixtures/room.json'
 import socialJson from './fixtures/social.json'
+import soloJson from './fixtures/solo.json'
 import rpsJson from './fixtures/rps.json'
+import ticTacToeJson from './fixtures/ticTacToe.json'
 
 /** A captured game:view with the receiving player's id and their room state at that moment. */
 export interface ViewFixture<P extends GameViewPush = GameViewPush> {
@@ -66,6 +73,13 @@ export const hangmanFx = hangmanJson as unknown as Record<keyof typeof hangmanJs
 export const dotsFx = dotsJson as unknown as Record<keyof typeof dotsJson, Of<'dots_and_boxes'>>
 export const liarsDiceFx = liarsDiceJson as unknown as Record<keyof typeof liarsDiceJson, Of<'liars_dice'>>
 export const nameItFx = nameItJson as unknown as Record<keyof typeof nameItJson, Of<'name_it'>>
+/** Series games captured from the real backend modules (core/games/series.py). */
+export const ticTacToeFx = ticTacToeJson as unknown as Record<keyof typeof ticTacToeJson, Of<'tic_tac_toe'>>
+export const connectFourFx = connectFourJson as unknown as Record<keyof typeof connectFourJson, Of<'connect_four'>>
+export const penaltyKickFx = penaltyKickJson as unknown as Record<keyof typeof penaltyKickJson, Of<'penalty_kick'>>
+export const checkersFx = checkersJson as unknown as Record<keyof typeof checkersJson, Of<'checkers'>>
+/** room:state copies around a registered-only game (core Room.to_public; PROTOCOL.md 12). */
+export const registeredOnlyFx = registeredOnlyJson as unknown as Record<keyof typeof registeredOnlyJson, { me: string; room: RoomPublic }>
 
 type ApiErrorBody = { error: { code: string; message: string } }
 
@@ -106,4 +120,21 @@ export const socialFx = socialJson as unknown as {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- typed by the admin page tests
   admin: any
   tags: Record<string, string>
+}
+
+/** A solo snapshot: the game:view push and the room state at that moment. */
+export interface SoloSnap<G extends 'tic_tac_toe' | 'connect_four' = 'tic_tac_toe'> {
+  push: Extract<GameViewPush, { gameId: G }>
+  room: RoomPublic
+}
+
+/** Captured solo games (PROTOCOL.md 16) against the bot, plus GET /api/solo/records. Each room
+ *  has its own player id: the player is the seat that is not the bot. */
+export const soloFx = soloJson as unknown as {
+  startAck: SeatData & { code: string }
+  tttMyTurn: SoloSnap
+  tttBotTurn: SoloSnap
+  tttFinished: Record<'win' | 'lose' | 'draw', SoloSnap>
+  c4Playing: SoloSnap<'connect_four'>
+  records: SoloRecordRow[]
 }

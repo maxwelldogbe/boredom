@@ -1,14 +1,20 @@
+import { GameIcon } from '../../components/GameIcon'
 import { GAME_LIST, gameUi } from '../../games/registry'
 import { hasGameInstructions } from '../../games/instructions'
 import { Button } from '../../components/Button'
 import { friendlyError } from '../../lib/errors'
+import { canSeeGame, isRegisteredSeat } from '../../lib/registeredOnly'
 import { useRoomActions } from '../../state/context'
 import type { RoomPublic } from '../../types/protocol'
 
-/** Host-only game cards and settings for the selected game. */
-export function GamePicker({ room, onHowToPlay = () => {} }: { room: RoomPublic; onHowToPlay?: () => void }) {
+/** Host-only game cards and settings for the selected game. Guests never see registered-only games;
+ *  nobody sees games staff turned off. */
+export function GamePicker({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; me: string; onHowToPlay?: () => void }) {
   const { selectGame, toast } = useRoomActions()
   const selected = gameUi(room.selectedGame)
+  const registered = isRegisteredSeat(room, me)
+  const off = room.disabledGames ?? []
+  const games = GAME_LIST.filter((g) => canSeeGame(g.id, registered) && !off.includes(g.id))
 
   const choose = (settings: Record<string, unknown>, id = room.selectedGame) => {
     if (!id) return
@@ -21,7 +27,7 @@ export function GamePicker({ room, onHowToPlay = () => {} }: { room: RoomPublic;
         Pick a game
       </h2>
       <div className="game-cards">
-        {GAME_LIST.map((g) => (
+        {games.map((g) => (
           <button
             key={g.id}
             type="button"
@@ -30,7 +36,7 @@ export function GamePicker({ room, onHowToPlay = () => {} }: { room: RoomPublic;
             onClick={() => room.selectedGame !== g.id && choose({}, g.id)}
           >
             <span className="game-card__icon" aria-hidden="true">
-              {g.icon}
+              <GameIcon id={g.id} />
             </span>
             <span className="game-card__text">
               <strong>
@@ -58,7 +64,7 @@ export function GamePicker({ room, onHowToPlay = () => {} }: { room: RoomPublic;
               <span className="field__label">{s.label}</span>
               <select
                 className="field__input"
-                value={String(room.settings[s.key] ?? '')}
+                value={String(room.settings?.[s.key] ?? '')}
                 onChange={(e) => {
                   const option = s.options.find((o) => String(o.value) === e.target.value)
                   if (option) choose({ ...room.settings, [s.key]: option.value })

@@ -11,6 +11,7 @@ from django.db.models import F
 
 from accounts.models import PlayerStats
 from accounts.models import Profile as SavedProfile
+from accounts.recovery import token_revoked
 from accounts.tokens import user_id_from_token
 from rooms.models_types import Avatar, Profile
 
@@ -26,16 +27,16 @@ async def account_profile(token: object) -> Profile | None:
     if user_id is None:
         return None
     try:
-        return await _load_profile(user_id)
+        return await _load_profile(user_id, token)
     except Exception:
         logger.exception("Could not load account profile: user=%s", user_id)
         return None
 
 
 @database_sync_to_async
-def _load_profile(user_id: int) -> Profile | None:
+def _load_profile(user_id: int, token: object = None) -> Profile | None:
     saved = SavedProfile.objects.filter(user_id=user_id, user__is_active=True).first()
-    if saved is None:
+    if saved is None or token_revoked(saved.password_changed_at, token):
         return None
     return Profile(
         id=f"account-{user_id}",

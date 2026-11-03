@@ -10,6 +10,7 @@ import random
 import secrets
 import time
 from collections.abc import Awaitable, Callable
+from concurrent.futures import Future
 from typing import Any
 
 from channels.layers import get_channel_layer
@@ -17,33 +18,47 @@ from channels.layers import get_channel_layer
 from analytics.keys import guest_key
 from analytics.quota import GuestQuotaStore
 from analytics.quota import status as quota_status
-from games import registry
+from brag.services import BragStore
+from games import availability, registry
 from games.base import GameError
 from games.constants import (
-    HOST_TRANSFER_MS,
+    BOT_COMPUTE_BUDGET_MS,
+    BOT_CONTINUE_MS_MAX,
+    BOT_CONTINUE_MS_MIN,
+    BOT_MAX_CONCURRENT,
+    BOT_THINK_MS_MAX,
+    BOT_THINK_MS_MIN,
+    HOST_OFFLINE_TRANSFER_MS,
     MAX_PLAYERS,
     OFFLINE_FORFEIT_MS,
     OFFLINE_NOTICE_DELAY_MS,
     REACTION_COOLDOWN_MS,
     REACTION_EMOJIS,
+    REGISTERED_ONLY_GAMES,
     ROOM_CLEANUP_INTERVAL_MS,
     ROOM_CODE_ALPHABET,
     ROOM_CODE_LENGTH,
     ROOM_CODE_MAX_ATTEMPTS,
     ROOM_IDLE_TTL_MS,
+    SOLO_IDLE_TTL_MS,
 )
 from rooms import hooks
 from rooms.avatars import AvatarRng, SystemAvatarRng, assign_avatar
 from rooms.game_flow import GameFlowMixin
 from rooms.models_types import Player, Profile, Room, RoomError
 from rooms.presence import PresenceMixin
+from rooms.solo import SoloMixin
+from rooms.stakes import StakesMixin
 from rooms.upkeep import UpkeepMixin
 from rooms.validation import PROFILE_ID_MAX, unique_nickname
 from social.hub import SocialHub
+from solo.services import SoloRecordStore
 
 logger = logging.getLogger("rooms.manager")
 
 SendFn = Callable[[str, dict[str, Any]], Awaitable[None]]
+SIGNED_IN_ELSEWHERE = "You signed in elsewhere."
+RESUME_TOKENS_MAX = 20  # room:resume looks at this many stored guest tokens at most
 
 
 async def channel_layer_send(channel: str, event: dict[str, Any]) -> None:
@@ -56,7 +71,7 @@ def wall_clock_ms() -> float:
     return time.time() * 1000
 
 
-class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
+class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin, SoloMixin, StakesMixin):
     """Owns every room. Methods raise RoomError for protocol errors."""
 
     def __init__(
@@ -71,7 +86,7 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
         self.clock = clock
         self.rng_factory = rng_factory
         self.avatar_rng: AvatarRng = avatar_rng or SystemAvatarRng()
-        self.host_transfer_ms: float = HOST_TRANSFER_MS
+        self.host_transfer_ms: float = HOST_OFFLINE_TRANSFER_MS
         self.offline_notice_ms: float = OFFLINE_NOTICE_DELAY_MS
         self.offline_forfeit_ms: float = OFFLINE_FORFEIT_MS
         self.idle_ttl_ms: float = ROOM_IDLE_TTL_MS
@@ -80,6 +95,13 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
         self._cleanup_task: asyncio.Task[None] | None = None
         self.social = SocialHub(self)  # friends' presence and room invites
         self.quota = GuestQuotaStore()  # guests' free games
+        self.solo_idle_ms: float = SOLO_IDLE_TTL_MS
+        self.bot_think_ms: tuple[float, float] = (BOT_THINK_MS_MIN, BOT_THINK_MS_MAX)
+        self.bot_continue_ms: tuple[float, float] = (BOT_CONTINUE_MS_MIN, BOT_CONTINUE_MS_MAX)
+        self.bot_budget_ms: float = BOT_COMPUTE_BUDGET_MS
+        self.bot_slots = asyncio.Semaphore(BOT_MAX_CONCURRENT)  # bot moves computed at once
+        self.solo_store = SoloRecordStore()  # solo games' records
+        self.brag_store = BragStore()  # Brag coins (play money)
 
     # ----- helpers -------------------------------------------------------------------
 
@@ -129,7 +151,7 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
         return next((p for p in room.players if p.user_id == user_id and not p.left), None)
 
     def _seat_reply(self, room: Room, player: Player) -> dict[str, Any]:
-        return {"playerId": player.id, "roomToken": player.token, "room": room.to_public()}
+        return {"playerId": player.id, "roomToken": player.token, "room": room.to_public(player)}
 
     async def _push(self, room: Room, message: dict[str, Any]) -> None:
         """Send the same push to every online player."""
@@ -137,12 +159,21 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
             if player.online and player.channel:
                 await self.send(player.channel, {"type": "push", "message": message})
 
-    async def _detach(self, channel: str, code: str, message: str) -> None:
-        """Tell a socket it no longer holds a seat in room `code`."""
-        await self.send(channel, {"type": "room.detach", "code": code, "message": message})
+    async def _detach(
+        self, channel: str, code: str, message: str, reason: str | None = None
+    ) -> None:
+        """Tell a socket it no longer holds a seat in room `code` (`reason` goes to error.data)."""
+        event = {"type": "room.detach", "code": code, "message": message}
+        if reason is not None:
+            event["reason"] = reason
+        await self.send(channel, event)
 
     async def _broadcast_room(self, room: Room) -> None:
-        await self._push(room, {"type": "room:state", "data": room.to_public()})
+        """room:state to every online player, each with their own copy (see Room.to_public)."""
+        for player in room.players:
+            if player.online and player.channel:
+                message = {"type": "room:state", "data": room.to_public(player)}
+                await self.send(player.channel, {"type": "push", "message": message})
         await self.social.room_changed(room)
 
     def _new_player(self, room: Room, profile: Profile, channel: str) -> Player:
@@ -184,9 +215,87 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
         found = (await self.quota.read([key], now)).get(key)
         return {**(found or quota_status(None, now)), "serverNow": now}
 
+    # ----- one seat at a time, and resuming it -------------------------------------------
+
+    def _seats_of(self, profile: Profile, skip: str | None = None) -> list[tuple[Room, Player]]:
+        """The profile's seats outside solo rooms (by account, or by browser profile for guests)."""
+        found = []
+        for room in self.rooms.values():
+            if room.solo or room.code == skip:
+                continue
+            for player in room.seated():
+                if player.bot:
+                    continue
+                mine = (
+                    player.user_id == profile.user_id
+                    if profile.user_id is not None
+                    else player.user_id is None and player.profile_id == profile.id
+                )
+                if mine:
+                    found.append((room, player))
+        return found
+
+    async def _release_other_seats(self, profile: Profile, channel: str, skip: str | None) -> None:
+        """One seat at a time: leave other lobbies; refuse while still playing a game elsewhere."""
+        others = self._seats_of(profile, skip)
+        for room, player in others:
+            if room.status == "playing" and player.in_game and player.id in room.game_players:
+                raise RoomError(
+                    "ALREADY_IN_GAME",
+                    f"You're still in a game in room {room.code}.",
+                    {"code": room.code},
+                )
+        for room, player in others:
+            if player.channel and player.channel != channel:
+                await self._detach(player.channel, room.code, "You joined another room.")
+            if self.rooms.get(room.code) is room:
+                await self.leave_room(room.code, player.id)
+
+    def resume(self, profile_user: int | None, tokens: Any) -> dict[str, Any]:
+        """room:resume: the caller's own seat, if any (never another player's room)."""
+        seat: tuple[Room, Player] | None = None
+        if profile_user is not None:
+            seat = next(
+                (
+                    (room, p)
+                    for room in self.rooms.values()
+                    if not room.solo
+                    for p in room.seated()
+                    if p.user_id == profile_user and not p.bot
+                ),
+                None,
+            )
+        elif isinstance(tokens, list):
+            for item in tokens[:RESUME_TOKENS_MAX]:
+                if not isinstance(item, dict):
+                    continue
+                code, token = item.get("code"), item.get("roomToken")
+                room = self.rooms.get(code) if isinstance(code, str) else None
+                if room is None or room.solo or not isinstance(token, str):
+                    continue
+                player = self._seat_for_token(room, token)
+                if player is not None:
+                    seat = (room, player)
+                    break
+        if seat is None:
+            return {"resume": None}
+        room, player = seat
+        host = room.host()
+        return {
+            "resume": {
+                "code": room.code,
+                "roomToken": player.token,
+                "status": room.status,
+                "hostNickname": host.nickname if host else None,
+                "playerCount": len(room.seated()),
+            }
+        }
+
     async def create_room(self, channel: str, profile: Profile) -> dict[str, Any]:
-        """Create a room with the sender as host."""
+        """Create a room with the sender as host (leaving any lobby seat elsewhere first)."""
         await self._require_free_games(profile)
+        await self._release_other_seats(profile, channel, None)
+        await availability.ensure_loaded()
         now = self.clock()
         room = Room(code=self._new_code(), host_id="", created_at=now, last_activity=now)
         self.rooms[room.code] = room
@@ -201,15 +310,23 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
     async def join_room(
         self, channel: str, code: str, profile: Profile, token: str | None
     ) -> dict[str, Any]:
-        """Take a new seat, or reclaim one by token or by account (detaching any older socket)."""
+        """Take a new seat, or reclaim one by token or by account (detaching any older socket).
+
+        A solo room exists only for its owner's reconnect: anyone else gets ROOM_NOT_FOUND.
+        """
         room = self.rooms.get(code)
         if room is None:
             raise RoomError("ROOM_NOT_FOUND", f"We couldn't find room {code}.")
+        reclaim = self._seat_for_token(room, token) or self._seat_for_account(room, profile.user_id)
+        if reclaim is None and not room.solo:
+            await self._release_other_seats(profile, channel, room.code)
         async with room.lock:
-            room.last_activity = self.clock()
             seat = self._seat_for_token(room, token) or self._seat_for_account(
                 room, profile.user_id
             )
+            if room.solo and seat is None:
+                raise RoomError("ROOM_NOT_FOUND", f"We couldn't find room {code}.")
+            room.last_activity = self.clock()
             if seat is not None:
                 if (
                     seat.user_id is None
@@ -221,8 +338,12 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
                     # avatar, score) and it becomes theirs as an account.
                     seat.user_id, seat.guest_key = profile.user_id, ""
                 if seat.channel and seat.channel != channel:
-                    await self._detach(seat.channel, room.code, "You joined from another tab.")
+                    await self._detach(
+                        seat.channel, room.code, SIGNED_IN_ELSEWHERE, "signed_in_elsewhere"
+                    )
                 seat.channel, seat.online, seat.offline_since = channel, True, None
+                if room.solo:
+                    self._cancel_solo_idle(room)
                 await self._back_online(room, seat)
                 await self._broadcast_room(room)
                 await self._presence_changed(room, seat.id, True)
@@ -239,9 +360,12 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
             return self._seat_reply(room, player)
 
     def peek(self, code: str | None) -> dict[str, Any]:
-        """Public summary of a room for invite landing pages. Never fails, never leaks."""
+        """Public summary of a room for invite landing pages. Never fails, never leaks.
+
+        A solo room is reported as not existing.
+        """
         room = self.rooms.get(code or "")
-        if room is None:
+        if room is None or room.solo:
             return {"exists": False, "hostNickname": None, "playerCount": 0, "status": None}
         host = room.host()
         return {
@@ -260,6 +384,9 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
         room = self._room(code)
         async with room.lock:
             player = self._member(room, player_id)
+            if room.solo:
+                await self._close_solo(room)
+                return
             room.last_activity = self.clock()
             player.channel, player.online, player.offline_since = None, False, self.clock()
             player.token = ""
@@ -292,6 +419,10 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
                 return
             player.channel, player.online, player.offline_since = None, False, self.clock()
             player.offline_notified = False
+            if room.solo:  # no offline notice or forfeit: the room closes when idle
+                self._schedule_solo_idle(room)
+                await self._broadcast_room(room)
+                return
             if room.host_id == player.id:
                 self._schedule_host_check(room)
             self._schedule_offline_notice(room, player)
@@ -310,6 +441,12 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
             module = registry.get_game(game_id) if isinstance(game_id, str) else None
             if module is None:
                 raise RoomError("INVALID_ACTION", "Unknown game.")
+            await availability.ensure_loaded()
+            if not availability.is_enabled(module.id):
+                raise RoomError("GAME_DISABLED", "This game is turned off right now.")
+            host = room.host()
+            if module.id in REGISTERED_ONLY_GAMES and (host is None or host.user_id is None):
+                raise RoomError("REGISTERED_ONLY", "This game is for registered players.")
             if not isinstance(settings, dict):
                 raise RoomError("INVALID_ACTION", "Settings must be an object.")
             try:
@@ -422,9 +559,45 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
             if room.status == "playing":
                 raise RoomError("GAME_IN_PROGRESS", "A game is still in progress.")
             room.status, room.game_id, room.game_state = "lobby", None, None
+            room.stake_result = None
             room.last_activity = self.clock()
             self._reset_ready(room)
+            await self._unselect_disabled(room)
             await self._broadcast_room(room)
+
+    def games_changed_soon(self) -> None:
+        """From any thread (the admin API): run games_changed on the rooms' loop, unawaited.
+
+        Waiting for it from a sync view could deadlock on a room lock held across a database call.
+        """
+        task = self._cleanup_task
+        if task is None or task.done():
+            return  # no socket has connected yet, so there are no rooms
+        future = asyncio.run_coroutine_threadsafe(self.games_changed(), task.get_loop())
+        future.add_done_callback(_log_failure)
+
+    async def games_changed(self) -> None:
+        """Staff turned a game on or off: lobbies drop an off game, and every room hears it.
+
+        A running game (or its results screen) is left alone; play_again drops it after.
+        """
+        for room in list(self.rooms.values()):
+            async with room.lock:
+                if self.rooms.get(room.code) is not room:
+                    continue
+                if room.status == "lobby":
+                    await self._unselect_disabled(room)
+                await self._broadcast_room(room)
+
+    async def _unselect_disabled(self, room: Room) -> None:
+        """Clear the selection (and ready flags) if that game is off; tell the room."""
+        if room.selected_game is None or availability.is_enabled(room.selected_game):
+            return
+        room.selected_game, room.settings = None, {}
+        self._reset_ready(room)
+        host = room.host()
+        if host is not None:
+            await self._room_event(room, "game_unselected", host, {"reason": "disabled"})
 
     @staticmethod
     def _require_lobby(room: Room) -> None:
@@ -432,6 +605,11 @@ class RoomManager(UpkeepMixin, PresenceMixin, GameFlowMixin):
             raise RoomError("GAME_IN_PROGRESS", "A game is in progress.")
         if room.status != "lobby":
             raise RoomError("INVALID_ACTION", "Return to the lobby first.")
+
+
+def _log_failure(future: Future[None]) -> None:
+    if not future.cancelled() and future.exception() is not None:
+        logger.error("Updating rooms after a game change failed", exc_info=future.exception())
 
 
 manager = RoomManager()

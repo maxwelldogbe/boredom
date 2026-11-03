@@ -5,6 +5,8 @@ export interface AdminSessionValue {
   session: AdminSession
   /** A request came back 401/403: re-check the session (shows the login screen if needed). */
   onUnauthorized: () => void
+  /** Re-read the session (e.g. badge counts after a money action). */
+  refresh: () => void
 }
 
 export const AdminSessionContext = createContext<AdminSessionValue | null>(null)

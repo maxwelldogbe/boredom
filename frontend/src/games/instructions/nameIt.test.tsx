@@ -38,7 +38,13 @@ describe('Name It Survival instructions', () => {
       dots_and_boxes: { size: 5 },
       liars_dice: { startingDice: 5, wildOnes: false, spotOn: false },
       name_it: defaults,
+      tic_tac_toe: { bestOf: 3 },
+      connect_four: { bestOf: 3 },
+      penalty_kick: { kicksPerPlayer: 5 },
+      checkers: { bestOf: 1, flyingKings: false, backwardCapture: false },
     } as const
+    // Their specs give no tips; the modal then leaves the Tips section out.
+    const noTips = new Set(['tic_tac_toe', 'connect_four'])
 
     for (const [id, settings] of Object.entries(defaultsByGame)) {
       const instructions = gameInstructions(id as keyof typeof defaultsByGame, {
@@ -52,7 +58,7 @@ describe('Name It Survival instructions', () => {
       expect(instructions?.goal, id).toBeTruthy()
       expect(instructions?.steps.length, id).toBeGreaterThan(0)
       expect(instructions?.rules.length, id).toBeGreaterThan(0)
-      expect(instructions?.tips.length, id).toBeGreaterThan(0)
+      if (!noTips.has(id)) expect(instructions?.tips.length, id).toBeGreaterThan(0)
       render(<HowToPlayModal content={instructions!} onClose={() => undefined} />)
       expect(screen.getByRole('dialog')).toBeInTheDocument()
       cleanup()

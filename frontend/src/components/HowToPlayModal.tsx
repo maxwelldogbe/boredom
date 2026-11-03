@@ -103,14 +103,16 @@ export function HowToPlayModal({
             </ul>
           </section>
         ))}
-        <section>
-          <h3>Tips</h3>
-          <ul>
-            {content.tips.map((tip) => (
-              <li key={tip}>{fill(tip, values)}</li>
-            ))}
-          </ul>
-        </section>
+        {content.tips.length > 0 && (
+          <section>
+            <h3>Tips</h3>
+            <ul>
+              {content.tips.map((tip) => (
+                <li key={tip}>{fill(tip, values)}</li>
+              ))}
+            </ul>
+          </section>
+        )}
         {content.reference && (
           <section>
             <h3>Quick reference</h3>

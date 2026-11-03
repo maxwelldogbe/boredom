@@ -1,0 +1,4992 @@
+[
+  {
+    "id": "countries",
+    "name": "Countries",
+    "emoji": "🌍",
+    "answers": [
+      {
+        "name": "Afghanistan",
+        "aliases": []
+      },
+      {
+        "name": "Albania",
+        "aliases": []
+      },
+      {
+        "name": "Algeria",
+        "aliases": []
+      },
+      {
+        "name": "Andorra",
+        "aliases": []
+      },
+      {
+        "name": "Angola",
+        "aliases": []
+      },
+      {
+        "name": "Antigua and Barbuda",
+        "aliases": [
+          "Antigua"
+        ]
+      },
+      {
+        "name": "Argentina",
+        "aliases": []
+      },
+      {
+        "name": "Armenia",
+        "aliases": []
+      },
+      {
+        "name": "Australia",
+        "aliases": []
+      },
+      {
+        "name": "Austria",
+        "aliases": []
+      },
+      {
+        "name": "Azerbaijan",
+        "aliases": []
+      },
+      {
+        "name": "Bahamas",
+        "aliases": [
+          "The Bahamas"
+        ]
+      },
+      {
+        "name": "Bahrain",
+        "aliases": []
+      },
+      {
+        "name": "Bangladesh",
+        "aliases": []
+      },
+      {
+        "name": "Barbados",
+        "aliases": []
+      },
+      {
+        "name": "Belarus",
+        "aliases": []
+      },
+      {
+        "name": "Belgium",
+        "aliases": []
+      },
+      {
+        "name": "Belize",
+        "aliases": []
+      },
+      {
+        "name": "Benin",
+        "aliases": []
+      },
+      {
+        "name": "Bhutan",
+        "aliases": []
+      },
+      {
+        "name": "Bolivia",
+        "aliases": []
+      },
+      {
+        "name": "Bosnia and Herzegovina",
+        "aliases": [
+          "Bosnia"
+        ]
+      },
+      {
+        "name": "Botswana",
+        "aliases": []
+      },
+      {
+        "name": "Brazil",
+        "aliases": [
+          "Brasil"
+        ]
+      },
+      {
+        "name": "Brunei",
+        "aliases": []
+      },
+      {
+        "name": "Bulgaria",
+        "aliases": []
+      },
+      {
+        "name": "Burkina Faso",
+        "aliases": []
+      },
+      {
+        "name": "Burundi",
+        "aliases": []
+      },
+      {
+        "name": "Cabo Verde",
+        "aliases": [
+          "Cape Verde"
+        ]
+      },
+      {
+        "name": "Cambodia",
+        "aliases": []
+      },
+      {
+        "name": "Cameroon",
+        "aliases": []
+      },
+      {
+        "name": "Canada",
+        "aliases": []
+      },
+      {
+        "name": "Central African Republic",
+        "aliases": [
+          "CAR"
+        ]
+      },
+      {
+        "name": "Chad",
+        "aliases": []
+      },
+      {
+        "name": "Chile",
+        "aliases": []
+      },
+      {
+        "name": "China",
+        "aliases": []
+      },
+      {
+        "name": "Colombia",
+        "aliases": []
+      },
+      {
+        "name": "Comoros",
+        "aliases": []
+      },
+      {
+        "name": "Congo",
+        "aliases": [
+          "Republic of the Congo",
+          "Congo-Brazzaville"
+        ]
+      },
+      {
+        "name": "Costa Rica",
+        "aliases": []
+      },
+      {
+        "name": "Croatia",
+        "aliases": []
+      },
+      {
+        "name": "Cuba",
+        "aliases": []
+      },
+      {
+        "name": "Cyprus",
+        "aliases": []
+      },
+      {
+        "name": "Czechia",
+        "aliases": [
+          "Czech Republic"
+        ]
+      },
+      {
+        "name": "Democratic Republic of the Congo",
+        "aliases": [
+          "DR Congo",
+          "DRC",
+          "Congo-Kinshasa"
+        ]
+      },
+      {
+        "name": "Denmark",
+        "aliases": []
+      },
+      {
+        "name": "Djibouti",
+        "aliases": []
+      },
+      {
+        "name": "Dominica",
+        "aliases": []
+      },
+      {
+        "name": "Dominican Republic",
+        "aliases": []
+      },
+      {
+        "name": "Ecuador",
+        "aliases": []
+      },
+      {
+        "name": "Egypt",
+        "aliases": []
+      },
+      {
+        "name": "El Salvador",
+        "aliases": []
+      },
+      {
+        "name": "Equatorial Guinea",
+        "aliases": []
+      },
+      {
+        "name": "Eritrea",
+        "aliases": []
+      },
+      {
+        "name": "Estonia",
+        "aliases": []
+      },
+      {
+        "name": "Eswatini",
+        "aliases": [
+          "Swaziland"
+        ]
+      },
+      {
+        "name": "Ethiopia",
+        "aliases": []
+      },
+      {
+        "name": "Fiji",
+        "aliases": []
+      },
+      {
+        "name": "Finland",
+        "aliases": []
+      },
+      {
+        "name": "France",
+        "aliases": []
+      },
+      {
+        "name": "Gabon",
+        "aliases": []
+      },
+      {
+        "name": "Gambia",
+        "aliases": [
+          "The Gambia"
+        ]
+      },
+      {
+        "name": "Georgia",
+        "aliases": []
+      },
+      {
+        "name": "Germany",
+        "aliases": []
+      },
+      {
+        "name": "Ghana",
+        "aliases": []
+      },
+      {
+        "name": "Greece",
+        "aliases": []
+      },
+      {
+        "name": "Grenada",
+        "aliases": []
+      },
+      {
+        "name": "Guatemala",
+        "aliases": []
+      },
+      {
+        "name": "Guinea",
+        "aliases": []
+      },
+      {
+        "name": "Guinea-Bissau",
+        "aliases": []
+      },
+      {
+        "name": "Guyana",
+        "aliases": []
+      },
+      {
+        "name": "Haiti",
+        "aliases": []
+      },
+      {
+        "name": "Honduras",
+        "aliases": []
+      },
+      {
+        "name": "Hungary",
+        "aliases": []
+      },
+      {
+        "name": "Iceland",
+        "aliases": []
+      },
+      {
+        "name": "India",
+        "aliases": []
+      },
+      {
+        "name": "Indonesia",
+        "aliases": []
+      },
+      {
+        "name": "Iran",
+        "aliases": []
+      },
+      {
+        "name": "Iraq",
+        "aliases": []
+      },
+      {
+        "name": "Ireland",
+        "aliases": [
+          "Republic of Ireland",
+          "Eire"
+        ]
+      },
+      {
+        "name": "Israel",
+        "aliases": []
+      },
+      {
+        "name": "Italy",
+        "aliases": []
+      },
+      {
+        "name": "Ivory Coast",
+        "aliases": [
+          "Cote d'Ivoire"
+        ]
+      },
+      {
+        "name": "Jamaica",
+        "aliases": []
+      },
+      {
+        "name": "Japan",
+        "aliases": []
+      },
+      {
+        "name": "Jordan",
+        "aliases": []
+      },
+      {
+        "name": "Kazakhstan",
+        "aliases": []
+      },
+      {
+        "name": "Kenya",
+        "aliases": []
+      },
+      {
+        "name": "Kiribati",
+        "aliases": []
+      },
+      {
+        "name": "Kuwait",
+        "aliases": []
+      },
+      {
+        "name": "Kyrgyzstan",
+        "aliases": []
+      },
+      {
+        "name": "Laos",
+        "aliases": []
+      },
+      {
+        "name": "Latvia",
+        "aliases": []
+      },
+      {
+        "name": "Lebanon",
+        "aliases": []
+      },
+      {
+        "name": "Lesotho",
+        "aliases": []
+      },
+      {
+        "name": "Liberia",
+        "aliases": []
+      },
+      {
+        "name": "Libya",
+        "aliases": []
+      },
+      {
+        "name": "Liechtenstein",
+        "aliases": []
+      },
+      {
+        "name": "Lithuania",
+        "aliases": []
+      },
+      {
+        "name": "Luxembourg",
+        "aliases": []
+      },
+      {
+        "name": "Madagascar",
+        "aliases": []
+      },
+      {
+        "name": "Malawi",
+        "aliases": []
+      },
+      {
+        "name": "Malaysia",
+        "aliases": []
+      },
+      {
+        "name": "Maldives",
+        "aliases": []
+      },
+      {
+        "name": "Mali",
+        "aliases": []
+      },
+      {
+        "name": "Malta",
+        "aliases": []
+      },
+      {
+        "name": "Marshall Islands",
+        "aliases": []
+      },
+      {
+        "name": "Mauritania",
+        "aliases": []
+      },
+      {
+        "name": "Mauritius",
+        "aliases": []
+      },
+      {
+        "name": "Mexico",
+        "aliases": []
+      },
+      {
+        "name": "Micronesia",
+        "aliases": []
+      },
+      {
+        "name": "Moldova",
+        "aliases": []
+      },
+      {
+        "name": "Monaco",
+        "aliases": []
+      },
+      {
+        "name": "Mongolia",
+        "aliases": []
+      },
+      {
+        "name": "Montenegro",
+        "aliases": []
+      },
+      {
+        "name": "Morocco",
+        "aliases": []
+      },
+      {
+        "name": "Mozambique",
+        "aliases": []
+      },
+      {
+        "name": "Myanmar",
+        "aliases": [
+          "Burma"
+        ]
+      },
+      {
+        "name": "Namibia",
+        "aliases": []
+      },
+      {
+        "name": "Nauru",
+        "aliases": []
+      },
+      {
+        "name": "Nepal",
+        "aliases": []
+      },
+      {
+        "name": "Netherlands",
+        "aliases": [
+          "Holland",
+          "The Netherlands"
+        ]
+      },
+      {
+        "name": "New Zealand",
+        "aliases": []
+      },
+      {
+        "name": "Nicaragua",
+        "aliases": []
+      },
+      {
+        "name": "Niger",
+        "aliases": []
+      },
+      {
+        "name": "Nigeria",
+        "aliases": []
+      },
+      {
+        "name": "North Korea",
+        "aliases": [
+          "DPRK"
+        ]
+      },
+      {
+        "name": "North Macedonia",
+        "aliases": [
+          "Macedonia"
+        ]
+      },
+      {
+        "name": "Norway",
+        "aliases": []
+      },
+      {
+        "name": "Oman",
+        "aliases": []
+      },
+      {
+        "name": "Pakistan",
+        "aliases": []
+      },
+      {
+        "name": "Palau",
+        "aliases": []
+      },
+      {
+        "name": "Panama",
+        "aliases": []
+      },
+      {
+        "name": "Papua New Guinea",
+        "aliases": [
+          "PNG"
+        ]
+      },
+      {
+        "name": "Paraguay",
+        "aliases": []
+      },
+      {
+        "name": "Peru",
+        "aliases": []
+      },
+      {
+        "name": "Philippines",
+        "aliases": [
+          "The Philippines"
+        ]
+      },
+      {
+        "name": "Poland",
+        "aliases": []
+      },
+      {
+        "name": "Portugal",
+        "aliases": []
+      },
+      {
+        "name": "Qatar",
+        "aliases": []
+      },
+      {
+        "name": "Romania",
+        "aliases": []
+      },
+      {
+        "name": "Russia",
+        "aliases": [
+          "Russian Federation"
+        ]
+      },
+      {
+        "name": "Rwanda",
+        "aliases": []
+      },
+      {
+        "name": "Saint Kitts and Nevis",
+        "aliases": [
+          "St Kitts and Nevis"
+        ]
+      },
+      {
+        "name": "Saint Lucia",
+        "aliases": [
+          "St Lucia"
+        ]
+      },
+      {
+        "name": "Saint Vincent and the Grenadines",
+        "aliases": [
+          "St Vincent and the Grenadines"
+        ]
+      },
+      {
+        "name": "Samoa",
+        "aliases": []
+      },
+      {
+        "name": "San Marino",
+        "aliases": []
+      },
+      {
+        "name": "Sao Tome and Principe",
+        "aliases": []
+      },
+      {
+        "name": "Saudi Arabia",
+        "aliases": []
+      },
+      {
+        "name": "Senegal",
+        "aliases": []
+      },
+      {
+        "name": "Serbia",
+        "aliases": []
+      },
+      {
+        "name": "Seychelles",
+        "aliases": []
+      },
+      {
+        "name": "Sierra Leone",
+        "aliases": []
+      },
+      {
+        "name": "Singapore",
+        "aliases": []
+      },
+      {
+        "name": "Slovakia",
+        "aliases": []
+      },
+      {
+        "name": "Slovenia",
+        "aliases": []
+      },
+      {
+        "name": "Solomon Islands",
+        "aliases": []
+      },
+      {
+        "name": "Somalia",
+        "aliases": []
+      },
+      {
+        "name": "South Africa",
+        "aliases": []
+      },
+      {
+        "name": "South Korea",
+        "aliases": [
+          "Republic of Korea"
+        ]
+      },
+      {
+        "name": "South Sudan",
+        "aliases": []
+      },
+      {
+        "name": "Spain",
+        "aliases": []
+      },
+      {
+        "name": "Sri Lanka",
+        "aliases": []
+      },
+      {
+        "name": "Sudan",
+        "aliases": []
+      },
+      {
+        "name": "Suriname",
+        "aliases": []
+      },
+      {
+        "name": "Sweden",
+        "aliases": []
+      },
+      {
+        "name": "Switzerland",
+        "aliases": []
+      },
+      {
+        "name": "Syria",
+        "aliases": []
+      },
+      {
+        "name": "Tajikistan",
+        "aliases": []
+      },
+      {
+        "name": "Tanzania",
+        "aliases": []
+      },
+      {
+        "name": "Thailand",
+        "aliases": []
+      },
+      {
+        "name": "Timor-Leste",
+        "aliases": [
+          "East Timor"
+        ]
+      },
+      {
+        "name": "Togo",
+        "aliases": []
+      },
+      {
+        "name": "Tonga",
+        "aliases": []
+      },
+      {
+        "name": "Trinidad and Tobago",
+        "aliases": [
+          "Trinidad"
+        ]
+      },
+      {
+        "name": "Tunisia",
+        "aliases": []
+      },
+      {
+        "name": "Turkey",
+        "aliases": [
+          "Turkiye"
+        ]
+      },
+      {
+        "name": "Turkmenistan",
+        "aliases": []
+      },
+      {
+        "name": "Tuvalu",
+        "aliases": []
+      },
+      {
+        "name": "Uganda",
+        "aliases": []
+      },
+      {
+        "name": "Ukraine",
+        "aliases": []
+      },
+      {
+        "name": "United Arab Emirates",
+        "aliases": [
+          "UAE"
+        ]
+      },
+      {
+        "name": "United Kingdom",
+        "aliases": [
+          "UK",
+          "Great Britain",
+          "Britain"
+        ]
+      },
+      {
+        "name": "United States",
+        "aliases": [
+          "USA",
+          "US",
+          "United States of America",
+          "America"
+        ]
+      },
+      {
+        "name": "Uruguay",
+        "aliases": []
+      },
+      {
+        "name": "Uzbekistan",
+        "aliases": []
+      },
+      {
+        "name": "Vanuatu",
+        "aliases": []
+      },
+      {
+        "name": "Vatican City",
+        "aliases": [
+          "Vatican",
+          "Holy See"
+        ]
+      },
+      {
+        "name": "Venezuela",
+        "aliases": []
+      },
+      {
+        "name": "Vietnam",
+        "aliases": [
+          "Viet Nam"
+        ]
+      },
+      {
+        "name": "Yemen",
+        "aliases": []
+      },
+      {
+        "name": "Zambia",
+        "aliases": []
+      },
+      {
+        "name": "Zimbabwe",
+        "aliases": []
+      }
+    ]
+  },
+  {
+    "id": "african_countries",
+    "name": "African countries",
+    "emoji": "🌍",
+    "answers": [
+      {
+        "name": "Algeria",
+        "aliases": []
+      },
+      {
+        "name": "Angola",
+        "aliases": []
+      },
+      {
+        "name": "Benin",
+        "aliases": []
+      },
+      {
+        "name": "Botswana",
+        "aliases": []
+      },
+      {
+        "name": "Burkina Faso",
+        "aliases": []
+      },
+      {
+        "name": "Burundi",
+        "aliases": []
+      },
+      {
+        "name": "Cabo Verde",
+        "aliases": [
+          "Cape Verde"
+        ]
+      },
+      {
+        "name": "Cameroon",
+        "aliases": []
+      },
+      {
+        "name": "Central African Republic",
+        "aliases": [
+          "CAR"
+        ]
+      },
+      {
+        "name": "Chad",
+        "aliases": []
+      },
+      {
+        "name": "Comoros",
+        "aliases": []
+      },
+      {
+        "name": "Congo",
+        "aliases": [
+          "Republic of the Congo",
+          "Congo-Brazzaville"
+        ]
+      },
+      {
+        "name": "Democratic Republic of the Congo",
+        "aliases": [
+          "DR Congo",
+          "DRC",
+          "Congo-Kinshasa"
+        ]
+      },
+      {
+        "name": "Djibouti",
+        "aliases": []
+      },
+      {
+        "name": "Egypt",
+        "aliases": []
+      },
+      {
+        "name": "Equatorial Guinea",
+        "aliases": []
+      },
+      {
+        "name": "Eritrea",
+        "aliases": []
+      },
+      {
+        "name": "Eswatini",
+        "aliases": [
+          "Swaziland"
+        ]
+      },
+      {
+        "name": "Ethiopia",
+        "aliases": []
+      },
+      {
+        "name": "Gabon",
+        "aliases": []
+      },
+      {
+        "name": "Gambia",
+        "aliases": [
+          "The Gambia"
+        ]
+      },
+      {
+        "name": "Ghana",
+        "aliases": []
+      },
+      {
+        "name": "Guinea",
+        "aliases": []
+      },
+      {
+        "name": "Guinea-Bissau",
+        "aliases": []
+      },
+      {
+        "name": "Ivory Coast",
+        "aliases": [
+          "Cote d'Ivoire"
+        ]
+      },
+      {
+        "name": "Kenya",
+        "aliases": []
+      },
+      {
+        "name": "Lesotho",
+        "aliases": []
+      },
+      {
+        "name": "Liberia",
+        "aliases": []
+      },
+      {
+        "name": "Libya",
+        "aliases": []
+      },
+      {
+        "name": "Madagascar",
+        "aliases": []
+      },
+      {
+        "name": "Malawi",
+        "aliases": []
+      },
+      {
+        "name": "Mali",
+        "aliases": []
+      },
+      {
+        "name": "Mauritania",
+        "aliases": []
+      },
+      {
+        "name": "Mauritius",
+        "aliases": []
+      },
+      {
+        "name": "Morocco",
+        "aliases": []
+      },
+      {
+        "name": "Mozambique",
+        "aliases": []
+      },
+      {
+        "name": "Namibia",
+        "aliases": []
+      },
+      {
+        "name": "Niger",
+        "aliases": []
+      },
+      {
+        "name": "Nigeria",
+        "aliases": []
+      },
+      {
+        "name": "Rwanda",
+        "aliases": []
+      },
+      {
+        "name": "Sao Tome and Principe",
+        "aliases": []
+      },
+      {
+        "name": "Senegal",
+        "aliases": []
+      },
+      {
+        "name": "Seychelles",
+        "aliases": []
+      },
+      {
+        "name": "Sierra Leone",
+        "aliases": []
+      },
+      {
+        "name": "Somalia",
+        "aliases": []
+      },
+      {
+        "name": "South Africa",
+        "aliases": []
+      },
+      {
+        "name": "South Sudan",
+        "aliases": []
+      },
+      {
+        "name": "Sudan",
+        "aliases": []
+      },
+      {
+        "name": "Tanzania",
+        "aliases": []
+      },
+      {
+        "name": "Togo",
+        "aliases": []
+      },
+      {
+        "name": "Tunisia",
+        "aliases": []
+      },
+      {
+        "name": "Uganda",
+        "aliases": []
+      },
+      {
+        "name": "Zambia",
+        "aliases": []
+      },
+      {
+        "name": "Zimbabwe",
+        "aliases": []
+      }
+    ]
+  },
+  {
+    "id": "capital_cities",
+    "name": "Capital cities",
+    "emoji": "🏛️",
+    "answers": [
+      {
+        "name": "Abu Dhabi",
+        "aliases": []
+      },
+      {
+        "name": "Abuja",
+        "aliases": []
+      },
+      {
+        "name": "Accra",
+        "aliases": []
+      },
+      {
+        "name": "Addis Ababa",
+        "aliases": []
+      },
+      {
+        "name": "Algiers",
+        "aliases": []
+      },
+      {
+        "name": "Amman",
+        "aliases": []
+      },
+      {
+        "name": "Amsterdam",
+        "aliases": []
+      },
+      {
+        "name": "Andorra la Vella",
+        "aliases": []
+      },
+      {
+        "name": "Ankara",
+        "aliases": []
+      },
+      {
+        "name": "Antananarivo",
+        "aliases": []
+      },
+      {
+        "name": "Apia",
+        "aliases": []
+      },
+      {
+        "name": "Ashgabat",
+        "aliases": []
+      },
+      {
+        "name": "Asmara",
+        "aliases": []
+      },
+      {
+        "name": "Astana",
+        "aliases": [
+          "Nur-Sultan"
+        ]
+      },
+      {
+        "name": "Asuncion",
+        "aliases": []
+      },
+      {
+        "name": "Athens",
+        "aliases": []
+      },
+      {
+        "name": "Baghdad",
+        "aliases": []
+      },
+      {
+        "name": "Baku",
+        "aliases": []
+      },
+      {
+        "name": "Bamako",
+        "aliases": []
+      },
+      {
+        "name": "Bangkok",
+        "aliases": []
+      },
+      {
+        "name": "Bangui",
+        "aliases": []
+      },
+      {
+        "name": "Banjul",
+        "aliases": []
+      },
+      {
+        "name": "Basseterre",
+        "aliases": []
+      },
+      {
+        "name": "Beijing",
+        "aliases": [
+          "Peking"
+        ]
+      },
+      {
+        "name": "Beirut",
+        "aliases": []
+      },
+      {
+        "name": "Belgrade",
+        "aliases": []
+      },
+      {
+        "name": "Belmopan",
+        "aliases": []
+      },
+      {
+        "name": "Berlin",
+        "aliases": []
+      },
+      {
+        "name": "Bern",
+        "aliases": []
+      },
+      {
+        "name": "Bishkek",
+        "aliases": []
+      },
+      {
+        "name": "Bissau",
+        "aliases": []
+      },
+      {
+        "name": "Bloemfontein",
+        "aliases": []
+      },
+      {
+        "name": "Bogota",
+        "aliases": []
+      },
+      {
+        "name": "Brasilia",
+        "aliases": []
+      },
+      {
+        "name": "Bratislava",
+        "aliases": []
+      },
+      {
+        "name": "Brazzaville",
+        "aliases": []
+      },
+      {
+        "name": "Bridgetown",
+        "aliases": []
+      },
+      {
+        "name": "Brussels",
+        "aliases": []
+      },
+      {
+        "name": "Bucharest",
+        "aliases": []
+      },
+      {
+        "name": "Budapest",
+        "aliases": []
+      },
+      {
+        "name": "Buenos Aires",
+        "aliases": []
+      },
+      {
+        "name": "Cairo",
+        "aliases": []
+      },
+      {
+        "name": "Canberra",
+        "aliases": []
+      },
+      {
+        "name": "Cape Town",
+        "aliases": []
+      },
+      {
+        "name": "Caracas",
+        "aliases": []
+      },
+      {
+        "name": "Castries",
+        "aliases": []
+      },
+      {
+        "name": "Chisinau",
+        "aliases": []
+      },
+      {
+        "name": "Conakry",
+        "aliases": []
+      },
+      {
+        "name": "Copenhagen",
+        "aliases": []
+      },
+      {
+        "name": "Dakar",
+        "aliases": []
+      },
+      {
+        "name": "Damascus",
+        "aliases": []
+      },
+      {
+        "name": "Dhaka",
+        "aliases": []
+      },
+      {
+        "name": "Dili",
+        "aliases": []
+      },
+      {
+        "name": "Djibouti",
+        "aliases": [
+          "Djibouti City"
+        ]
+      },
+      {
+        "name": "Dodoma",
+        "aliases": []
+      },
+      {
+        "name": "Doha",
+        "aliases": []
+      },
+      {
+        "name": "Dublin",
+        "aliases": []
+      },
+      {
+        "name": "Dushanbe",
+        "aliases": []
+      },
+      {
+        "name": "Freetown",
+        "aliases": []
+      },
+      {
+        "name": "Funafuti",
+        "aliases": []
+      },
+      {
+        "name": "Gaborone",
+        "aliases": []
+      },
+      {
+        "name": "Georgetown",
+        "aliases": []
+      },
+      {
+        "name": "Gitega",
+        "aliases": []
+      },
+      {
+        "name": "Guatemala City",
+        "aliases": []
+      },
+      {
+        "name": "Hanoi",
+        "aliases": []
+      },
+      {
+        "name": "Harare",
+        "aliases": []
+      },
+      {
+        "name": "Havana",
+        "aliases": []
+      },
+      {
+        "name": "Helsinki",
+        "aliases": []
+      },
+      {
+        "name": "Honiara",
+        "aliases": []
+      },
+      {
+        "name": "Islamabad",
+        "aliases": []
+      },
+      {
+        "name": "Jakarta",
+        "aliases": []
+      },
+      {
+        "name": "Juba",
+        "aliases": []
+      },
+      {
+        "name": "Kabul",
+        "aliases": []
+      },
+      {
+        "name": "Kampala",
+        "aliases": []
+      },
+      {
+        "name": "Kathmandu",
+        "aliases": []
+      },
+      {
+        "name": "Khartoum",
+        "aliases": []
+      },
+      {
+        "name": "Kigali",
+        "aliases": []
+      },
+      {
+        "name": "Kingston",
+        "aliases": []
+      },
+      {
+        "name": "Kingstown",
+        "aliases": []
+      },
+      {
+        "name": "Kinshasa",
+        "aliases": []
+      },
+      {
+        "name": "Kuala Lumpur",
+        "aliases": []
+      },
+      {
+        "name": "Kuwait City",
+        "aliases": [
+          "Kuwait"
+        ]
+      },
+      {
+        "name": "Kyiv",
+        "aliases": [
+          "Kiev"
+        ]
+      },
+      {
+        "name": "La Paz",
+        "aliases": []
+      },
+      {
+        "name": "Libreville",
+        "aliases": []
+      },
+      {
+        "name": "Lilongwe",
+        "aliases": []
+      },
+      {
+        "name": "Lima",
+        "aliases": []
+      },
+      {
+        "name": "Lisbon",
+        "aliases": []
+      },
+      {
+        "name": "Ljubljana",
+        "aliases": []
+      },
+      {
+        "name": "Lome",
+        "aliases": []
+      },
+      {
+        "name": "London",
+        "aliases": []
+      },
+      {
+        "name": "Luanda",
+        "aliases": []
+      },
+      {
+        "name": "Lusaka",
+        "aliases": []
+      },
+      {
+        "name": "Luxembourg",
+        "aliases": [
+          "Luxembourg City"
+        ]
+      },
+      {
+        "name": "Madrid",
+        "aliases": []
+      },
+      {
+        "name": "Majuro",
+        "aliases": []
+      },
+      {
+        "name": "Malabo",
+        "aliases": []
+      },
+      {
+        "name": "Male",
+        "aliases": []
+      },
+      {
+        "name": "Managua",
+        "aliases": []
+      },
+      {
+        "name": "Manama",
+        "aliases": []
+      },
+      {
+        "name": "Manila",
+        "aliases": []
+      },
+      {
+        "name": "Maputo",
+        "aliases": []
+      },
+      {
+        "name": "Maseru",
+        "aliases": []
+      },
+      {
+        "name": "Mbabane",
+        "aliases": []
+      },
+      {
+        "name": "Mexico City",
+        "aliases": []
+      },
+      {
+        "name": "Minsk",
+        "aliases": []
+      },
+      {
+        "name": "Mogadishu",
+        "aliases": []
+      },
+      {
+        "name": "Monrovia",
+        "aliases": []
+      },
+      {
+        "name": "Montevideo",
+        "aliases": []
+      },
+      {
+        "name": "Moroni",
+        "aliases": []
+      },
+      {
+        "name": "Moscow",
+        "aliases": []
+      },
+      {
+        "name": "Muscat",
+        "aliases": []
+      },
+      {
+        "name": "N'Djamena",
+        "aliases": []
+      },
+      {
+        "name": "Nairobi",
+        "aliases": []
+      },
+      {
+        "name": "Nassau",
+        "aliases": []
+      },
+      {
+        "name": "Naypyidaw",
+        "aliases": [
+          "Nay Pyi Taw"
+        ]
+      },
+      {
+        "name": "New Delhi",
+        "aliases": []
+      },
+      {
+        "name": "Ngerulmud",
+        "aliases": []
+      },
+      {
+        "name": "Niamey",
+        "aliases": []
+      },
+      {
+        "name": "Nicosia",
+        "aliases": []
+      },
+      {
+        "name": "Nouakchott",
+        "aliases": []
+      },
+      {
+        "name": "Nuku'alofa",
+        "aliases": []
+      },
+      {
+        "name": "Oslo",
+        "aliases": []
+      },
+      {
+        "name": "Ottawa",
+        "aliases": []
+      },
+      {
+        "name": "Ouagadougou",
+        "aliases": []
+      },
+      {
+        "name": "Palikir",
+        "aliases": []
+      },
+      {
+        "name": "Panama City",
+        "aliases": []
+      },
+      {
+        "name": "Paramaribo",
+        "aliases": []
+      },
+      {
+        "name": "Paris",
+        "aliases": []
+      },
+      {
+        "name": "Phnom Penh",
+        "aliases": []
+      },
+      {
+        "name": "Podgorica",
+        "aliases": []
+      },
+      {
+        "name": "Port Louis",
+        "aliases": []
+      },
+      {
+        "name": "Port Moresby",
+        "aliases": []
+      },
+      {
+        "name": "Port of Spain",
+        "aliases": []
+      },
+      {
+        "name": "Port Vila",
+        "aliases": []
+      },
+      {
+        "name": "Port-au-Prince",
+        "aliases": []
+      },
+      {
+        "name": "Porto-Novo",
+        "aliases": []
+      },
+      {
+        "name": "Prague",
+        "aliases": []
+      },
+      {
+        "name": "Praia",
+        "aliases": []
+      },
+      {
+        "name": "Pretoria",
+        "aliases": []
+      },
+      {
+        "name": "Pyongyang",
+        "aliases": []
+      },
+      {
+        "name": "Quito",
+        "aliases": []
+      },
+      {
+        "name": "Rabat",
+        "aliases": []
+      },
+      {
+        "name": "Reykjavik",
+        "aliases": []
+      },
+      {
+        "name": "Riga",
+        "aliases": []
+      },
+      {
+        "name": "Riyadh",
+        "aliases": []
+      },
+      {
+        "name": "Rome",
+        "aliases": []
+      },
+      {
+        "name": "Roseau",
+        "aliases": []
+      },
+      {
+        "name": "San Jose",
+        "aliases": []
+      },
+      {
+        "name": "San Marino",
+        "aliases": [
+          "City of San Marino"
+        ]
+      },
+      {
+        "name": "San Salvador",
+        "aliases": []
+      },
+      {
+        "name": "Sanaa",
+        "aliases": []
+      },
+      {
+        "name": "Santiago",
+        "aliases": []
+      },
+      {
+        "name": "Santo Domingo",
+        "aliases": []
+      },
+      {
+        "name": "Sao Tome",
+        "aliases": []
+      },
+      {
+        "name": "Sarajevo",
+        "aliases": []
+      },
+      {
+        "name": "Seoul",
+        "aliases": []
+      },
+      {
+        "name": "Skopje",
+        "aliases": []
+      },
+      {
+        "name": "Sofia",
+        "aliases": []
+      },
+      {
+        "name": "St. George's",
+        "aliases": [
+          "Saint George's"
+        ]
+      },
+      {
+        "name": "Stockholm",
+        "aliases": []
+      },
+      {
+        "name": "Sucre",
+        "aliases": []
+      },
+      {
+        "name": "Suva",
+        "aliases": []
+      },
+      {
+        "name": "Tallinn",
+        "aliases": []
+      },
+      {
+        "name": "Tarawa",
+        "aliases": []
+      },
+      {
+        "name": "Tashkent",
+        "aliases": []
+      },
+      {
+        "name": "Tbilisi",
+        "aliases": []
+      },
+      {
+        "name": "Tegucigalpa",
+        "aliases": []
+      },
+      {
+        "name": "Tehran",
+        "aliases": []
+      },
+      {
+        "name": "Thimphu",
+        "aliases": []
+      },
+      {
+        "name": "Tirana",
+        "aliases": []
+      },
+      {
+        "name": "Tokyo",
+        "aliases": []
+      },
+      {
+        "name": "Tripoli",
+        "aliases": []
+      },
+      {
+        "name": "Tunis",
+        "aliases": []
+      },
+      {
+        "name": "Ulaanbaatar",
+        "aliases": [
+          "Ulan Bator"
+        ]
+      },
+      {
+        "name": "Vaduz",
+        "aliases": []
+      },
+      {
+        "name": "Valletta",
+        "aliases": []
+      },
+      {
+        "name": "Victoria",
+        "aliases": []
+      },
+      {
+        "name": "Vienna",
+        "aliases": []
+      },
+      {
+        "name": "Vientiane",
+        "aliases": []
+      },
+      {
+        "name": "Vilnius",
+        "aliases": []
+      },
+      {
+        "name": "Warsaw",
+        "aliases": []
+      },
+      {
+        "name": "Washington, D.C.",
+        "aliases": [
+          "Washington",
+          "Washington DC"
+        ]
+      },
+      {
+        "name": "Wellington",
+        "aliases": []
+      },
+      {
+        "name": "Windhoek",
+        "aliases": []
+      },
+      {
+        "name": "Yamoussoukro",
+        "aliases": []
+      },
+      {
+        "name": "Yaounde",
+        "aliases": []
+      },
+      {
+        "name": "Yerevan",
+        "aliases": []
+      },
+      {
+        "name": "Zagreb",
+        "aliases": []
+      }
+    ]
+  },
+  {
+    "id": "fruits",
+    "name": "Fruits",
+    "emoji": "🍎",
+    "answers": [
+      {
+        "name": "Acai",
+        "aliases": []
+      },
+      {
+        "name": "Ackee",
+        "aliases": []
+      },
+      {
+        "name": "Apple",
+        "aliases": []
+      },
+      {
+        "name": "Apricot",
+        "aliases": []
+      },
+      {
+        "name": "Asian pear",
+        "aliases": [
+          "Nashi",
+          "Nashi pear"
+        ]
+      },
+      {
+        "name": "Avocado",
+        "aliases": []
+      },
+      {
+        "name": "Banana",
+        "aliases": []
+      },
+      {
+        "name": "Bilberry",
+        "aliases": []
+      },
+      {
+        "name": "Blackberry",
+        "aliases": []
+      },
+      {
+        "name": "Blackcurrant",
+        "aliases": []
+      },
+      {
+        "name": "Blood orange",
+        "aliases": []
+      },
+      {
+        "name": "Blueberry",
+        "aliases": []
+      },
+      {
+        "name": "Boysenberry",
+        "aliases": []
+      },
+      {
+        "name": "Breadfruit",
+        "aliases": []
+      },
+      {
+        "name": "Cantaloupe",
+        "aliases": []
+      },
+      {
+        "name": "Cherimoya",
+        "aliases": []
+      },
+      {
+        "name": "Cherry",
+        "aliases": []
+      },
+      {
+        "name": "Clementine",
+        "aliases": []
+      },
+      {
+        "name": "Cloudberry",
+        "aliases": []
+      },
+      {
+        "name": "Coconut",
+        "aliases": []
+      },
+      {
+        "name": "Cranberry",
+        "aliases": []
+      },
+      {
+        "name": "Currant",
+        "aliases": [
+          "Redcurrant"
+        ]
+      },
+      {
+        "name": "Custard apple",
+        "aliases": []
+      },
+      {
+        "name": "Damson",
+        "aliases": []
+      },
+      {
+        "name": "Date",
+        "aliases": []
+      },
+      {
+        "name": "Dragon fruit",
+        "aliases": [
+          "Pitaya"
+        ]
+      },
+      {
+        "name": "Durian",
+        "aliases": []
+      },
+      {
+        "name": "Elderberry",
+        "aliases": []
+      },
+      {
+        "name": "Feijoa",
+        "aliases": []
+      },
+      {
+        "name": "Fig",
+        "aliases": []
+      },
+      {
+        "name": "Galia melon",
+        "aliases": []
+      },
+      {
+        "name": "Gooseberry",
+        "aliases": []
+      },
+      {
+        "name": "Grape",
+        "aliases": []
+      },
+      {
+        "name": "Grapefruit",
+        "aliases": []
+      },
+      {
+        "name": "Greengage",
+        "aliases": []
+      },
+      {
+        "name": "Guava",
+        "aliases": []
+      },
+      {
+        "name": "Honeydew",
+        "aliases": [
+          "Honeydew melon"
+        ]
+      },
+      {
+        "name": "Huckleberry",
+        "aliases": []
+      },
+      {
+        "name": "Jackfruit",
+        "aliases": []
+      },
+      {
+        "name": "Jujube",
+        "aliases": []
+      },
+      {
+        "name": "Kiwano",
+        "aliases": [
+          "Horned melon"
+        ]
+      },
+      {
+        "name": "Kiwi",
+        "aliases": [
+          "Kiwifruit"
+        ]
+      },
+      {
+        "name": "Kumquat",
+        "aliases": []
+      },
+      {
+        "name": "Lemon",
+        "aliases": []
+      },
+      {
+        "name": "Lime",
+        "aliases": []
+      },
+      {
+        "name": "Lingonberry",
+        "aliases": []
+      },
+      {
+        "name": "Loganberry",
+        "aliases": []
+      },
+      {
+        "name": "Longan",
+        "aliases": []
+      },
+      {
+        "name": "Loquat",
+        "aliases": []
+      },
+      {
+        "name": "Lychee",
+        "aliases": [
+          "Litchi"
+        ]
+      },
+      {
+        "name": "Mandarin",
+        "aliases": []
+      },
+      {
+        "name": "Mango",
+        "aliases": []
+      },
+      {
+        "name": "Mangosteen",
+        "aliases": []
+      },
+      {
+        "name": "Marionberry",
+        "aliases": []
+      },
+      {
+        "name": "Medlar",
+        "aliases": []
+      },
+      {
+        "name": "Melon",
+        "aliases": []
+      },
+      {
+        "name": "Mirabelle",
+        "aliases": []
+      },
+      {
+        "name": "Miracle fruit",
+        "aliases": []
+      },
+      {
+        "name": "Mulberry",
+        "aliases": []
+      },
+      {
+        "name": "Nectarine",
+        "aliases": []
+      },
+      {
+        "name": "Olive",
+        "aliases": []
+      },
+      {
+        "name": "Orange",
+        "aliases": []
+      },
+      {
+        "name": "Papaya",
+        "aliases": [
+          "Pawpaw"
+        ]
+      },
+      {
+        "name": "Passion fruit",
+        "aliases": []
+      },
+      {
+        "name": "Peach",
+        "aliases": []
+      },
+      {
+        "name": "Pear",
+        "aliases": []
+      },
+      {
+        "name": "Persimmon",
+        "aliases": []
+      },
+      {
+        "name": "Physalis",
+        "aliases": [
+          "Cape gooseberry"
+        ]
+      },
+      {
+        "name": "Pineapple",
+        "aliases": []
+      },
+      {
+        "name": "Plantain",
+        "aliases": []
+      },
+      {
+        "name": "Plum",
+        "aliases": []
+      },
+      {
+        "name": "Pomegranate",
+        "aliases": []
+      },
+      {
+        "name": "Pomelo",
+        "aliases": []
+      },
+      {
+        "name": "Prune",
+        "aliases": []
+      },
+      {
+        "name": "Quince",
+        "aliases": []
+      },
+      {
+        "name": "Raisin",
+        "aliases": []
+      },
+      {
+        "name": "Rambutan",
+        "aliases": []
+      },
+      {
+        "name": "Raspberry",
+        "aliases": []
+      },
+      {
+        "name": "Salak",
+        "aliases": [
+          "Snake fruit"
+        ]
+      },
+      {
+        "name": "Sapodilla",
+        "aliases": []
+      },
+      {
+        "name": "Satsuma",
+        "aliases": []
+      },
+      {
+        "name": "Sloe",
+        "aliases": []
+      },
+      {
+        "name": "Soursop",
+        "aliases": [
+          "Guanabana"
+        ]
+      },
+      {
+        "name": "Starfruit",
+        "aliases": [
+          "Carambola"
+        ]
+      },
+      {
+        "name": "Strawberry",
+        "aliases": []
+      },
+      {
+        "name": "Sultana",
+        "aliases": []
+      },
+      {
+        "name": "Tamarind",
+        "aliases": []
+      },
+      {
+        "name": "Tangerine",
+        "aliases": []
+      },
+      {
+        "name": "Ugli fruit",
+        "aliases": []
+      },
+      {
+        "name": "Watermelon",
+        "aliases": []
+      },
+      {
+        "name": "Yuzu",
+        "aliases": []
+      }
+    ]
+  },
+  {
+    "id": "vegetables",
+    "name": "Vegetables",
+    "emoji": "🥕",
+    "answers": [
+      {
+        "name": "Artichoke",
+        "aliases": []
+      },
+      {
+        "name": "Arugula",
+        "aliases": [
+          "Rocket"
+        ]
+      },
+      {
+        "name": "Asparagus",
+        "aliases": []
+      },
+      {
+        "name": "Aubergine",
+        "aliases": [
+          "Eggplant",
+          "Brinjal"
+        ]
+      },
+      {
+        "name": "Bamboo shoots",
+        "aliases": []
+      },
+      {
+        "name": "Bean sprouts",
+        "aliases": []
+      },
+      {
+        "name": "Beetroot",
+        "aliases": [
+          "Beet"
+        ]
+      },
+      {
+        "name": "Bell pepper",
+        "aliases": [
+          "Pepper",
+          "Capsicum",
+          "Sweet pepper"
+        ]
+      },
+      {
+        "name": "Bitter gourd",
+        "aliases": [
+          "Bitter melon"
+        ]
+      },
+      {
+        "name": "Bok choy",
+        "aliases": [
+          "Pak choi"
+        ]
+      },
+      {
+        "name": "Bottle gourd",
+        "aliases": []
+      },
+      {
+        "name": "Broad beans",
+        "aliases": [
+          "Fava beans"
+        ]
+      },
+      {
+        "name": "Broccoli",
+        "aliases": []
+      },
+      {
+        "name": "Brussels sprouts",
+        "aliases": [
+          "Brussels sprout",
+          "Sprouts"
+        ]
+      },
+      {
+        "name": "Butternut squash",
+        "aliases": []
+      },
+      {
+        "name": "Cabbage",
+        "aliases": []
+      },
+      {
+        "name": "Carrot",
+        "aliases": []
+      },
+      {
+        "name": "Cassava",
+        "aliases": [
+          "Manioc",
+          "Yuca"
+        ]
+      },
+      {
+        "name": "Cauliflower",
+        "aliases": []
+      },
+      {
+        "name": "Celeriac",
+        "aliases": []
+      },
+      {
+        "name": "Celery",
+        "aliases": []
+      },
+      {
+        "name": "Chard",
+        "aliases": [
+          "Swiss chard"
+        ]
+      },
+      {
+        "name": "Chayote",
+        "aliases": []
+      },
+      {
+        "name": "Chickpeas",
+        "aliases": [
+          "Garbanzo beans"
+        ]
+      },
+      {
+        "name": "Chili pepper",
+        "aliases": [
+          "Chilli",
+          "Chili"
+        ]
+      },
+      {
+        "name": "Choy sum",
+        "aliases": []
+      },
+      {
+        "name": "Cocoyam",
+        "aliases": []
+      },
+      {
+        "name": "Collard greens",
+        "aliases": [
+          "Collards"
+        ]
+      },
+      {
+        "name": "Corn",
+        "aliases": [
+          "Sweetcorn",
+          "Maize"
+        ]
+      },
+      {
+        "name": "Courgette",
+        "aliases": [
+          "Zucchini"
+        ]
+      },
+      {
+        "name": "Cucumber",
+        "aliases": []
+      },
+      {
+        "name": "Daikon",
+        "aliases": []
+      },
+      {
+        "name": "Endive",
+        "aliases": []
+      },
+      {
+        "name": "Fennel",
+        "aliases": []
+      },
+      {
+        "name": "Garden egg",
+        "aliases": []
+      },
+      {
+        "name": "Garlic",
+        "aliases": []
+      },
+      {
+        "name": "Gherkin",
+        "aliases": []
+      },
+      {
+        "name": "Ginger",
+        "aliases": []
+      },
+      {
+        "name": "Green beans",
+        "aliases": [
+          "String beans",
+          "French beans"
+        ]
+      },
+      {
+        "name": "Habanero",
+        "aliases": []
+      },
+      {
+        "name": "Horseradish",
+        "aliases": []
+      },
+      {
+        "name": "Iceberg lettuce",
+        "aliases": []
+      },
+      {
+        "name": "Jalapeno",
+        "aliases": []
+      },
+      {
+        "name": "Jerusalem artichoke",
+        "aliases": [
+          "Sunchoke"
+        ]
+      },
+      {
+        "name": "Kale",
+        "aliases": []
+      },
+      {
+        "name": "Kidney beans",
+        "aliases": []
+      },
+      {
+        "name": "Kohlrabi",
+        "aliases": []
+      },
+      {
+        "name": "Kontomire",
+        "aliases": [
+          "Cocoyam leaves"
+        ]
+      },
+      {
+        "name": "Leek",
+        "aliases": []
+      },
+      {
+        "name": "Lentils",
+        "aliases": []
+      },
+      {
+        "name": "Lettuce",
+        "aliases": []
+      },
+      {
+        "name": "Lima beans",
+        "aliases": [
+          "Butter beans"
+        ]
+      },
+      {
+        "name": "Lotus root",
+        "aliases": []
+      },
+      {
+        "name": "Moringa",
+        "aliases": []
+      },
+      {
+        "name": "Mushroom",
+        "aliases": []
+      },
+      {
+        "name": "Mustard greens",
+        "aliases": []
+      },
+      {
+        "name": "Napa cabbage",
+        "aliases": [
+          "Chinese cabbage"
+        ]
+      },
+      {
+        "name": "Okra",
+        "aliases": [
+          "Ladies' fingers"
+        ]
+      },
+      {
+        "name": "Onion",
+        "aliases": []
+      },
+      {
+        "name": "Parsnip",
+        "aliases": []
+      },
+      {
+        "name": "Peas",
+        "aliases": [
+          "Pea",
+          "Garden peas"
+        ]
+      },
+      {
+        "name": "Potato",
+        "aliases": []
+      },
+      {
+        "name": "Pumpkin",
+        "aliases": []
+      },
+      {
+        "name": "Radicchio",
+        "aliases": []
+      },
+      {
+        "name": "Radish",
+        "aliases": []
+      },
+      {
+        "name": "Red cabbage",
+        "aliases": []
+      },
+      {
+        "name": "Romaine lettuce",
+        "aliases": [
+          "Cos lettuce"
+        ]
+      },
+      {
+        "name": "Romanesco",
+        "aliases": []
+      },
+      {
+        "name": "Rutabaga",
+        "aliases": [
+          "Swede"
+        ]
+      },
+      {
+        "name": "Salsify",
+        "aliases": []
+      },
+      {
+        "name": "Samphire",
+        "aliases": []
+      },
+      {
+        "name": "Scallion",
+        "aliases": [
+          "Spring onion",
+          "Green onion"
+        ]
+      },
+      {
+        "name": "Shallot",
+        "aliases": []
+      },
+      {
+        "name": "Snow peas",
+        "aliases": [
+          "Mangetout"
+        ]
+      },
+      {
+        "name": "Sorrel",
+        "aliases": []
+      },
+      {
+        "name": "Spinach",
+        "aliases": []
+      },
+      {
+        "name": "Squash",
+        "aliases": []
+      },
+      {
+        "name": "Sweet potato",
+        "aliases": []
+      },
+      {
+        "name": "Taro",
+        "aliases": []
+      },
+      {
+        "name": "Tomatillo",
+        "aliases": []
+      },
+      {
+        "name": "Tomato",
+        "aliases": []
+      },
+      {
+        "name": "Turnip",
+        "aliases": []
+      },
+      {
+        "name": "Water chestnut",
+        "aliases": []
+      },
+      {
+        "name": "Watercress",
+        "aliases": []
+      },
+      {
+        "name": "Yam",
+        "aliases": []
+      }
+    ]
+  },
+  {
+    "id": "animals",
+    "name": "Animals",
+    "emoji": "🐘",
+    "answers": [
+      {
+        "name": "Aardvark",
+        "aliases": []
+      },
+      {
+        "name": "Albatross",
+        "aliases": []
+      },
+      {
+        "name": "Alligator",
+        "aliases": []
+      },
+      {
+        "name": "Alpaca",
+        "aliases": []
+      },
+      {
+        "name": "Anaconda",
+        "aliases": []
+      },
+      {
+        "name": "Ant",
+        "aliases": []
+      },
+      {
+        "name": "Anteater",
+        "aliases": []
+      },
+      {
+        "name": "Antelope",
+        "aliases": []
+      },
+      {
+        "name": "Armadillo",
+        "aliases": []
+      },
+      {
+        "name": "Baboon",
+        "aliases": []
+      },
+      {
+        "name": "Badger",
+        "aliases": []
+      },
+      {
+        "name": "Bat",
+        "aliases": []
+      },
+      {
+        "name": "Bear",
+        "aliases": []
+      },
+      {
+        "name": "Beaver",
+        "aliases": []
+      },
+      {
+        "name": "Bee",
+        "aliases": []
+      },
+      {
+        "name": "Beetle",
+        "aliases": []
+      },
+      {
+        "name": "Bison",
+        "aliases": []
+      },
+      {
+        "name": "Boar",
+        "aliases": []
+      },
+      {
+        "name": "Buffalo",
+        "aliases": []
+      },
+      {
+        "name": "Butterfly",
+        "aliases": []
+      },
+      {
+        "name": "Camel",
+        "aliases": []
+      },
+      {
+        "name": "Capybara",
+        "aliases": []
+      },
+      {
+        "name": "Caribou",
+        "aliases": [
+          "Reindeer"
+        ]
+      },
+      {
+        "name": "Cat",
+        "aliases": []
+      },
+      {
+        "name": "Caterpillar",
+        "aliases": []
+      },
+      {
+        "name": "Cheetah",
+        "aliases": []
+      },
+      {
+        "name": "Chicken",
+        "aliases": [
+          "Hen",
+          "Rooster"
+        ]
+      },
+      {
+        "name": "Chimpanzee",
+        "aliases": [
+          "Chimp"
+        ]
+      },
+      {
+        "name": "Chinchilla",
+        "aliases": []
+      },
+      {
+        "name": "Cobra",
+        "aliases": []
+      },
+      {
+        "name": "Cockroach",
+        "aliases": []
+      },
+      {
+        "name": "Cougar",
+        "aliases": [
+          "Puma",
+          "Mountain lion"
+        ]
+      },
+      {
+        "name": "Cow",
+        "aliases": [
+          "Cattle"
+        ]
+      },
+      {
+        "name": "Coyote",
+        "aliases": []
+      },
+      {
+        "name": "Crab",
+        "aliases": []
+      },
+      {
+        "name": "Crane",
+        "aliases": []
+      },
+      {
+        "name": "Crocodile",
+        "aliases": []
+      },
+      {
+        "name": "Crow",
+        "aliases": []
+      },
+      {
+        "name": "Deer",
+        "aliases": []
+      },
+      {
+        "name": "Dingo",
+        "aliases": []
+      },
+      {
+        "name": "Dog",
+        "aliases": []
+      },
+      {
+        "name": "Dolphin",
+        "aliases": []
+      },
+      {
+        "name": "Donkey",
+        "aliases": []
+      },
+      {
+        "name": "Dove",
+        "aliases": [
+          "Pigeon"
+        ]
+      },
+      {
+        "name": "Dragonfly",
+        "aliases": []
+      },
+      {
+        "name": "Duck",
+        "aliases": []
+      },
+      {
+        "name": "Eagle",
+        "aliases": []
+      },
+      {
+        "name": "Eel",
+        "aliases": []
+      },
+      {
+        "name": "Elephant",
+        "aliases": []
+      },
+      {
+        "name": "Elk",
+        "aliases": [
+          "Wapiti"
+        ]
+      },
+      {
+        "name": "Emu",
+        "aliases": []
+      },
+      {
+        "name": "Falcon",
+        "aliases": []
+      },
+      {
+        "name": "Ferret",
+        "aliases": []
+      },
+      {
+        "name": "Flamingo",
+        "aliases": []
+      },
+      {
+        "name": "Fly",
+        "aliases": []
+      },
+      {
+        "name": "Fox",
+        "aliases": []
+      },
+      {
+        "name": "Frog",
+        "aliases": []
+      },
+      {
+        "name": "Gazelle",
+        "aliases": []
+      },
+      {
+        "name": "Gecko",
+        "aliases": []
+      },
+      {
+        "name": "Gerbil",
+        "aliases": []
+      },
+      {
+        "name": "Gibbon",
+        "aliases": []
+      },
+      {
+        "name": "Giraffe",
+        "aliases": []
+      },
+      {
+        "name": "Goat",
+        "aliases": []
+      },
+      {
+        "name": "Goose",
+        "aliases": []
+      },
+      {
+        "name": "Gorilla",
+        "aliases": []
+      },
+      {
+        "name": "Grasshopper",
+        "aliases": []
+      },
+      {
+        "name": "Guinea pig",
+        "aliases": []
+      },
+      {
+        "name": "Hamster",
+        "aliases": []
+      },
+      {
+        "name": "Hare",
+        "aliases": []
+      },
+      {
+        "name": "Hawk",
+        "aliases": []
+      },
+      {
+        "name": "Hedgehog",
+        "aliases": []
+      },
+      {
+        "name": "Heron",
+        "aliases": []
+      },
+      {
+        "name": "Hippopotamus",
+        "aliases": [
+          "Hippo"
+        ]
+      },
+      {
+        "name": "Horse",
+        "aliases": []
+      },
+      {
+        "name": "Hummingbird",
+        "aliases": []
+      },
+      {
+        "name": "Hyena",
+        "aliases": []
+      },
+      {
+        "name": "Iguana",
+        "aliases": []
+      },
+      {
+        "name": "Impala",
+        "aliases": []
+      },
+      {
+        "name": "Jackal",
+        "aliases": []
+      },
+      {
+        "name": "Jaguar",
+        "aliases": []
+      },
+      {
+        "name": "Jellyfish",
+        "aliases": []
+      },
+      {
+        "name": "Kangaroo",
+        "aliases": []
+      },
+      {
+        "name": "Kingfisher",
+        "aliases": []
+      },
+      {
+        "name": "Koala",
+        "aliases": []
+      },
+      {
+        "name": "Komodo dragon",
+        "aliases": []
+      },
+      {
+        "name": "Ladybug",
+        "aliases": [
+          "Ladybird"
+        ]
+      },
+      {
+        "name": "Lemur",
+        "aliases": []
+      },
+      {
+        "name": "Leopard",
+        "aliases": []
+      },
+      {
+        "name": "Lion",
+        "aliases": []
+      },
+      {
+        "name": "Lizard",
+        "aliases": []
+      },
+      {
+        "name": "Llama",
+        "aliases": []
+      },
+      {
+        "name": "Lobster",
+        "aliases": []
+      },
+      {
+        "name": "Lynx",
+        "aliases": []
+      },
+      {
+        "name": "Macaw",
+        "aliases": []
+      },
+      {
+        "name": "Magpie",
+        "aliases": []
+      },
+      {
+        "name": "Manatee",
+        "aliases": []
+      },
+      {
+        "name": "Meerkat",
+        "aliases": []
+      },
+      {
+        "name": "Mole",
+        "aliases": []
+      },
+      {
+        "name": "Mongoose",
+        "aliases": []
+      },
+      {
+        "name": "Monkey",
+        "aliases": []
+      },
+      {
+        "name": "Moose",
+        "aliases": []
+      },
+      {
+        "name": "Mosquito",
+        "aliases": []
+      },
+      {
+        "name": "Moth",
+        "aliases": []
+      },
+      {
+        "name": "Mouse",
+        "aliases": []
+      },
+      {
+        "name": "Mule",
+        "aliases": []
+      },
+      {
+        "name": "Narwhal",
+        "aliases": []
+      },
+      {
+        "name": "Octopus",
+        "aliases": []
+      },
+      {
+        "name": "Okapi",
+        "aliases": []
+      },
+      {
+        "name": "Opossum",
+        "aliases": [
+          "Possum"
+        ]
+      },
+      {
+        "name": "Orangutan",
+        "aliases": []
+      },
+      {
+        "name": "Ostrich",
+        "aliases": []
+      },
+      {
+        "name": "Otter",
+        "aliases": []
+      },
+      {
+        "name": "Owl",
+        "aliases": []
+      },
+      {
+        "name": "Ox",
+        "aliases": []
+      },
+      {
+        "name": "Panda",
+        "aliases": [
+          "Giant panda"
+        ]
+      },
+      {
+        "name": "Panther",
+        "aliases": []
+      },
+      {
+        "name": "Parrot",
+        "aliases": []
+      },
+      {
+        "name": "Peacock",
+        "aliases": [
+          "Peafowl"
+        ]
+      },
+      {
+        "name": "Pelican",
+        "aliases": []
+      },
+      {
+        "name": "Penguin",
+        "aliases": []
+      },
+      {
+        "name": "Pig",
+        "aliases": []
+      },
+      {
+        "name": "Platypus",
+        "aliases": []
+      },
+      {
+        "name": "Polar bear",
+        "aliases": []
+      },
+      {
+        "name": "Porcupine",
+        "aliases": []
+      },
+      {
+        "name": "Rabbit",
+        "aliases": [
+          "Bunny"
+        ]
+      },
+      {
+        "name": "Raccoon",
+        "aliases": []
+      },
+      {
+        "name": "Rat",
+        "aliases": []
+      },
+      {
+        "name": "Rattlesnake",
+        "aliases": []
+      },
+      {
+        "name": "Raven",
+        "aliases": []
+      },
+      {
+        "name": "Rhinoceros",
+        "aliases": [
+          "Rhino"
+        ]
+      },
+      {
+        "name": "Salamander",
+        "aliases": []
+      },
+      {
+        "name": "Salmon",
+        "aliases": []
+      },
+      {
+        "name": "Scorpion",
+        "aliases": []
+      },
+      {
+        "name": "Seahorse",
+        "aliases": []
+      },
+      {
+        "name": "Seal",
+        "aliases": []
+      },
+      {
+        "name": "Shark",
+        "aliases": []
+      },
+      {
+        "name": "Sheep",
+        "aliases": [
+          "Lamb"
+        ]
+      },
+      {
+        "name": "Shrimp",
+        "aliases": [
+          "Prawn"
+        ]
+      },
+      {
+        "name": "Skunk",
+        "aliases": []
+      },
+      {
+        "name": "Sloth",
+        "aliases": []
+      },
+      {
+        "name": "Snail",
+        "aliases": []
+      },
+      {
+        "name": "Snake",
+        "aliases": []
+      },
+      {
+        "name": "Sparrow",
+        "aliases": []
+      },
+      {
+        "name": "Spider",
+        "aliases": []
+      },
+      {
+        "name": "Squid",
+        "aliases": []
+      },
+      {
+        "name": "Squirrel",
+        "aliases": []
+      },
+      {
+        "name": "Starfish",
+        "aliases": [
+          "Sea star"
+        ]
+      },
+      {
+        "name": "Stingray",
+        "aliases": []
+      },
+      {
+        "name": "Stork",
+        "aliases": []
+      },
+      {
+        "name": "Swan",
+        "aliases": []
+      },
+      {
+        "name": "Tapir",
+        "aliases": []
+      },
+      {
+        "name": "Tarantula",
+        "aliases": []
+      },
+      {
+        "name": "Tiger",
+        "aliases": []
+      },
+      {
+        "name": "Toad",
+        "aliases": []
+      },
+      {
+        "name": "Tortoise",
+        "aliases": []
+      },
+      {
+        "name": "Toucan",
+        "aliases": []
+      },
+      {
+        "name": "Turkey",
+        "aliases": []
+      },
+      {
+        "name": "Turtle",
+        "aliases": []
+      },
+      {
+        "name": "Vulture",
+        "aliases": []
+      },
+      {
+        "name": "Walrus",
+        "aliases": []
+      },
+      {
+        "name": "Warthog",
+        "aliases": []
+      },
+      {
+        "name": "Wasp",
+        "aliases": []
+      },
+      {
+        "name": "Weasel",
+        "aliases": []
+      },
+      {
+        "name": "Whale",
+        "aliases": []
+      },
+      {
+        "name": "Wildebeest",
+        "aliases": [
+          "Gnu"
+        ]
+      },
+      {
+        "name": "Wolf",
+        "aliases": []
+      },
+      {
+        "name": "Wolverine",
+        "aliases": []
+      },
+      {
+        "name": "Wombat",
+        "aliases": []
+      },
+      {
+        "name": "Woodpecker",
+        "aliases": []
+      },
+      {
+        "name": "Worm",
+        "aliases": [
+          "Earthworm"
+        ]
+      },
+      {
+        "name": "Yak",
+        "aliases": []
+      },
+      {
+        "name": "Zebra",
+        "aliases": []
+      }
+    ]
+  },
+  {
+    "id": "car_brands",
+    "name": "Car brands",
+    "emoji": "🚗",
+    "answers": [
+      {
+        "name": "Abarth",
+        "aliases": []
+      },
+      {
+        "name": "Acura",
+        "aliases": []
+      },
+      {
+        "name": "Alfa Romeo",
+        "aliases": []
+      },
+      {
+        "name": "Alpine",
+        "aliases": []
+      },
+      {
+        "name": "Aston Martin",
+        "aliases": []
+      },
+      {
+        "name": "Audi",
+        "aliases": []
+      },
+      {
+        "name": "Bentley",
+        "aliases": []
+      },
+      {
+        "name": "BMW",
+        "aliases": []
+      },
+      {
+        "name": "Bugatti",
+        "aliases": []
+      },
+      {
+        "name": "Buick",
+        "aliases": []
+      },
+      {
+        "name": "BYD",
+        "aliases": []
+      },
+      {
+        "name": "Cadillac",
+        "aliases": []
+      },
+      {
+        "name": "Changan",
+        "aliases": []
+      },
+      {
+        "name": "Chery",
+        "aliases": []
+      },
+      {
+        "name": "Chevrolet",
+        "aliases": [
+          "Chevy"
+        ]
+      },
+      {
+        "name": "Chrysler",
+        "aliases": []
+      },
+      {
+        "name": "Citroen",
+        "aliases": []
+      },
+      {
+        "name": "Cupra",
+        "aliases": []
+      },
+      {
+        "name": "Dacia",
+        "aliases": []
+      },
+      {
+        "name": "Daewoo",
+        "aliases": []
+      },
+      {
+        "name": "Daihatsu",
+        "aliases": []
+      },
+      {
+        "name": "Datsun",
+        "aliases": []
+      },
+      {
+        "name": "Dodge",
+        "aliases": []
+      },
+      {
+        "name": "Ferrari",
+        "aliases": []
+      },
+      {
+        "name": "Fiat",
+        "aliases": []
+      },
+      {
+        "name": "Ford",
+        "aliases": []
+      },
+      {
+        "name": "Geely",
+        "aliases": []
+      },
+      {
+        "name": "Genesis",
+        "aliases": []
+      },
+      {
+        "name": "GMC",
+        "aliases": []
+      },
+      {
+        "name": "Great Wall",
+        "aliases": []
+      },
+      {
+        "name": "Haval",
+        "aliases": []
+      },
+      {
+        "name": "Holden",
+        "aliases": []
+      },
+      {
+        "name": "Honda",
+        "aliases": []
+      },
+      {
+        "name": "Hongqi",
+        "aliases": []
+      },
+      {
+        "name": "Hummer",
+        "aliases": []
+      },
+      {
+        "name": "Hyundai",
+        "aliases": []
+      },
+      {
+        "name": "Infiniti",
+        "aliases": []
+      },
+      {
+        "name": "Isuzu",
+        "aliases": []
+      },
+      {
+        "name": "Jaguar",
+        "aliases": []
+      },
+      {
+        "name": "Jeep",
+        "aliases": []
+      },
+      {
+        "name": "Kantanka",
+        "aliases": []
+      },
+      {
+        "name": "Kia",
+        "aliases": []
+      },
+      {
+        "name": "Koenigsegg",
+        "aliases": []
+      },
+      {
+        "name": "Lada",
+        "aliases": []
+      },
+      {
+        "name": "Lamborghini",
+        "aliases": []
+      },
+      {
+        "name": "Lancia",
+        "aliases": []
+      },
+      {
+        "name": "Land Rover",
+        "aliases": []
+      },
+      {
+        "name": "Lexus",
+        "aliases": []
+      },
+      {
+        "name": "Lincoln",
+        "aliases": []
+      },
+      {
+        "name": "Lotus",
+        "aliases": []
+      },
+      {
+        "name": "Lucid",
+        "aliases": []
+      },
+      {
+        "name": "Mahindra",
+        "aliases": []
+      },
+      {
+        "name": "Maserati",
+        "aliases": []
+      },
+      {
+        "name": "Maybach",
+        "aliases": []
+      },
+      {
+        "name": "Mazda",
+        "aliases": []
+      },
+      {
+        "name": "McLaren",
+        "aliases": []
+      },
+      {
+        "name": "Mercedes-Benz",
+        "aliases": [
+          "Mercedes",
+          "Benz"
+        ]
+      },
+      {
+        "name": "Mercury",
+        "aliases": []
+      },
+      {
+        "name": "MG",
+        "aliases": []
+      },
+      {
+        "name": "Mini",
+        "aliases": []
+      },
+      {
+        "name": "Mitsubishi",
+        "aliases": []
+      },
+      {
+        "name": "Morgan",
+        "aliases": []
+      },
+      {
+        "name": "NIO",
+        "aliases": []
+      },
+      {
+        "name": "Nissan",
+        "aliases": []
+      },
+      {
+        "name": "Oldsmobile",
+        "aliases": []
+      },
+      {
+        "name": "Opel",
+        "aliases": []
+      },
+      {
+        "name": "Pagani",
+        "aliases": []
+      },
+      {
+        "name": "Perodua",
+        "aliases": []
+      },
+      {
+        "name": "Peugeot",
+        "aliases": []
+      },
+      {
+        "name": "Plymouth",
+        "aliases": []
+      },
+      {
+        "name": "Polestar",
+        "aliases": []
+      },
+      {
+        "name": "Pontiac",
+        "aliases": []
+      },
+      {
+        "name": "Porsche",
+        "aliases": []
+      },
+      {
+        "name": "Proton",
+        "aliases": []
+      },
+      {
+        "name": "RAM",
+        "aliases": [
+          "Ram Trucks"
+        ]
+      },
+      {
+        "name": "Renault",
+        "aliases": []
+      },
+      {
+        "name": "Rimac",
+        "aliases": []
+      },
+      {
+        "name": "Rivian",
+        "aliases": []
+      },
+      {
+        "name": "Rolls-Royce",
+        "aliases": []
+      },
+      {
+        "name": "Saab",
+        "aliases": []
+      },
+      {
+        "name": "Saturn",
+        "aliases": []
+      },
+      {
+        "name": "Scion",
+        "aliases": []
+      },
+      {
+        "name": "Seat",
+        "aliases": []
+      },
+      {
+        "name": "Skoda",
+        "aliases": []
+      },
+      {
+        "name": "Smart",
+        "aliases": []
+      },
+      {
+        "name": "Ssangyong",
+        "aliases": [
+          "KGM"
+        ]
+      },
+      {
+        "name": "Subaru",
+        "aliases": []
+      },
+      {
+        "name": "Suzuki",
+        "aliases": []
+      },
+      {
+        "name": "Tata",
+        "aliases": []
+      },
+      {
+        "name": "Tesla",
+        "aliases": []
+      },
+      {
+        "name": "Toyota",
+        "aliases": []
+      },
+      {
+        "name": "TVR",
+        "aliases": []
+      },
+      {
+        "name": "Vauxhall",
+        "aliases": []
+      },
+      {
+        "name": "Volkswagen",
+        "aliases": [
+          "VW"
+        ]
+      },
+      {
+        "name": "Volvo",
+        "aliases": []
+      },
+      {
+        "name": "Wuling",
+        "aliases": []
+      },
+      {
+        "name": "Xpeng",
+        "aliases": []
+      }
+    ]
+  },
+  {
+    "id": "colors",
+    "name": "Colors",
+    "emoji": "🎨",
+    "answers": [
+      {
+        "name": "Amber",
+        "aliases": []
+      },
+      {
+        "name": "Apricot",
+        "aliases": []
+      },
+      {
+        "name": "Aqua",
+        "aliases": []
+      },
+      {
+        "name": "Azure",
+        "aliases": []
+      },
+      {
+        "name": "Baby blue",
+        "aliases": []
+      },
+      {
+        "name": "Beige",
+        "aliases": []
+      },
+      {
+        "name": "Black",
+        "aliases": []
+      },
+      {
+        "name": "Blue",
+        "aliases": []
+      },
+      {
+        "name": "Bronze",
+        "aliases": []
+      },
+      {
+        "name": "Brown",
+        "aliases": []
+      },
+      {
+        "name": "Burgundy",
+        "aliases": []
+      },
+      {
+        "name": "Cerulean",
+        "aliases": []
+      },
+      {
+        "name": "Champagne",
+        "aliases": []
+      },
+      {
+        "name": "Charcoal",
+        "aliases": []
+      },
+      {
+        "name": "Cherry",
+        "aliases": []
+      },
+      {
+        "name": "Chestnut",
+        "aliases": []
+      },
+      {
+        "name": "Chocolate",
+        "aliases": []
+      },
+      {
+        "name": "Cobalt",
+        "aliases": []
+      },
+      {
+        "name": "Copper",
+        "aliases": []
+      },
+      {
+        "name": "Coral",
+        "aliases": []
+      },
+      {
+        "name": "Cream",
+        "aliases": []
+      },
+      {
+        "name": "Crimson",
+        "aliases": []
+      },
+      {
+        "name": "Cyan",
+        "aliases": []
+      },
+      {
+        "name": "Eggshell",
+        "aliases": []
+      },
+      {
+        "name": "Electric blue",
+        "aliases": []
+      },
+      {
+        "name": "Emerald",
+        "aliases": []
+      },
+      {
+        "name": "Forest green",
+        "aliases": []
+      },
+      {
+        "name": "Fuchsia",
+        "aliases": []
+      },
+      {
+        "name": "Gold",
+        "aliases": []
+      },
+      {
+        "name": "Gray",
+        "aliases": [
+          "Grey"
+        ]
+      },
+      {
+        "name": "Green",
+        "aliases": []
+      },
+      {
+        "name": "Hot pink",
+        "aliases": []
+      },
+      {
+        "name": "Indigo",
+        "aliases": []
+      },
+      {
+        "name": "Ivory",
+        "aliases": []
+      },
+      {
+        "name": "Jade",
+        "aliases": []
+      },
+      {
+        "name": "Khaki",
+        "aliases": []
+      },
+      {
+        "name": "Lavender",
+        "aliases": []
+      },
+      {
+        "name": "Lemon",
+        "aliases": []
+      },
+      {
+        "name": "Lilac",
+        "aliases": []
+      },
+      {
+        "name": "Lime",
+        "aliases": [
+          "Lime green"
+        ]
+      },
+      {
+        "name": "Magenta",
+        "aliases": []
+      },
+      {
+        "name": "Mahogany",
+        "aliases": []
+      },
+      {
+        "name": "Maroon",
+        "aliases": []
+      },
+      {
+        "name": "Mauve",
+        "aliases": []
+      },
+      {
+        "name": "Mint",
+        "aliases": []
+      },
+      {
+        "name": "Mustard",
+        "aliases": []
+      },
+      {
+        "name": "Navy",
+        "aliases": [
+          "Navy blue"
+        ]
+      },
+      {
+        "name": "Ochre",
+        "aliases": []
+      },
+      {
+        "name": "Off-white",
+        "aliases": []
+      },
+      {
+        "name": "Olive",
+        "aliases": []
+      },
+      {
+        "name": "Orange",
+        "aliases": []
+      },
+      {
+        "name": "Peach",
+        "aliases": []
+      },
+      {
+        "name": "Periwinkle",
+        "aliases": []
+      },
+      {
+        "name": "Pink",
+        "aliases": []
+      },
+      {
+        "name": "Plum",
+        "aliases": []
+      },
+      {
+        "name": "Purple",
+        "aliases": []
+      },
+      {
+        "name": "Red",
+        "aliases": []
+      },
+      {
+        "name": "Rose",
+        "aliases": []
+      },
+      {
+        "name": "Royal blue",
+        "aliases": []
+      },
+      {
+        "name": "Ruby",
+        "aliases": []
+      },
+      {
+        "name": "Rust",
+        "aliases": []
+      },
+      {
+        "name": "Salmon",
+        "aliases": []
+      },
+      {
+        "name": "Sapphire",
+        "aliases": []
+      },
+      {
+        "name": "Scarlet",
+        "aliases": []
+      },
+      {
+        "name": "Sepia",
+        "aliases": []
+      },
+      {
+        "name": "Silver",
+        "aliases": []
+      },
+      {
+        "name": "Sky blue",
+        "aliases": []
+      },
+      {
+        "name": "Slate",
+        "aliases": []
+      },
+      {
+        "name": "Tan",
+        "aliases": []
+      },
+      {
+        "name": "Taupe",
+        "aliases": []
+      },
+      {
+        "name": "Teal",
+        "aliases": []
+      },
+      {
+        "name": "Turquoise",
+        "aliases": []
+      },
+      {
+        "name": "Vermilion",
+        "aliases": []
+      },
+      {
+        "name": "Violet",
+        "aliases": []
+      },
+      {
+        "name": "White",
+        "aliases": []
+      },
+      {
+        "name": "Yellow",
+        "aliases": []
+      }
+    ]
+  },
+  {
+    "id": "body_parts",
+    "name": "Body parts",
+    "emoji": "🦵",
+    "answers": [
+      {
+        "name": "Abdomen",
+        "aliases": []
+      },
+      {
+        "name": "Achilles tendon",
+        "aliases": []
+      },
+      {
+        "name": "Ankle",
+        "aliases": []
+      },
+      {
+        "name": "Appendix",
+        "aliases": []
+      },
+      {
+        "name": "Arm",
+        "aliases": []
+      },
+      {
+        "name": "Armpit",
+        "aliases": []
+      },
+      {
+        "name": "Artery",
+        "aliases": []
+      },
+      {
+        "name": "Back",
+        "aliases": []
+      },
+      {
+        "name": "Biceps",
+        "aliases": []
+      },
+      {
+        "name": "Bladder",
+        "aliases": []
+      },
+      {
+        "name": "Bone",
+        "aliases": []
+      },
+      {
+        "name": "Brain",
+        "aliases": []
+      },
+      {
+        "name": "Breast",
+        "aliases": []
+      },
+      {
+        "name": "Buttocks",
+        "aliases": [
+          "Bottom",
+          "Bum"
+        ]
+      },
+      {
+        "name": "Calf",
+        "aliases": []
+      },
+      {
+        "name": "Cheek",
+        "aliases": []
+      },
+      {
+        "name": "Chest",
+        "aliases": []
+      },
+      {
+        "name": "Chin",
+        "aliases": []
+      },
+      {
+        "name": "Collarbone",
+        "aliases": [
+          "Clavicle"
+        ]
+      },
+      {
+        "name": "Diaphragm",
+        "aliases": []
+      },
+      {
+        "name": "Ear",
+        "aliases": []
+      },
+      {
+        "name": "Eardrum",
+        "aliases": []
+      },
+      {
+        "name": "Earlobe",
+        "aliases": []
+      },
+      {
+        "name": "Elbow",
+        "aliases": []
+      },
+      {
+        "name": "Esophagus",
+        "aliases": [
+          "Oesophagus",
+          "Gullet"
+        ]
+      },
+      {
+        "name": "Eye",
+        "aliases": []
+      },
+      {
+        "name": "Eyebrow",
+        "aliases": []
+      },
+      {
+        "name": "Eyelash",
+        "aliases": []
+      },
+      {
+        "name": "Eyelid",
+        "aliases": []
+      },
+      {
+        "name": "Face",
+        "aliases": []
+      },
+      {
+        "name": "Finger",
+        "aliases": []
+      },
+      {
+        "name": "Fingernail",
+        "aliases": [
+          "Nail"
+        ]
+      },
+      {
+        "name": "Foot",
+        "aliases": [
+          "Feet"
+        ]
+      },
+      {
+        "name": "Forearm",
+        "aliases": []
+      },
+      {
+        "name": "Forehead",
+        "aliases": []
+      },
+      {
+        "name": "Gallbladder",
+        "aliases": []
+      },
+      {
+        "name": "Gum",
+        "aliases": []
+      },
+      {
+        "name": "Hair",
+        "aliases": []
+      },
+      {
+        "name": "Hamstring",
+        "aliases": []
+      },
+      {
+        "name": "Hand",
+        "aliases": []
+      },
+      {
+        "name": "Head",
+        "aliases": []
+      },
+      {
+        "name": "Heart",
+        "aliases": []
+      },
+      {
+        "name": "Heel",
+        "aliases": []
+      },
+      {
+        "name": "Hip",
+        "aliases": []
+      },
+      {
+        "name": "Intestine",
+        "aliases": [
+          "Gut",
+          "Bowel"
+        ]
+      },
+      {
+        "name": "Iris",
+        "aliases": []
+      },
+      {
+        "name": "Jaw",
+        "aliases": []
+      },
+      {
+        "name": "Kidney",
+        "aliases": []
+      },
+      {
+        "name": "Knee",
+        "aliases": []
+      },
+      {
+        "name": "Kneecap",
+        "aliases": []
+      },
+      {
+        "name": "Knuckle",
+        "aliases": []
+      },
+      {
+        "name": "Larynx",
+        "aliases": [
+          "Voice box"
+        ]
+      },
+      {
+        "name": "Leg",
+        "aliases": []
+      },
+      {
+        "name": "Lip",
+        "aliases": []
+      },
+      {
+        "name": "Liver",
+        "aliases": []
+      },
+      {
+        "name": "Lung",
+        "aliases": []
+      },
+      {
+        "name": "Mouth",
+        "aliases": []
+      },
+      {
+        "name": "Muscle",
+        "aliases": []
+      },
+      {
+        "name": "Navel",
+        "aliases": [
+          "Belly button"
+        ]
+      },
+      {
+        "name": "Neck",
+        "aliases": []
+      },
+      {
+        "name": "Nose",
+        "aliases": []
+      },
+      {
+        "name": "Nostril",
+        "aliases": []
+      },
+      {
+        "name": "Palm",
+        "aliases": []
+      },
+      {
+        "name": "Pancreas",
+        "aliases": []
+      },
+      {
+        "name": "Pelvis",
+        "aliases": []
+      },
+      {
+        "name": "Pupil",
+        "aliases": []
+      },
+      {
+        "name": "Retina",
+        "aliases": []
+      },
+      {
+        "name": "Rib",
+        "aliases": []
+      },
+      {
+        "name": "Scalp",
+        "aliases": []
+      },
+      {
+        "name": "Shin",
+        "aliases": []
+      },
+      {
+        "name": "Shoulder",
+        "aliases": []
+      },
+      {
+        "name": "Shoulder blade",
+        "aliases": [
+          "Scapula"
+        ]
+      },
+      {
+        "name": "Skin",
+        "aliases": []
+      },
+      {
+        "name": "Skull",
+        "aliases": []
+      },
+      {
+        "name": "Sole",
+        "aliases": []
+      },
+      {
+        "name": "Spine",
+        "aliases": [
+          "Backbone"
+        ]
+      },
+      {
+        "name": "Spleen",
+        "aliases": []
+      },
+      {
+        "name": "Stomach",
+        "aliases": [
+          "Belly",
+          "Tummy"
+        ]
+      },
+      {
+        "name": "Temple",
+        "aliases": []
+      },
+      {
+        "name": "Tendon",
+        "aliases": []
+      },
+      {
+        "name": "Thigh",
+        "aliases": []
+      },
+      {
+        "name": "Throat",
+        "aliases": []
+      },
+      {
+        "name": "Thumb",
+        "aliases": []
+      },
+      {
+        "name": "Toe",
+        "aliases": []
+      },
+      {
+        "name": "Toenail",
+        "aliases": []
+      },
+      {
+        "name": "Tongue",
+        "aliases": []
+      },
+      {
+        "name": "Tonsil",
+        "aliases": []
+      },
+      {
+        "name": "Tooth",
+        "aliases": [
+          "Teeth"
+        ]
+      },
+      {
+        "name": "Triceps",
+        "aliases": []
+      },
+      {
+        "name": "Uvula",
+        "aliases": []
+      },
+      {
+        "name": "Vein",
+        "aliases": []
+      },
+      {
+        "name": "Waist",
+        "aliases": []
+      },
+      {
+        "name": "Windpipe",
+        "aliases": [
+          "Trachea"
+        ]
+      },
+      {
+        "name": "Wrist",
+        "aliases": []
+      }
+    ]
+  },
+  {
+    "id": "sports",
+    "name": "Sports",
+    "emoji": "⚽",
+    "answers": [
+      {
+        "name": "American football",
+        "aliases": []
+      },
+      {
+        "name": "Archery",
+        "aliases": []
+      },
+      {
+        "name": "Athletics",
+        "aliases": [
+          "Track and field"
+        ]
+      },
+      {
+        "name": "Australian rules football",
+        "aliases": [
+          "Aussie rules",
+          "AFL"
+        ]
+      },
+      {
+        "name": "Badminton",
+        "aliases": []
+      },
+      {
+        "name": "Baseball",
+        "aliases": []
+      },
+      {
+        "name": "Basketball",
+        "aliases": []
+      },
+      {
+        "name": "Beach volleyball",
+        "aliases": []
+      },
+      {
+        "name": "Biathlon",
+        "aliases": []
+      },
+      {
+        "name": "BMX",
+        "aliases": []
+      },
+      {
+        "name": "Bobsleigh",
+        "aliases": [
+          "Bobsled"
+        ]
+      },
+      {
+        "name": "Bocce",
+        "aliases": [
+          "Boules",
+          "Petanque"
+        ]
+      },
+      {
+        "name": "Bodybuilding",
+        "aliases": []
+      },
+      {
+        "name": "Bowling",
+        "aliases": [
+          "Ten-pin bowling"
+        ]
+      },
+      {
+        "name": "Boxing",
+        "aliases": []
+      },
+      {
+        "name": "Canoeing",
+        "aliases": [
+          "Kayaking"
+        ]
+      },
+      {
+        "name": "Climbing",
+        "aliases": [
+          "Rock climbing"
+        ]
+      },
+      {
+        "name": "Cricket",
+        "aliases": []
+      },
+      {
+        "name": "Croquet",
+        "aliases": []
+      },
+      {
+        "name": "Curling",
+        "aliases": []
+      },
+      {
+        "name": "Cycling",
+        "aliases": []
+      },
+      {
+        "name": "Darts",
+        "aliases": []
+      },
+      {
+        "name": "Decathlon",
+        "aliases": []
+      },
+      {
+        "name": "Diving",
+        "aliases": []
+      },
+      {
+        "name": "Dodgeball",
+        "aliases": []
+      },
+      {
+        "name": "Equestrian",
+        "aliases": [
+          "Horse riding"
+        ]
+      },
+      {
+        "name": "Fencing",
+        "aliases": []
+      },
+      {
+        "name": "Figure skating",
+        "aliases": [
+          "Ice skating"
+        ]
+      },
+      {
+        "name": "Floorball",
+        "aliases": []
+      },
+      {
+        "name": "Football",
+        "aliases": [
+          "Soccer",
+          "Association football"
+        ]
+      },
+      {
+        "name": "Futsal",
+        "aliases": []
+      },
+      {
+        "name": "Gaelic football",
+        "aliases": []
+      },
+      {
+        "name": "Golf",
+        "aliases": []
+      },
+      {
+        "name": "Gymnastics",
+        "aliases": []
+      },
+      {
+        "name": "Handball",
+        "aliases": []
+      },
+      {
+        "name": "Heptathlon",
+        "aliases": []
+      },
+      {
+        "name": "Hockey",
+        "aliases": [
+          "Field hockey"
+        ]
+      },
+      {
+        "name": "Horse racing",
+        "aliases": []
+      },
+      {
+        "name": "Hurling",
+        "aliases": []
+      },
+      {
+        "name": "Ice hockey",
+        "aliases": []
+      },
+      {
+        "name": "Jiu-jitsu",
+        "aliases": [
+          "Brazilian jiu-jitsu",
+          "BJJ"
+        ]
+      },
+      {
+        "name": "Judo",
+        "aliases": []
+      },
+      {
+        "name": "Kabaddi",
+        "aliases": []
+      },
+      {
+        "name": "Karate",
+        "aliases": []
+      },
+      {
+        "name": "Kickboxing",
+        "aliases": []
+      },
+      {
+        "name": "Kitesurfing",
+        "aliases": []
+      },
+      {
+        "name": "Lacrosse",
+        "aliases": []
+      },
+      {
+        "name": "Luge",
+        "aliases": []
+      },
+      {
+        "name": "Marathon",
+        "aliases": []
+      },
+      {
+        "name": "Mixed martial arts",
+        "aliases": [
+          "MMA"
+        ]
+      },
+      {
+        "name": "Motocross",
+        "aliases": []
+      },
+      {
+        "name": "Motor racing",
+        "aliases": [
+          "Formula One",
+          "F1"
+        ]
+      },
+      {
+        "name": "Mountain biking",
+        "aliases": []
+      },
+      {
+        "name": "Muay Thai",
+        "aliases": []
+      },
+      {
+        "name": "Netball",
+        "aliases": []
+      },
+      {
+        "name": "Orienteering",
+        "aliases": []
+      },
+      {
+        "name": "Padel",
+        "aliases": []
+      },
+      {
+        "name": "Paragliding",
+        "aliases": []
+      },
+      {
+        "name": "Pentathlon",
+        "aliases": [
+          "Modern pentathlon"
+        ]
+      },
+      {
+        "name": "Polo",
+        "aliases": []
+      },
+      {
+        "name": "Pool",
+        "aliases": [
+          "Billiards"
+        ]
+      },
+      {
+        "name": "Powerlifting",
+        "aliases": []
+      },
+      {
+        "name": "Racquetball",
+        "aliases": []
+      },
+      {
+        "name": "Rally",
+        "aliases": [
+          "Rallying"
+        ]
+      },
+      {
+        "name": "Rowing",
+        "aliases": []
+      },
+      {
+        "name": "Rugby",
+        "aliases": [
+          "Rugby union"
+        ]
+      },
+      {
+        "name": "Rugby league",
+        "aliases": []
+      },
+      {
+        "name": "Sailing",
+        "aliases": []
+      },
+      {
+        "name": "Sepak takraw",
+        "aliases": []
+      },
+      {
+        "name": "Shooting",
+        "aliases": []
+      },
+      {
+        "name": "Skateboarding",
+        "aliases": []
+      },
+      {
+        "name": "Skeleton",
+        "aliases": []
+      },
+      {
+        "name": "Skiing",
+        "aliases": []
+      },
+      {
+        "name": "Skydiving",
+        "aliases": []
+      },
+      {
+        "name": "Snooker",
+        "aliases": []
+      },
+      {
+        "name": "Snowboarding",
+        "aliases": []
+      },
+      {
+        "name": "Softball",
+        "aliases": []
+      },
+      {
+        "name": "Speed skating",
+        "aliases": []
+      },
+      {
+        "name": "Squash",
+        "aliases": []
+      },
+      {
+        "name": "Sumo",
+        "aliases": []
+      },
+      {
+        "name": "Surfing",
+        "aliases": []
+      },
+      {
+        "name": "Swimming",
+        "aliases": []
+      },
+      {
+        "name": "Synchronized swimming",
+        "aliases": [
+          "Artistic swimming"
+        ]
+      },
+      {
+        "name": "Table tennis",
+        "aliases": [
+          "Ping pong"
+        ]
+      },
+      {
+        "name": "Taekwondo",
+        "aliases": []
+      },
+      {
+        "name": "Tennis",
+        "aliases": []
+      },
+      {
+        "name": "Triathlon",
+        "aliases": []
+      },
+      {
+        "name": "Ultimate frisbee",
+        "aliases": [
+          "Ultimate"
+        ]
+      },
+      {
+        "name": "Volleyball",
+        "aliases": []
+      },
+      {
+        "name": "Water polo",
+        "aliases": []
+      },
+      {
+        "name": "Water skiing",
+        "aliases": []
+      },
+      {
+        "name": "Weightlifting",
+        "aliases": []
+      },
+      {
+        "name": "Windsurfing",
+        "aliases": []
+      },
+      {
+        "name": "Wrestling",
+        "aliases": []
+      }
+    ]
+  }
+]

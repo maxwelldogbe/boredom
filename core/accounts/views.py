@@ -18,8 +18,10 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from accounts import me as me_data
-from accounts import services
+from accounts import recovery, services
+from accounts.models import Profile
 from accounts.ratelimit import KeyedRateLimiter, login_limiter, register_limiter
+from accounts.recovery import token_revoked
 from accounts.tags import ensure_tag
 from accounts.tokens import issue_token, user_id_from_token
 from games.constants import AVATAR_CHANGE_DAYS, USERNAME_PATTERN
@@ -75,6 +77,8 @@ def _bearer_user(request: HttpRequest) -> User:
         else None
     )
     if user is None or not hasattr(user, "profile"):
+        raise ApiError(401, "UNAUTHORIZED", "Please log in again.")
+    if token_revoked(user.profile.password_changed_at, token.strip()):
         raise ApiError(401, "UNAUTHORIZED", "Please log in again.")
     return user
 
@@ -214,6 +218,7 @@ def me(request: HttpRequest, body: dict[str, Any], user: User | None) -> JsonRes
             "stats": services.public_stats(user),
             "tag": ensure_tag(profile),
             "createdAt": me_data.iso(profile.created_at),
+            "phone": recovery.mask_phone(profile.phone),
         }
     )
 
@@ -268,5 +273,128 @@ def delete_account(request: HttpRequest, body: dict[str, Any], user: User | None
         raise invalid({"password": "Enter your password."})
     if len(password) > PASSWORD_MAX or not user.check_password(password):
         raise ApiError(401, "INVALID_CREDENTIALS", "Wrong password.")
-    services.delete_account(user)
+    try:
+        services.delete_account(user)
+    except services.HasFunds:
+        raise ApiError(
+            409, "HAS_FUNDS", "Withdraw your Nemesis balance and close open requests first."
+        ) from None
     return JsonResponse({"ok": True})
+
+
+# ----- account recovery by SMS (accounts.recovery) ---------------------------------------------
+
+recovery_limiter = KeyedRateLimiter()
+INVALID_CODE = "That code is wrong or has expired. Ask for a new one."
+
+
+@api("POST", auth=True, limiter=recovery_limiter, no_store=True)
+def add_phone(request: HttpRequest, body: dict[str, Any], user: User | None) -> JsonResponse:
+    """Text a confirmation code to a new recovery number (it is saved once confirmed)."""
+    assert user is not None
+    phone = recovery.normalize_phone(body.get("phone"))
+    if phone is None:
+        raise invalid({"phone": "Enter a phone number, like 024 000 0000 or +233 24 000 0000."})
+    if Profile.objects.filter(phone=phone).exclude(user=user).exists():
+        raise ApiError(
+            409, "PHONE_TAKEN", "That number is used by another account.", {"phone": "Taken."}
+        )
+    if not recovery.send_code(recovery.VERIFY, user.pk, phone):
+        raise ApiError(429, "RATE_LIMITED", "We couldn't send a code right now. Try again later.")
+    return JsonResponse({"sent": True, "phone": recovery.mask_phone(phone)})
+
+
+@api("DELETE", auth=True, no_store=True)
+def remove_phone(request: HttpRequest, body: dict[str, Any], user: User | None) -> JsonResponse:
+    assert user is not None
+    Profile.objects.filter(user=user).update(phone=None)
+    return JsonResponse({"phone": None})
+
+
+@api("POST", auth=True, limiter=recovery_limiter, no_store=True)
+def verify_phone(request: HttpRequest, body: dict[str, Any], user: User | None) -> JsonResponse:
+    """Confirm the number with the texted code; it then becomes the recovery number."""
+    assert user is not None
+    phone = recovery.check_code(recovery.VERIFY, user.pk, body.get("code"))
+    if phone is None:
+        raise ApiError(400, "INVALID_CODE", INVALID_CODE, {"code": "Wrong or expired."})
+    try:
+        Profile.objects.filter(user=user).update(phone=phone)
+    except IntegrityError:
+        raise ApiError(409, "PHONE_TAKEN", "That number is used by another account.") from None
+    return JsonResponse({"phone": recovery.mask_phone(phone)})
+
+
+def _recovery_account(login: Any, need_phone: bool = True) -> User | None:
+    """The active account a username or recovery phone number names (with `need_phone`, only
+    one that has a recovery number)."""
+    if not isinstance(login, str) or not login.strip():
+        return None
+    login = login.strip()
+    phone = recovery.normalize_phone(login)
+    query = Profile.objects.select_related("user").filter(user__is_active=True)
+    if need_phone:
+        query = query.filter(phone__isnull=False)
+    found = query.filter(phone=phone).first() if phone else None
+    found = found or query.filter(user__username__iexact=login).first()
+    return found.user if found else None
+
+
+@api("POST", limiter=recovery_limiter, no_store=True)
+def forgot_password(request: HttpRequest, body: dict[str, Any], user: User | None) -> JsonResponse:
+    """Text a reset code to the account's recovery number. Always the same answer, so nobody
+    can learn which usernames or numbers have an account."""
+    account = _recovery_account(body.get("login"))
+    if account is not None:
+        recovery.send_code(recovery.RESET, account.pk, account.profile.phone)
+    return JsonResponse({"sent": True})
+
+
+@api("POST", limiter=recovery_limiter, no_store=True)
+def reset_password(request: HttpRequest, body: dict[str, Any], user: User | None) -> JsonResponse:
+    """Set a new password with the texted code (a reset code, or the code of a staff-approved
+    recovery request, whose number then becomes the recovery number); older logins end."""
+    account = _recovery_account(body.get("login"), need_phone=False)
+    password = body.get("password")
+    if not isinstance(password, str) or len(password) > PASSWORD_MAX:
+        raise invalid({"password": "Choose a password."})
+    if account is None:
+        raise ApiError(400, "INVALID_CODE", INVALID_CODE, {"code": "Wrong or expired."})
+    try:
+        validate_password(password, account)
+    except ValidationError as exc:
+        raise invalid({"password": " ".join(exc.messages)}) from None
+    code = body.get("code")
+    if recovery.check_code(recovery.RESET, account.pk, code) is None:
+        approved_phone = recovery.redeem_approved_code(account, code)
+        if approved_phone is None:
+            raise ApiError(400, "INVALID_CODE", INVALID_CODE, {"code": "Wrong or expired."})
+        try:
+            Profile.objects.filter(user=account).update(phone=approved_phone)
+        except IntegrityError:
+            pass  # the number went to another account meanwhile; the reset still goes ahead
+    account.set_password(password)
+    account.save(update_fields=["password"])
+    Profile.objects.filter(user=account).update(password_changed_at=timezone.now())
+    account.refresh_from_db()
+    return JsonResponse(_session(account))
+
+
+@api("POST", limiter=recovery_limiter, no_store=True)
+def recovery_request(request: HttpRequest, body: dict[str, Any], user: User | None) -> JsonResponse:
+    """No recovery number on the account: ask staff. Always the same answer (no account probing)."""
+    fields: dict[str, str] = {}
+    username = body.get("username")
+    if not isinstance(username, str) or not USERNAME_RE.fullmatch(username.strip()):
+        fields["username"] = "Enter your username."
+    phone = recovery.normalize_phone(body.get("phone"))
+    if phone is None:
+        fields["phone"] = "Enter a phone number, like 024 000 0000 or +233 24 000 0000."
+    answers = recovery.clean_answers(body.get("answers"))
+    if "nickname" not in answers:
+        fields["nickname"] = "Tell us the nickname you used."
+    if fields:
+        raise invalid(fields)
+    assert isinstance(username, str) and phone is not None
+    recovery.submit_request(username.strip(), phone, answers)
+    return JsonResponse({"received": True})

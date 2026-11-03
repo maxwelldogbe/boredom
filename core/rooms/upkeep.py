@@ -8,6 +8,7 @@ import logging
 from collections.abc import Awaitable, Callable
 from typing import Any
 
+from games.constants import REGISTERED_ONLY_GAMES
 from rooms import hooks
 from rooms.models_types import Room
 
@@ -46,6 +47,10 @@ class UpkeepMixin:
         host = room.host()
         assert host is not None
         await self._room_event(room, "host_changed", host, {"previousHostId": previous})
+        if host.user_id is None and room.selected_game in REGISTERED_ONLY_GAMES:
+            room.selected_game, room.settings = None, {}
+            data = {"reason": "registered_only"}
+            await self._room_event(room, "game_unselected", host, data)
         return True
 
     def _schedule_host_check(self, room: Room) -> None:
@@ -54,7 +59,7 @@ class UpkeepMixin:
         room.host_task = asyncio.create_task(self._host_check(room))
 
     async def _host_check(self, room: Room) -> None:
-        """After HOST_TRANSFER_MS offline, hand host to someone online."""
+        """After HOST_OFFLINE_TRANSFER_MS offline, hand host to someone online."""
         await asyncio.sleep(self.host_transfer_ms / 1000)
         async with room.lock:
             room.host_task = None
@@ -94,8 +99,11 @@ class UpkeepMixin:
         """Remove a room, stop its timers and tell any still-connected sockets.
 
         A room removed mid-game (everyone left, or idle cleanup) records the game as abandoned.
+        A solo room records nothing.
         """
         if room.status == "playing" and room.game_id:
+            await self._refund_stakes(room, room.game_id)
+        if room.status == "playing" and room.game_id and not room.solo:
             try:
                 hooks.on_game_abandoned(hooks.game_record(room, room.game_id, self.clock(), None))
             except Exception:
@@ -106,6 +114,9 @@ class UpkeepMixin:
         if room.host_task is not None:
             room.host_task.cancel()
             room.host_task = None
+        if room.idle_task is not None and room.idle_task is not asyncio.current_task():
+            room.idle_task.cancel()
+        room.idle_task = None
         self.rooms.pop(room.code, None)
         for player in room.players:
             if player.channel:

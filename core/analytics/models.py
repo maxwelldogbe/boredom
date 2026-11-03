@@ -92,6 +92,18 @@ class ActivityEvent(models.Model):
         GAME_STARTED = "game_started"
         GAME_FINISHED = "game_finished"
         GAME_ABANDONED = "game_abandoned"
+        ID_SUBMITTED = "id_submitted"
+        ID_APPROVED = "id_approved"
+        ID_REJECTED = "id_rejected"
+        NEMESIS_ACTIVATED = "nemesis_activated"
+        NEMESIS_DEACTIVATED = "nemesis_deactivated"
+        DEPOSIT_SUBMITTED = "deposit_submitted"
+        DEPOSIT_APPROVED = "deposit_approved"
+        DEPOSIT_REJECTED = "deposit_rejected"
+        WITHDRAWAL_REQUESTED = "withdrawal_requested"
+        WITHDRAWAL_PAID = "withdrawal_paid"
+        SOLO_STARTED = "solo_started"
+        SOLO_FINISHED = "solo_finished"
 
     kind = models.CharField(max_length=32, choices=Kind.choices)
     occurred_at = models.DateTimeField()
@@ -131,3 +143,23 @@ class GuestQuota(models.Model):
 
     def __str__(self) -> str:
         return f"{self.guest_key} {self.plays}"
+
+
+class GameAvailability(models.Model):
+    """A game staff turned off (or back on) from the dashboard. No row means the game is on.
+
+    The live set lives in games.availability; this table keeps it across restarts.
+    """
+
+    game_id = models.CharField(max_length=GAME_ID_MAX, unique=True)
+    enabled = models.BooleanField(default=True)
+    changed_at = models.DateTimeField(auto_now=True)
+    changed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+
+    class Meta:
+        verbose_name_plural = "game availability"
+
+    def __str__(self) -> str:
+        return f"{self.game_id} {'on' if self.enabled else 'off'}"

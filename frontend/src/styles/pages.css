@@ -337,3 +337,255 @@
 .avatar-picker__hint {
   margin: 0;
 }
+
+/* ----- Nemesis (profile) ------------------------------------------------------------------ */
+.nemesis h3,
+.nemesis h4 {
+  margin: 0;
+}
+.nemesis__back {
+  justify-self: start;
+}
+.nemesis__balance {
+  display: grid;
+  gap: 2px;
+}
+.nemesis__amount {
+  font-size: 32px;
+  overflow-wrap: anywhere;
+}
+.nemesis__actions {
+  display: grid;
+  gap: 8px;
+}
+.nemesis__details {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 0;
+}
+.nemesis__details dt {
+  color: var(--muted);
+}
+.nemesis__details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.nemesis__reference {
+  font-family: ui-monospace, monospace;
+  font-size: 20px;
+  letter-spacing: 0.06em;
+}
+.nemesis__list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nemesis__row {
+  display: grid;
+  gap: 2px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.nemesis__row .btn {
+  justify-self: start;
+}
+.nemesis__in {
+  color: var(--success, inherit);
+}
+.nemesis__out {
+  color: var(--danger);
+}
+.nemesis__progress {
+  width: 100%;
+  height: 12px;
+}
+.nemesis__rules {
+  margin: 0;
+  padding-left: 20px;
+}
+.nemesis__check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--tap);
+  font-size: 16px;
+}
+.nemesis__check input {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+
+/* ----- solo games (PROTOCOL.md 16) ----- */
+
+.solo__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.solo__chip {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.solo__chip--on {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.solo-end__banner {
+  margin: 0;
+  font-size: 1.75rem;
+  text-align: center;
+}
+
+.solo-end__banner--win {
+  color: var(--success);
+}
+
+.solo-end__banner--lose {
+  color: var(--danger);
+}
+
+.player-card__bot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--border);
+  color: var(--text);
+}
+
+.bot-icon {
+  display: block;
+  width: 70%;
+  height: 70%;
+}
+
+/* ----- home hierarchy: one filled button, a pair of outlined ones, then quiet links ----- */
+
+.home__tagline {
+  margin: 0;
+}
+
+.home .home__create {
+  min-height: 56px;
+}
+
+.home__pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.home__pair .btn {
+  min-width: 0;
+  min-height: 48px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.home__links {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 4px;
+}
+
+.home__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.home__save {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* ----- home hierarchy: one filled button, a pair of outlined ones, quiet links ----- */
+
+.home .home__create {
+  min-height: 56px;
+}
+
+.home__pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.home__pair .btn {
+  min-width: 0;
+  min-height: 48px;
+  width: 100%;
+}
+
+.home__links {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.home__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.home__save {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.account__forgot {
+  margin: 0;
+  text-align: center;
+}
+
+.brag__balance {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.solo-end__brag {
+  margin: 0;
+  font-weight: 600;
+  text-align: center;
+}

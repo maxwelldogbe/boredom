@@ -83,11 +83,16 @@ def _range(request: HttpRequest) -> dict[str, Any]:
 
 
 def live_rooms() -> list[dict[str, Any]]:
-    """A read-only snapshot of the in-memory rooms: code, status, game and player counts."""
+    """A read-only snapshot of the in-memory rooms: code, status, game and player counts.
+
+    Solo rooms are private and left out.
+    """
     from rooms import manager as manager_module
 
     snapshot = []
     for room in list(manager_module.manager.rooms.values()):
+        if room.solo:
+            continue
         seated = room.seated()
         game = room.game_id or room.selected_game
         snapshot.append(
@@ -206,7 +211,11 @@ def user_action(request: HttpRequest, user_id: int, action: str) -> HttpResponse
     if action == "delete":
         if not model_admin.has_delete_permission(request, user):
             raise Http404("Not allowed.")
-        accounts_admin.delete_accounts(request, model_admin, User.objects.filter(pk=user.pk))
+        if not accounts_admin.delete_accounts(
+            request, model_admin, User.objects.filter(pk=user.pk)
+        ):
+            messages.error(request, "This account still has Nemesis funds or open requests.")
+            return detail_url
         messages.success(request, "Account deleted. Its games are kept as “Deleted player”.")
         return redirect("admin:dashboard-users")
     if not model_admin.has_change_permission(request, user):

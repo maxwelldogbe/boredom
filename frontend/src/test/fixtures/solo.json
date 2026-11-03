@@ -1,0 +1,995 @@
+{
+  "startAck": {
+    "code": "JMPB",
+    "playerId": "p_1484cb83afcb",
+    "roomToken": "SFfvyS1iBJ6CFRFe_87OEA",
+    "room": {
+      "code": "JMPB",
+      "hostId": "p_1484cb83afcb",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_1484cb83afcb",
+          "type": "registered",
+          "nickname": "Sam",
+          "color": "#1ABC9C",
+          "avatar": {
+            "style": "voxel-art",
+            "seed": "saved123"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1793701088038.1797,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false,
+          "bot": false
+        },
+        {
+          "id": "b_24074e9f5dcb",
+          "type": "bot",
+          "nickname": "Bot",
+          "color": "#607D8B",
+          "avatar": null,
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1793701088038.0923,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false,
+          "bot": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {},
+      "scoreboard": {},
+      "wins": {},
+      "endReason": null,
+      "readyCheck": {
+        "count": 0,
+        "total": 0
+      },
+      "disabledGames": [],
+      "solo": true,
+      "soloVariant": {
+        "difficulty": "medium"
+      }
+    }
+  },
+  "me": "p_1484cb83afcb",
+  "tttMyTurn": {
+    "push": {
+      "gameId": "tic_tac_toe",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "solo",
+            "a": "p_1484cb83afcb",
+            "b": "b_24074e9f5dcb",
+            "phase": "playing",
+            "wins": {
+              "p_1484cb83afcb": 0,
+              "b_24074e9f5dcb": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "solo"
+        ],
+        "match": {
+          "id": "solo",
+          "a": "p_1484cb83afcb",
+          "b": "b_24074e9f5dcb",
+          "phase": "playing",
+          "wins": {
+            "p_1484cb83afcb": 0,
+            "b_24074e9f5dcb": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            "marks": {
+              "p_1484cb83afcb": "X",
+              "b_24074e9f5dcb": "O"
+            },
+            "firstMover": "p_1484cb83afcb",
+            "turn": "p_1484cb83afcb",
+            "turnDeadline": 1793701103038.2346,
+            "lastMove": null,
+            "winner": null,
+            "winningCells": null,
+            "isYourTurn": true,
+            "legalMoves": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ]
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_1484cb83afcb",
+          "b_24074e9f5dcb"
+        ],
+        "eliminated": [],
+        "champion": null,
+        "soloResult": null
+      },
+      "serverNow": 1793701088038.467
+    },
+    "room": {
+      "code": "JMPB",
+      "hostId": "p_1484cb83afcb",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_1484cb83afcb",
+          "type": "registered",
+          "nickname": "Sam",
+          "color": "#1ABC9C",
+          "avatar": {
+            "style": "voxel-art",
+            "seed": "saved123"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1793701088038.1797,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false,
+          "bot": false
+        },
+        {
+          "id": "b_24074e9f5dcb",
+          "type": "bot",
+          "nickname": "Bot",
+          "color": "#607D8B",
+          "avatar": null,
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1793701088038.0923,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false,
+          "bot": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {},
+      "scoreboard": {},
+      "wins": {},
+      "endReason": null,
+      "readyCheck": {
+        "count": 0,
+        "total": 0
+      },
+      "disabledGames": [],
+      "solo": true,
+      "soloVariant": {
+        "difficulty": "medium"
+      }
+    }
+  },
+  "tttBotTurn": {
+    "push": {
+      "gameId": "tic_tac_toe",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "solo",
+            "a": "p_1484cb83afcb",
+            "b": "b_24074e9f5dcb",
+            "phase": "playing",
+            "wins": {
+              "p_1484cb83afcb": 0,
+              "b_24074e9f5dcb": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "solo"
+        ],
+        "match": {
+          "id": "solo",
+          "a": "p_1484cb83afcb",
+          "b": "b_24074e9f5dcb",
+          "phase": "playing",
+          "wins": {
+            "p_1484cb83afcb": 0,
+            "b_24074e9f5dcb": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              null,
+              null,
+              null,
+              "X",
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            "marks": {
+              "p_1484cb83afcb": "X",
+              "b_24074e9f5dcb": "O"
+            },
+            "firstMover": "p_1484cb83afcb",
+            "turn": "b_24074e9f5dcb",
+            "turnDeadline": 1793701103041.682,
+            "lastMove": 3,
+            "winner": null,
+            "winningCells": null,
+            "isYourTurn": false,
+            "legalMoves": []
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_1484cb83afcb",
+          "b_24074e9f5dcb"
+        ],
+        "eliminated": [],
+        "champion": null,
+        "soloResult": null
+      },
+      "serverNow": 1793701088041.7166
+    },
+    "room": {
+      "code": "JMPB",
+      "hostId": "p_1484cb83afcb",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_1484cb83afcb",
+          "type": "registered",
+          "nickname": "Sam",
+          "color": "#1ABC9C",
+          "avatar": {
+            "style": "voxel-art",
+            "seed": "saved123"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1793701088038.1797,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false,
+          "bot": false
+        },
+        {
+          "id": "b_24074e9f5dcb",
+          "type": "bot",
+          "nickname": "Bot",
+          "color": "#607D8B",
+          "avatar": null,
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1793701088038.0923,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false,
+          "bot": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {},
+      "scoreboard": {},
+      "wins": {},
+      "endReason": null,
+      "readyCheck": {
+        "count": 0,
+        "total": 0
+      },
+      "disabledGames": [],
+      "solo": true,
+      "soloVariant": {
+        "difficulty": "medium"
+      }
+    }
+  },
+  "tttFinished": {
+    "win": {
+      "push": {
+        "gameId": "tic_tac_toe",
+        "view": {
+          "phase": "done",
+          "role": "player",
+          "bestOf": 1,
+          "winsNeeded": 1,
+          "bracketRound": 1,
+          "matches": [
+            {
+              "id": "solo",
+              "a": "p_1484cb83afcb",
+              "b": "b_24074e9f5dcb",
+              "phase": "over",
+              "wins": {
+                "p_1484cb83afcb": 1,
+                "b_24074e9f5dcb": 0
+              },
+              "gameNo": 1,
+              "draws": 0,
+              "winner": "p_1484cb83afcb",
+              "reason": "score",
+              "coinFlip": false,
+              "lastGame": null
+            }
+          ],
+          "liveMatches": [],
+          "match": {
+            "id": "solo",
+            "a": "p_1484cb83afcb",
+            "b": "b_24074e9f5dcb",
+            "phase": "over",
+            "wins": {
+              "p_1484cb83afcb": 1,
+              "b_24074e9f5dcb": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": "p_1484cb83afcb",
+            "reason": "score",
+            "coinFlip": false,
+            "lastGame": null,
+            "game": {
+              "board": [
+                "O",
+                "O",
+                null,
+                "X",
+                "X",
+                "X",
+                null,
+                null,
+                null
+              ],
+              "marks": {
+                "p_1484cb83afcb": "X",
+                "b_24074e9f5dcb": "O"
+              },
+              "firstMover": "p_1484cb83afcb",
+              "turn": null,
+              "turnDeadline": null,
+              "lastMove": 5,
+              "winner": "p_1484cb83afcb",
+              "winningCells": [
+                3,
+                4,
+                5
+              ],
+              "isYourTurn": false,
+              "legalMoves": []
+            }
+          },
+          "watching": null,
+          "alive": [
+            "p_1484cb83afcb",
+            "b_24074e9f5dcb"
+          ],
+          "eliminated": [],
+          "champion": "p_1484cb83afcb",
+          "soloResult": {
+            "outcome": "win",
+            "record": {
+              "plays": 1,
+              "wins": 1,
+              "losses": 0,
+              "draws": 0
+            }
+          }
+        },
+        "serverNow": 1793701088058.1978
+      },
+      "room": {
+        "code": "JMPB",
+        "hostId": "p_1484cb83afcb",
+        "status": "finished",
+        "players": [
+          {
+            "id": "p_1484cb83afcb",
+            "type": "registered",
+            "nickname": "Sam",
+            "color": "#1ABC9C",
+            "avatar": {
+              "style": "voxel-art",
+              "seed": "saved123"
+            },
+            "online": true,
+            "offlineSince": null,
+            "inGame": true,
+            "joinedAt": 1793701088038.1797,
+            "ready": false,
+            "locked": false,
+            "registeredOnlyBlocked": false,
+            "bot": false
+          },
+          {
+            "id": "b_24074e9f5dcb",
+            "type": "bot",
+            "nickname": "Bot",
+            "color": "#607D8B",
+            "avatar": null,
+            "online": true,
+            "offlineSince": null,
+            "inGame": true,
+            "joinedAt": 1793701088038.0923,
+            "ready": false,
+            "locked": false,
+            "registeredOnlyBlocked": false,
+            "bot": true
+          }
+        ],
+        "selectedGame": "tic_tac_toe",
+        "settings": {},
+        "scoreboard": {},
+        "wins": {},
+        "endReason": "completed",
+        "readyCheck": {
+          "count": 0,
+          "total": 0
+        },
+        "disabledGames": [],
+        "solo": true,
+        "soloVariant": {
+          "difficulty": "medium"
+        }
+      }
+    },
+    "lose": {
+      "push": {
+        "gameId": "tic_tac_toe",
+        "view": {
+          "phase": "done",
+          "role": "player",
+          "bestOf": 1,
+          "winsNeeded": 1,
+          "bracketRound": 1,
+          "matches": [
+            {
+              "id": "solo",
+              "a": "p_e4208d6e68a9",
+              "b": "b_41dde5e332df",
+              "phase": "over",
+              "wins": {
+                "p_e4208d6e68a9": 0,
+                "b_41dde5e332df": 1
+              },
+              "gameNo": 1,
+              "draws": 0,
+              "winner": "b_41dde5e332df",
+              "reason": "score",
+              "coinFlip": false,
+              "lastGame": null
+            }
+          ],
+          "liveMatches": [],
+          "match": {
+            "id": "solo",
+            "a": "p_e4208d6e68a9",
+            "b": "b_41dde5e332df",
+            "phase": "over",
+            "wins": {
+              "p_e4208d6e68a9": 0,
+              "b_41dde5e332df": 1
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": "b_41dde5e332df",
+            "reason": "score",
+            "coinFlip": false,
+            "lastGame": null,
+            "game": {
+              "board": [
+                "O",
+                "O",
+                "O",
+                "X",
+                "X",
+                null,
+                null,
+                null,
+                null
+              ],
+              "marks": {
+                "p_e4208d6e68a9": "X",
+                "b_41dde5e332df": "O"
+              },
+              "firstMover": "b_41dde5e332df",
+              "turn": null,
+              "turnDeadline": null,
+              "lastMove": 2,
+              "winner": "b_41dde5e332df",
+              "winningCells": [
+                0,
+                1,
+                2
+              ],
+              "isYourTurn": false,
+              "legalMoves": []
+            }
+          },
+          "watching": null,
+          "alive": [
+            "p_e4208d6e68a9",
+            "b_41dde5e332df"
+          ],
+          "eliminated": [],
+          "champion": "b_41dde5e332df",
+          "soloResult": {
+            "outcome": "lose",
+            "record": {
+              "plays": 5,
+              "wins": 4,
+              "losses": 1,
+              "draws": 0
+            }
+          }
+        },
+        "serverNow": 1793701088427.2202
+      },
+      "room": {
+        "code": "MLHP",
+        "hostId": "p_e4208d6e68a9",
+        "status": "finished",
+        "players": [
+          {
+            "id": "p_e4208d6e68a9",
+            "type": "registered",
+            "nickname": "Sam",
+            "color": "#1ABC9C",
+            "avatar": {
+              "style": "voxel-art",
+              "seed": "saved123"
+            },
+            "online": true,
+            "offlineSince": null,
+            "inGame": true,
+            "joinedAt": 1793701088409.1538,
+            "ready": false,
+            "locked": false,
+            "registeredOnlyBlocked": false,
+            "bot": false
+          },
+          {
+            "id": "b_41dde5e332df",
+            "type": "bot",
+            "nickname": "Bot",
+            "color": "#607D8B",
+            "avatar": null,
+            "online": true,
+            "offlineSince": null,
+            "inGame": true,
+            "joinedAt": 1793701088409.0784,
+            "ready": false,
+            "locked": false,
+            "registeredOnlyBlocked": false,
+            "bot": true
+          }
+        ],
+        "selectedGame": "tic_tac_toe",
+        "settings": {},
+        "scoreboard": {},
+        "wins": {},
+        "endReason": "completed",
+        "readyCheck": {
+          "count": 0,
+          "total": 0
+        },
+        "disabledGames": [],
+        "solo": true,
+        "soloVariant": {
+          "difficulty": "medium"
+        }
+      }
+    },
+    "draw": {
+      "push": {
+        "gameId": "tic_tac_toe",
+        "view": {
+          "phase": "done",
+          "role": "player",
+          "bestOf": 1,
+          "winsNeeded": 1,
+          "bracketRound": 1,
+          "matches": [
+            {
+              "id": "solo",
+              "a": "p_5e403fc8c437",
+              "b": "b_b8001ac3cbee",
+              "phase": "over",
+              "wins": {
+                "p_5e403fc8c437": 0,
+                "b_b8001ac3cbee": 0
+              },
+              "gameNo": 1,
+              "draws": 1,
+              "winner": null,
+              "reason": "draw",
+              "coinFlip": false,
+              "lastGame": null
+            }
+          ],
+          "liveMatches": [],
+          "match": {
+            "id": "solo",
+            "a": "p_5e403fc8c437",
+            "b": "b_b8001ac3cbee",
+            "phase": "over",
+            "wins": {
+              "p_5e403fc8c437": 0,
+              "b_b8001ac3cbee": 0
+            },
+            "gameNo": 1,
+            "draws": 1,
+            "winner": null,
+            "reason": "draw",
+            "coinFlip": false,
+            "lastGame": null,
+            "game": {
+              "board": [
+                "O",
+                "X",
+                "X",
+                "X",
+                "O",
+                "O",
+                "X",
+                "O",
+                "X"
+              ],
+              "marks": {
+                "p_5e403fc8c437": "X",
+                "b_b8001ac3cbee": "O"
+              },
+              "firstMover": "p_5e403fc8c437",
+              "turn": null,
+              "turnDeadline": null,
+              "lastMove": 2,
+              "winner": null,
+              "winningCells": null,
+              "isYourTurn": false,
+              "legalMoves": []
+            }
+          },
+          "watching": null,
+          "alive": [
+            "p_5e403fc8c437",
+            "b_b8001ac3cbee"
+          ],
+          "eliminated": [],
+          "champion": null,
+          "soloResult": {
+            "outcome": "draw",
+            "record": {
+              "plays": 1,
+              "wins": 0,
+              "losses": 0,
+              "draws": 1
+            }
+          }
+        },
+        "serverNow": 1793701088549.6123
+      },
+      "room": {
+        "code": "AHWH",
+        "hostId": "p_5e403fc8c437",
+        "status": "finished",
+        "players": [
+          {
+            "id": "p_5e403fc8c437",
+            "type": "registered",
+            "nickname": "Sam",
+            "color": "#1ABC9C",
+            "avatar": {
+              "style": "voxel-art",
+              "seed": "saved123"
+            },
+            "online": true,
+            "offlineSince": null,
+            "inGame": true,
+            "joinedAt": 1793701088500.9167,
+            "ready": false,
+            "locked": false,
+            "registeredOnlyBlocked": false,
+            "bot": false
+          },
+          {
+            "id": "b_b8001ac3cbee",
+            "type": "bot",
+            "nickname": "Bot",
+            "color": "#607D8B",
+            "avatar": null,
+            "online": true,
+            "offlineSince": null,
+            "inGame": true,
+            "joinedAt": 1793701088500.8362,
+            "ready": false,
+            "locked": false,
+            "registeredOnlyBlocked": false,
+            "bot": true
+          }
+        ],
+        "selectedGame": "tic_tac_toe",
+        "settings": {},
+        "scoreboard": {},
+        "wins": {},
+        "endReason": "completed",
+        "readyCheck": {
+          "count": 0,
+          "total": 0
+        },
+        "disabledGames": [],
+        "solo": true,
+        "soloVariant": {
+          "difficulty": "hard"
+        }
+      }
+    }
+  },
+  "c4Playing": {
+    "push": {
+      "gameId": "connect_four",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "solo",
+            "a": "p_fd0cb9a2c7c7",
+            "b": "b_533453ff46b8",
+            "phase": "playing",
+            "wins": {
+              "p_fd0cb9a2c7c7": 0,
+              "b_533453ff46b8": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "solo"
+        ],
+        "match": {
+          "id": "solo",
+          "a": "p_fd0cb9a2c7c7",
+          "b": "b_533453ff46b8",
+          "phase": "playing",
+          "wins": {
+            "p_fd0cb9a2c7c7": 0,
+            "b_533453ff46b8": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ]
+            ],
+            "seats": {
+              "p_fd0cb9a2c7c7": 1,
+              "b_533453ff46b8": 2
+            },
+            "firstMover": "p_fd0cb9a2c7c7",
+            "turn": "p_fd0cb9a2c7c7",
+            "turnDeadline": 1793701108645.689,
+            "lastMove": null,
+            "winner": null,
+            "winningCells": null,
+            "isYourTurn": true,
+            "legalMoves": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_fd0cb9a2c7c7",
+          "b_533453ff46b8"
+        ],
+        "eliminated": [],
+        "champion": null,
+        "soloResult": null
+      },
+      "serverNow": 1793701088645.9219
+    },
+    "room": {
+      "code": "KWGR",
+      "hostId": "p_fd0cb9a2c7c7",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_fd0cb9a2c7c7",
+          "type": "registered",
+          "nickname": "Sam",
+          "color": "#1ABC9C",
+          "avatar": {
+            "style": "voxel-art",
+            "seed": "saved123"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1793701088645.6543,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false,
+          "bot": false
+        },
+        {
+          "id": "b_533453ff46b8",
+          "type": "bot",
+          "nickname": "Bot",
+          "color": "#607D8B",
+          "avatar": null,
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1793701088645.5674,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false,
+          "bot": true
+        }
+      ],
+      "selectedGame": "connect_four",
+      "settings": {},
+      "scoreboard": {},
+      "wins": {},
+      "endReason": null,
+      "readyCheck": {
+        "count": 0,
+        "total": 0
+      },
+      "disabledGames": [],
+      "solo": true,
+      "soloVariant": {
+        "difficulty": "easy"
+      }
+    }
+  },
+  "records": [
+    {
+      "gameId": "tic_tac_toe",
+      "variant": "hard",
+      "plays": 1,
+      "wins": 0,
+      "losses": 0,
+      "draws": 1,
+      "bestScore": 0
+    },
+    {
+      "gameId": "tic_tac_toe",
+      "variant": "medium",
+      "plays": 5,
+      "wins": 4,
+      "losses": 1,
+      "draws": 0,
+      "bestScore": 0
+    }
+  ]
+}

@@ -2,7 +2,8 @@
 
 Configuration comes from environment variables (see ../.env.example):
 DJANGO_DEBUG, DJANGO_SECRET_KEY, DJANGO_ALLOWED_HOSTS, CORS_ALLOWED_ORIGINS, DATABASE_URL,
-ADMIN_URL_PREFIX, TIME_ZONE, CSRF_TRUSTED_ORIGINS.
+ADMIN_URL_PREFIX, TIME_ZONE, CSRF_TRUSTED_ORIGINS, NEMESIS_ENABLED, DUAL_APPROVAL_ENABLED,
+PRIVATE_UPLOAD_DIR.
 """
 
 import os
@@ -69,6 +70,9 @@ INSTALLED_APPS = [
     "accounts",
     "analytics",
     "social",
+    "nemesis",
+    "solo",
+    "brag",
 ]
 
 MIDDLEWARE = [
@@ -160,6 +164,13 @@ if not DEBUG:  # with DEBUG on, runserver serves static files itself
 
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
 
+# SMS (Teleconic) for account recovery codes. Without SMS_API_KEY no SMS is sent; in DEBUG the
+# code is logged instead so recovery can be tried locally.
+SMS_API_URL = os.environ.get("SMS_API_URL", "https://sms.teleconic.com/api/v1")
+SMS_API_KEY = os.environ.get("SMS_API_KEY", "")
+SMS_SENDER_ID = os.environ.get("SMS_SENDER_ID", "")
+SMS_TIMEOUT_SECONDS = 10
+
 
 # Security (admin cookies). Production runs behind an HTTPS proxy that sets X-Forwarded-Proto.
 
@@ -172,6 +183,21 @@ if not DEBUG:
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+# Nemesis (real-money wallet). NEMESIS_ENABLED is the master switch: off, only
+# GET /api/nemesis/status answers ({enabled: false}). DUAL_APPROVAL_ENABLED makes large money
+# actions and every adjustment, merchant change and flag change need a second staff member.
+
+NEMESIS_ENABLED = _env_bool("NEMESIS_ENABLED", default=False)
+DUAL_APPROVAL_ENABLED = _env_bool("DUAL_APPROVAL_ENABLED", default=False)
+
+# ID images live here, outside every served directory (never static, media or WhiteNoise).
+PRIVATE_UPLOAD_DIR = Path(
+    os.environ.get("PRIVATE_UPLOAD_DIR", str(BASE_DIR.parent / "private_uploads"))
+).resolve()
+if PRIVATE_UPLOAD_DIR.is_relative_to(Path(STATIC_ROOT).resolve()):
+    raise ImproperlyConfigured("PRIVATE_UPLOAD_DIR must not be inside STATIC_ROOT.")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -181,5 +207,6 @@ LOGGING = {
         "games": {"handlers": ["console"], "level": "INFO"},
         "accounts": {"handlers": ["console"], "level": "INFO"},
         "analytics": {"handlers": ["console"], "level": "INFO"},
+        "nemesis": {"handlers": ["console"], "level": "INFO"},
     },
 }

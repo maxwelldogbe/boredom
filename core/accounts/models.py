@@ -11,6 +11,7 @@ from games.constants import NICKNAME_MAX, TAG_LENGTH
 COLOR_LENGTH = 7  # "#RRGGBB"
 AVATAR_FIELD_MAX = 32
 GAME_ID_MAX = 32
+PHONE_MAX = 15
 
 
 class Profile(models.Model):
@@ -38,6 +39,13 @@ class Profile(models.Model):
     presence_mode = models.CharField(
         max_length=8, choices=PresenceMode.choices, default=PresenceMode.ONLINE
     )
+    # A confirmed phone number for account recovery (digits with country code, e.g.
+    # 233240000000); null until the player confirms one with an SMS code (accounts.recovery).
+    phone = models.CharField(max_length=PHONE_MAX, unique=True, null=True, blank=True)
+    # When the password last changed: access tokens issued before it no longer work.
+    password_changed_at = models.DateTimeField(null=True, blank=True)
+    # Opt-in: listed under "People online" for players looking for friends (social.hub.discover).
+    discoverable = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.nickname
@@ -73,3 +81,49 @@ class PlayerStats(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user_id}:{self.game_id} {self.wins}/{self.played}"
+
+
+class RecoveryRequest(models.Model):
+    """A player without a recovery number asks staff for their account back (accounts.recovery).
+
+    Staff compare `answers` with the real account. Approval texts a code (kept only as an HMAC)
+    to `phone`; the player enters it with a new password, and `phone` becomes the account's
+    recovery number.
+    """
+
+    class Status(models.TextChoices):
+        PENDING = "pending"
+        APPROVED = "approved"  # a code was texted; waiting for the player
+        REJECTED = "rejected"
+        COMPLETED = "completed"  # the password was reset
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="recovery_requests",
+    )  # null: no account has that username (kept so staff can see the attempt)
+    username = models.CharField(max_length=20)
+    phone = models.CharField(max_length=PHONE_MAX)
+    answers = models.JSONField(default=dict)  # nickname, joined, friend, games, note
+    status = models.CharField(max_length=16, choices=Status.choices, default=Status.PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    review_note = models.CharField(max_length=200, blank=True)
+    code_digest = models.CharField(max_length=64, blank=True)
+    code_expires_at = models.DateTimeField(null=True, blank=True)
+    code_tries = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        indexes = [models.Index(fields=["status", "created_at"], name="recovery_status_time")]
+
+    def __str__(self) -> str:
+        return f"{self.username} ({self.status})"

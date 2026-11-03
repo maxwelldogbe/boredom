@@ -1,25 +1,38 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { AlreadyInGameDialog } from '../components/AlreadyInGameDialog'
 import { Button } from '../components/Button'
-import { CommunityLink } from '../components/CommunityLink'
 import { OnlineFriends } from '../components/Invites'
 import { LockWall } from '../components/LockWall'
 import { Logo } from '../components/Logo'
+import { Modal } from '../components/Modal'
 import { PlayerChip } from '../components/PlayerChip'
+import { ReturnCard } from '../components/ReturnCard'
+import { UiIcon } from '../components/UiIcon'
 import { RoomCodeInput } from '../components/RoomCodeInput'
-import { friendlyError } from '../lib/errors'
+import { communityUrl } from '../config/community'
+import { errorCode, friendlyError } from '../lib/errors'
 import { getProfile } from '../lib/profileStore'
 import { isRoomCode } from '../lib/roomCode'
 import { SLOW_SERVER_MESSAGE, withSlowNotice } from '../lib/slow'
+import { RequestError } from '../lib/socket'
 import { useRoomActions, useRoomState } from '../state/context'
 import { useGuestQuota } from '../state/guestQuotaContext'
 import { useSocial } from '../state/socialContext'
+import { useResumeSeat } from '../state/useResume'
 
-/** Create a room, or join one with a 4-letter code. */
+type AccountCard = 'solo' | 'friends' | null
+
+const ACCOUNT_TEXT: Record<'solo' | 'friends', string> = {
+  solo: 'Solo games are for registered players. Create a free account.',
+  friends: 'Friends are for registered players. Create a free account.',
+}
+
+/** Home: create a room (the one filled button), join or play alone, then quiet links. */
 export default function HomePage() {
   const navigate = useNavigate()
   const { createRoom, joinRoom } = useRoomActions()
-  const { seatLost } = useRoomState()
+  const { seatLost, room } = useRoomState()
   const { signedIn, incomingCount } = useSocial()
   const [profile] = useState(() => getProfile())
   const [joining, setJoining] = useState(false)
@@ -27,11 +40,24 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [slow, setSlow] = useState(false)
+  const [accountCard, setAccountCard] = useState<AccountCard>(null)
+  const [inGame, setInGame] = useState<string | null>(null)
   const { locked, refresh, handleError } = useGuestQuota()
+  const { seat, refresh: refreshSeat } = useResumeSeat()
+  const registered = profile?.type === 'registered'
+  const returning = seat !== null && room?.code !== seat.code
+  const community = communityUrl()
 
   useEffect(() => {
     if (profile) refresh()
   }, [profile, refresh])
+
+  const failed = (err: unknown, roomCode?: string) => {
+    handleError(err)
+    if (errorCode(err) === 'ALREADY_IN_GAME' && err instanceof RequestError) setInGame(String(err.data?.code ?? ''))
+    setError(friendlyError(err, roomCode))
+    setBusy(false)
+  }
 
   const create = async () => {
     if (!profile) return navigate('/setup?next=%2F')
@@ -41,9 +67,7 @@ export default function HomePage() {
       const roomCode = await withSlowNotice(createRoom, setSlow)
       navigate(`/room/${roomCode}`)
     } catch (err) {
-      handleError(err)
-      setError(friendlyError(err))
-      setBusy(false)
+      failed(err)
     }
   }
 
@@ -60,9 +84,7 @@ export default function HomePage() {
       await withSlowNotice(() => joinRoom(code), setSlow)
       navigate(`/room/${code}`)
     } catch (err) {
-      handleError(err)
-      setError(friendlyError(err, code))
-      setBusy(false)
+      failed(err, code)
     }
   }
 
@@ -76,7 +98,9 @@ export default function HomePage() {
           {profile ? <PlayerChip player={profile} size="sm" /> : 'Set up profile'}
         </Link>
       </header>
-      <p className="muted">Party games for friends. One room code, everyone on their phone.</p>
+      <p className="muted home__tagline">Party games for friends. One room code, everyone on their phone.</p>
+
+      {returning && seat && <ReturnCard seat={seat} onLeft={refreshSeat} />}
 
       {seatLost && (
         <p className="notice" role="status">
@@ -87,20 +111,38 @@ export default function HomePage() {
       {locked && <LockWall />}
       {!joining ? (
         <div className="stack home__actions">
-          <Button block onClick={create} disabled={busy || locked}>
-            {busy ? 'Creating room…' : 'Create room'}
-          </Button>
           <Button
-            variant="secondary"
+            variant={returning ? 'secondary' : 'primary'}
             block
-            onClick={() => {
-              setJoining(true)
-              setError(null)
-            }}
+            className="home__create"
+            onClick={create}
             disabled={busy || locked}
           >
-            Join room
+            {busy ? 'Creating room…' : 'Create room'}
           </Button>
+          <div className="home__pair">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setJoining(true)
+                setError(null)
+              }}
+              disabled={busy || locked}
+            >
+              Join room
+            </Button>
+            {registered ? (
+              <Link to="/solo" className="btn btn--secondary home__solo">
+                <UiIcon name="robot" />
+                Play alone
+              </Link>
+            ) : (
+              <Button variant="secondary" className="home__solo" onClick={() => setAccountCard('solo')}>
+                <UiIcon name="lock" />
+                Play alone
+              </Button>
+            )}
+          </div>
         </div>
       ) : (
         <form className="stack home__actions" onSubmit={join} noValidate>
@@ -129,38 +171,84 @@ export default function HomePage() {
           {error}
         </p>
       )}
-      {!joining && <CommunityLink note />}
-      {!joining && <OnlineFriends />}
-      {!joining && profile && (
-        <Link to="/friends" className="btn btn--secondary btn--block home__friends">
-          <span aria-hidden="true">👥 </span>
-          Friends
-          {signedIn && incomingCount > 0 && (
-            <span className="count-badge" aria-label={`, ${incomingCount} new request${incomingCount === 1 ? '' : 's'}`}>
-              {incomingCount}
-            </span>
-          )}
-        </Link>
-      )}
+
       {!joining && (
-        <p className="home__account-link">
+        <nav className="home__links" aria-label="More">
+          {registered ? (
+            <Link to="/friends" className="home__link">
+              <UiIcon name="friends" />
+              Friends
+              {signedIn && incomingCount > 0 && (
+                <span className="count-badge" aria-label={`, ${incomingCount} new request${incomingCount === 1 ? '' : 's'}`}>
+                  {incomingCount}
+                </span>
+              )}
+            </Link>
+          ) : (
+            <button type="button" className="home__link" onClick={() => setAccountCard('friends')}>
+              <UiIcon name="friends" />
+              Friends
+            </button>
+          )}
+          {community && (
+            <a
+              className="home__link"
+              href={community}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Community (opens in a new tab)"
+            >
+              <UiIcon name="chat" />
+              Community
+            </a>
+          )}
+        </nav>
+      )}
+
+      {!joining && <OnlineFriends />}
+
+      {!joining && !registered && (
+        <p className="card home__save">
           {!profile ? (
             <Link to="/setup?mode=login">Have an account? Log in</Link>
-          ) : profile.type === 'guest' ? (
+          ) : (
             <Link to="/profile">Save your profile with a free account</Link>
-          ) : null}
+          )}
         </p>
       )}
-      {!joining && (
-        <p className="home__about">
-          <Link to="/about">About boredom</Link>
-        </p>
-      )}
+
       {slow && (
         <p className="notice" role="status">
           {SLOW_SERVER_MESSAGE}
         </p>
       )}
+      {accountCard && (
+        <Modal
+          title={accountCard === 'solo' ? 'Play alone' : 'Friends'}
+          onClose={() => setAccountCard(null)}
+          actions={
+            <>
+              <Button block onClick={() => navigate(`/signup?next=${encodeURIComponent(accountCard === 'solo' ? '/solo' : '/friends')}`)}>
+                Create account
+              </Button>
+              <Button
+                variant="secondary"
+                block
+                onClick={() =>
+                  navigate(
+                    `/${profile ? 'profile' : 'setup'}?mode=login&next=${encodeURIComponent(accountCard === 'solo' ? '/solo' : '/friends')}`,
+                  )
+                }
+              >
+                Sign in
+              </Button>
+            </>
+          }
+        >
+          <p>{ACCOUNT_TEXT[accountCard]}</p>
+        </Modal>
+      )}
+      {inGame && <AlreadyInGameDialog code={inGame} onClose={() => setInGame(null)} />}
     </main>
   )
 }

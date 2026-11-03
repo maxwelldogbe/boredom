@@ -273,7 +273,8 @@ class Hangman(GameModule):
             "pot": HANGMAN_POT,
             "wrongCost": HANGMAN_WRONG_COST,
             "flagUntil": state.flag_until if state.phase == "roundOver" else None,
-            "canFlag": state.phase == "roundOver" and state.flag_until is not None
+            "canFlag": state.phase == "roundOver"
+            and state.flag_until is not None
             and player_id in state.guessers(),
             "flag": flag_view(state, player_id),
         }

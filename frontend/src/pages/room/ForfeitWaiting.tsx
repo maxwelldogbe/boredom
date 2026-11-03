@@ -14,8 +14,7 @@ export function ForfeitWaiting({ room, me }: { room: RoomPublic; me: string }) {
   const leave = async () => {
     setBusy(true)
     try {
-      await leaveRoom()
-      navigate('/', { replace: true })
+      await leaveRoom('/', (to) => navigate(to, { replace: true }))
     } catch (err) {
       toast(friendlyError(err), 'error')
       setBusy(false)

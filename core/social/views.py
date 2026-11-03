@@ -126,7 +126,7 @@ def report(request: HttpRequest, body: dict[str, Any], user: User) -> JsonRespon
 
 
 def _settings(profile: Profile) -> dict[str, Any]:
-    return {"presence": profile.presence_mode}
+    return {"presence": profile.presence_mode, "discoverable": profile.discoverable}
 
 
 @social_api("GET")
@@ -143,6 +143,12 @@ def update_settings(request: HttpRequest, body: dict[str, Any], user: User) -> J
         profile.presence_mode = body["presence"]
         profile.save(update_fields=["presence_mode"])
         notify.mode_changed(user.pk, profile.presence_mode)
+    if "discoverable" in body:
+        if not isinstance(body["discoverable"], bool):
+            raise invalid({"discoverable": "Choose yes or no."})
+        profile.discoverable = body["discoverable"]
+        profile.save(update_fields=["discoverable"])
+        notify.discoverable_changed(user.pk, profile.discoverable)
     return JsonResponse(_settings(profile))
 
 

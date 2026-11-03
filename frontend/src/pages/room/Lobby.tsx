@@ -9,6 +9,7 @@ import { hasGameInstructions } from '../../games/instructions'
 import { copyText } from '../../lib/clipboard'
 import { C } from '../../lib/constants'
 import { errorCode, friendlyError } from '../../lib/errors'
+import { blockedPlayers, isBlocked, isRegisteredOnly } from '../../lib/registeredOnly'
 import { RequestError } from '../../lib/socket'
 import { useRoomActions } from '../../state/context'
 import { useGuestQuota } from '../../state/guestQuotaContext'
@@ -16,7 +17,9 @@ import { useSocial } from '../../state/socialContext'
 import type { RoomPublic } from '../../types/protocol'
 import { GamePicker } from './GamePicker'
 import { InvitePanel } from './InvitePanel'
-import { everyoneReady, notReady, notReadyMessage, readyCheck } from './readyCheck'
+import { everyoneReady, listNames, notReady, notReadyMessage, readyCheck } from './readyCheck'
+import { RegisteredOnlyCard } from './RegisteredOnlyCard'
+import { StakePanel } from './StakePanel'
 import { startBlocker } from './startBlocker'
 
 export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; me: string; onHowToPlay?: () => void }) {
@@ -35,6 +38,8 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
   const imReady = room.players.some((p) => p.id === me && p.ready === true)
   const canInvite = signedIn && room.players.some((p) => p.id === me && p.type === 'registered')
   const meLocked = room.players.some((p) => p.id === me && p.locked === true)
+  const meBlocked = isBlocked(room, me)
+  const sittingOut = isRegisteredOnly(room.selectedGame) ? blockedPlayers(room).map((p) => p.nickname) : []
 
   useEffect(() => {
     if (meLocked) refresh()
@@ -51,7 +56,9 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
       toast(
         errorCode(err) === 'GUEST_LIMIT' && names?.length
           ? `${new Intl.ListFormat('en').format(names)} can't play right now. They need an account, or wait until more players join.`
-          : friendlyError(err),
+          : errorCode(err) === 'REGISTERED_ONLY' && names?.length
+            ? `Not enough registered players to start. ${listNames(names)} ${names.length === 1 ? 'is a guest' : 'are guests'}.`
+            : friendlyError(err),
         'error',
       )
     } finally {
@@ -83,12 +90,14 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
     <div className="stack lobby">
       <LockWall />
       <FreeGamesLeft />
-      {!isHost && (
+      <StakePanel room={room} me={me} />
+      {!isHost && meBlocked && <RegisteredOnlyCard room={room} me={me} />}
+      {!isHost && !meBlocked && (
         <section className="card stack lobby__next" aria-label="Next game">
           {selected ? (
             <>
               <p>
-                Next game: <strong>{selected.name}</strong> {selected.icon}
+                Next game: <strong>{selected.name}</strong>
               </p>
               {check && (
                 <Button
@@ -144,7 +153,12 @@ export function Lobby({ room, me, onHowToPlay = () => {} }: { room: RoomPublic; 
 
       {isHost && (
         <>
-          <GamePicker room={room} onHowToPlay={onHowToPlay} />
+          <GamePicker room={room} me={me} onHowToPlay={onHowToPlay} />
+          {sittingOut.length > 0 && (
+            <p className="notice" role="status">
+              {listNames(sittingOut)} can't play this game. They'll wait while you play.
+            </p>
+          )}
           <div className="lobby__start">
             {check && (
               <p className={`lobby__ready-count${allReady ? ' lobby__ready-count--all' : ''}`} role="status">

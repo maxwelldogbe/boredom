@@ -10,7 +10,7 @@ import pytest
 from channels.testing import WebsocketCommunicator
 
 from analytics.recorder import Recorder, recorder
-from games import registry
+from games import availability, registry
 from games.constants import PLAYER_COLORS
 from rooms import manager as manager_module
 from rooms.manager import RoomManager
@@ -134,6 +134,14 @@ def recording(monkeypatch: pytest.MonkeyPatch) -> Recorder:
 def fast_password_hashing(settings: Any) -> None:
     """Real hashers are deliberately slow; tests only need hashing to work."""
     settings.PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+
+
+@pytest.fixture(autouse=True)
+def all_games_on() -> Iterator[None]:
+    """Every game on (as if loaded from an empty table); tests turn games off as needed."""
+    availability.reset(frozenset())
+    yield
+    availability.reset(frozenset())
 
 
 @pytest.fixture(autouse=True)

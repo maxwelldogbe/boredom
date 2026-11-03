@@ -59,7 +59,7 @@
 }
 .presence__options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
   padding: 4px;
   border: 1px solid var(--border);
@@ -68,16 +68,17 @@
 }
 .presence__option {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
   min-height: var(--tap);
-  padding: 8px 10px;
+  padding: 6px 4px;
   border: 0;
   border-radius: calc(var(--radius) - 4px);
   background: transparent;
   color: var(--text);
-  text-align: left;
+  text-align: center;
+  white-space: nowrap;
   cursor: pointer;
 }
 .presence__option[aria-checked='true'] {
@@ -131,7 +132,7 @@
 }
 .friend-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 10px;
   padding: 8px 10px;
@@ -141,7 +142,7 @@
 }
 .friend-row__who {
   display: flex;
-  flex: 1 1 96px;
+  flex: 1 1 0;
   flex-direction: column;
   min-width: 0;
 }
@@ -157,15 +158,17 @@
 }
 .friend-row__end {
   display: flex;
-  flex-wrap: wrap;
+  flex: none;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 6px;
   margin-left: auto;
 }
 .friend-row__buttons {
   display: flex;
-  gap: 8px;
+  flex-wrap: nowrap;
+  gap: 6px;
 }
 
 /* "⋯" menu */
@@ -339,4 +342,94 @@
 }
 .home__online {
   margin-top: 16px;
+}
+
+.people-online__switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.people-online__switch input {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+
+/* Tab labels: the full words, or the short ones on phones (never two lines). */
+.friends .tabs__label--short {
+  display: none;
+}
+.friends .tabs__tab {
+  white-space: nowrap;
+}
+
+.presence__about {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.about__statuses {
+  margin: 0;
+}
+.about__statuses dt {
+  font-weight: 700;
+}
+.about__statuses dd {
+  margin: 0 0 8px;
+  color: var(--muted);
+}
+
+/* Phones: smaller words instead of wrapping, tighter rows, smaller buttons. */
+@media (max-width: 420px) {
+  .friends .tabs__tab {
+    padding: 0 2px;
+    font-size: 0.85rem;
+  }
+  .friends .tabs__label--full {
+    /* visually hidden, still the tab's name for screen readers */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .friends .tabs__label--short {
+    display: inline;
+  }
+  .friends .count-badge {
+    min-width: 18px;
+    height: 18px;
+    margin-left: 4px;
+    padding: 0 4px;
+    font-size: 0.75rem;
+  }
+  .presence__option {
+    font-size: 0.875rem;
+  }
+  .friend-row {
+    gap: 8px;
+    padding: 6px 8px;
+  }
+  .friend-row__name {
+    font-size: 0.95rem;
+  }
+  .friend-row__tag,
+  .friend-row .status-label {
+    font-size: 0.8rem;
+  }
+  .friend-row .btn {
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 0.85rem;
+  }
+  .friend-row .ring-avatar {
+    --ring-size: 36px !important;
+  }
 }

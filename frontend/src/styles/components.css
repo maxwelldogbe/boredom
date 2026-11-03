@@ -666,3 +666,60 @@ a {
   margin: 0;
   overflow-wrap: anywhere;
 }
+
+/* Connection banner (in-room screens): slim, neutral, above the content, never covering it. */
+.connection-banner {
+  margin: 0 0 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.online-only {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* A quiet text-only button (secondary actions inside cards). */
+.text-button {
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.return-card__title {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+/* Inline SVG icons (games and interface): sit on the text line, take the text colour. */
+.game-icon,
+.ui-icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: -0.2em;
+}
+
+.home__solo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.bygame__name .game-icon,
+.profile__favorite .game-icon {
+  margin-right: 6px;
+}

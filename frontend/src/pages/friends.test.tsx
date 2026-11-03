@@ -71,12 +71,13 @@ describe('guests', () => {
     expect(await screen.findByRole('tab', { name: 'Log in', selected: true })).toBeInTheDocument()
   })
 
-  it('home shows a Friends button without a badge', async () => {
+  it('home shows a Friends button without a badge that opens the account card', async () => {
     saveTestProfile()
     await open('/')
-    const link = screen.getByRole('link', { name: /Friends/ })
-    expect(link).toHaveAttribute('href', '/friends')
-    expect(link.querySelector('.count-badge')).toBeNull()
+    const button = screen.getByRole('button', { name: /Friends/ })
+    expect(button.querySelector('.count-badge')).toBeNull()
+    fireEvent.click(button)
+    expect(screen.getByRole('dialog')).toHaveTextContent('Friends are for registered players. Create a free account.')
   })
 })
 
@@ -454,7 +455,7 @@ describe('requests and blocked tabs', () => {
 })
 
 describe('status setting', () => {
-  it('shows the saved choice with a hint each and saves a change at once', async () => {
+  it('shows the saved choice (explanations live on /about) and saves a change at once', async () => {
     signIn()
     const { ws } = await open()
     ws.ack(socialFx.helloAck, ws.frames()[0].id)
@@ -466,7 +467,8 @@ describe('status setting', () => {
       'Busy',
       'Appear offline',
     ])
-    for (const o of options) expect(o.querySelector('.presence__hint')!.textContent).not.toBe('')
+    for (const o of options) expect(o.querySelector('.presence__hint')).toBeNull()
+    expect(screen.getByRole('link', { name: 'What the statuses mean' })).toHaveAttribute('href', '/about#statuses')
     expect(within(group).getByRole('radio', { name: /^Online/ })).toHaveAttribute('aria-checked', 'true')
     api.route('/api/me/settings', 200, socialFx.settingsBusy)
     fireEvent.click(within(group).getByRole('radio', { name: /^Busy/ }))
@@ -561,13 +563,13 @@ describe('recent players actions', () => {
 })
 
 describe('layout', () => {
-  it('320px: rows wrap, the status control stacks, and every control is tall enough', () => {
+  it('320px: rows stay on one line, the status control fits, and every control is tall enough', () => {
     const css = readFileSync('src/styles/social.css', 'utf8')
     const rule = (name: string) => css.match(new RegExp(`\\.${name} \\{([^}]*)\\}`))![1]
-    expect(rule('friend-row')).toMatch(/flex-wrap: wrap/)
+    expect(rule('friend-row')).toMatch(/flex-wrap: nowrap/)
     expect(rule('friend-row__name')).toMatch(/text-overflow: ellipsis/)
     expect(rule('add-friend__input')).toMatch(/min-width: 0/)
-    expect(rule('presence__options')).toMatch(/repeat\(auto-fit, minmax\(128px, 1fr\)\)/)
+    expect(rule('presence__options')).toMatch(/repeat\(3, minmax\(0, 1fr\)\)/)
     for (const name of ['menu__button', 'menu__item', 'presence__option', 'report__reason']) {
       expect(rule(name)).toMatch(/min-height: var\(--tap\)/)
     }

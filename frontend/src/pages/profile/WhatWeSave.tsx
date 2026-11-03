@@ -19,11 +19,20 @@ export function WhatWeSave({
       {registered ? (
         <ul>
           <li>Your username and password (the password is stored scrambled, never as text).</li>
-          <li>Your nickname, color, avatar, tag, the date you joined and your status setting.</li>
+          <li>Your nickname, color, avatar, tag, the date you joined, your status setting and whether you're listed in People online.</li>
           <li>Your stats, and a record of the games you play (game, result and the nickname you used).</li>
+          <li>Solo game results are saved to your account.</li>
+          <li>If you add one, your phone number, used only to text you a code when you reset your password.</li>
+          <li>If you ask us to recover your account: the phone number and answers you send, so our team can check them.</li>
+          <li>Solo scores are saved to your account.</li>
           <li>Activity such as logging in and joining rooms, kept for {C.ACTIVITY_RETENTION_DAYS} days.</li>
           <li>Your friends, friend requests and the players you block.</li>
           <li>Reports you send and reports about you. Only our team sees them.</li>
+          <li>
+            If you verify your age: your ID details and photos. The photos are stored privately and deleted{' '}
+            {C.ID_IMAGE_RETENTION_DAYS} days after review.
+          </li>
+          <li>If you use the wallet: a record of every deposit, withdrawal and balance change.</li>
           {community}
         </ul>
       ) : (

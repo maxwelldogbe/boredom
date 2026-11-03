@@ -45,6 +45,13 @@ export function FinalResults({ room, me }: { room: RoomPublic; me: string }) {
   return (
     <div className="stack results">
       <h1>Game over</h1>
+      {room.stakeResult && (
+        <p className="notice stake__result" role="status">
+          {room.stakeResult.refunded
+            ? `No winner this time: everyone got their ${room.stakeResult.each} Brag coins back.`
+            : `${room.stakeResult.winners.map((id) => (id === me ? 'You' : (room.players.find((p) => p.id === id)?.nickname ?? 'Someone'))).join(' and ')} won the pot of ${room.stakeResult.pot} Brag coins${room.stakeResult.winners.length > 1 ? ` (${room.stakeResult.each} each)` : ''}.`}
+        </p>
+      )}
       <FreeGamesLeft results />
       {lastResults && (
         <section className="card stack" aria-labelledby="results-title">

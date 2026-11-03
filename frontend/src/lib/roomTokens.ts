@@ -31,3 +31,8 @@ export function clearRoomToken(code: string): void {
   if (Object.keys(all).length === 0) removeItem(KEY)
   else writeItem(KEY, JSON.stringify(all))
 }
+
+/** Every stored token, for room:resume (guests). */
+export function allRoomTokens(): { code: string; roomToken: string }[] {
+  return Object.entries(readAll()).map(([code, roomToken]) => ({ code, roomToken }))
+}

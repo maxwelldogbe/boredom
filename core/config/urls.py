@@ -19,5 +19,9 @@ urlpatterns = [
     path("api/auth/", include("accounts.urls")),
     path("api/me/", include("accounts.me_urls")),
     path("api/", include("social.urls")),
+    path("api/", include("nemesis.urls")),
+    path("api/solo/", include("solo.urls")),
+    path("api/brag", include("brag.urls")),
     path("api/admin/", include("analytics.api_urls")),
+    path("api/admin/", include("nemesis.admin_urls")),
 ]

@@ -1,0 +1,1193 @@
+{
+  "myTurn": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {
+        "bestOf": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "tic_tac_toe",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              "O",
+              null,
+              null,
+              null,
+              "X",
+              null,
+              null,
+              null,
+              null
+            ],
+            "marks": {
+              "p_7a1c00000002": "X",
+              "p_7a1c00000001": "O"
+            },
+            "firstMover": "p_7a1c00000002",
+            "turn": "p_7a1c00000002",
+            "turnDeadline": 1792751316000.0,
+            "lastMove": 0,
+            "winner": null,
+            "winningCells": null,
+            "isYourTurn": true,
+            "legalMoves": [
+              1,
+              2,
+              3,
+              5,
+              6,
+              7,
+              8
+            ]
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "othersTurn": {
+    "me": "p_7a1c00000001",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {
+        "bestOf": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "tic_tac_toe",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              "O",
+              null,
+              null,
+              null,
+              "X",
+              null,
+              null,
+              null,
+              null
+            ],
+            "marks": {
+              "p_7a1c00000002": "X",
+              "p_7a1c00000001": "O"
+            },
+            "firstMover": "p_7a1c00000002",
+            "turn": "p_7a1c00000002",
+            "turnDeadline": 1792751316000.0,
+            "lastMove": 0,
+            "winner": null,
+            "winningCells": null,
+            "isYourTurn": false,
+            "legalMoves": []
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "afterWin": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {
+        "bestOf": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "tic_tac_toe",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 1,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 2,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": {
+              "gameNo": 1,
+              "result": "winner",
+              "winner": "p_7a1c00000002",
+              "game": {
+                "board": [
+                  "O",
+                  "X",
+                  null,
+                  "O",
+                  "X",
+                  null,
+                  null,
+                  "X",
+                  null
+                ],
+                "marks": {
+                  "p_7a1c00000002": "X",
+                  "p_7a1c00000001": "O"
+                },
+                "firstMover": "p_7a1c00000002",
+                "turn": null,
+                "turnDeadline": null,
+                "lastMove": 7,
+                "winner": "p_7a1c00000002",
+                "winningCells": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            }
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 1,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 2,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": {
+            "gameNo": 1,
+            "result": "winner",
+            "winner": "p_7a1c00000002",
+            "game": {
+              "board": [
+                "O",
+                "X",
+                null,
+                "O",
+                "X",
+                null,
+                null,
+                "X",
+                null
+              ],
+              "marks": {
+                "p_7a1c00000002": "X",
+                "p_7a1c00000001": "O"
+              },
+              "firstMover": "p_7a1c00000002",
+              "turn": null,
+              "turnDeadline": null,
+              "lastMove": 7,
+              "winner": "p_7a1c00000002",
+              "winningCells": [
+                1,
+                4,
+                7
+              ]
+            }
+          },
+          "game": {
+            "board": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            "marks": {
+              "p_7a1c00000002": "X",
+              "p_7a1c00000001": "O"
+            },
+            "firstMover": "p_7a1c00000001",
+            "turn": "p_7a1c00000001",
+            "turnDeadline": 1792751316000.0,
+            "lastMove": null,
+            "winner": null,
+            "winningCells": null,
+            "isYourTurn": false,
+            "legalMoves": []
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "done": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {
+        "bestOf": 1
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "tic_tac_toe",
+      "view": {
+        "phase": "done",
+        "role": "spectator",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "over",
+            "wins": {
+              "p_7a1c00000002": 1,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": "p_7a1c00000002",
+            "reason": "score",
+            "coinFlip": false,
+            "lastGame": {
+              "gameNo": 1,
+              "result": "winner",
+              "winner": "p_7a1c00000002",
+              "game": {
+                "board": [
+                  "X",
+                  null,
+                  null,
+                  "O",
+                  "X",
+                  "O",
+                  null,
+                  null,
+                  "X"
+                ],
+                "marks": {
+                  "p_7a1c00000002": "X",
+                  "p_7a1c00000001": "O"
+                },
+                "firstMover": "p_7a1c00000002",
+                "turn": null,
+                "turnDeadline": null,
+                "lastMove": 8,
+                "winner": "p_7a1c00000002",
+                "winningCells": [
+                  0,
+                  4,
+                  8
+                ]
+              }
+            }
+          }
+        ],
+        "liveMatches": [],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "over",
+          "wins": {
+            "p_7a1c00000002": 1,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": "p_7a1c00000002",
+          "reason": "score",
+          "coinFlip": false,
+          "lastGame": {
+            "gameNo": 1,
+            "result": "winner",
+            "winner": "p_7a1c00000002",
+            "game": {
+              "board": [
+                "X",
+                null,
+                null,
+                "O",
+                "X",
+                "O",
+                null,
+                null,
+                "X"
+              ],
+              "marks": {
+                "p_7a1c00000002": "X",
+                "p_7a1c00000001": "O"
+              },
+              "firstMover": "p_7a1c00000002",
+              "turn": null,
+              "turnDeadline": null,
+              "lastMove": 8,
+              "winner": "p_7a1c00000002",
+              "winningCells": [
+                0,
+                4,
+                8
+              ]
+            }
+          },
+          "game": {
+            "board": [
+              "X",
+              null,
+              null,
+              "O",
+              "X",
+              "O",
+              null,
+              null,
+              "X"
+            ],
+            "marks": {
+              "p_7a1c00000002": "X",
+              "p_7a1c00000001": "O"
+            },
+            "firstMover": "p_7a1c00000002",
+            "turn": null,
+            "turnDeadline": null,
+            "lastMove": 8,
+            "winner": "p_7a1c00000002",
+            "winningCells": [
+              0,
+              4,
+              8
+            ]
+          }
+        },
+        "watching": "r1m1",
+        "alive": [
+          "p_7a1c00000002"
+        ],
+        "eliminated": [
+          "p_7a1c00000001"
+        ],
+        "champion": "p_7a1c00000002"
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "coinFlip": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {
+        "bestOf": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "tic_tac_toe",
+      "view": {
+        "phase": "done",
+        "role": "spectator",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "over",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 3,
+            "draws": 3,
+            "winner": "p_7a1c00000001",
+            "reason": "coinFlip",
+            "coinFlip": true,
+            "lastGame": {
+              "gameNo": 3,
+              "result": "draw",
+              "winner": null,
+              "game": {
+                "board": [
+                  "X",
+                  "O",
+                  "X",
+                  "X",
+                  "O",
+                  "O",
+                  "O",
+                  "X",
+                  "X"
+                ],
+                "marks": {
+                  "p_7a1c00000002": "X",
+                  "p_7a1c00000001": "O"
+                },
+                "firstMover": "p_7a1c00000002",
+                "turn": null,
+                "turnDeadline": null,
+                "lastMove": 8,
+                "winner": null,
+                "winningCells": null
+              }
+            }
+          }
+        ],
+        "liveMatches": [],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "over",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 3,
+          "draws": 3,
+          "winner": "p_7a1c00000001",
+          "reason": "coinFlip",
+          "coinFlip": true,
+          "lastGame": {
+            "gameNo": 3,
+            "result": "draw",
+            "winner": null,
+            "game": {
+              "board": [
+                "X",
+                "O",
+                "X",
+                "X",
+                "O",
+                "O",
+                "O",
+                "X",
+                "X"
+              ],
+              "marks": {
+                "p_7a1c00000002": "X",
+                "p_7a1c00000001": "O"
+              },
+              "firstMover": "p_7a1c00000002",
+              "turn": null,
+              "turnDeadline": null,
+              "lastMove": 8,
+              "winner": null,
+              "winningCells": null
+            }
+          },
+          "game": {
+            "board": [
+              "X",
+              "O",
+              "X",
+              "X",
+              "O",
+              "O",
+              "O",
+              "X",
+              "X"
+            ],
+            "marks": {
+              "p_7a1c00000002": "X",
+              "p_7a1c00000001": "O"
+            },
+            "firstMover": "p_7a1c00000002",
+            "turn": null,
+            "turnDeadline": null,
+            "lastMove": 8,
+            "winner": null,
+            "winningCells": null
+          }
+        },
+        "watching": "r1m1",
+        "alive": [
+          "p_7a1c00000001"
+        ],
+        "eliminated": [
+          "p_7a1c00000002"
+        ],
+        "champion": "p_7a1c00000001"
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "spectator": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000003",
+          "type": "guest",
+          "nickname": "Bob",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "voxel-art",
+            "seed": "seed2"
+          },
+          "online": true,
+          "joinedAt": 1792751290002.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000004",
+          "type": "guest",
+          "nickname": "Cat",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "croodles-neutral",
+            "seed": "seed3"
+          },
+          "online": true,
+          "joinedAt": 1792751290003.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000005",
+          "type": "guest",
+          "nickname": "Dan",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed4"
+          },
+          "online": true,
+          "joinedAt": 1792751290004.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {
+        "bestOf": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "tic_tac_toe",
+      "view": {
+        "phase": "waiting",
+        "role": "spectator",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000003",
+            "b": "p_7a1c00000004",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000003": 0,
+              "p_7a1c00000004": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          },
+          {
+            "id": "r1m2",
+            "a": "p_7a1c00000005",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000005": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          },
+          {
+            "id": "r1m3",
+            "a": "p_7a1c00000002",
+            "b": null,
+            "phase": "over",
+            "wins": {
+              "p_7a1c00000002": 0
+            },
+            "gameNo": 0,
+            "draws": 0,
+            "winner": "p_7a1c00000002",
+            "reason": "bye",
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1",
+          "r1m2"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000003",
+          "b": "p_7a1c00000004",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000003": 0,
+            "p_7a1c00000004": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              null,
+              null,
+              null,
+              null,
+              "X",
+              null,
+              null,
+              null,
+              null
+            ],
+            "marks": {
+              "p_7a1c00000003": "X",
+              "p_7a1c00000004": "O"
+            },
+            "firstMover": "p_7a1c00000003",
+            "turn": "p_7a1c00000004",
+            "turnDeadline": 1792751316000.0,
+            "lastMove": 4,
+            "winner": null,
+            "winningCells": null
+          }
+        },
+        "watching": "r1m1",
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002",
+          "p_7a1c00000003",
+          "p_7a1c00000004",
+          "p_7a1c00000005"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "bracketPlayer": {
+    "me": "p_7a1c00000003",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000003",
+          "type": "guest",
+          "nickname": "Bob",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "voxel-art",
+            "seed": "seed2"
+          },
+          "online": true,
+          "joinedAt": 1792751290002.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000004",
+          "type": "guest",
+          "nickname": "Cat",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "croodles-neutral",
+            "seed": "seed3"
+          },
+          "online": true,
+          "joinedAt": 1792751290003.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000005",
+          "type": "guest",
+          "nickname": "Dan",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed4"
+          },
+          "online": true,
+          "joinedAt": 1792751290004.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {
+        "bestOf": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "tic_tac_toe",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000003",
+            "b": "p_7a1c00000004",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000003": 0,
+              "p_7a1c00000004": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          },
+          {
+            "id": "r1m2",
+            "a": "p_7a1c00000005",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000005": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          },
+          {
+            "id": "r1m3",
+            "a": "p_7a1c00000002",
+            "b": null,
+            "phase": "over",
+            "wins": {
+              "p_7a1c00000002": 0
+            },
+            "gameNo": 0,
+            "draws": 0,
+            "winner": "p_7a1c00000002",
+            "reason": "bye",
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1",
+          "r1m2"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000003",
+          "b": "p_7a1c00000004",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000003": 0,
+            "p_7a1c00000004": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              null,
+              null,
+              null,
+              null,
+              "X",
+              null,
+              null,
+              null,
+              null
+            ],
+            "marks": {
+              "p_7a1c00000003": "X",
+              "p_7a1c00000004": "O"
+            },
+            "firstMover": "p_7a1c00000003",
+            "turn": "p_7a1c00000004",
+            "turnDeadline": 1792751316000.0,
+            "lastMove": 4,
+            "winner": null,
+            "winningCells": null,
+            "isYourTurn": false,
+            "legalMoves": []
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002",
+          "p_7a1c00000003",
+          "p_7a1c00000004",
+          "p_7a1c00000005"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  }
+}

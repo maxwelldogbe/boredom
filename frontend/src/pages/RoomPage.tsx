@@ -1,18 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../components/Button'
+import { ConnectionBanner, OnlineOnly } from '../components/ConnectionBanner'
 import { EmptyState, Loading } from '../components/EmptyState'
 import { HowToPlayModal } from '../components/HowToPlayModal'
 import { LockWall } from '../components/LockWall'
 import { ReactionLayer } from '../components/Reactions'
 import { gameInstructions, hasGameInstructions } from '../games/instructions'
 import { C } from '../lib/constants'
+import { isBlocked } from '../lib/registeredOnly'
 import { friendlyError } from '../lib/errors'
+import { leavingTo, wasSeated } from '../lib/roomExit'
 import { getRoomToken } from '../lib/roomTokens'
+import { RequestError } from '../lib/socket'
 import { useRoomActions, useRoomState } from '../state/context'
 import { FinalResults } from './room/FinalResults'
 import { ForfeitWaiting } from './room/ForfeitWaiting'
 import { GameScreen } from './room/GameScreen'
+import { RegisteredOnlyCard } from './room/RegisteredOnlyCard'
+import { SoloRoom } from './room/SoloRoom'
 import { Lobby } from './room/Lobby'
 import { TopBar } from './room/TopBar'
 
@@ -23,6 +29,7 @@ export default function RoomPage() {
   const state = useRoomState()
   const { joinRoom } = useRoomActions()
   const [error, setError] = useState<string | null>(null)
+  const [closed, setClosed] = useState(false)
   const [attempt, setAttempt] = useState(0)
   const [manualInstructionsKey, setManualInstructionsKey] = useState<string | null>(null)
   const [autoOpenKey, setAutoOpenKey] = useState<string | null>(null)
@@ -34,18 +41,29 @@ export default function RoomPage() {
 
   useEffect(() => {
     const key = `${code}#${attempt}`
-    if (inRoom || state.seatLost || leaving.current || started.current === key) return
-    started.current = key
-    if (!getRoomToken(code)) {
-      navigate(`/join/${code}`, { replace: true })
+    if (inRoom || state.seatLost || leaving.current) return
+    // An intentional exit goes to its destination; the invite landing is never shown for it.
+    const destination = leavingTo(code)
+    if (destination) {
+      navigate(destination, { replace: true })
       return
     }
-    joinRoom(code).catch((err: unknown) => setError(friendlyError(err, code)))
+    if (started.current === key) return
+    if (!getRoomToken(code)) {
+      // A room this tab sat in and lost: the closed screen (below), never the landing.
+      if (!wasSeated(code)) navigate(`/join/${code}`, { replace: true })
+      return
+    }
+    started.current = key
+    joinRoom(code).catch((err: unknown) => {
+      if (err instanceof RequestError && err.code === 'ROOM_NOT_FOUND') setClosed(true)
+      else setError(friendlyError(err, code))
+    })
   }, [code, inRoom, state.seatLost, attempt, joinRoom, navigate])
 
   useEffect(() => {
     const room = state.room
-    if (!room || room.status === 'playing') {
+    if (!room || room.status === 'playing' || room.solo) {
       instructionStateKey.current = null
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setAutoOpenKey(null)
@@ -78,6 +96,15 @@ export default function RoomPage() {
       <main className="page">
         <EmptyState icon="👋" title="You're no longer in this room" actions={goHome}>
           {state.seatLost}
+        </EmptyState>
+      </main>
+    )
+  }
+  if (!inRoom && !leavingTo(code) && (closed || (wasSeated(code) && !getRoomToken(code)))) {
+    return (
+      <main className="page">
+        <EmptyState icon="🚪" title="This room closed" actions={goHome}>
+          The room ended or the server restarted.
         </EmptyState>
       </main>
     )
@@ -117,10 +144,11 @@ export default function RoomPage() {
   }
 
   const room = state.room
+  if (room.solo) return <SoloRoom room={room} me={state.playerId} />
   const selectedInstructionKey =
     room.selectedGame && hasGameInstructions(room.selectedGame) ? `${room.code}:${room.selectedGame}` : null
   const content = gameInstructions(room.selectedGame, {
-    settings: room.settings,
+    settings: room.settings ?? {},
     constants: C,
     playerCount: room.players.length,
   })
@@ -154,15 +182,19 @@ export default function RoomPage() {
         }}
         onHowToPlay={openInstructions}
       />
-      {state.connection !== 'connected' && (
-        <p className="notice" role="status">
-          Reconnecting… your seat is kept.
-        </p>
-      )}
+      <ConnectionBanner />
+      <OnlineOnly>
       {room.status === 'lobby' && <Lobby room={room} me={state.playerId} onHowToPlay={openInstructions} />}
       {(room.status === 'playing' || room.status === 'between_rounds') && (
         room.players.some((player) => player.id === state.playerId && player.inGame) ? (
           <GameScreen room={room} me={state.playerId} />
+        ) : isBlocked(room, state.playerId) ? (
+          <RegisteredOnlyCard room={room} me={state.playerId} playing />
+        ) : (room.stake ?? 0) > 0 && !(room.staked ?? []).includes(state.playerId) ? (
+          <section className="card stack" role="status">
+            <h1>You're sitting this round out</h1>
+            <p>This round is played for {room.stake} Brag coins each. You'll be back in when it ends.</p>
+          </section>
         ) : (
           <>
             <LockWall />
@@ -171,12 +203,13 @@ export default function RoomPage() {
         )
       )}
       {room.status === 'finished' && <FinalResults room={room} me={state.playerId} />}
+      </OnlineOnly>
       <ReactionLayer room={room} />
       {instructionsOpen && content && (
         <HowToPlayModal
           content={content}
           inGame={room.status !== 'lobby'}
-          roundsToWin={Math.floor(Number(room.settings.bestOf ?? 3) / 2) + 1}
+          roundsToWin={Math.floor(Number(room.settings?.bestOf ?? 3) / 2) + 1}
           pickSeconds={C.RPS_PICK_TIMEOUT_MS / 1000}
           offlineSeconds={C.OFFLINE_FORFEIT_MS / 1000}
           onClose={closeInstructions}

@@ -4,7 +4,17 @@
  */
 import type { GameViewPush } from './views'
 
-export type GameId = 'rps' | 'guess_race' | 'hangman' | 'dots_and_boxes' | 'liars_dice' | 'name_it'
+export type GameId =
+  | 'rps'
+  | 'guess_race'
+  | 'hangman'
+  | 'dots_and_boxes'
+  | 'liars_dice'
+  | 'name_it'
+  | 'tic_tac_toe'
+  | 'connect_four'
+  | 'penalty_kick'
+  | 'checkers'
 
 export type ErrorCode =
   | 'ROOM_NOT_FOUND'
@@ -29,11 +39,17 @@ export type ErrorCode =
   | 'LIMIT_REACHED'
   | 'INVALID_INPUT'
   | 'GUEST_LIMIT'
+  | 'REGISTERED_ONLY'
+  | 'GAME_DISABLED'
+  | 'ALREADY_IN_GAME'
+  | 'NOT_ENOUGH_BRAG'
+  | 'STAKE_NOT_AGREED'
 
 export interface ProtocolError {
   code: ErrorCode
   message: string
-  /** GUEST_LIMIT: {lockedUntil} on room:create / room:join, {nicknames} on game:start. */
+  /** GUEST_LIMIT: {lockedUntil} on room:create / room:join, {nicknames} on game:start.
+   *  REGISTERED_ONLY: {nicknames} (the guests) on game:start. */
   data?: Record<string, unknown>
 }
 
@@ -50,7 +66,7 @@ export interface WireProfile {
   color: string
 }
 
-export type PlayerType = 'guest' | 'registered'
+export type PlayerType = 'guest' | 'registered' | 'bot'
 
 export interface Player {
   id: string
@@ -58,7 +74,8 @@ export interface Player {
   type: PlayerType
   nickname: string
   color: string
-  avatar: Avatar
+  /** Null only for a solo room's bot (PROTOCOL.md 16). */
+  avatar: Avatar | null
   online: boolean
   inGame: boolean
   joinedAt: number
@@ -66,6 +83,12 @@ export interface Player {
   ready?: boolean
   /** A guest out of free games (sits games out). Missing from older servers. */
   locked?: boolean
+  /** A guest while the selected or running game is registered-only (PROTOCOL.md 12). */
+  registeredOnlyBlocked?: boolean
+  /** The bot of a solo room (PROTOCOL.md 16). Missing from older servers. */
+  bot?: boolean
+  /** Brag coin stake choice (PROTOCOL.md 17): joined, sitting out, or undecided. */
+  stakeChoice?: 'in' | 'out' | null
 }
 
 export type RoomStatus = 'lobby' | 'playing' | 'between_rounds' | 'finished'
@@ -75,13 +98,92 @@ export interface RoomPublic {
   hostId: string
   status: RoomStatus
   players: Player[]
+  /** Null for guests while a registered-only game is selected (PROTOCOL.md 12). */
   selectedGame: GameId | null
-  settings: Record<string, unknown>
+  /** Null exactly when selectedGame is hidden that way. */
+  settings: Record<string, unknown> | null
   scoreboard: Record<string, number>
   wins: Record<string, number>
   /** Online non-host players who are ready, out of all of them. Null while no game is selected;
    *  missing from servers before the ready check. */
   readyCheck?: ReadyCheck | null
+  /** Games staff turned off: hidden from the picker, cannot be selected or started.
+   *  Missing from servers before the switch. */
+  disabledGames?: GameId[]
+  /** A solo room: one player against a bot (PROTOCOL.md 16). Missing from older servers. */
+  solo?: boolean
+  soloVariant?: SoloVariant | null
+  /** Brag coin stake per player (0: none), PROTOCOL.md 17. */
+  stake?: number
+  /** Players in the running game's pot. */
+  staked?: string[]
+  pot?: number
+  stakeResult?: StakeResult | null
+}
+
+/** friends:discover: a player who opted in to "People online" (PROTOCOL.md 9.6). */
+export interface DiscoverPlayer extends PlayerCard {
+  status: FriendStatus
+  relationship: 'none' | 'requested' | 'incoming' | 'friends'
+}
+
+export interface StakeResult {
+  pot: number
+  refunded: boolean
+  winners: string[]
+  each: number
+}
+
+/** room:resume: the caller's own seat (PROTOCOL.md 4.11). */
+export interface ResumeSeat {
+  code: string
+  roomToken: string
+  status: RoomStatus
+  hostNickname: string | null
+  playerCount: number
+}
+
+export type SoloDifficulty = 'easy' | 'medium' | 'hard'
+
+/** solo:start variant: {difficulty} (and size for Dots and Boxes) for a bot game; {content},
+ *  {topic} or {} for a challenge (PROTOCOL.md 16.1). */
+export interface SoloVariant {
+  difficulty?: SoloDifficulty
+  /** Dots and Boxes only: 4, 5 or 6. */
+  size?: number
+  /** Guess Race challenge: scramble, emoji or mixed. */
+  content?: 'scramble' | 'emoji' | 'mixed'
+  /** Name It challenge: a topic id or "random". */
+  topic?: string
+}
+
+export interface SoloRecordCounts {
+  plays: number
+  wins: number
+  losses: number
+  draws: number
+}
+
+/** `soloResult` in a solo game:view: null until the game ends; `record` null if saving failed. */
+export interface SoloResult {
+  outcome: 'win' | 'lose' | 'draw'
+  record: SoloRecordCounts | null
+  /** Brag coins for a Hard win (null otherwise, or if saving failed). */
+  brag?: BragReward | null
+}
+
+export interface BragReward {
+  awarded: number
+  balance: number
+  dailyLeft: number
+  dailyCap: number
+}
+
+/** One row of GET /api/solo/records. */
+export interface SoloRecordRow extends SoloRecordCounts {
+  gameId: GameId
+  variant: string
+  bestScore: number
 }
 
 export interface ReadyCheck {
@@ -175,6 +277,19 @@ export interface RequestMap {
   'game:playAgain': { payload: Empty; data: Empty }
   'room:ready': { payload: { ready: boolean }; data: Empty }
   'room:react': { payload: { emoji: string }; data: Empty }
+  'solo:start': {
+    payload: { gameId: GameId; variant: SoloVariant; authToken?: string }
+    data: SeatData & { code: string }
+  }
+  'solo:again': { payload: Empty; data: Empty }
+  'room:setStake': { payload: { amount: number }; data: Empty }
+  'friends:discover': { payload: Empty; data: { players: DiscoverPlayer[] } }
+  'room:stakeChoice': { payload: { join: boolean }; data: Empty }
+  'room:resume': {
+    payload: { authToken?: string; tokens?: { code: string; roomToken: string }[] }
+    data: { resume: ResumeSeat | null }
+  }
+  'solo:quit': { payload: Empty; data: Empty }
   'guest:quota': { payload: { profile: { id: string } }; data: GuestQuota }
   'auth:hello': { payload: { authToken?: string }; data: { presence: PresenceMode } }
   'invite:send': { payload: { tag: string }; data: Empty }

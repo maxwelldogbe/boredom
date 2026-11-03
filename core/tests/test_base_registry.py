@@ -80,6 +80,7 @@ def test_unknown_game_is_none() -> None:
 def test_game_ids_are_fixed() -> None:
     assert registry.GAME_IDS == (
         "rps", "guess_race", "hangman", "dots_and_boxes", "liars_dice", "name_it",
+        "tic_tac_toe", "connect_four", "penalty_kick", "checkers",
     )
 
 

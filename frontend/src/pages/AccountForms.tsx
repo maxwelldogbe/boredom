@@ -1,4 +1,5 @@
 import { useId, useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { TextInput } from '../components/TextInput'
 import {
@@ -144,6 +145,11 @@ function CredentialsForm({ mode, onSignedIn }: { mode: AccountMode; onSignedIn: 
       <Button type="submit" block disabled={busy}>
         {busy ? (signup ? 'Creating account…' : 'Logging in…') : signup ? 'Create account' : 'Log in'}
       </Button>
+      {!signup && (
+        <p className="account__forgot">
+          <Link to="/forgot">Forgot password?</Link>
+        </p>
+      )}
     </form>
   )
 }

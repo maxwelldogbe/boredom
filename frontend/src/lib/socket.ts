@@ -1,7 +1,9 @@
 /**
  * GameSocket: the one WebSocket connection to /ws/.
  * Sends {id, type, payload}, resolves each request on its matching ack, forwards pushes,
- * reconnects with exponential backoff (capped), and rejects pending requests on disconnect.
+ * reconnects forever with exponential backoff (capped) plus jitter, reconnects at once when the
+ * browser comes back online or the tab becomes visible, and rejects pending requests on
+ * disconnect. A disconnect never clears room state: that is the RoomProvider's call.
  */
 import type {
   AckData,
@@ -67,10 +69,30 @@ export class GameSocket {
       requestTimeoutMs: 20_000,
       ...options,
     }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', this.reconnectNow)
+      document.addEventListener('visibilitychange', this.onVisibility)
+    }
+  }
+
+  /** Reconnect right away (skipping the backoff) unless open, opening, or closed for good. */
+  reconnectNow = (): void => {
+    if (this.closedByUser || this.ws) return
+    if (this.reconnectTimer) clearTimeout(this.reconnectTimer)
+    this.reconnectTimer = null
+    this.connect()
+  }
+
+  private onVisibility = (): void => {
+    if (document.visibilityState === 'visible') this.reconnectNow()
   }
 
   /** Open the connection (no-op if already open or opening). */
   connect(): void {
+    if (this.closedByUser && typeof window !== 'undefined') {
+      window.addEventListener('online', this.reconnectNow)
+      document.addEventListener('visibilitychange', this.onVisibility)
+    }
     this.closedByUser = false
     if (this.ws) return
     this.setStatus('connecting')
@@ -98,6 +120,10 @@ export class GameSocket {
   /** Close for good (no reconnect). */
   close(): void {
     this.closedByUser = true
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('online', this.reconnectNow)
+      document.removeEventListener('visibilitychange', this.onVisibility)
+    }
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer)
     this.reconnectTimer = null
     const ws = this.ws
@@ -194,7 +220,8 @@ export class GameSocket {
   }
 
   private scheduleReconnect(): void {
-    const delay = Math.min(this.opts.maxBackoffMs, this.opts.baseBackoffMs * 2 ** this.attempts)
+    const backoff = Math.min(this.opts.maxBackoffMs, this.opts.baseBackoffMs * 2 ** this.attempts)
+    const delay = Math.min(this.opts.maxBackoffMs, backoff * (0.8 + Math.random() * 0.4)) // jitter
     this.attempts += 1
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null
