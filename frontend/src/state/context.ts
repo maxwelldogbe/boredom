@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 import type { GameSocket } from '../lib/socket'
-import type { GameId, PeekData, RoomPublic } from '../types/protocol'
+import type { GameId, PeekData, RoomPublic, SoloVariant } from '../types/protocol'
 import type { RoomState } from './roomReducer'
 
 export interface RoomActions {
@@ -9,7 +9,9 @@ export interface RoomActions {
   /** Join (or rejoin with the stored roomToken). */
   joinRoom(code: string): Promise<RoomPublic>
   peek(code: string): Promise<PeekData>
-  leaveRoom(): Promise<void>
+  /** Leave the room: marks the exit, sends room:leave, calls `go(to)` (navigate away), then
+   *  clears the room state and its roomToken. */
+  leaveRoom(to?: string, go?: (to: string) => void): Promise<void>
   quitGame(): Promise<void>
   selectGame(gameId: GameId, settings: Record<string, unknown>): Promise<void>
   startGame(): Promise<void>
@@ -18,6 +20,16 @@ export interface RoomActions {
   /** Send an emoji reaction (one of REACTION_EMOJIS). */
   react(emoji: string): Promise<void>
   playAgain(): Promise<void>
+  /** Host: set the Brag coin stake (0 removes it). */
+  setStake(amount: number): Promise<void>
+  /** Join the stake or sit this round out. */
+  stakeChoice(join: boolean): Promise<void>
+  /** Start a solo game against a bot (registered players); resolves with the room code. */
+  startSolo(gameId: GameId, variant: SoloVariant): Promise<string>
+  /** A new game in the finished solo room. */
+  soloAgain(): Promise<void>
+  /** Close the solo room (nothing is recorded); the same order as leaveRoom. */
+  soloQuit(to?: string, go?: (to: string) => void): Promise<void>
   sendAction(action: { type: string } & Record<string, unknown>): Promise<void>
   toast(message: string, tone?: 'info' | 'error'): void
   dismissToast(id: number): void

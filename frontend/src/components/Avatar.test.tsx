@@ -5,14 +5,15 @@ import { roomFx } from '../test/fixtures'
 import { Avatar } from './Avatar'
 
 const player = roomFx.roomLobby2.players[0]
+const avatar = player.avatar!
 
 describe('Avatar', () => {
   it('renders the DiceBear image for a real server-assigned avatar', () => {
     const { container } = render(<Avatar avatar={player.avatar} nickname={player.nickname} color={player.color} />)
     const img = container.querySelector('img')
-    expect(img?.getAttribute('src')).toBe(avatarUrl(player.avatar))
+    expect(img?.getAttribute('src')).toBe(avatarUrl(avatar))
     expect(img?.getAttribute('src')).toMatch(
-      new RegExp(`^https://api\\.dicebear\\.com/10\\.x/${player.avatar.style}/svg\\?seed=${player.avatar.seed}$`),
+      new RegExp(`^https://api\\.dicebear\\.com/10\\.x/${avatar.style}/svg\\?seed=${avatar.seed}$`),
     )
   })
 

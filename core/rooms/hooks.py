@@ -4,6 +4,7 @@ Two consumers plug in here:
 - account stats: registered players' PlayerStats, updated in a background task;
 - the activity recorder (analytics), which queues records and returns at once.
 Neither can hold up the room lock or break a game: failures are logged.
+Solo rooms record nothing here (they keep their own SoloRecord, see rooms/solo.py).
 """
 
 import asyncio
@@ -31,6 +32,7 @@ class GameRecord:
     seats: tuple[Player, ...]
     results: tuple[ScoredResult, ...] | None
     forfeited: frozenset[str] = frozenset()  # seats that quit, left or timed out offline
+    solo: bool = False  # a solo room: never recorded
 
     @property
     def accounts(self) -> dict[str, int]:
@@ -51,6 +53,7 @@ def game_record(
         seats=tuple(room.players),
         results=tuple(results) if results is not None else None,
         forfeited=frozenset(room.forfeits),
+        solo=room.solo,
     )
 
 
@@ -67,6 +70,8 @@ def on_game_started(room_code: str, game_id: str) -> None:
 
 def on_game_finished(game: GameRecord) -> None:
     """Called once per completed game, after the scoreboard and gameOver went out."""
+    if game.solo:
+        return
     results = game.results or ()
     logger.info("Game finished: room=%s game=%s results=%s", game.room_code, game.game_id, results)
     by_seat = {r["player_id"]: r for r in results}
@@ -98,6 +103,8 @@ def on_game_finished(game: GameRecord) -> None:
 
 def on_game_abandoned(game: GameRecord) -> None:
     """Called when a room is removed mid-game: no placements, nobody wins."""
+    if game.solo:
+        return
     logger.info("Game abandoned: room=%s game=%s", game.room_code, game.game_id)
     seats = [
         SeatRecord(

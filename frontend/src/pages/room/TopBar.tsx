@@ -8,7 +8,7 @@ import { hasGameInstructions } from '../../games/instructions'
 import { friendlyError } from '../../lib/errors'
 import { formatPoints } from '../../lib/format'
 import { setReactionsHidden, useReactionsHidden } from '../../lib/reactionsPref'
-import { useRoomActions } from '../../state/context'
+import { useRoomActions, useRoomState } from '../../state/context'
 import type { RoomPublic } from '../../types/protocol'
 
 interface TopBarProps {
@@ -29,15 +29,17 @@ export function TopBar({ room, me, onLeaving, onLeft, onHowToPlay = () => {} }: 
   const [menuOpen, setMenuOpen] = useState(false)
   const reactionsOff = useReactionsHidden()
   const playing = room.status === 'playing'
-  const stillPlaying = room.players.some((player) => player.id === me && player.inGame)
+  const { game } = useRoomState()
+  // Series games (PROTOCOL.md 7.7): players outside a live match only watch, so no Forfeit.
+  const spectating = Boolean(game && 'role' in game.view && game.view.role === 'spectator')
+  const stillPlaying = room.players.some((player) => player.id === me && player.inGame) && !spectating
   const activeOpponents = room.players.filter((player) => player.inGame && player.id !== me)
 
   const leave = async () => {
     setBusy(true)
     onLeaving()
     try {
-      await leaveRoom()
-      onLeft()
+      await leaveRoom('/', () => onLeft())
     } catch (err) {
       toast(friendlyError(err), 'error')
       setBusy(false)
@@ -52,7 +54,10 @@ export function TopBar({ room, me, onLeaving, onLeft, onHowToPlay = () => {} }: 
           {room.code}
         </span>
       </span>
-      <span className="topbar__score">Score: {formatPoints(room.scoreboard[me] ?? 0)}</span>
+      <span className="topbar__score">
+        Score: {formatPoints(room.scoreboard[me] ?? 0)}
+        {playing && (room.pot ?? 0) > 0 && <span className="topbar__pot"> · Pot {room.pot}</span>}
+      </span>
       <ReactionButton />
       <div className="topbar__menu">
         <Button variant="ghost" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>

@@ -1,23 +1,30 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { AlreadyInGameDialog } from '../components/AlreadyInGameDialog'
 import { Button } from '../components/Button'
 import { EmptyState, Loading } from '../components/EmptyState'
 import { LockWall } from '../components/LockWall'
 import { Logo } from '../components/Logo'
+import { ReturnCard } from '../components/ReturnCard'
 import { C } from '../lib/constants'
 import { errorCode, friendlyError } from '../lib/errors'
 import { isRoomCode } from '../lib/roomCode'
+import { RequestError } from '../lib/socket'
 import { SLOW_SERVER_MESSAGE, withSlowNotice } from '../lib/slow'
 import { useRoomActions } from '../state/context'
 import { useGuestQuota } from '../state/guestQuotaContext'
+import { resumePayload } from '../state/useResume'
+import type { ResumeSeat } from '../types/protocol'
 
-type JoinStatus = 'joining' | 'notFound' | 'full' | 'inProgress' | 'error'
+type JoinStatus = 'joining' | 'notFound' | 'full' | 'inProgress' | 'error' | 'mine'
 
 /** Invite landing (/join/:code): peek for the host's name, then join and enter the room. */
 export default function JoinPage() {
   const navigate = useNavigate()
   const code = (useParams().code ?? '').toUpperCase()
-  const { peek, joinRoom } = useRoomActions()
+  const { peek, joinRoom, socket } = useRoomActions()
+  const [mine, setMine] = useState<ResumeSeat | null>(null)
+  const [inGame, setInGame] = useState<string | null>(null)
   const [status, setStatus] = useState<JoinStatus>('joining')
   const [hostName, setHostName] = useState<string | null>(null)
   const [message, setMessage] = useState('')
@@ -34,6 +41,19 @@ export default function JoinPage() {
     if (!valid || started.current === key) return // StrictMode runs effects twice
     started.current = key
     withSlowNotice(async () => {
+      // The player's own seat (kept after a lost connection): offer it, never join as a stranger.
+      const payload = resumePayload()
+      const own = payload
+        ? await socket
+            .request('room:resume', payload)
+            .then((data) => data.resume)
+            .catch(() => null)
+        : null
+      if (own?.code === code) {
+        setMine(own)
+        setStatus('mine')
+        return
+      }
       const info = await peek(code)
       setHostName(info.hostNickname)
       if (!info.exists) {
@@ -45,12 +65,13 @@ export default function JoinPage() {
     }, setSlow).catch((err: unknown) => {
       handleError(err)
       const c = errorCode(err)
+      if (c === 'ALREADY_IN_GAME' && err instanceof RequestError) setInGame(String(err.data?.code ?? ''))
       setMessage(friendlyError(err, code))
       setStatus(
         c === 'ROOM_NOT_FOUND' ? 'notFound' : c === 'ROOM_FULL' ? 'full' : c === 'GAME_IN_PROGRESS' ? 'inProgress' : 'error',
       )
     })
-  }, [code, valid, attempt, peek, joinRoom, navigate, handleError])
+  }, [code, valid, attempt, peek, joinRoom, navigate, handleError, socket])
 
   const home = (
     <Button variant="secondary" block onClick={() => navigate('/')}>
@@ -94,6 +115,8 @@ export default function JoinPage() {
   return (
     <main className="page">
       {brand}
+      {status === 'mine' && mine && <ReturnCard seat={mine} onLeft={() => navigate('/', { replace: true })} />}
+      {inGame && <AlreadyInGameDialog code={inGame} onClose={() => setInGame(null)} />}
       {status === 'joining' && (
         <>
           <h1>{hostName ? `Joining ${hostName}'s room` : `Joining room ${code}`}</h1>

@@ -301,3 +301,53 @@ def test_read_queries_do_not_grow_with_data(world) -> None:
         extra = account(f"extra{i}", f"Extra{i}")
         play("rps", [(alice, "Alice", 1), (f"{i:016x}", f"G{i}", 2), (extra, f"Extra{i}", 3)])
     assert counts() == before
+
+
+# ----- dashboard login and logout ----------------------------------------------------
+
+
+def _login(client: Client, username: str, password: str):
+    return client.post(
+        A + "login",
+        json.dumps({"username": username, "password": password}),
+        content_type="application/json",
+        HTTP_X_CSRFTOKEN=_csrf(client),
+    )
+
+
+def test_dashboard_login_and_logout() -> None:
+    User.objects.create_superuser(username="boss", password=PASSWORD)
+    client = Client(HTTP_HOST="localhost", enforce_csrf_checks=True)
+    response = _login(client, "boss", PASSWORD)
+    assert response.status_code == 200
+    assert response.json()["staff"] is True and response.json()["username"] == "boss"
+    assert get(client, "overview")["sessions"] is not None
+    out = client.post(A + "logout", HTTP_X_CSRFTOKEN=_csrf(client))
+    assert out.status_code == 200 and out.json()["staff"] is False
+    assert client.get(A + "overview").status_code == 401
+
+
+def test_dashboard_login_needs_csrf() -> None:
+    User.objects.create_superuser(username="boss", password=PASSWORD)
+    client = Client(HTTP_HOST="localhost", enforce_csrf_checks=True)
+    body = json.dumps({"username": "boss", "password": PASSWORD})
+    response = client.post(A + "login", body, content_type="application/json")
+    assert response.status_code == 403
+
+
+def test_dashboard_login_rejects_players_and_wrong_passwords() -> None:
+    account("player", "Player")
+    User.objects.create_superuser(username="boss", password=PASSWORD)
+    client = Client(HTTP_HOST="localhost")
+    assert _login(client, "player", PASSWORD).json()["error"]["code"] == "INVALID_LOGIN"
+    assert _login(client, "boss", "wrong").json()["error"]["code"] == "INVALID_LOGIN"
+    assert get(client, "session")["staff"] is False
+
+
+def test_dashboard_login_locks_after_repeated_failures() -> None:
+    User.objects.create_superuser(username="boss", password=PASSWORD)
+    client = Client(HTTP_HOST="localhost")
+    for _ in range(5):
+        _login(client, "boss", "wrong")
+    response = _login(client, "boss", PASSWORD)
+    assert response.status_code == 429 and response.json()["error"]["code"] == "LOCKED"

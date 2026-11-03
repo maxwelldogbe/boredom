@@ -3,6 +3,7 @@
 import { useState, type CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Avatar } from '../../components/Avatar'
+import { GameIcon } from '../../components/GameIcon'
 import { Button } from '../../components/Button'
 import { CopyButton } from '../../components/CopyButton'
 import { Modal } from '../../components/Modal'
@@ -65,6 +66,8 @@ const times = (n: number) => `${n} time${n === 1 ? '' : 's'}`
 export interface HeaderData {
   tag?: string
   createdAt?: string
+  /** The masked recovery number, or null (PROTOCOL.md 8.8). */
+  phone?: string | null
 }
 
 export function ProfileHeader({
@@ -144,7 +147,7 @@ function FavoriteGame({ gameId }: { gameId: GameId }) {
     <p className="profile__favorite">
       Favorite game:{' '}
       <strong>
-        <span aria-hidden="true">{game?.icon} </span>
+        <GameIcon id={gameId} size={20} />
         {game?.name ?? gameId}
       </strong>
     </p>
@@ -167,7 +170,7 @@ export function ByGameSection({ stats, onRetry }: { stats: Load<MyStats>; onRetr
               return (
                 <li key={g.gameId} className="bygame__row">
                   <span className="bygame__name">
-                    <span aria-hidden="true">{game?.icon} </span>
+                    <GameIcon id={g.gameId} size={20} />
                     {game?.name ?? g.gameId}
                   </span>
                   <span className="bygame__nums">

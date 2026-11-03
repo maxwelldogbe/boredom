@@ -153,7 +153,7 @@ export function SocialProvider({ children }: { children: ReactNode }) {
     if (!room || code !== before.code) return
     const now = Date.now()
     for (const p of room.players) {
-      if (before.ids.has(p.id) || p.type !== 'registered') continue
+      if (before.ids.has(p.id) || p.type !== 'registered' || !p.avatar) continue
       const key = avatarKey(p.avatar)
       const until = awaiting.current.get(key)
       if (until === undefined) continue

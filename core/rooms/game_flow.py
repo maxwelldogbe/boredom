@@ -11,10 +11,11 @@ from collections.abc import Awaitable, Callable
 from typing import Any
 
 from analytics.quota import GuestQuotaStore
-from games import registry
+from games import availability, registry
 from games.base import ForfeitReason, GameError, GameEvent, GameModule
-from games.constants import SESSION_POINTS_MAX
+from games.constants import REGISTERED_ONLY_GAMES, SESSION_POINTS_MAX
 from games.scoring import rank_with_forfeits, score_results
+from games.solo_match import get_solo_game
 from rooms import hooks
 from rooms.models_types import EndReason, Player, Room, RoomError, result_to_public
 
@@ -36,8 +37,9 @@ class GameFlowMixin:
     quota: GuestQuotaStore
 
     def _module(self, room: Room) -> GameModule:
-        """The module of the game currently running in `room`."""
-        module = registry.get_game(room.game_id or "")
+        """The module of the game currently running in `room` (its solo module in a solo room)."""
+        game_id = room.game_id or ""
+        module = get_solo_game(game_id) if room.solo else registry.get_game(game_id)
         if module is None:
             raise RoomError("INVALID_ACTION", "No game is running.")
         return module
@@ -47,14 +49,48 @@ class GameFlowMixin:
         module = registry.get_game(room.selected_game or "")
         if module is None:
             raise RoomError("INVALID_ACTION", "Select a game first.")
+        await availability.ensure_loaded()
+        if not availability.is_enabled(module.id):
+            raise RoomError("GAME_DISABLED", "This game is turned off right now.")
         now = self.clock()
         everyone = room.seated()
-        guests = [p.guest_key for p in everyone if p.user_id is None and p.guest_key]
-        known = await self.quota.read(guests, now)
-        locked = {p.id for p in everyone if p.user_id is None and _locked(known.get(p.guest_key))}
+        registered_only = module.id in REGISTERED_ONLY_GAMES
+        if registered_only:
+            host = room.host()
+            if host is None or host.user_id is None:
+                raise RoomError("REGISTERED_ONLY", "This game is for registered players.")
+            # Guests sit it out like locked guests; the free-games quota is never touched.
+            known: dict[str, Any] = {}
+            locked = {p.id for p in everyone if p.user_id is None}
+        else:
+            guests = [p.guest_key for p in everyone if p.user_id is None and p.guest_key]
+            known = await self.quota.read(guests, now)
+            locked = {
+                p.id for p in everyone if p.user_id is None and _locked(known.get(p.guest_key))
+            }
+        if room.stake:  # Brag coin stake: only the players who joined it play
+            locked = locked | self._stake_sitouts(room, everyone, module.min_players)
         seated = [p for p in everyone if p.id not in locked]
+        if room.stake:
+            short = await self._take_stakes(room, seated, module.id)
+            if short:
+                locked = locked | short
+                seated = [p for p in seated if p.id not in short]
+            if len(seated) < module.min_players:
+                await self._refund_stakes(room, module.id)
+                raise RoomError(
+                    "NOT_ENOUGH_BRAG",
+                    "Not enough players could pay the stake.",
+                    {"balance": 0, "stake": room.stake},
+                )
         if locked and len(seated) < module.min_players:
             names = [p.nickname for p in everyone if p.id in locked]
+            if registered_only:
+                raise RoomError(
+                    "REGISTERED_ONLY",
+                    f"Not enough registered players. {', '.join(names)} are guests.",
+                    {"nicknames": names},
+                )
             raise RoomError(
                 "GUEST_LIMIT",
                 f"{', '.join(names)} can't play right now.",
@@ -71,6 +107,7 @@ class GameFlowMixin:
                 [p.id for p in seated], dict(room.settings), self._rng(), now, used
             )
         except GameError as exc:
+            await self._refund_stakes(room, module.id)
             raise RoomError(exc.code, exc.message) from None
         room.used_content[module.id] = used  # survives across games, never sent to anyone
         events: list[GameEvent] = []
@@ -118,6 +155,13 @@ class GameFlowMixin:
         if not allow():
             raise RoomError("RATE_LIMITED", "Slow down a little.")
         player = room.player(player_id)
+        if (
+            player is not None
+            and player.user_id is None
+            and not player.bot
+            and room.game_id in REGISTERED_ONLY_GAMES
+        ):
+            raise RoomError("REGISTERED_ONLY", "This game is for registered players.")
         if player is None or player.id not in room.game_players or not player.in_game:
             raise RoomError("INVALID_ACTION", "You are not playing in this game.")
         module = self._module(room)
@@ -191,13 +235,20 @@ class GameFlowMixin:
             await self._finish(room, module, end_reason)
         else:
             self._reschedule(room, module)
+        if room.solo:
+            self._drive_bot(room)
 
     async def _send_views(self, room: Room, module: GameModule) -> None:
-        """Send each online player their own view."""
+        """Send each online player their own view. Guests get none of a registered-only game."""
         server_now = self.clock()
+        hidden = module.id in REGISTERED_ONLY_GAMES
         for player in room.players:
+            if hidden and player.user_id is None:
+                continue
             if player.online and player.channel:
                 view = module.get_view(room.game_state, player.id)
+                if room.solo:
+                    view = {**view, "soloResult": room.solo_result}
                 message = {
                     "type": "game:view",
                     "data": {"gameId": module.id, "view": view, "serverNow": server_now},
@@ -207,13 +258,18 @@ class GameFlowMixin:
     async def _finish(self, room: Room, module: GameModule, reason: EndReason) -> None:
         """Record results on the scoreboard, announce them and drop players who left.
 
-        Forfeiters rank below everyone who stayed, whatever their score.
+        Forfeiters rank below everyone who stayed, whatever their score. A solo game only
+        updates its SoloRecord (rooms/solo.py).
         """
+        if room.solo:
+            await self._solo_finish(room, module, reason)
+            return
         self._end_game_timers(room)
         ranked = rank_with_forfeits(
             module.get_results(room.game_state), room.forfeits, room.game_players
         )
         results = score_results(ranked, SESSION_POINTS_MAX)
+        await self._settle_stakes(room, module.id, results)
         finished = hooks.game_record(room, module.id, self.clock(), results)
         for result in results:
             pid = result["player_id"]
@@ -241,8 +297,10 @@ class GameFlowMixin:
         """
         game_id = room.game_id or ""
         self._end_game_timers(room)
+        await self._refund_stakes(room, game_id)
         try:
-            hooks.on_game_abandoned(hooks.game_record(room, game_id, self.clock(), None))
+            if not room.solo:
+                hooks.on_game_abandoned(hooks.game_record(room, game_id, self.clock(), None))
         except Exception:
             logger.exception("Game-abandoned hook failed: room=%s game=%s", room.code, game_id)
         room.status, room.game_id, room.game_state = "lobby", None, None
@@ -270,8 +328,9 @@ class GameFlowMixin:
             player.in_game = True
 
     def _end_game_timers(self, room: Room) -> None:
-        """Stop the game timer and every pending offline forfeit."""
+        """Stop the game timer, the bot's pending move and every pending offline forfeit."""
         self._cancel_timer(room)
+        self._cancel_bot(room)
         for player_id in list(room.forfeit_tasks):
             self._cancel_forfeit(room, player_id)
 

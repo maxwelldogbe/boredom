@@ -28,6 +28,8 @@ export type AccountErrorCode =
   | 'INVALID_CREDENTIALS'
   | 'UNAUTHORIZED'
   | 'USERNAME_TAKEN'
+  | 'INVALID_CODE'
+  | 'PHONE_TAKEN'
   | 'AVATAR_LOCKED'
   | 'RATE_LIMITED'
   | 'METHOD_NOT_ALLOWED'
@@ -101,6 +103,8 @@ const FRIENDLY: Partial<Record<AccountErrorCode, string>> = {
   UNAUTHORIZED: 'Please log in again.',
   USERNAME_TAKEN: 'That username is taken.',
   RATE_LIMITED: 'Too many attempts. Wait a minute and try again.',
+  INVALID_CODE: 'That code is wrong or has expired. Ask for a new one.',
+  PHONE_TAKEN: 'That number is used by another account.',
 }
 
 /** `path` is under /api/auth/, or a full path starting with "/" (e.g. /api/me/stats). */
@@ -163,6 +167,8 @@ export interface MeData {
   tag?: string
   /** Registration time, ISO-8601 UTC. Missing from servers before the profile page. */
   createdAt?: string
+  /** The confirmed recovery number, masked ("+233•••••0000"), or null. Missing from older servers. */
+  phone?: string | null
 }
 
 export function fetchMe(token: string): Promise<MeData> {
@@ -219,7 +225,6 @@ export async function deleteAccount(token: string, password: string): Promise<vo
 
 /** Save the account onto this device's profile (creating one if needed) and keep the token. */
 export function adoptSession(session: { token?: string; profile: AccountProfile; stats: AccountStats }): Profile {
-  if (session.token) setAuthToken(session.token)
   const current = getProfile()
   const profile: Profile = {
     id: current?.id ?? newId(),
@@ -231,7 +236,10 @@ export function adoptSession(session: { token?: string; profile: AccountProfile;
     avatar: session.profile.avatar,
     stats: session.stats,
   }
+  // The profile first, then the token: setting the token tells listeners (SocialProvider)
+  // that the login changed, and they must already see a registered profile.
   saveProfile(profile)
+  if (session.token) setAuthToken(session.token)
   return profile
 }
 
@@ -245,3 +253,51 @@ export function forgetAccount(): Profile | null {
   return guest
 }
 
+// ----- account recovery by SMS (PROTOCOL.md 8.8) ---------------------------------------
+
+/** Text a reset code to the account's recovery number (always answers the same). */
+export async function forgotPassword(login: string): Promise<void> {
+  await apiCall('POST', 'password/forgot', { login })
+}
+
+/** Set a new password with the texted code; returns a fresh session (older logins end). */
+export function resetPassword(login: string, code: string, password: string): Promise<Session> {
+  return apiCall('POST', 'password/reset', { login, code, password })
+}
+
+/** Text a confirmation code to a new recovery number. */
+export function addRecoveryPhone(token: string, phone: string): Promise<{ sent: boolean; phone: string }> {
+  return apiCall('POST', '/api/me/phone', { phone }, token)
+}
+
+/** Confirm the recovery number with the texted code. */
+export function verifyRecoveryPhone(token: string, code: string): Promise<{ phone: string }> {
+  return apiCall('POST', '/api/me/phone/verify', { code }, token)
+}
+
+export async function removeRecoveryPhone(token: string): Promise<void> {
+  await apiCall('DELETE', '/api/me/phone', undefined, token)
+}
+
+/** No recovery number on the account: ask staff to check these answers (always answers the same). */
+export async function submitRecoveryRequest(request: {
+  username: string
+  phone: string
+  answers: { nickname: string; joined?: string; friend?: string; games?: string; note?: string }
+}): Promise<void> {
+  await apiCall('POST', 'recovery/request', request)
+}
+
+// ----- Brag coins (play money: never bought, cashed out or sent; see core/brag) ----------
+
+export interface BragWallet {
+  balance: number
+  earnedToday: number
+  dailyCap: number
+  rewards: Record<string, number>
+  history: { amount: number; balanceAfter: number; kind: string; gameId: string | null; at: string }[]
+}
+
+export function fetchBrag(token: string): Promise<BragWallet> {
+  return apiCall('GET', '/api/brag', undefined, token)
+}

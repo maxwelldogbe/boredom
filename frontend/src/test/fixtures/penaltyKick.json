@@ -1,0 +1,2540 @@
+{
+  "aimingShooter": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000002",
+            "phase": "aiming",
+            "shooter": "p_7a1c00000002",
+            "keeper": "p_7a1c00000001",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "kicks": [],
+            "lastKick": null,
+            "turnDeadline": 1792751312000.0,
+            "keeperPath": [
+              {
+                "at": 1792751300000.0,
+                "x": 0.5,
+                "y": 0.3
+              },
+              {
+                "at": 1792751300350.0,
+                "x": 0.5,
+                "y": 0.3
+              },
+              {
+                "at": 1792751300592.51,
+                "x": 0.38197915153130607,
+                "y": 0.34327301430525997
+              },
+              {
+                "at": 1792751300942.51,
+                "x": 0.38197915153130607,
+                "y": 0.34327301430525997
+              },
+              {
+                "at": 1792751301158.7576,
+                "x": 0.4873270369543386,
+                "y": 0.3054060146509923
+              },
+              {
+                "at": 1792751301508.7576,
+                "x": 0.4873270369543386,
+                "y": 0.3054060146509923
+              },
+              {
+                "at": 1792751302060.7693,
+                "x": 0.21189030588384422,
+                "y": 0.33296411093382017
+              },
+              {
+                "at": 1792751302410.7693,
+                "x": 0.21189030588384422,
+                "y": 0.33296411093382017
+              },
+              {
+                "at": 1792751302736.0205,
+                "x": 0.3736254504343227,
+                "y": 0.3594014895402622
+              },
+              {
+                "at": 1792751303086.0205,
+                "x": 0.3736254504343227,
+                "y": 0.3594014895402622
+              },
+              {
+                "at": 1792751303365.0176,
+                "x": 0.23530823389557676,
+                "y": 0.33122035616785883
+              },
+              {
+                "at": 1792751303715.0176,
+                "x": 0.23530823389557676,
+                "y": 0.33122035616785883
+              },
+              {
+                "at": 1792751304077.2483,
+                "x": 0.4161469457001208,
+                "y": 0.34678473301499985
+              },
+              {
+                "at": 1792751304427.2483,
+                "x": 0.4161469457001208,
+                "y": 0.34678473301499985
+              },
+              {
+                "at": 1792751304988.6245,
+                "x": 0.6961230074145643,
+                "y": 0.3157031747167112
+              },
+              {
+                "at": 1792751305338.6245,
+                "x": 0.6961230074145643,
+                "y": 0.3157031747167112
+              },
+              {
+                "at": 1792751305479.1152,
+                "x": 0.76577561614279,
+                "y": 0.3015383809040129
+              },
+              {
+                "at": 1792751305829.1152,
+                "x": 0.76577561614279,
+                "y": 0.3015383809040129
+              },
+              {
+                "at": 1792751306192.2913,
+                "x": 0.5844131848513441,
+                "y": 0.3156152490379428
+              },
+              {
+                "at": 1792751306542.2913,
+                "x": 0.5844131848513441,
+                "y": 0.3156152490379428
+              },
+              {
+                "at": 1792751306985.0815,
+                "x": 0.36304865267918535,
+                "y": 0.3098890955641195
+              },
+              {
+                "at": 1792751307335.0815,
+                "x": 0.36304865267918535,
+                "y": 0.3098890955641195
+              },
+              {
+                "at": 1792751307393.3733,
+                "x": 0.37378441524643724,
+                "y": 0.35203929918940124
+              },
+              {
+                "at": 1792751307743.3733,
+                "x": 0.37378441524643724,
+                "y": 0.35203929918940124
+              },
+              {
+                "at": 1792751308548.9133,
+                "x": 0.7765537777005809,
+                "y": 0.3509117567003
+              },
+              {
+                "at": 1792751308898.9133,
+                "x": 0.7765537777005809,
+                "y": 0.3509117567003
+              },
+              {
+                "at": 1792751309605.1492,
+                "x": 0.4234358567895811,
+                "y": 0.3506873535838061
+              },
+              {
+                "at": 1792751309955.1492,
+                "x": 0.4234358567895811,
+                "y": 0.3506873535838061
+              },
+              {
+                "at": 1792751310009.9683,
+                "x": 0.4024414852486616,
+                "y": 0.3232759109911116
+              },
+              {
+                "at": 1792751310359.9683,
+                "x": 0.4024414852486616,
+                "y": 0.3232759109911116
+              },
+              {
+                "at": 1792751310466.7554,
+                "x": 0.34932412435616633,
+                "y": 0.3148393332095092
+              },
+              {
+                "at": 1792751310816.7554,
+                "x": 0.34932412435616633,
+                "y": 0.3148393332095092
+              },
+              {
+                "at": 1792751310882.239,
+                "x": 0.3679985571921447,
+                "y": 0.35667466741856413
+              },
+              {
+                "at": 1792751311232.239,
+                "x": 0.3679985571921447,
+                "y": 0.35667466741856413
+              },
+              {
+                "at": 1792751311877.7014,
+                "x": 0.6907297322101185,
+                "y": 0.35653243327780315
+              },
+              {
+                "at": 1792751312227.7014,
+                "x": 0.6907297322101185,
+                "y": 0.35653243327780315
+              },
+              {
+                "at": 1792751312304.7512,
+                "x": 0.7042776076506634,
+                "y": 0.3004326800594644
+              }
+            ],
+            "flight": null,
+            "outcome": null,
+            "resultUntil": null,
+            "winner": null,
+            "yourRole": "shooter"
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751301000.0
+    }
+  },
+  "aimingKeeper": {
+    "me": "p_7a1c00000001",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000002",
+            "phase": "aiming",
+            "shooter": "p_7a1c00000002",
+            "keeper": "p_7a1c00000001",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "kicks": [],
+            "lastKick": null,
+            "turnDeadline": 1792751312000.0,
+            "keeperPath": [
+              {
+                "at": 1792751300000.0,
+                "x": 0.5,
+                "y": 0.3
+              },
+              {
+                "at": 1792751300350.0,
+                "x": 0.5,
+                "y": 0.3
+              },
+              {
+                "at": 1792751300592.51,
+                "x": 0.38197915153130607,
+                "y": 0.34327301430525997
+              },
+              {
+                "at": 1792751300942.51,
+                "x": 0.38197915153130607,
+                "y": 0.34327301430525997
+              },
+              {
+                "at": 1792751301158.7576,
+                "x": 0.4873270369543386,
+                "y": 0.3054060146509923
+              },
+              {
+                "at": 1792751301508.7576,
+                "x": 0.4873270369543386,
+                "y": 0.3054060146509923
+              },
+              {
+                "at": 1792751302060.7693,
+                "x": 0.21189030588384422,
+                "y": 0.33296411093382017
+              },
+              {
+                "at": 1792751302410.7693,
+                "x": 0.21189030588384422,
+                "y": 0.33296411093382017
+              },
+              {
+                "at": 1792751302736.0205,
+                "x": 0.3736254504343227,
+                "y": 0.3594014895402622
+              },
+              {
+                "at": 1792751303086.0205,
+                "x": 0.3736254504343227,
+                "y": 0.3594014895402622
+              },
+              {
+                "at": 1792751303365.0176,
+                "x": 0.23530823389557676,
+                "y": 0.33122035616785883
+              },
+              {
+                "at": 1792751303715.0176,
+                "x": 0.23530823389557676,
+                "y": 0.33122035616785883
+              },
+              {
+                "at": 1792751304077.2483,
+                "x": 0.4161469457001208,
+                "y": 0.34678473301499985
+              },
+              {
+                "at": 1792751304427.2483,
+                "x": 0.4161469457001208,
+                "y": 0.34678473301499985
+              },
+              {
+                "at": 1792751304988.6245,
+                "x": 0.6961230074145643,
+                "y": 0.3157031747167112
+              },
+              {
+                "at": 1792751305338.6245,
+                "x": 0.6961230074145643,
+                "y": 0.3157031747167112
+              },
+              {
+                "at": 1792751305479.1152,
+                "x": 0.76577561614279,
+                "y": 0.3015383809040129
+              },
+              {
+                "at": 1792751305829.1152,
+                "x": 0.76577561614279,
+                "y": 0.3015383809040129
+              },
+              {
+                "at": 1792751306192.2913,
+                "x": 0.5844131848513441,
+                "y": 0.3156152490379428
+              },
+              {
+                "at": 1792751306542.2913,
+                "x": 0.5844131848513441,
+                "y": 0.3156152490379428
+              },
+              {
+                "at": 1792751306985.0815,
+                "x": 0.36304865267918535,
+                "y": 0.3098890955641195
+              },
+              {
+                "at": 1792751307335.0815,
+                "x": 0.36304865267918535,
+                "y": 0.3098890955641195
+              },
+              {
+                "at": 1792751307393.3733,
+                "x": 0.37378441524643724,
+                "y": 0.35203929918940124
+              },
+              {
+                "at": 1792751307743.3733,
+                "x": 0.37378441524643724,
+                "y": 0.35203929918940124
+              },
+              {
+                "at": 1792751308548.9133,
+                "x": 0.7765537777005809,
+                "y": 0.3509117567003
+              },
+              {
+                "at": 1792751308898.9133,
+                "x": 0.7765537777005809,
+                "y": 0.3509117567003
+              },
+              {
+                "at": 1792751309605.1492,
+                "x": 0.4234358567895811,
+                "y": 0.3506873535838061
+              },
+              {
+                "at": 1792751309955.1492,
+                "x": 0.4234358567895811,
+                "y": 0.3506873535838061
+              },
+              {
+                "at": 1792751310009.9683,
+                "x": 0.4024414852486616,
+                "y": 0.3232759109911116
+              },
+              {
+                "at": 1792751310359.9683,
+                "x": 0.4024414852486616,
+                "y": 0.3232759109911116
+              },
+              {
+                "at": 1792751310466.7554,
+                "x": 0.34932412435616633,
+                "y": 0.3148393332095092
+              },
+              {
+                "at": 1792751310816.7554,
+                "x": 0.34932412435616633,
+                "y": 0.3148393332095092
+              },
+              {
+                "at": 1792751310882.239,
+                "x": 0.3679985571921447,
+                "y": 0.35667466741856413
+              },
+              {
+                "at": 1792751311232.239,
+                "x": 0.3679985571921447,
+                "y": 0.35667466741856413
+              },
+              {
+                "at": 1792751311877.7014,
+                "x": 0.6907297322101185,
+                "y": 0.35653243327780315
+              },
+              {
+                "at": 1792751312227.7014,
+                "x": 0.6907297322101185,
+                "y": 0.35653243327780315
+              },
+              {
+                "at": 1792751312304.7512,
+                "x": 0.7042776076506634,
+                "y": 0.3004326800594644
+              }
+            ],
+            "flight": null,
+            "outcome": null,
+            "resultUntil": null,
+            "winner": null,
+            "yourRole": "keeper"
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751301000.0
+    }
+  },
+  "flightKeeper": {
+    "me": "p_7a1c00000001",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000002",
+            "phase": "flight",
+            "shooter": "p_7a1c00000002",
+            "keeper": "p_7a1c00000001",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "kicks": [],
+            "lastKick": null,
+            "turnDeadline": null,
+            "keeperPath": null,
+            "flight": {
+              "launchAt": 1792751302000.0,
+              "arriveAt": 1792751302880.0,
+              "graceMs": 250,
+              "ball": {
+                "from": {
+                  "x": 0.5,
+                  "y": 0.0
+                },
+                "to": {
+                  "x": 0.13779083370574513,
+                  "y": 0.24525231908343215
+                },
+                "power": 0.7
+              },
+              "keeperSpot": {
+                "x": 0.24221229583868262,
+                "y": 0.32993032413488915
+              },
+              "dive": null
+            },
+            "outcome": null,
+            "resultUntil": null,
+            "winner": null,
+            "yourRole": "keeper"
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751302100.0
+    }
+  },
+  "flightShooter": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000002",
+            "phase": "flight",
+            "shooter": "p_7a1c00000002",
+            "keeper": "p_7a1c00000001",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "kicks": [],
+            "lastKick": null,
+            "turnDeadline": null,
+            "keeperPath": null,
+            "flight": {
+              "launchAt": 1792751302000.0,
+              "arriveAt": 1792751302880.0,
+              "graceMs": 250,
+              "ball": {
+                "from": {
+                  "x": 0.5,
+                  "y": 0.0
+                },
+                "to": {
+                  "x": 0.13779083370574513,
+                  "y": 0.24525231908343215
+                },
+                "power": 0.7
+              },
+              "keeperSpot": {
+                "x": 0.24221229583868262,
+                "y": 0.32993032413488915
+              },
+              "dive": null
+            },
+            "outcome": null,
+            "resultUntil": null,
+            "winner": null,
+            "yourRole": "shooter"
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751302100.0
+    }
+  },
+  "result_goal": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000001",
+            "b": "p_7a1c00000002",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000001",
+          "b": "p_7a1c00000002",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000001": 0,
+            "p_7a1c00000002": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000001",
+            "phase": "result",
+            "shooter": "p_7a1c00000001",
+            "keeper": "p_7a1c00000002",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000001": 1,
+              "p_7a1c00000002": 0
+            },
+            "kicks": [
+              {
+                "kick": 1,
+                "shooter": "p_7a1c00000001",
+                "keeper": "p_7a1c00000002",
+                "to": {
+                  "x": 0.1049413849097512,
+                  "y": 0.233248641180137
+                },
+                "power": 0.6,
+                "keeperSpot": {
+                  "x": 0.375144608124477,
+                  "y": 0.3343708991293913
+                },
+                "dive": null,
+                "outcome": "goal"
+              }
+            ],
+            "lastKick": {
+              "kick": 1,
+              "shooter": "p_7a1c00000001",
+              "keeper": "p_7a1c00000002",
+              "to": {
+                "x": 0.1049413849097512,
+                "y": 0.233248641180137
+              },
+              "power": 0.6,
+              "keeperSpot": {
+                "x": 0.375144608124477,
+                "y": 0.3343708991293913
+              },
+              "dive": null,
+              "outcome": "goal"
+            },
+            "turnDeadline": null,
+            "keeperPath": null,
+            "flight": {
+              "launchAt": 1792751302000.0,
+              "arriveAt": 1792751302940.0,
+              "graceMs": 250,
+              "ball": {
+                "from": {
+                  "x": 0.5,
+                  "y": 0.0
+                },
+                "to": {
+                  "x": 0.1049413849097512,
+                  "y": 0.233248641180137
+                },
+                "power": 0.6
+              },
+              "keeperSpot": {
+                "x": 0.375144608124477,
+                "y": 0.3343708991293913
+              },
+              "dive": null
+            },
+            "outcome": "goal",
+            "resultUntil": 1792751305690.0,
+            "winner": null,
+            "yourRole": "keeper"
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751303290.0
+    }
+  },
+  "result_saved": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000001",
+            "b": "p_7a1c00000002",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000001",
+          "b": "p_7a1c00000002",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000001": 0,
+            "p_7a1c00000002": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000001",
+            "phase": "result",
+            "shooter": "p_7a1c00000001",
+            "keeper": "p_7a1c00000002",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "kicks": [
+              {
+                "kick": 1,
+                "shooter": "p_7a1c00000001",
+                "keeper": "p_7a1c00000002",
+                "to": {
+                  "x": 0.2549413849097512,
+                  "y": 0.433248641180137
+                },
+                "power": 0.5,
+                "keeperSpot": {
+                  "x": 0.375144608124477,
+                  "y": 0.3343708991293913
+                },
+                "dive": {
+                  "x": 0.3,
+                  "y": 0.4
+                },
+                "outcome": "saved"
+              }
+            ],
+            "lastKick": {
+              "kick": 1,
+              "shooter": "p_7a1c00000001",
+              "keeper": "p_7a1c00000002",
+              "to": {
+                "x": 0.2549413849097512,
+                "y": 0.433248641180137
+              },
+              "power": 0.5,
+              "keeperSpot": {
+                "x": 0.375144608124477,
+                "y": 0.3343708991293913
+              },
+              "dive": {
+                "x": 0.3,
+                "y": 0.4
+              },
+              "outcome": "saved"
+            },
+            "turnDeadline": null,
+            "keeperPath": null,
+            "flight": {
+              "launchAt": 1792751302000.0,
+              "arriveAt": 1792751303000.0,
+              "graceMs": 250,
+              "ball": {
+                "from": {
+                  "x": 0.5,
+                  "y": 0.0
+                },
+                "to": {
+                  "x": 0.2549413849097512,
+                  "y": 0.433248641180137
+                },
+                "power": 0.5
+              },
+              "keeperSpot": {
+                "x": 0.375144608124477,
+                "y": 0.3343708991293913
+              },
+              "dive": {
+                "x": 0.3,
+                "y": 0.4,
+                "receivedAt": 1792751302300.0
+              }
+            },
+            "outcome": "saved",
+            "resultUntil": 1792751305750.0,
+            "winner": null,
+            "yourRole": "keeper"
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751303350.0
+    }
+  },
+  "result_wide": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000001",
+            "b": "p_7a1c00000002",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000001",
+          "b": "p_7a1c00000002",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000001": 0,
+            "p_7a1c00000002": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000001",
+            "phase": "result",
+            "shooter": "p_7a1c00000001",
+            "keeper": "p_7a1c00000002",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "kicks": [
+              {
+                "kick": 1,
+                "shooter": "p_7a1c00000001",
+                "keeper": "p_7a1c00000002",
+                "to": {
+                  "x": -0.4450586150902488,
+                  "y": 0.5332486411801369
+                },
+                "power": 0.6,
+                "keeperSpot": {
+                  "x": 0.375144608124477,
+                  "y": 0.3343708991293913
+                },
+                "dive": null,
+                "outcome": "wide"
+              }
+            ],
+            "lastKick": {
+              "kick": 1,
+              "shooter": "p_7a1c00000001",
+              "keeper": "p_7a1c00000002",
+              "to": {
+                "x": -0.4450586150902488,
+                "y": 0.5332486411801369
+              },
+              "power": 0.6,
+              "keeperSpot": {
+                "x": 0.375144608124477,
+                "y": 0.3343708991293913
+              },
+              "dive": null,
+              "outcome": "wide"
+            },
+            "turnDeadline": null,
+            "keeperPath": null,
+            "flight": {
+              "launchAt": 1792751302000.0,
+              "arriveAt": 1792751302940.0,
+              "graceMs": 250,
+              "ball": {
+                "from": {
+                  "x": 0.5,
+                  "y": 0.0
+                },
+                "to": {
+                  "x": -0.4450586150902488,
+                  "y": 0.5332486411801369
+                },
+                "power": 0.6
+              },
+              "keeperSpot": {
+                "x": 0.375144608124477,
+                "y": 0.3343708991293913
+              },
+              "dive": null
+            },
+            "outcome": "wide",
+            "resultUntil": 1792751305690.0,
+            "winner": null,
+            "yourRole": "keeper"
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751303290.0
+    }
+  },
+  "result_over": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000001",
+            "b": "p_7a1c00000002",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000001",
+          "b": "p_7a1c00000002",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000001": 0,
+            "p_7a1c00000002": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000001",
+            "phase": "result",
+            "shooter": "p_7a1c00000001",
+            "keeper": "p_7a1c00000002",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "kicks": [
+              {
+                "kick": 1,
+                "shooter": "p_7a1c00000001",
+                "keeper": "p_7a1c00000002",
+                "to": {
+                  "x": 0.4549413849097512,
+                  "y": 1.4332486411801368
+                },
+                "power": 0.6,
+                "keeperSpot": {
+                  "x": 0.375144608124477,
+                  "y": 0.3343708991293913
+                },
+                "dive": null,
+                "outcome": "over"
+              }
+            ],
+            "lastKick": {
+              "kick": 1,
+              "shooter": "p_7a1c00000001",
+              "keeper": "p_7a1c00000002",
+              "to": {
+                "x": 0.4549413849097512,
+                "y": 1.4332486411801368
+              },
+              "power": 0.6,
+              "keeperSpot": {
+                "x": 0.375144608124477,
+                "y": 0.3343708991293913
+              },
+              "dive": null,
+              "outcome": "over"
+            },
+            "turnDeadline": null,
+            "keeperPath": null,
+            "flight": {
+              "launchAt": 1792751302000.0,
+              "arriveAt": 1792751302940.0,
+              "graceMs": 250,
+              "ball": {
+                "from": {
+                  "x": 0.5,
+                  "y": 0.0
+                },
+                "to": {
+                  "x": 0.4549413849097512,
+                  "y": 1.4332486411801368
+                },
+                "power": 0.6
+              },
+              "keeperSpot": {
+                "x": 0.375144608124477,
+                "y": 0.3343708991293913
+              },
+              "dive": null
+            },
+            "outcome": "over",
+            "resultUntil": 1792751305690.0,
+            "winner": null,
+            "yourRole": "keeper"
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751303290.0
+    }
+  },
+  "result_post": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000001",
+            "b": "p_7a1c00000002",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000001",
+          "b": "p_7a1c00000002",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000001": 0,
+            "p_7a1c00000002": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000001",
+            "phase": "result",
+            "shooter": "p_7a1c00000001",
+            "keeper": "p_7a1c00000002",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "kicks": [
+              {
+                "kick": 1,
+                "shooter": "p_7a1c00000001",
+                "keeper": "p_7a1c00000002",
+                "to": {
+                  "x": 1.0051689935458914,
+                  "y": 0.5125618035111612
+                },
+                "power": 0.6,
+                "keeperSpot": {
+                  "x": 0.3880463237328395,
+                  "y": 0.3417354367920896
+                },
+                "dive": null,
+                "outcome": "post"
+              }
+            ],
+            "lastKick": {
+              "kick": 1,
+              "shooter": "p_7a1c00000001",
+              "keeper": "p_7a1c00000002",
+              "to": {
+                "x": 1.0051689935458914,
+                "y": 0.5125618035111612
+              },
+              "power": 0.6,
+              "keeperSpot": {
+                "x": 0.3880463237328395,
+                "y": 0.3417354367920896
+              },
+              "dive": null,
+              "outcome": "post"
+            },
+            "turnDeadline": null,
+            "keeperPath": null,
+            "flight": {
+              "launchAt": 1792751302000.0,
+              "arriveAt": 1792751302940.0,
+              "graceMs": 250,
+              "ball": {
+                "from": {
+                  "x": 0.5,
+                  "y": 0.0
+                },
+                "to": {
+                  "x": 1.0051689935458914,
+                  "y": 0.5125618035111612
+                },
+                "power": 0.6
+              },
+              "keeperSpot": {
+                "x": 0.3880463237328395,
+                "y": 0.3417354367920896
+              },
+              "dive": null
+            },
+            "outcome": "post",
+            "resultUntil": 1792751305690.0,
+            "winner": null,
+            "yourRole": "keeper"
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751303290.0
+    }
+  },
+  "result_fizzled": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000001",
+            "b": "p_7a1c00000002",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000001",
+          "b": "p_7a1c00000002",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000001": 0,
+            "p_7a1c00000002": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000001",
+            "phase": "result",
+            "shooter": "p_7a1c00000001",
+            "keeper": "p_7a1c00000002",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000001": 0,
+              "p_7a1c00000002": 0
+            },
+            "kicks": [
+              {
+                "kick": 1,
+                "shooter": "p_7a1c00000001",
+                "keeper": "p_7a1c00000002",
+                "to": {
+                  "x": 0.5,
+                  "y": 0.3
+                },
+                "power": 0.1,
+                "keeperSpot": {
+                  "x": 0.375144608124477,
+                  "y": 0.3343708991293913
+                },
+                "dive": null,
+                "outcome": "fizzled"
+              }
+            ],
+            "lastKick": {
+              "kick": 1,
+              "shooter": "p_7a1c00000001",
+              "keeper": "p_7a1c00000002",
+              "to": {
+                "x": 0.5,
+                "y": 0.3
+              },
+              "power": 0.1,
+              "keeperSpot": {
+                "x": 0.375144608124477,
+                "y": 0.3343708991293913
+              },
+              "dive": null,
+              "outcome": "fizzled"
+            },
+            "turnDeadline": null,
+            "keeperPath": null,
+            "flight": {
+              "launchAt": 1792751302000.0,
+              "arriveAt": 1792751303240.0,
+              "graceMs": 250,
+              "ball": {
+                "from": {
+                  "x": 0.5,
+                  "y": 0.0
+                },
+                "to": {
+                  "x": 0.5,
+                  "y": 0.3
+                },
+                "power": 0.1
+              },
+              "keeperSpot": {
+                "x": 0.375144608124477,
+                "y": 0.3343708991293913
+              },
+              "dive": null
+            },
+            "outcome": "fizzled",
+            "resultUntil": 1792751305990.0,
+            "winner": null,
+            "yourRole": "keeper"
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751303590.0
+    }
+  },
+  "spectator": {
+    "me": "p_7a1c00000003",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000003",
+          "type": "guest",
+          "nickname": "Bob",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "voxel-art",
+            "seed": "seed2"
+          },
+          "online": true,
+          "joinedAt": 1792751290002.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "waiting",
+        "role": "spectator",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          },
+          {
+            "id": "r1m2",
+            "a": "p_7a1c00000003",
+            "b": null,
+            "phase": "over",
+            "wins": {
+              "p_7a1c00000003": 0
+            },
+            "gameNo": 0,
+            "draws": 0,
+            "winner": "p_7a1c00000003",
+            "reason": "bye",
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000002",
+            "phase": "flight",
+            "shooter": "p_7a1c00000002",
+            "keeper": "p_7a1c00000001",
+            "kickNo": 1,
+            "round": 1,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "kicks": [],
+            "lastKick": null,
+            "turnDeadline": null,
+            "keeperPath": null,
+            "flight": {
+              "launchAt": 1792751302000.0,
+              "arriveAt": 1792751303000.0,
+              "graceMs": 250,
+              "ball": {
+                "from": {
+                  "x": 0.5,
+                  "y": 0.0
+                },
+                "to": {
+                  "x": 0.7669218832151685,
+                  "y": 0.5650611478189115
+                },
+                "power": 0.5
+              },
+              "keeperSpot": {
+                "x": 0.4525822243167994,
+                "y": 0.3240465133385391
+              },
+              "dive": null
+            },
+            "outcome": null,
+            "resultUntil": null,
+            "winner": null
+          }
+        },
+        "watching": "r1m1",
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002",
+          "p_7a1c00000003"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751302200.0
+    }
+  },
+  "done": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "penalty_kick",
+      "settings": {
+        "kicksPerPlayer": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "penalty_kick",
+      "view": {
+        "phase": "done",
+        "role": "spectator",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "over",
+            "wins": {
+              "p_7a1c00000002": 1,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": "p_7a1c00000002",
+            "reason": "score",
+            "coinFlip": false,
+            "lastGame": {
+              "gameNo": 1,
+              "result": "winner",
+              "winner": "p_7a1c00000002",
+              "game": {
+                "kicksPerPlayer": 3,
+                "keeperSpeed": "normal",
+                "firstMover": "p_7a1c00000002",
+                "phase": "over",
+                "shooter": null,
+                "keeper": null,
+                "kickNo": 4,
+                "round": 3,
+                "suddenDeath": false,
+                "scores": {
+                  "p_7a1c00000002": 2,
+                  "p_7a1c00000001": 0
+                },
+                "kicks": [
+                  {
+                    "kick": 1,
+                    "shooter": "p_7a1c00000002",
+                    "keeper": "p_7a1c00000001",
+                    "to": {
+                      "x": 0.13779083370574513,
+                      "y": 0.24525231908343215
+                    },
+                    "power": 0.5,
+                    "keeperSpot": {
+                      "x": 0.5,
+                      "y": 0.3
+                    },
+                    "dive": null,
+                    "outcome": "goal"
+                  },
+                  {
+                    "kick": 2,
+                    "shooter": "p_7a1c00000001",
+                    "keeper": "p_7a1c00000002",
+                    "to": {
+                      "x": -0.41209182262783706,
+                      "y": 0.4761896558071895
+                    },
+                    "power": 0.5,
+                    "keeperSpot": {
+                      "x": 0.5,
+                      "y": 0.3
+                    },
+                    "dive": null,
+                    "outcome": "wide"
+                  },
+                  {
+                    "kick": 3,
+                    "shooter": "p_7a1c00000002",
+                    "keeper": "p_7a1c00000001",
+                    "to": {
+                      "x": 0.19355769580549442,
+                      "y": 0.19915305687624063
+                    },
+                    "power": 0.5,
+                    "keeperSpot": {
+                      "x": 0.5,
+                      "y": 0.3
+                    },
+                    "dive": null,
+                    "outcome": "goal"
+                  },
+                  {
+                    "kick": 4,
+                    "shooter": "p_7a1c00000001",
+                    "keeper": "p_7a1c00000002",
+                    "to": {
+                      "x": -0.41830289700232615,
+                      "y": 0.5100637265514602
+                    },
+                    "power": 0.5,
+                    "keeperSpot": {
+                      "x": 0.5,
+                      "y": 0.3
+                    },
+                    "dive": null,
+                    "outcome": "wide"
+                  }
+                ],
+                "lastKick": {
+                  "kick": 4,
+                  "shooter": "p_7a1c00000001",
+                  "keeper": "p_7a1c00000002",
+                  "to": {
+                    "x": -0.41830289700232615,
+                    "y": 0.5100637265514602
+                  },
+                  "power": 0.5,
+                  "keeperSpot": {
+                    "x": 0.5,
+                    "y": 0.3
+                  },
+                  "dive": null,
+                  "outcome": "wide"
+                },
+                "turnDeadline": null,
+                "keeperPath": null,
+                "flight": null,
+                "outcome": null,
+                "resultUntil": null,
+                "winner": "p_7a1c00000002"
+              }
+            }
+          }
+        ],
+        "liveMatches": [],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "over",
+          "wins": {
+            "p_7a1c00000002": 1,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": "p_7a1c00000002",
+          "reason": "score",
+          "coinFlip": false,
+          "lastGame": {
+            "gameNo": 1,
+            "result": "winner",
+            "winner": "p_7a1c00000002",
+            "game": {
+              "kicksPerPlayer": 3,
+              "keeperSpeed": "normal",
+              "firstMover": "p_7a1c00000002",
+              "phase": "over",
+              "shooter": null,
+              "keeper": null,
+              "kickNo": 4,
+              "round": 3,
+              "suddenDeath": false,
+              "scores": {
+                "p_7a1c00000002": 2,
+                "p_7a1c00000001": 0
+              },
+              "kicks": [
+                {
+                  "kick": 1,
+                  "shooter": "p_7a1c00000002",
+                  "keeper": "p_7a1c00000001",
+                  "to": {
+                    "x": 0.13779083370574513,
+                    "y": 0.24525231908343215
+                  },
+                  "power": 0.5,
+                  "keeperSpot": {
+                    "x": 0.5,
+                    "y": 0.3
+                  },
+                  "dive": null,
+                  "outcome": "goal"
+                },
+                {
+                  "kick": 2,
+                  "shooter": "p_7a1c00000001",
+                  "keeper": "p_7a1c00000002",
+                  "to": {
+                    "x": -0.41209182262783706,
+                    "y": 0.4761896558071895
+                  },
+                  "power": 0.5,
+                  "keeperSpot": {
+                    "x": 0.5,
+                    "y": 0.3
+                  },
+                  "dive": null,
+                  "outcome": "wide"
+                },
+                {
+                  "kick": 3,
+                  "shooter": "p_7a1c00000002",
+                  "keeper": "p_7a1c00000001",
+                  "to": {
+                    "x": 0.19355769580549442,
+                    "y": 0.19915305687624063
+                  },
+                  "power": 0.5,
+                  "keeperSpot": {
+                    "x": 0.5,
+                    "y": 0.3
+                  },
+                  "dive": null,
+                  "outcome": "goal"
+                },
+                {
+                  "kick": 4,
+                  "shooter": "p_7a1c00000001",
+                  "keeper": "p_7a1c00000002",
+                  "to": {
+                    "x": -0.41830289700232615,
+                    "y": 0.5100637265514602
+                  },
+                  "power": 0.5,
+                  "keeperSpot": {
+                    "x": 0.5,
+                    "y": 0.3
+                  },
+                  "dive": null,
+                  "outcome": "wide"
+                }
+              ],
+              "lastKick": {
+                "kick": 4,
+                "shooter": "p_7a1c00000001",
+                "keeper": "p_7a1c00000002",
+                "to": {
+                  "x": -0.41830289700232615,
+                  "y": 0.5100637265514602
+                },
+                "power": 0.5,
+                "keeperSpot": {
+                  "x": 0.5,
+                  "y": 0.3
+                },
+                "dive": null,
+                "outcome": "wide"
+              },
+              "turnDeadline": null,
+              "keeperPath": null,
+              "flight": null,
+              "outcome": null,
+              "resultUntil": null,
+              "winner": "p_7a1c00000002"
+            }
+          },
+          "game": {
+            "kicksPerPlayer": 3,
+            "keeperSpeed": "normal",
+            "firstMover": "p_7a1c00000002",
+            "phase": "over",
+            "shooter": null,
+            "keeper": null,
+            "kickNo": 4,
+            "round": 3,
+            "suddenDeath": false,
+            "scores": {
+              "p_7a1c00000002": 2,
+              "p_7a1c00000001": 0
+            },
+            "kicks": [
+              {
+                "kick": 1,
+                "shooter": "p_7a1c00000002",
+                "keeper": "p_7a1c00000001",
+                "to": {
+                  "x": 0.13779083370574513,
+                  "y": 0.24525231908343215
+                },
+                "power": 0.5,
+                "keeperSpot": {
+                  "x": 0.5,
+                  "y": 0.3
+                },
+                "dive": null,
+                "outcome": "goal"
+              },
+              {
+                "kick": 2,
+                "shooter": "p_7a1c00000001",
+                "keeper": "p_7a1c00000002",
+                "to": {
+                  "x": -0.41209182262783706,
+                  "y": 0.4761896558071895
+                },
+                "power": 0.5,
+                "keeperSpot": {
+                  "x": 0.5,
+                  "y": 0.3
+                },
+                "dive": null,
+                "outcome": "wide"
+              },
+              {
+                "kick": 3,
+                "shooter": "p_7a1c00000002",
+                "keeper": "p_7a1c00000001",
+                "to": {
+                  "x": 0.19355769580549442,
+                  "y": 0.19915305687624063
+                },
+                "power": 0.5,
+                "keeperSpot": {
+                  "x": 0.5,
+                  "y": 0.3
+                },
+                "dive": null,
+                "outcome": "goal"
+              },
+              {
+                "kick": 4,
+                "shooter": "p_7a1c00000001",
+                "keeper": "p_7a1c00000002",
+                "to": {
+                  "x": -0.41830289700232615,
+                  "y": 0.5100637265514602
+                },
+                "power": 0.5,
+                "keeperSpot": {
+                  "x": 0.5,
+                  "y": 0.3
+                },
+                "dive": null,
+                "outcome": "wide"
+              }
+            ],
+            "lastKick": {
+              "kick": 4,
+              "shooter": "p_7a1c00000001",
+              "keeper": "p_7a1c00000002",
+              "to": {
+                "x": -0.41830289700232615,
+                "y": 0.5100637265514602
+              },
+              "power": 0.5,
+              "keeperSpot": {
+                "x": 0.5,
+                "y": 0.3
+              },
+              "dive": null,
+              "outcome": "wide"
+            },
+            "turnDeadline": null,
+            "keeperPath": null,
+            "flight": null,
+            "outcome": null,
+            "resultUntil": null,
+            "winner": "p_7a1c00000002"
+          }
+        },
+        "watching": "r1m1",
+        "alive": [
+          "p_7a1c00000002"
+        ],
+        "eliminated": [
+          "p_7a1c00000001"
+        ],
+        "champion": "p_7a1c00000002"
+      },
+      "serverNow": 1792751315000.0
+    }
+  }
+}

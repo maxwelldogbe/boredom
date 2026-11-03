@@ -25,6 +25,8 @@ import {
 import { friendlyError } from '../lib/errors'
 import { resetPopupDismissals } from '../lib/guestPopup'
 import { safeNext } from '../lib/navigation'
+import { fetchSoloRecords } from '../lib/solo'
+import { fetchBrag } from '../lib/account'
 import { useRoomActions } from '../state/context'
 import type { Avatar } from '../types/protocol'
 import { AccountForms } from './AccountForms'
@@ -36,6 +38,10 @@ import {
   StatsSection,
   type HeaderData,
 } from './profile/ProfileSections'
+import { NemesisSection } from './profile/nemesis/NemesisSection'
+import { BragSection } from './profile/BragSection'
+import { RecoverySection } from './profile/RecoverySection'
+import { SoloRecordsSection } from './profile/SoloRecords'
 import { useLoad } from './profile/useLoad'
 import { WhatWeSave } from './profile/WhatWeSave'
 
@@ -214,10 +220,12 @@ function AccountProfilePage({ profile, onChange }: PageProps) {
     onChange(adoptSession(data))
     setAvatarLockedUntil(data.profile.avatarLockedUntil ?? null)
     setFormKey((k) => k + 1)
-    return { tag: data.tag, createdAt: data.createdAt }
+    return { tag: data.tag, createdAt: data.createdAt, phone: data.phone ?? null }
   }, expired)
   const [stats, retryStats] = useLoad(() => fetchMyStats(token()), expired)
   const [players, retryPlayers] = useLoad(() => fetchRecentPlayers(token()), expired)
+  const [soloRecords, retrySolo] = useLoad(() => fetchSoloRecords(token()), expired)
+  const [brag, retryBrag] = useLoad(() => fetchBrag(token()), expired)
 
   const save = async (fields: { nickname: string; color: string }, avatar?: Avatar) => {
     const token = getAuthToken()
@@ -248,6 +256,8 @@ function AccountProfilePage({ profile, onChange }: PageProps) {
       <ProfileHeader nickname={profile.nickname} color={profile.color} avatar={profile.avatar} me={me} onRetry={retryMe} />
       <StatsSection stats={stats} onRetry={retryStats} />
       <ByGameSection stats={stats} onRetry={retryStats} />
+      <SoloRecordsSection records={soloRecords} onRetry={retrySolo} />
+      <BragSection wallet={brag} onRetry={retryBrag} />
       <RecentPlayersSection players={players} onRetry={retryPlayers} />
       <ProfileForm
         key={formKey}
@@ -258,6 +268,8 @@ function AccountProfilePage({ profile, onChange }: PageProps) {
         busy={saving}
         onSubmit={save}
       />
+      {me.status === 'ready' && <RecoverySection phone={me.data.phone ?? null} onExpired={expired} />}
+      <NemesisSection />
       <WhatWeSave registered />
       <section className="stack">
         <h2>Account</h2>

@@ -12,6 +12,7 @@ from django.http import HttpRequest
 from django.template.response import TemplateResponse
 
 from accounts import services
+from accounts.models import RecoveryRequest
 from social import notify
 
 
@@ -28,8 +29,11 @@ def set_active(request: HttpRequest, model_admin: admin.ModelAdmin, users: Query
 
 
 def delete_accounts(request: HttpRequest, model_admin: admin.ModelAdmin, users: QuerySet) -> int:
-    """Log, then delete each account through services.delete_account."""
-    users = list(users)
+    """Log, then delete each account through services.delete_account.
+
+    Accounts with Nemesis funds or open requests are skipped (not counted).
+    """
+    users = [user for user in users if not services.deletion_blocked(user)]
     model_admin.log_deletions(request, users)
     for user in users:
         services.delete_account(user)
@@ -68,6 +72,10 @@ class AccountAdmin(UserAdmin):
         if request.POST.get("confirmed") == "yes":
             count = delete_accounts(request, self, queryset)
             self.message_user(request, f"Deleted {count} account(s).", messages.SUCCESS)
+            if count < len(queryset):
+                self.message_user(
+                    request, "Accounts with Nemesis funds were not deleted.", messages.WARNING
+                )
             return None
         context = {
             **self.admin_site.each_context(request),
@@ -79,12 +87,33 @@ class AccountAdmin(UserAdmin):
         return TemplateResponse(request, "admin/accounts/delete_accounts.html", context)
 
     def delete_model(self, request: HttpRequest, obj: User) -> None:
-        services.delete_account(obj)
+        self.delete_queryset(request, [obj])
 
     def delete_queryset(self, request: HttpRequest, queryset: QuerySet) -> None:
         for user in queryset:
-            services.delete_account(user)
+            if services.deletion_blocked(user):
+                self.message_user(
+                    request, f"{user} has Nemesis funds and was not deleted.", messages.ERROR
+                )
+            else:
+                services.delete_account(user)
 
 
 admin.site.unregister(User)
 admin.site.register(User, AccountAdmin)
+
+
+@admin.register(RecoveryRequest)
+class RecoveryRequestAdmin(admin.ModelAdmin):
+    """Read-only list; staff decide from the dashboard (/admin/recovery). Registering the model
+    gives approve and reject their LogEntry audit rows."""
+
+    list_display = ("id", "created_at", "username", "status", "reviewed_by")
+    list_filter = ("status",)
+    readonly_fields = [
+        f.name for f in RecoveryRequest._meta.fields if f.name not in ("code_digest",)
+    ]
+    exclude = ("code_digest",)
+
+    def has_add_permission(self, request: HttpRequest) -> bool:
+        return False

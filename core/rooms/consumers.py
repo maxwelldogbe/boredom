@@ -24,6 +24,7 @@ from rooms.validation import (
 from social import hub as social_hub
 
 SOCIAL_BY_PLAYER = ("friends:requestByPlayer", "player:block", "player:report")
+SOLO_ROOM_REQUESTS = ("game:action", "room:leave", "solo:again", "solo:quit")  # in a solo room
 
 logger = logging.getLogger("rooms.consumers")
 
@@ -93,8 +94,29 @@ class RoomConsumer(AsyncWebsocketConsumer):
         if request.type == "invite:decline":
             await manager.social.decline_invite(self.channel_name, payload.get("inviteId"))
             return {}
+        if request.type == "friends:discover":
+            if not self.limiter.allow():
+                raise RoomError("RATE_LIMITED", "Slow down a little.")
+            return await manager.social.discover(self.channel_name)
+        if request.type == "room:resume":
+            if not self.limiter.allow():
+                raise RoomError("RATE_LIMITED", "Slow down a little.")
+            user_id = user_id_from_token(payload.get("authToken"))
+            if user_id is not None and await account_profile(payload.get("authToken")) is None:
+                user_id = None  # a disabled or deleted account resumes nothing
+            return manager.resume(user_id, payload.get("tokens") if user_id is None else None)
         if request.type == "guest:quota":
             return await manager.guest_quota(payload.get("profile"))
+        if request.type == "solo:start":
+            current = manager.rooms.get(self.room_code or "")
+            if current is not None and not current.solo:
+                raise RoomError("INVALID_ACTION", "Leave your current room first.")
+            profile, _ = await self._profile(payload)
+            data = await manager.solo_start(
+                self.channel_name, profile, payload.get("gameId"), payload.get("variant")
+            )
+            self.room_code, self.player_id = data["code"], data["playerId"]
+            return data
         if request.type in ("room:create", "room:join"):
             if self.room_code and self.room_code in manager.rooms:
                 raise RoomError("INVALID_ACTION", "Leave your current room first.")
@@ -110,6 +132,9 @@ class RoomConsumer(AsyncWebsocketConsumer):
         if not self.room_code:
             raise RoomError("NOT_IN_ROOM", "You are not in a room.")
         code, pid = self.room_code, self.player_id
+        room = manager.rooms.get(code)
+        if room is not None and room.solo and request.type not in SOLO_ROOM_REQUESTS:
+            raise RoomError("INVALID_ACTION", "That isn't available in a solo game.")
         if request.type == "room:leave":
             await manager.leave_room(code, pid)
             self.room_code = self.player_id = None
@@ -127,6 +152,15 @@ class RoomConsumer(AsyncWebsocketConsumer):
             await manager.end_game(code, pid)
         elif request.type == "room:ready":
             await manager.set_ready(code, pid, payload.get("ready"))
+        elif request.type == "room:setStake":
+            await manager.set_stake(code, pid, payload.get("amount"))
+        elif request.type == "room:stakeChoice":
+            await manager.stake_choice(code, pid, payload.get("join"))
+        elif request.type == "solo:again":
+            await manager.solo_again(code, pid)
+        elif request.type == "solo:quit":
+            await manager.solo_quit(code, pid)
+            self.room_code = self.player_id = None
         elif request.type == "room:react":
             await manager.react(code, pid, payload.get("emoji"))
         elif request.type == "invite:send":
@@ -146,6 +180,8 @@ class RoomConsumer(AsyncWebsocketConsumer):
         """Bind this connection to the account in authToken (presence and invites)."""
         hub = get_manager().social
         user_id = user_id_from_token(payload.get("authToken"))
+        if user_id is not None and await account_profile(payload.get("authToken")) is None:
+            user_id = None  # disabled, deleted, or signed out by a password reset
         info = await social_hub.load_account(user_id) if user_id is not None else None
         if info is None:
             await hub.unbind(self.channel_name)
@@ -175,7 +211,9 @@ class RoomConsumer(AsyncWebsocketConsumer):
         """Channel-layer handler: this socket lost its seat (room closed or seat reclaimed)."""
         if event.get("code") == self.room_code:
             self.room_code = self.player_id = None
-            error = {"code": "NOT_IN_ROOM", "message": event.get("message", "")}
+            error: dict[str, Any] = {"code": "NOT_IN_ROOM", "message": event.get("message", "")}
+            if event.get("reason"):
+                error["data"] = {"reason": event["reason"]}
             await self._send({"type": "error", "data": error})
 
     async def _send(self, message: dict[str, Any]) -> None:

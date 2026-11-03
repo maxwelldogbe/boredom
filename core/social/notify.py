@@ -39,6 +39,10 @@ def mode_changed(user_id: int, mode: str) -> None:
     _call("mode_changed", user_id, mode)
 
 
+def discoverable_changed(user_id: int, discoverable: bool) -> None:
+    _call("discoverable_changed", user_id, discoverable)
+
+
 def account_gone(user_id: int) -> None:
     """The account was disabled or deleted."""
     _call("account_gone", user_id)

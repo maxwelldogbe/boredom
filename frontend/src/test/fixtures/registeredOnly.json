@@ -1,0 +1,490 @@
+{
+  "hostLobby": {
+    "me": "p_r00",
+    "room": {
+      "code": "RGON",
+      "hostId": "p_r00",
+      "status": "lobby",
+      "players": [
+        {
+          "id": "p_r00",
+          "type": "registered",
+          "nickname": "Rita",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400000.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        },
+        {
+          "id": "p_r01",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed1"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400001.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": true
+        },
+        {
+          "id": "p_r02",
+          "type": "registered",
+          "nickname": "Bob",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed2"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400002.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        },
+        {
+          "id": "p_r03",
+          "type": "guest",
+          "nickname": "Cat",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed3"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400003.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": true
+        }
+      ],
+      "selectedGame": "tic_tac_toe",
+      "settings": {
+        "bestOf": 3
+      },
+      "scoreboard": {},
+      "wins": {},
+      "endReason": null,
+      "readyCheck": {
+        "count": 0,
+        "total": 1
+      }
+    }
+  },
+  "guestLobby": {
+    "me": "p_r01",
+    "room": {
+      "code": "RGON",
+      "hostId": "p_r00",
+      "status": "lobby",
+      "players": [
+        {
+          "id": "p_r00",
+          "type": "registered",
+          "nickname": "Rita",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400000.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        },
+        {
+          "id": "p_r01",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed1"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400001.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": true
+        },
+        {
+          "id": "p_r02",
+          "type": "registered",
+          "nickname": "Bob",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed2"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400002.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        },
+        {
+          "id": "p_r03",
+          "type": "guest",
+          "nickname": "Cat",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed3"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400003.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": true
+        }
+      ],
+      "selectedGame": null,
+      "settings": null,
+      "scoreboard": {},
+      "wins": {},
+      "endReason": null,
+      "readyCheck": {
+        "count": 0,
+        "total": 1
+      }
+    }
+  },
+  "hostLobbyManyGuests": {
+    "me": "p_r00",
+    "room": {
+      "code": "RGON",
+      "hostId": "p_r00",
+      "status": "lobby",
+      "players": [
+        {
+          "id": "p_r00",
+          "type": "registered",
+          "nickname": "Rita",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400000.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        },
+        {
+          "id": "p_r01",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed1"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400001.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": true
+        },
+        {
+          "id": "p_r02",
+          "type": "registered",
+          "nickname": "Bob",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed2"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400002.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        },
+        {
+          "id": "p_r03",
+          "type": "guest",
+          "nickname": "Cat",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed3"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400003.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": true
+        },
+        {
+          "id": "p_r04",
+          "type": "guest",
+          "nickname": "Dan",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed4"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400004.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": true
+        },
+        {
+          "id": "p_r05",
+          "type": "guest",
+          "nickname": "Eve",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed5"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400005.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": true
+        }
+      ],
+      "selectedGame": "checkers",
+      "settings": {
+        "bestOf": 1,
+        "flyingKings": false,
+        "backwardCapture": false
+      },
+      "scoreboard": {},
+      "wins": {},
+      "endReason": null,
+      "readyCheck": {
+        "count": 0,
+        "total": 1
+      }
+    }
+  },
+  "guestPlaying": {
+    "me": "p_r01",
+    "room": {
+      "code": "RGON",
+      "hostId": "p_r00",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_r00",
+          "type": "registered",
+          "nickname": "Rita",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400000.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        },
+        {
+          "id": "p_r01",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed1"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": false,
+          "joinedAt": 1792751400001.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": true
+        },
+        {
+          "id": "p_r02",
+          "type": "registered",
+          "nickname": "Bob",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed2"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400002.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        },
+        {
+          "id": "p_r03",
+          "type": "guest",
+          "nickname": "Cat",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed3"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": false,
+          "joinedAt": 1792751400003.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": true
+        }
+      ],
+      "selectedGame": null,
+      "settings": null,
+      "scoreboard": {},
+      "wins": {},
+      "endReason": null,
+      "readyCheck": {
+        "count": 0,
+        "total": 1
+      }
+    }
+  },
+  "registeredHostEmpty": {
+    "me": "p_r00",
+    "room": {
+      "code": "RGON",
+      "hostId": "p_r00",
+      "status": "lobby",
+      "players": [
+        {
+          "id": "p_r00",
+          "type": "registered",
+          "nickname": "Rita",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400000.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        },
+        {
+          "id": "p_r01",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed1"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400001.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        }
+      ],
+      "selectedGame": null,
+      "settings": {},
+      "scoreboard": {},
+      "wins": {},
+      "endReason": null,
+      "readyCheck": null
+    }
+  },
+  "guestHostEmpty": {
+    "me": "p_r01",
+    "room": {
+      "code": "RGON",
+      "hostId": "p_r01",
+      "status": "lobby",
+      "players": [
+        {
+          "id": "p_r00",
+          "type": "registered",
+          "nickname": "Rita",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400000.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        },
+        {
+          "id": "p_r01",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed1"
+          },
+          "online": true,
+          "offlineSince": null,
+          "inGame": true,
+          "joinedAt": 1792751400001.0,
+          "ready": false,
+          "locked": false,
+          "registeredOnlyBlocked": false
+        }
+      ],
+      "selectedGame": null,
+      "settings": {},
+      "scoreboard": {},
+      "wins": {},
+      "endReason": null,
+      "readyCheck": null
+    }
+  }
+}

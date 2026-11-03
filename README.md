@@ -130,8 +130,10 @@ cd ~/boredom/core
 python manage.py createsuperuser      # pick a username and a long password
 ```
 
-Then open **http://localhost:5173/admin** (the dashboard in the app) and press **Log in as staff**,
-or use the classic Django pages at http://localhost:8000/manage/. Both show the same numbers. Staff accounts made later in the admin
+Then open **http://localhost:5173/admin** (the dashboard in the app) and log in there with that
+account; it has its own login form and never sends you to the Django pages. The classic Django
+admin stays separate at http://localhost:8000/manage/. Turning games on and off is only on the
+dashboard's Games page. Staff accounts made later in the admin
 (Users → tick "Staff status") can see every dashboard page; only superusers can delete
 activity rows.
 
@@ -141,7 +143,7 @@ activity rows.
 | `TIME_ZONE` | `UTC` | Times are stored in UTC and shown in this zone (e.g. `Africa/Accra`). |
 | `CSRF_TRUSTED_ORIGINS` | none | Production: your backend's public origin, e.g. `https://api.example.com`, or admin logins fail with a CSRF error. |
 
-The app dashboard (`/admin`) uses the Django admin login session, so in production the frontend
+The app dashboard (`/admin`) uses Django's session cookie (logged in through `/api/admin/login`), so in production the frontend
 and the backend must share one origin (serve the built frontend and proxy `/api`, `/ws`, `/manage`
 and `/static` to Django from the same domain). On separate domains, use `/manage/` instead.
 After pulling this change, restart `npm run dev` so the dev server picks up the new `/manage` proxy.

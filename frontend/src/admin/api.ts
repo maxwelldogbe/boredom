@@ -35,6 +35,24 @@ export interface AdminSession {
   exports: { users: string; sessions: string }
   timeZone: string
   minGamesForRates: number
+  /** Nemesis staff state (missing on servers before Nemesis). */
+  money?: MoneySession | null
+}
+
+export type MoneyPermission =
+  | 'review_ids'
+  | 'review_deposits'
+  | 'review_withdrawals'
+  | 'adjust_balances'
+  | 'edit_merchant'
+  | 'edit_flags'
+
+export interface MoneySession {
+  enrolled: boolean
+  /** This session passed two-factor (money pages need it). */
+  verified: boolean
+  permissions: MoneyPermission[]
+  pending: { deposits: number; withdrawals: number; ids: number; adjustments: number } | null
 }
 
 export interface DayCount {
@@ -71,6 +89,10 @@ export interface OverviewData {
 }
 
 export interface GameRow extends GameRef {
+  /** False while staff have turned the game off for players. */
+  enabled: boolean
+  /** False for game ids that only exist in old sessions (no switch for them). */
+  known: boolean
   plays: number
   abandoned: number
   uniquePlayers: number
@@ -83,13 +105,14 @@ export interface GamesData {
   range: RangeOption
   ranges: RangeOption[]
   games: GameRow[]
+  permissions: { toggle: boolean }
 }
 
 export interface GameDetailData {
   range: RangeOption
   ranges: RangeOption[]
   game: GameRef
-  totals: Omit<GameRow, keyof GameRef>
+  totals: Omit<GameRow, keyof GameRef | 'enabled' | 'known'>
   perDay: DayCount[]
   recent: Array<{
     id: number
@@ -199,11 +222,14 @@ export class AdminApiError extends Error {
   readonly status: number
   readonly code: string
   readonly loginUrl: string | null
-  constructor(status: number, code: string, message: string, loginUrl: string | null = null) {
+  /** Field name -> message for form errors (INVALID_INPUT). */
+  readonly fields: Record<string, string>
+  constructor(status: number, code: string, message: string, loginUrl: string | null = null, fields: Record<string, string> = {}) {
     super(message)
     this.status = status
     this.code = code
     this.loginUrl = loginUrl
+    this.fields = fields
   }
 }
 
@@ -220,12 +246,14 @@ async function send<T>(path: string, init: RequestInit = {}): Promise<T> {
   }
   const data: unknown = await response.json().catch(() => null)
   if (response.ok) return data as T
-  const error = (data as { error?: { code?: string; message?: string; loginUrl?: string } } | null)?.error
+  const error = (data as { error?: { code?: string; message?: string; loginUrl?: string; fields?: Record<string, string> } } | null)
+    ?.error
   throw new AdminApiError(
     response.status,
     error?.code ?? (response.status === 403 ? 'FORBIDDEN' : 'SERVER'),
     error?.message ?? 'Something went wrong.',
     error?.loginUrl ?? null,
+    error?.fields ?? {},
   )
 }
 
@@ -250,8 +278,83 @@ export function userAction(userId: number, action: 'disable' | 'enable' | 'delet
   })
 }
 
-/** Log out of the admin session (Django's admin logout needs a POST with the CSRF token). */
+/** Turn a game on or off for players. Live rooms update at once. */
+export function gameAction(gameId: string, action: 'enable' | 'disable', csrfToken: string) {
+  return send<{ ok: true; enabled: boolean }>(`games/${gameId}/${action}`, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': csrfToken },
+  })
+}
+
+/** Log a staff account into the dashboard. Resolves to the new session (with a fresh CSRF token).
+ *  Staff with two-factor also send `code` (CODE_REQUIRED asks for it). */
+export function login(username: string, password: string, csrfToken: string, code?: string) {
+  return send<AdminSession>('login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+    body: JSON.stringify(code ? { username, password, code } : { username, password }),
+  })
+}
+
+/** POST or PUT a JSON body to a staff endpoint (CSRF header included). */
+export function adminSend<T>(path: string, csrfToken: string, body: unknown = {}, method: 'POST' | 'PUT' = 'POST') {
+  return send<T>(path, {
+    method,
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+    body: JSON.stringify(body),
+  })
+}
+
+/** GET a staff file (an ID photo) as a Blob, through the session (never a public URL). */
+export async function adminBlob(path: string): Promise<Blob> {
+  let response: Response
+  try {
+    response = await fetch(apiUrl(`/api/admin/${path}`), { credentials: 'same-origin' })
+  } catch {
+    throw new AdminApiError(0, 'NETWORK', "Can't reach the server.")
+  }
+  if (response.ok) return response.blob()
+  const data = (await response.json().catch(() => null)) as { error?: { code?: string; message?: string } } | null
+  throw new AdminApiError(response.status, data?.error?.code ?? 'SERVER', data?.error?.message ?? 'Something went wrong.')
+}
+
+/** End the dashboard session. */
 export async function logout(session: AdminSession): Promise<void> {
-  const body = new URLSearchParams({ csrfmiddlewaretoken: session.csrfToken })
-  await fetch(session.logoutUrl, { method: 'POST', credentials: 'same-origin', body }).catch(() => undefined)
+  await send('logout', { method: 'POST', headers: { 'X-CSRFToken': session.csrfToken } }).catch(() => undefined)
+}
+
+// ----- account recovery requests (core/analytics/api.py: recovery_requests) -----
+
+export interface RecoveryAccountFacts {
+  userId: number
+  username: string
+  active: boolean
+  nickname: string | null
+  tag: string | null
+  joined: string | null
+  hasRecoveryNumber: boolean
+  friends: { nickname: string; tag: string | null }[]
+  games: { gameId: string; name: string; played: number }[]
+}
+
+export interface RecoveryRequestRow {
+  id: number
+  createdAt: string
+  status: 'pending' | 'approved' | 'rejected' | 'completed'
+  username: string
+  /** Masked. */
+  phone: string
+  answers: { nickname?: string; joined?: string; friend?: string; games?: string; note?: string }
+  /** Null: no account has that username. */
+  account: RecoveryAccountFacts | null
+  reviewedBy: string | null
+  reviewedAt: string | null
+  reviewNote: string
+}
+
+export interface RecoveryData extends Paged {
+  query: { status: string }
+  statuses: string[]
+  pending: number
+  results: RecoveryRequestRow[]
 }

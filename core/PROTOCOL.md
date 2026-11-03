@@ -46,6 +46,23 @@
 > `invite:received`, `invite:expired`, `invite:cleared`; new error codes (3). Section 9. Tags
 > are now sent over the WebSocket, but only to the account's friends (and with a friend
 > request or invite to its recipient). `room:state` is unchanged.
+>
+> **Additions (solo games, part 1):** additive only. Registered players can play
+> `tic_tac_toe` and `connect_four` alone against a bot (section 16): new requests `solo:start`,
+> `solo:again`, `solo:quit`; `RoomPublic.solo` and `soloVariant`; `Player.bot` (and
+> `Player.type` `"bot"`, `avatar: null` for the bot); `soloResult` in solo `game:view`s;
+> `GET /api/solo/records`.
+>
+> **Additions (staying seated):** additive only. New request `room:resume` (4.11), error code
+> `ALREADY_IN_GAME`, the one-seat rule and the takeover notice (6.3), and
+> `HOST_OFFLINE_TRANSFER_MS` (45 s) for the host takeover delay.
+>
+> **Additions (solo games, part 2):** additive only. Solo challenges `guess_race`, `name_it` and
+> `hangman` (section 16.1): new `solo:start` variants, the `run_over` soloResult and their views.
+>
+> **Additions (solo games, part 3):** additive only. Solo `dots_and_boxes` (variant `{difficulty,
+> size}`) and `penalty_kick`; `penalty_kick` accepts an optional `diveGraceMs` setting (default
+> `PENALTY_DIVE_GRACE_MS`, so multiplayer is unchanged).
 
 ## 1. Transport
 
@@ -128,13 +145,13 @@ Example push:
 
 | Code | Meaning |
 | --- | --- |
-| `ROOM_NOT_FOUND` | No room with that code. |
+| `ROOM_NOT_FOUND` | No room with that code. A solo room (16) answers this to everyone but its owner. |
 | `ROOM_FULL` | The room already has `MAX_PLAYERS` (10) players. |
 | `NAME_TAKEN` | Reserved. Duplicate nicknames are auto-suffixed (`Sam`, `Sam2`, `Sam3`), so this is not normally sent. |
 | `NOT_HOST` | Host-only request sent by a non-host. |
 | `NOT_YOUR_TURN` | A game action out of turn. |
 | `INVALID_ACTION` | Invalid payload, profile, settings, or game move. Also used for an unexpected server error ("Something went wrong."). |
-| `GAME_IN_PROGRESS` | Joining a room mid-game without a valid `roomToken` for a seat. |
+| `GAME_IN_PROGRESS` | Joining a room mid-game without a valid `roomToken` for a seat; `solo:again` while the solo game still runs (16). |
 | `RATE_LIMITED` | More than `ACTION_RATE_LIMIT_PER_SEC` (5) game actions per second on this connection, or a `room:react` within `REACTION_COOLDOWN_MS` of the player's previous one. |
 | `NOT_IN_ROOM` | Request needs a room but this connection has no seat (never joined, left, or was detached). |
 | `UNKNOWN_EVENT` | `type` is not a known request type. |
@@ -142,6 +159,11 @@ Example push:
 | `UNAUTHORIZED` | `auth:hello` with a missing, invalid or expired token, or a disabled or deleted account (9.1). |
 | `NOT_FRIENDS` | `invite:send` to someone who is not your friend (or an unknown tag). |
 | `GUEST_LIMIT` | A guest out of free games (11): `room:create` / `room:join` for a new seat, with `data: {lockedUntil}`; `game:start` when too few players are left, with `data: {nicknames}`. |
+| `GAME_DISABLED` | `room:selectGame`, `game:start` or `solo:start` for a game staff turned off (13). |
+| `ALREADY_IN_GAME` | `room:create` or `room:join` (new seat) while playing a running game in another room, with `data: {code}` (6.3). |
+| `NOT_ENOUGH_BRAG` | Joining or setting a Brag coin stake without the coins, or too few players able to pay at `game:start` (17), `data: {balance, stake}`. |
+| `STAKE_NOT_AGREED` | `game:start` while too few players joined the stake (17), `data: {joined, needed}`. |
+| `REGISTERED_ONLY` | A guest touching a registered-only game (12): `room:selectGame` or `game:start` by a guest host; `game:start` when too few registered players are seated, with `data: {nicknames}` (the guests); a `game:action` (including `watch`) from a guest while one runs; `solo:start` from a guest (16). |
 | `TARGET_UNAVAILABLE` | `invite:send` to a friend who is not exactly `online` (offline, appearing offline, busy, in a room), blocked, or disabled. Always the same message. |
 | `INVITE_EXPIRED` | `invite:accept` after the invite ran out, or its room started a game, closed, or the sender left. |
 | `INVITE_INVALID` | `invite:accept` for an invite that is not yours, was already used, never existed (or was lost in a server restart), or after a block. |
@@ -240,7 +262,8 @@ The `roomToken` stops working.
 Payload: `{ "gameId": GameId, "settings": object }`. Only in `lobby`. Settings are validated by the
 game module and completed with defaults; the stored result appears in `RoomPublic.settings`.
 Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `INVALID_ACTION` (unknown game, bad settings,
-room `finished`), `GAME_IN_PROGRESS`.
+room `finished`), `GAME_IN_PROGRESS`, `REGISTERED_ONLY` (a guest host picking a registered-only
+game, 12), `GAME_DISABLED` (a game staff turned off, 13).
 
 Picking a different game, or changing at least one stored setting value, clears every ready flag
 (4.9) and sends `ready_reset` to the players whose flag was set. Sending the same game with
@@ -252,9 +275,10 @@ Payload: `{}`. Only in `lobby`. Requires a selected game and a seated-player cou
 min/max (offline players count and take part). Everyone receives `room:state` (status `playing`)
 then their first `game:view`.
 Ack data: `{}`. Errors: `NOT_IN_ROOM`, `NOT_HOST`, `INVALID_ACTION` (no game selected, wrong
-player count, room `finished`), `GAME_IN_PROGRESS`, `GUEST_LIMIT` (11).
+player count, room `finished`), `GAME_IN_PROGRESS`, `GUEST_LIMIT` (11), `REGISTERED_ONLY` (12),
+`GAME_DISABLED` (13).
 Locked guests (11) sit the game out (`inGame: false` from the start) and are not counted in the
-player count.
+player count. In a registered-only game (12) every guest sits it out the same way.
 
 ### 4.7 `game:action`
 
@@ -307,10 +331,21 @@ are never stored, never replayed on reconnect, never recorded in activity or ana
 not count as room activity for cleanup (6.4).
 Ack data: `{}`. Errors: `NOT_IN_ROOM`, `INVALID_ACTION` (unknown emoji), `RATE_LIMITED`.
 
+### 4.11 `room:resume`
+
+Finds the caller's own seat after a lost connection or an app restart. Payload: `{authToken}` for
+an account (its seat in any room but a solo one), or `{tokens: [{code, roomToken}]}` for a guest
+(the stored tokens, up to 20; the first that still holds a live seat wins). Ack data:
+`{resume: {code, roomToken, status, hostNickname, playerCount} | null}` — null when there is no
+seat or its room closed. Nothing is ever said about rooms the caller is not seated in. The client
+then sends `room:join` with that `code` and `roomToken`. Rate limited like game actions
+(`RATE_LIMITED`).
+
 ## 5. Types
 
 ```ts
-type GameId = 'rps' | 'guess_race' | 'hangman' | 'dots_and_boxes' | 'liars_dice' | 'name_it';
+type GameId = 'rps' | 'guess_race' | 'hangman' | 'dots_and_boxes' | 'liars_dice' | 'name_it'
+  | 'tic_tac_toe' | 'connect_four' | 'penalty_kick' | 'checkers';
 
 // Sent by the client. Unknown fields (including `type`, `stats` and an old `emoji`) are ignored:
 // the server decides the seat type from `authToken` (4.1). Ignored entirely with a valid authToken.
@@ -328,14 +363,16 @@ type Avatar = {
 
 type Player = {
   id: string;               // per-room player id
-  type: 'guest' | 'registered';  // for a badge; no username or account id is ever exposed
+  type: 'guest' | 'registered' | 'bot';  // for a badge; no username or account id is ever exposed
   nickname: string;         // may carry a suffix: "Sam2"
   color: string;
-  avatar: Avatar;           // assigned by the server when the seat is created
+  avatar: Avatar | null;    // assigned by the server when the seat is created; null only for a bot
   online: boolean;
   joinedAt: number;         // epoch ms
   ready: boolean;           // lobby ready check (4.9); always false for the host
   locked: boolean;          // a guest out of free games (11); always false for registered seats
+  registeredOnlyBlocked: boolean; // a guest while the selected or running game is registered-only (12)
+  bot: boolean;             // the bot of a solo room (16); always nickname "Bot", never a person
 };
 
 type RoomStatus = 'lobby' | 'playing' | 'between_rounds' | 'finished';
@@ -345,11 +382,14 @@ type RoomPublic = {
   hostId: string;
   status: RoomStatus;
   players: Player[];        // seat (join) order
-  selectedGame: GameId | null;
-  settings: Record<string, unknown>;
+  selectedGame: GameId | null;   // null for a guest while a registered-only game is selected (12)
+  settings: Record<string, unknown> | null; // null exactly when selectedGame is hidden that way
   scoreboard: Record<string, number>;   // playerId -> session points, up to 2 decimals (only players with points recorded)
   wins: Record<string, number>;         // playerId -> games won (placement 1) this session
   readyCheck: { count: number; total: number } | null;  // 4.9; null while no game is selected
+  disabledGames: GameId[];  // games staff turned off (13), sorted; clients hide them
+  solo: boolean;            // a solo room (16)
+  soloVariant: { difficulty: 'easy' | 'medium' | 'hard' } | null;  // null unless solo
 };
 
 type GameResult = {
@@ -421,8 +461,19 @@ scoreboard, so no game is worth more than another.
 - Host transfer goes to the **longest-seated online** player:
   - immediately when the host sends `room:leave` (falls back to the longest-seated offline
     player if nobody is online);
-  - when the host has been offline for more than `HOST_TRANSFER_MS` (15 s) and someone is online.
-  A host who returns within 15 s keeps the role. A former host does not get it back.
+  - when the host has been offline for more than `HOST_OFFLINE_TRANSFER_MS` (45 s) and someone
+    is online. (`HOST_TRANSFER_MS` stays in the constants for older clients; the server no longer
+    uses it.)
+  A host who returns within that time keeps the role. A former host does not get it back.
+- Reclaiming a seat from a new connection takes it over: the older connection gets the push
+  `error` `{code: "NOT_IN_ROOM", message: "You signed in elsewhere.", data: {reason:
+  "signed_in_elsewhere"}}` and must not rejoin on its own.
+- **One seat at a time** (not counting solo rooms, 16): `room:create`, or `room:join` for a new
+  seat, while the same account (or, for a guest, the same browser profile) is seated in another
+  room first leaves that room the normal way (`room:leave`, with its usual events) when it is not
+  playing a game there; if that player is in a running game there, the request fails with
+  `ALREADY_IN_GAME`, `data: {code}`. The client offers "Return to game" or "Leave it" (a forfeit,
+  through the usual `room:leave`).
 
 ### 6.4 Cleanup
 
@@ -452,6 +503,7 @@ sent to everyone online in the room unless noted, and are never replayed on reco
 | `host_changed` | The new host. | `{previousHostId}` |
 | `player_quit` | The player who sent `game:quit`. | |
 | `game_ended_by_host` | The host who sent `game:end`. | |
+| `game_unselected` | The (new) host. Host passed to a guest while a registered-only game was selected (12), or staff turned the selected game off (13); the selection is cleared. | `{reason: "registered_only" \| "disabled"}` |
 | `ready_reset` | The host whose change cleared the flags. Sent **only** to players whose ready flag was `true` and was cleared by that change. | `{reason: "game_changed" \| "settings_changed"}` |
 
 ## 7. Games **(B2–B7)**
@@ -468,6 +520,10 @@ settings combination (for example an RPS duel with 3 players).
 | `dots_and_boxes` | B5 (R1) |
 | `liars_dice` | B6 (R2) |
 | `name_it` | B7 (R3) |
+| `tic_tac_toe` | Part 1A (series, 7.7) |
+| `connect_four` | Part 1B (series, 7.7) |
+| `penalty_kick` | Part 1B (series, 7.7) |
+| `checkers` | Part 2A (series, 7.7) |
 
 ### 7.1 `rps`: Rock-Paper-Scissors
 
@@ -993,6 +1049,380 @@ Votes are secret until the vote closes; they appear only in the `challengeResult
 **Results:** placement by elimination order: the last survivor is 1st, the first player out is
 last. `score` is the number of players they outlasted (`n − placement`), for display.
 
+### 7.7 Series games: two-player games in matches and a bracket
+
+`tic_tac_toe`, `connect_four`, `penalty_kick` and `checkers` share one wrapper: every game is a
+two-player game played as best-of **matches** inside a knockout **bracket**. With 2 players
+the bracket is a single match.
+
+**Players:** 2–10.
+
+**Bracket** (as in `rps`)
+- Each bracket round pairs the players still in at random. An odd count gives one random
+  player a bye, preferring players who have not had one. Matches of a round run at the same
+  time; when they are all decided, winners advance to the next round.
+- Match ids are `r{bracketRound}m{n}` (`r1m1`, `r1m2`, …). Seat 1 is `a`, seat 2 is `b`.
+
+**Matches**
+- A match is best of `bestOf` games (`1`, `3` or `5`): the first to `winsNeeded`
+  (`bestOf // 2 + 1`) wins it. Games without a `bestOf` setting play one game per match.
+- Seat 1 moves first in game 1; the first mover alternates every game, drawn games included.
+- A drawn game does not count and is replayed (with the other player opening). After
+  `MATCH_MAX_DRAWS` (3) draws the server decides the match at random: `coinFlip: true`.
+- **AFK:** when a turn timer runs out, the server makes a random legal move for the player
+  (`autoMove` event). `MATCH_AFK_TIMEOUTS_TO_FORFEIT` (3) timeouts in a row by one player lose
+  them the match (`reason: 'afk'`); any move of their own resets the count.
+- **Forfeit** (`game:quit`, leaving, offline timeout): a player in a live match loses it and
+  the opponent advances (`reason: 'forfeit'`). A player waiting (bye or won match) leaves the
+  bracket before the next pairing; a player already knocked out just becomes `inGame: false`.
+
+**Spectating:** a player not in a live match (waiting or knocked out) is a spectator. Their
+`match` is the public view of one live match: the one they chose with `watch`, else the
+first live match (else their own last match, so a finished final stays on screen).
+Spectator views never contain hidden information or per-player data such as legal moves.
+
+**Actions** (on top of each game's own):
+
+| Action | Who | Effect |
+| --- | --- | --- |
+| `{"type": "watch", "matchId": string}` | spectators only | Show that live match. No game effect, no event. |
+
+| Error | When |
+| --- | --- |
+| `NOT_YOUR_TURN` | A game action from a player who is not in a live match; not your turn. |
+| `INVALID_ACTION` | `watch` from a player in a live match, or for a match that is not live; the game's own errors. |
+
+**View** (the shared shell; `game` is the game's own view, see each game):
+
+```ts
+type SeriesMatch = {
+  id: string;
+  a: string;
+  b: string | null;                     // null for a bye
+  phase: 'playing' | 'over';
+  wins: Record<string, number>;         // games won in this match
+  gameNo: number;                       // games started, draws included (1 = first game)
+  draws: number;
+  winner: string | null;
+  reason: 'bye' | 'score' | 'forfeit' | 'afk' | 'coinFlip' | null;
+  coinFlip: boolean;
+  lastGame: {gameNo: number; result: 'winner' | 'draw'; winner: string | null; game: object} | null;
+};
+
+type SeriesView<G> = {
+  phase: 'playing' | 'waiting' | 'out' | 'done'; // you: in a live match, through/bye, knocked out
+  role: 'player' | 'spectator';
+  bestOf: number;
+  winsNeeded: number;
+  bracketRound: number;
+  matches: SeriesMatch[];               // the current bracket round
+  liveMatches: string[];                // ids of matches still being played
+  match: (SeriesMatch & {game: G}) | null; // yours, or the one you watch
+  watching: string | null;              // spectators: the shown match id; players: null
+  alive: string[];
+  eliminated: string[];
+  champion: string | null;
+};
+```
+
+`lastGame` keeps the final public view of the match's previous game, so a board stays visible
+after the next game has started.
+
+**Events** (every game event carries `matchId`):
+
+| kind | data |
+| --- | --- |
+| `bracketRound` | `{bracketRound, pairs: [a, b \| null][]}` |
+| `autoMove` | `{matchId, playerId}`: the server moved for a timed-out player |
+| `gameEnd` | `{matchId, gameNo, result: 'winner' \| 'draw', winner, game}` |
+| `matchOver` | `{matchId, winnerId, loserId \| null, reason, coinFlip}` |
+| `gameOver` | see 6.2 |
+
+**Results:** placement by the bracket round a player lost in: champion 1st, runner-up 2nd,
+losing semifinalists tied 3rd, and so on. `score` is matches won (byes don't count).
+
+### 7.8 `tic_tac_toe`: Tic-Tac-Toe
+
+A series game (7.7). **Settings** (defaults shown):
+
+```json
+{"bestOf": 3}
+```
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| `bestOf` | `1`, `3`, `5` | Games per match; first to the majority wins. |
+
+**Action:** `{"type": "place", "cell": 0-8}` (cells row by row: 0–2 top, 3–5 middle, 6–8 bottom).
+
+| Error | When |
+| --- | --- |
+| `NOT_YOUR_TURN` | It is your opponent's turn. |
+| `INVALID_ACTION` | Cell not an integer 0–8 or already taken; unknown `type`. |
+
+**Rules:** seat 1 is X, seat 2 is O; the game's first mover opens. Three in a row (across,
+down or diagonal) wins; a full board without one is a draw. Each turn lasts `TTT_TURN_MS`
+(15 s); a timeout places a random empty cell.
+
+**Game view** (`match.game`):
+
+```ts
+type TicTacToeGame = {
+  board: ('X' | 'O' | null)[];          // 9 cells
+  marks: Record<string, 'X' | 'O'>;     // player id -> mark
+  firstMover: string;
+  turn: string | null;                  // null once the game is decided
+  turnDeadline: number | null;          // epoch ms
+  lastMove: number | null;              // cell
+  winner: string | null;
+  winningCells: number[] | null;
+  // players in the match only:
+  isYourTurn?: boolean;
+  legalMoves?: number[];                // empty cells on your turn, else []
+};
+```
+
+### 7.9 `connect_four`: Connect Four
+
+A series game (7.7). **Settings** (defaults shown):
+
+```json
+{"bestOf": 3}
+```
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| `bestOf` | `1`, `3`, `5` | Games per match; first to the majority wins. |
+
+**Action:** `{"type": "drop", "column": 0-6}`
+
+| Error | When |
+| --- | --- |
+| `NOT_YOUR_TURN` | It is your opponent's turn. |
+| `INVALID_ACTION` | Column not an integer 0–6 or full; unknown `type`. |
+
+**Rules:** 7 columns × 6 rows; rows run top (0) to bottom (5) and a disc lands in the lowest
+empty row of its column. Four in a row across, down or diagonally wins; a full board without
+one is a draw. Each turn lasts `C4_TURN_MS` (20 s); a timeout drops into a random column that
+is not full.
+
+**Game view** (`match.game`):
+
+```ts
+type ConnectFourGame = {
+  board: (1 | 2 | null)[][];            // [row][column] -> seat
+  seats: Record<string, 1 | 2>;         // player id -> seat
+  firstMover: string;
+  turn: string | null;                  // null once the game is decided
+  turnDeadline: number | null;          // epoch ms
+  lastMove: {row: number; column: number; playerId: string} | null;
+  winner: string | null;
+  winningCells: [number, number][] | null; // [row, column], the whole run (4 or more)
+  // players in the match only:
+  isYourTurn?: boolean;
+  legalMoves?: number[];                // open columns on your turn, else []
+};
+```
+
+### 7.10 `penalty_kick`: Penalty Kick
+
+A series game (7.7) with one shootout per match (`bestOf` does not apply; a shootout never
+draws). **Settings** (defaults shown):
+
+```json
+{"kicksPerPlayer": 5, "keeperSpeed": "normal"}
+```
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| `kicksPerPlayer` | `3`, `5` | Regulation kicks for each player before sudden death. |
+| `keeperSpeed` | `"easy"`, `"normal"`, `"hard"` | How fast the keeper patrols while the shooter aims. |
+
+Positions are in the **goal plane**, seen from behind the shooter by everyone: `x` from 0
+(left post) to 1 (right post), `y` from 0 (ground) to 1 (crossbar).
+
+**Actions:**
+
+| Action | Who | When |
+| --- | --- | --- |
+| `{"type": "shoot", "aim": {"x": number, "y": number}, "power": number}` | the shooter | `aiming` |
+| `{"type": "dive", "x": number, "y": number}` | the keeper | `flight` |
+
+`aim.x`/`aim.y` must be finite numbers in -0.5..1.5 and `power` in 0..1. A dive's `x`/`y` must
+be finite numbers and are clamped to -0.1..1.1. The keeper's position is the point between
+the hands; home is (0.5, 0.3).
+
+| Error | When |
+| --- | --- |
+| `NOT_YOUR_TURN` | You are not in a live match. |
+| `INVALID_ACTION` | Wrong action for your role; bad aim, power or dive numbers; a shot after the ball is kicked; a dive during `aiming`; shootout over. |
+
+A dive that arrives after `arriveAt + graceMs` (server receive time), or any dive after the
+first one, is **ignored** (the request is acknowledged, nothing changes).
+
+**Rules**
+- The game's first mover shoots first; shooter and keeper swap every kick.
+- Each kick has three phases:
+  1. `aiming`: the shooter has `PENALTY_AIM_MS` (12 s). On time out the server takes a mild
+     shot inside the goal (power 0.5); this counts as a timeout (AFK, 7.7). The keeper
+     player cannot act; the keeper patrols on `keeperPath`: from home, pause
+     `PENALTY_KEEPER_PAUSE_MS[keeperSpeed]`, move in a straight line to a random point
+     (x 0.2..0.8, y 0.3..0.36) at `PENALTY_KEEPER_SPEED[keeperSpeed]` goal widths per second,
+     pause, and so on (easy 0.3 / 600 ms, normal 0.5 / 350 ms, hard 0.8 / 150 ms).
+  2. `flight`: from the moment the shot is accepted, the ball flies for
+     `PENALTY_FLIGHT_MS_MAX` (1.3 s, power 0) down to `PENALTY_FLIGHT_MS_MIN` (0.7 s, power 1),
+     linear in power. The keeper stops where the patrol was when the shot was accepted
+     (`keeperSpot`) and may dive from there until `arriveAt + PENALTY_DIVE_GRACE_MS` (250 ms).
+  3. `result`: resolved at `arriveAt + grace`, shown for `PENALTY_RESULT_MS` (2.5 s); then the
+     next kick starts, or the shootout ends.
+- Resolution:
+  - `power < PENALTY_POWER_FIZZLE` (0.15): `fizzled`, the ball stops short.
+  - Otherwise the real aim is the aim plus gaussian wobble on each axis with
+    sd = `PENALTY_WOBBLE_BASE` (0.03) + `PENALTY_WOBBLE_WILD` (0.14) × how far power exceeds
+    `PENALTY_POWER_SWEET_MAX` (0.8), as a fraction of the rest of the range. `y` never goes
+    below 0. The real aim is fixed when the ball is kicked.
+  - Beyond an edge by more than `PENALTY_POST_MARGIN` (0.03): `wide` (x) or `over` (y);
+    within the margin: `post`. These cannot be saved.
+  - On target: `saved` when the ball (radius 8 scene units at the goal) touches the keeper's
+    body, or, after a dive, lands within `PENALTY_SAVE_RADIUS` (0.14) + `PENALTY_SLOW_BONUS`
+    (0.08) × (1 − power) goal widths of the dive point. Otherwise `goal`. Distances use the
+    drawn goal's proportions (280 × 180 scene units). The body is the drawn keeper around the
+    hands point (scene units, y down): head circle (0, −58) r 13, gloves (±28, 0) r 7, torso
+    x −16..16 y −44..12, shorts and legs x −15..15 y 8..54, arms (±14, −36)–(±28, 0) r 4.
+    Standing at `keeperSpot`, or diving: the hands at the dive point, the body leaning
+    clamp((dive.x − keeperSpot.x) × 160, −80, 80) degrees clockwise around the hands.
+  - Only `goal` scores.
+- After `kicksPerPlayer` kicks each, the higher score wins. The shootout is decided as soon as
+  one side cannot catch up; the winner is declared when that kick's `result` phase ends.
+  Tied after regulation: sudden death, one kick each, until a pair of kicks leaves the scores
+  different.
+
+**Game view** (`match.game`). Public: nothing in it is secret once the ball is kicked. During
+`aiming` it carries no aim at all; during `flight` it carries the real aim but never the
+outcome. Use the push's `serverNow` with `launchAt`/`arriveAt` to animate the ball.
+
+```ts
+type Point = { x: number; y: number };
+type PenaltyOutcome = 'goal' | 'saved' | 'wide' | 'over' | 'post' | 'fizzled';
+
+type PenaltyKick = {
+  kick: number;                         // 1-based
+  shooter: string;
+  keeper: string;
+  to: Point;                            // the real aim
+  power: number;                        // 0..1
+  keeperSpot: Point;                    // where the keeper stood at the kick
+  dive: Point | null;                   // null: the keeper did not dive
+  outcome: PenaltyOutcome;
+};
+
+type PenaltyFlight = {
+  launchAt: number;                     // epoch ms
+  arriveAt: number;
+  graceMs: number;                      // dives count until arriveAt + graceMs
+  ball: { from: Point; to: Point; power: number };  // from: the spot, (0.5, 0)
+  keeperSpot: Point;                    // where the keeper stood at the kick
+  dive: (Point & { receivedAt: number }) | null;    // the accepted dive
+};
+
+type PenaltyGame = {
+  kicksPerPlayer: number;
+  keeperSpeed: 'easy' | 'normal' | 'hard';
+  firstMover: string;
+  phase: 'aiming' | 'flight' | 'result' | 'over';
+  shooter: string | null;               // of the kick in play (or just taken); null once over
+  keeper: string | null;
+  kickNo: number;                       // 1-based, the kick in play (or just taken)
+  round: number;                        // 1-based; a round is one kick each
+  suddenDeath: boolean;
+  scores: Record<string, number>;
+  kicks: PenaltyKick[];                 // resolved kicks, in order
+  lastKick: PenaltyKick | null;
+  turnDeadline: number | null;          // aiming only: the shooter's deadline, epoch ms
+  keeperPath: (Point & { at: number })[] | null;  // aiming only: patrol keyframes, epoch ms;
+                                        // straight lines between them, the last one held
+  flight: PenaltyFlight | null;         // flight and result
+  outcome: PenaltyOutcome | null;       // result only
+  resultUntil: number | null;           // result only: when the next kick (or the end) is due
+  winner: string | null;
+  // players in the match only:
+  yourRole?: 'shooter' | 'keeper' | null;
+};
+```
+
+**Events** (plus the series events, all tagged with `matchId`):
+- `penalty_launch`: `{kick, shooter}` when the ball is kicked.
+- `penalty_result`: `PenaltyKick & {scores}` when the kick resolves.
+
+### 7.11 `checkers`: Checkers
+
+A series game (7.7) with American rules. **Settings** (defaults shown):
+
+```json
+{"bestOf": 1, "flyingKings": false, "backwardCapture": false}
+```
+
+| Setting | Values | Notes |
+| --- | --- | --- |
+| `bestOf` | `1`, `3` | Games per match; first to the majority wins. |
+| `flyingKings` | boolean | Kings move any distance diagonally and capture from a distance, landing on any empty square past the captured piece. |
+| `backwardCapture` | boolean | Men may also capture backward. |
+
+**Board:** 8×8, `[row, col]` with row 0 at the top. Only dark squares (`(row + col)` odd)
+are used. Seat 1 (red, `a`) starts on rows 5–7 and moves up (toward row 0); seat 2 (blue,
+`b`) starts on rows 0–2 and moves down. 12 pieces each.
+
+**Action:** `{"type": "move", "from": [r, c], "to": [r, c]}`: one step or ONE capturing hop.
+
+| Error | When |
+| --- | --- |
+| `NOT_YOUR_TURN` | It is your opponent's turn. |
+| `INVALID_ACTION` | Not one of your `legalMoves` (including a non-capture while a capture exists, or another piece during a multi-jump); unknown `type`. |
+
+**Rules**
+- Men move one square diagonally forward; kings one square in any diagonal direction (any
+  distance with `flyingKings`). A capture jumps one enemy piece onto the empty square behind
+  it (any empty square past it for a flying king); the captured piece is removed at once.
+- **Capturing is mandatory:** when any capture exists, only captures are legal.
+- **Multi-jump:** after a capturing hop, if the same piece can capture again, the same player
+  keeps the turn and only that piece may move, only by capturing (`forcedPiece`). The turn
+  ends when that piece has no further capture.
+- A man reaching the far row is crowned king and the turn ends at once, even if another
+  capture would have been possible.
+- A player with no pieces or no legal move on their turn loses. `CHECKERS_DRAW_PLIES` (80)
+  plies in a row without a capture or a man move draw the game (`quietPlies` counts them;
+  each hop is a ply).
+- Each hop lasts up to `CHECKERS_TURN_MS` (45 s); the timer restarts after every hop. A
+  timeout plays a random legal move (AFK rules in 7.7).
+
+**Game view** (`match.game`; everything is public):
+
+```ts
+type CheckersPiece = {seat: 1 | 2; king: boolean};
+type CheckersMove = {from: [number, number]; to: [number, number]; captures: [number, number][]};
+
+type CheckersGame = {
+  board: (CheckersPiece | null)[][];    // [row][col]
+  seats: Record<string, 1 | 2>;         // player id -> seat
+  firstMover: string;
+  turn: string | null;                  // null once the game is decided
+  turnDeadline: number | null;          // epoch ms
+  forcedPiece: [number, number] | null; // the piece that must continue a multi-jump
+  lastMove: (CheckersMove & {playerId: string; crowned: boolean}) | null;
+  quietPlies: number;
+  drawPlies: number;                    // CHECKERS_DRAW_PLIES
+  flyingKings: boolean;
+  backwardCapture: boolean;
+  winner: string | null;
+  draw: boolean;
+  isYourTurn?: boolean;                 // players in the match only
+  legalMoves?: CheckersMove[];          // only the player to move; mandatory capture and
+                                        // multi-jump already applied
+};
+```
+
+**Events:** the series events only (7.7).
+
 ## 8. Account HTTP API
 
 Optional permanent accounts. Guests never need any of this. Plain JSON over HTTP under
@@ -1262,6 +1692,33 @@ but merged into it (a missing note is filled in) and does not count toward the l
 The default is `"online"`. `"busy"` shows friends a busy status and `"offline"` makes the
 account appear offline. An unknown value is `400 INVALID_INPUT` with `fields.presence`.
 
+### 8.8 Account recovery by SMS
+
+An account can keep one confirmed phone number for resetting a forgotten password. Codes are
+`PHONE_CODE_LENGTH` (6) digits, sent by SMS (Teleconic), valid `PHONE_CODE_TTL_MINUTES` (10),
+`PHONE_CODE_MAX_TRIES` (5) tries; a number gets at most `PHONE_CODES_PER_HOUR` (3) codes. Numbers
+are stored as digits with the country code; a leading 0 means `PHONE_DEFAULT_COUNTRY_CODE` (233).
+Requests are rate limited per IP (`RATE_LIMITED`).
+
+- `POST /api/me/phone` (Bearer) `{phone}` → `{sent: true, phone}` (masked, e.g. `"+233•••••0000"`).
+  Texts a code; the number is saved only once confirmed. `PHONE_TAKEN` (409) if another account has it.
+- `POST /api/me/phone/verify` (Bearer) `{code}` → `{phone}`; `INVALID_CODE` (400) when wrong or expired.
+- `DELETE /api/me/phone` (Bearer) → `{phone: null}`.
+- `GET /api/auth/me` gains `phone`: the masked confirmed number, or null.
+- `POST /api/auth/password/forgot` `{login}` (username or phone number) → always `{sent: true}`;
+  a code is texted only when the account exists and has a confirmed number.
+- `POST /api/auth/password/reset` `{login, code, password}` → a new session `{token, profile,
+  stats}`. `INVALID_CODE` (400) or `INVALID_INPUT` (password rules). Every access token issued
+  before the reset stops working (HTTP and WebSocket); the player logs in again elsewhere. The
+  code may also be the one texted after a staff-approved recovery request (below); its number
+  then becomes the account's recovery number.
+- `POST /api/auth/recovery/request` `{username, phone, answers: {nickname, joined?, friend?,
+  games?, note?}}` → always `{received: true}`: for accounts without a recovery number. Staff
+  compare the answers with the account at `/admin/recovery` (`GET /api/admin/recovery`,
+  `POST /api/admin/recovery/<id>/approve|reject` `{note?}`, audit-logged). Approval texts a
+  code valid `RECOVERY_CODE_HOURS` (24), `PHONE_CODE_MAX_TRIES` tries. A newer request replaces
+  an open one. `INVALID_INPUT` for a missing username, phone or nickname.
+
 ## 9. Friends, presence and invites (WebSocket)
 
 For registered accounts. Guests never send or receive any of this, and nothing here changes
@@ -1288,7 +1745,7 @@ is `UNAUTHORIZED` and the connection stays (or becomes) a guest connection. `roo
 | --- | --- |
 | `offline` | No signed-in connection, or the presence setting is `"offline"` (appear offline). |
 | `busy` | The presence setting is `"busy"`. |
-| `in_game` | Seated in a room whose status is `"playing"` and still in the game (`inGame`). |
+| `in_game` | Seated in a room whose status is `"playing"` and still in the game (`inGame`), or in a solo room (16) in any state. |
 | `in_lobby` | Seated in a room in any other state (including after quitting a running game). |
 | `online` | Otherwise. |
 
@@ -1343,6 +1800,17 @@ limits and generic answers as the HTTP API (8.7), so a block is never revealed.
 | `player:block` | `{playerId}` | `{}` | Target must be registered. Never changes the room. |
 | `player:report` | `{playerId, reason, note?}` | `{}` | Guests may be reported: their pseudonymous guest key and nickname are stored. The room code and game are stored with the report for staff. |
 
+### 9.6 People online (finding new friends)
+
+A registered player can opt in to be listed: `PATCH /api/me/settings` `{discoverable: true}`
+(`GET` returns `{presence, discoverable}`; default false, so nobody is listed without choosing
+it). Request `friends:discover` `{}` (after `auth:hello`; else `UNAUTHORIZED`; rate limited like
+game actions) → `{players: [{tag, nickname, avatar, color, status, relationship}]}`: up to
+`DISCOVER_MAX` (30) listed players connected right now whose status is `online`, `in_lobby` or
+`in_game`, newest connections first. Never the caller, their friends, busy or hidden players, or
+anyone blocked either way. `relationship` is `none`, `requested` or `incoming`; a request is sent
+the usual way (`POST /api/friends/requests` `{tag}`, with its limits).
+
 ## 10. Admin reports API (staff)
 
 Part of the staff JSON API under `/api/admin/` used by the `/admin` dashboard. Same rules as the
@@ -1352,6 +1820,12 @@ session cookie, CSRF token from `GET /api/admin/session` in `X-CSRFToken` on eve
 Resolving and dismissing are written to the Django admin log (`LogEntry`), like disabling and
 deleting accounts. Staff may see login usernames here; passwords, tokens and emails are never
 included.
+
+Staff log in on the dashboard itself: `POST /api/admin/login` with `{username, password}` (CSRF
+token required) returns the same body as `GET /api/admin/session`, with a fresh `csrfToken`.
+Wrong credentials or a non-staff account give `400 INVALID_LOGIN`; after `ADMIN_LOGIN_MAX_FAILS`
+failures per IP + username, `429 LOCKED` for `ADMIN_LOGIN_LOCK_MINUTES`. `POST /api/admin/logout`
+ends the session. The dashboard never redirects to the Django admin pages.
 
 ```ts
 type ReportPerson = {
@@ -1423,3 +1897,383 @@ the server per guest (by profile id). Registered seats are never counted or lock
 
 **Push `guest:quota`** `{remaining, limit, lockedUntil, serverNow}`: after each game start, to
 every guest who was counted or left out. Count down `lockedUntil - serverNow` from arrival.
+
+## 12. Registered-only games
+
+`REGISTERED_ONLY_GAMES` in `shared/constants.json` (today `tic_tac_toe`, `connect_four`,
+`checkers`, `penalty_kick`) lists games only registered accounts may play. Client and server
+both read that list; there is no other copy. **Any future registered-only game must be added
+to it.** The other games stay open to everyone.
+
+- **Selecting:** `room:selectGame` with one of them fails with `REGISTERED_ONLY` unless the host
+  is a registered account. Guests may still join a lobby that has one selected.
+- **Starting:** `game:start` fails with `REGISTERED_ONLY` if the host is a guest. Seated guests
+  are left out (`inGame: false` from the start, as for locked guests in 11). If fewer than the
+  game's minimum players remain, the start fails with `REGISTERED_ONLY`,
+  `data: {nicknames: string[]}` (the guests), and nothing changes. The guest free-games counter
+  (11) is never touched by these games.
+- **While it runs:** guests receive no `game:view` for it, and any `game:action` from a guest
+  (including the spectator `watch`) fails with `REGISTERED_ONLY`.
+- **`room:state` for guests:** while a registered-only game is selected (or running),
+  `selectedGame` and `settings` are `null` in the copy a guest receives (also in `room:create` /
+  `room:join` acks). Every copy marks guests with `Player.registeredOnlyBlocked: true`; blocked
+  guests are left out of `readyCheck`.
+- **Host transfer:** if host passes to a guest while one is selected, the selection is cleared
+  and everyone gets `room:event` `game_unselected` (`data: {reason: "registered_only"}`).
+
+## 13. Turning games off (staff)
+
+Staff can turn any registered game off, and back on, from the Games page of the `/admin`
+dashboard. A game that is off is hidden from players and cannot be played; its past sessions,
+stats and leaderboards stay. The switch is stored in `analytics.GameAvailability` (no row means
+on), so it survives restarts, and the server keeps the off set in memory (one process).
+
+- **Rooms:** `RoomPublic.disabledGames` lists the off games; the game picker leaves them out.
+  `room:selectGame` and `game:start` with one of them fail with `GAME_DISABLED`.
+- **When a game is turned off:** every lobby that has it selected loses the selection (settings
+  reset to `{}`, ready flags cleared), the room gets `room:event` `game_unselected`
+  (`data: {reason: "disabled"}`), and every room receives a fresh `room:state`. A game already
+  running, and its results screen, are left alone; `game:playAgain` then clears the selection
+  the same way.
+- **Admin API** (same rules as 10):
+  - `GET /api/admin/games`: each row also has `enabled: boolean` and `known: boolean` (false
+    for ids only found in old sessions; those have no switch). The response has
+    `permissions: {toggle: boolean}`.
+  - `POST /api/admin/games/<gameId>/disable` and `.../enable`: `{ok: true, enabled}`. Needs the
+    `analytics.change_gameavailability` permission (superusers have it), else `403`; an unknown
+    game or action is `404`. A real change is written to the Django admin log
+    (`"Turned <name> off"` / `"... on"`); repeating the current state changes nothing.
+
+## 14. Nemesis wallet (HTTP only)
+
+Nemesis is the opt-in real-money wallet for registered players. **None of its data (balance,
+status, limits, anything) is ever sent over the WebSocket**: not in `room:state`, not in any
+push, not in another player's payload. Everything goes through plain HTTP with the account's
+Bearer token, and every response is `Cache-Control: no-store`.
+
+All amounts are integers in pesewas (`minorUnit` 100, `currency` "GHS"). The server computes
+every balance, limit and eligibility check; the client only displays them.
+
+`NEMESIS_ENABLED` (environment, default off) is the master switch. While it is off only
+`GET /api/nemesis/status` answers (`{enabled: false}`); every other route below is `404`.
+
+- `GET /api/nemesis/status` → `{enabled, active, rulesVersion, eligibility: {accountAgeOk,
+  hoursLeft, gamesPlayed, gamesNeeded, idState}, idState, attemptsLeft, rejectionReason,
+  retentionDays, excluded}`. `idState` is `none | pending | approved | rejected |
+  rejected_final`.
+- `POST /api/nemesis/id` (multipart: `idType`, `fullName`, `idNumber`, `dob` YYYY-MM-DD,
+  `front`, optional `back`) → `201` with the status. Photos must be JPEG or PNG (checked by their
+  bytes) of at most `ID_MAX_BYTES`; at most `ID_MAX_ATTEMPTS` submissions per account and none
+  while one is pending (`INVALID_STATE`); 5 uploads per hour (`RATE_LIMITED`). Only a keyed hash
+  and the last 4 characters of the ID number are kept. A date of birth under
+  `NEMESIS_MIN_AGE_YEARS` is `rejected_final` at once (no photos kept). Photos are stored
+  privately, reachable only by staff, and deleted `ID_IMAGE_RETENTION_DAYS` after the decision
+  (at once if the account is deleted).
+- `POST /api/nemesis/activate {confirmAge: true, acceptRules: true, rulesVersion}` → status.
+  Errors: `ALREADY_ACTIVE`, `EXCLUDED`, `ID_REQUIRED`, `NOT_ELIGIBLE` (with `eligibility`),
+  `INVALID_INPUT` (missing confirmation or old `rulesVersion`). No credit of any kind is given.
+- `POST /api/nemesis/deactivate` → status. Immediate; `NOT_ACTIVE` if off, `DEPOSIT_OPEN` while a
+  deposit request is open. Balance, history and withdrawals stay available while off.
+- `GET /api/wallet` → `{currency, minorUnit, balance, held, limits: {platform: {depositMin,
+  depositMax, depositDaily, deposit30d, withdrawMin, withdrawDailyCap}, player: {depositDaily,
+  deposit30d}, pendingRaise: {depositDailyLimit, deposit30dLimit, effectiveAt} | null},
+  exclusion: {active, permanent, until}, payout: {method, network, number (masked), accountName,
+  effectiveAt, effective} | null, flags: {depositsEnabled, withdrawalsEnabled, stakingEnabled}}`.
+  `balance` is available; `held` is waiting on withdrawals.
+- `GET /api/wallet/entries?cursor=<id>` → `{entries: [{id, kind, amount (signed), balanceAfter,
+  account: "available" | "held", createdAt}], nextCursor}`, newest first, `WALLET_PAGE_SIZE`
+  per page. Kinds: `deposit`, `withdrawal_hold`, `withdrawal_paid`, `withdrawal_refund`,
+  `adjustment`.
+
+**Deposits, withdrawals, limits, breaks.** Every POST accepts an `Idempotency-Key` header: a
+repeated key (per account and route, 24 h) returns the first successful response unchanged.
+Deposits, payment details and deposit submits need an **active** profile (`NOT_ACTIVE`);
+withdrawals, the payout destination, limits and breaks also work while off or on a break.
+
+- `GET /api/wallet/payment-details` → `{method, network, number, accountName}` (where to pay).
+- `POST /api/wallet/deposits {amount}` → `201` deposit `{id, reference ("NEM-XXXXXX"), amount,
+  amountReceived, status, paymentDetails (snapshot), paymentRef, senderNumber, createdAt,
+  expiresAt, submittedAt, rejectReason}`. Errors: `EXCLUDED`, `FEATURE_DISABLED`, `DEPOSIT_OPEN`
+  (with `id`), `LIMIT_REACHED` (with `remaining`), `INVALID_INPUT` (outside
+  `DEPOSIT_MIN..DEPOSIT_MAX`). The player pays outside the app with the reference in the
+  payment note. Unpaid requests expire after `DEPOSIT_REQUEST_TTL_MIN`.
+- `POST /api/wallet/deposits/<id>/submit {paymentRef, senderNumber}` → deposit, now
+  `pending_review`. `paymentRef` is uppercased with spaces and punctuation removed; one already
+  pending or approved is `DUPLICATE_REFERENCE`. Sending the same data again returns the same
+  result.
+- `POST /api/wallet/deposits/<id>/cancel` (only `awaiting_payment`); `GET /api/wallet/deposits`
+  → `{deposits: [...], open: deposit | null}` (resume an open request after a refresh).
+- `POST /api/wallet/payout-destination {method: "mobile_money" | "bank", network (one of
+  PAYMENT_NETWORKS), number, accountName, password}` → `{payout}` (number masked). The first
+  destination is effective at once; a change waits `PAYOUT_CHANGE_DELAY_HOURS`.
+- `POST /api/wallet/withdrawals {amount}` → `201` withdrawal `{id, amount, status, createdAt,
+  eligibleAt, payout (masked), payoutReference (when paid), paidAt, rejectReason}`. The amount
+  moves to `held` at once. Errors: `FEATURE_DISABLED`, `PAYOUT_NOT_SET`, `PAYOUT_PENDING`,
+  `WITHDRAWAL_PENDING`, `LIMIT_REACHED` (`WITHDRAW_DAILY_CAP`, with `remaining`),
+  `INSUFFICIENT_FUNDS`, `INVALID_INPUT` (below `WITHDRAW_MIN`). Staff pay no earlier than
+  `eligibleAt` (`WITHDRAW_FIRST_DELAY_HOURS` after the account's first request).
+- `POST /api/wallet/withdrawals/<id>/cancel` (only `pending_review`; funds return);
+  `GET /api/wallet/withdrawals` → `{withdrawals: [...]}`.
+- `PUT /api/wallet/limits {depositDailyLimit, deposit30dLimit}` → the `limits` object of
+  `GET /api/wallet`. Lowering applies at once; raising waits `LIMIT_RAISE_DELAY_HOURS`
+  (`pendingRaise`). Never above the platform maximums.
+- `POST /api/wallet/exclude {days: 7 | 30 | "permanent"}` → `{exclusion}`. Starts at once; a
+  break can be lengthened, never shortened; a permanent one only staff can lift. While on a
+  break: no deposits and no turning Nemesis on; withdrawals still work.
+
+**Client.** Only `/profile` shows Nemesis (a "Nemesis" section for registered players, rendered
+only when `status.enabled` is true); nothing else in the app mentions it. The client formats
+amounts with `Intl.NumberFormat` in the server's currency and never computes a balance, limit or
+eligibility itself.
+
+**Ledger.** Double-entry and zero-sum (`nemesis/ledger.py` is the only code that changes a
+balance; entries are never edited or deleted). `python manage.py check_ledger` verifies that all
+entries sum to zero and every cached balance equals its entries; the daily background task runs
+the same check and logs an ERROR on a mismatch.
+
+## 15. Nemesis staff tools (admin API)
+
+Same rules as section 10 (staff session, `X-CSRFToken` on POST/PUT, `{"error": {code,
+message}}`), plus: every response is `Cache-Control: no-store`, every action is written to the
+Django admin log, and amounts are integer pesewas computed by the server.
+
+**Two-factor (RFC 6238 TOTP: SHA-1, 30-second steps, 6 digits, ±1 step).**
+- `POST /api/admin/2fa/setup` → `{secret, otpauthUri}` (while not enrolled; again restarts).
+- `POST /api/admin/2fa/confirm {code}` → `{backupCodes: [10]}`, shown once (only hashes are
+  stored). Enrols and marks the session as two-factor.
+- `POST /api/admin/login {username, password, code}`: once enrolled the code (or an unused backup
+  code, consumed) is required: `CODE_REQUIRED` / `INVALID_CODE`, both with `needsCode: true`.
+  Wrong codes count towards the login lockout (`LOCKED`). A code is never accepted twice.
+- `POST /api/admin/2fa/step-up {code}` → `{ok}`; valid for `STEP_UP_MINUTES`.
+- `GET /api/admin/session` adds `money: {enrolled, verified, permissions, pending: {deposits,
+  withdrawals, ids, adjustments} | null}`.
+
+Every money and ID endpoint below needs a session that passed two-factor
+(`TWO_FACTOR_REQUIRED` otherwise; a password-only session such as the Django admin login never
+counts), the named permission (`FORBIDDEN`), and, where marked **step-up**, a step-up within
+`STEP_UP_MINUTES` (`STEP_UP_REQUIRED`: ask for a code, call step-up, retry). Permissions are
+Django permissions given through groups: `nemesis.review_ids`, `review_deposits`,
+`review_withdrawals`, `adjust_balances`, `edit_merchant`, `edit_flags` (superusers hold all).
+Staff can never act on their own account's requests (`FORBIDDEN`).
+
+**Dual approval.** With `DUAL_APPROVAL_ENABLED`, deposits and withdrawals of at least
+`DUAL_APPROVAL_THRESHOLD`, and every adjustment, merchant change and flag change, take effect
+only when a second, different staff member approves (`firstApprovedBy` / `pending` show the
+first step). Off, step-up alone is enough.
+
+- **IDs** (`review_ids`): `GET /api/admin/ids?status=pending|approved|rejected|rejected_final|all`
+  → `{ids: [{id, user: {userId, nickname, tag}, idType, fullName, last4, status, attemptNumber,
+  flaggedDuplicate, createdAt, ageSeconds, reviewedBy, reviewedAt, rejectionReason, hasFront,
+  hasBack, imagesDeletedAt}]}`; `GET /api/admin/ids/<id>` adds `submittedDob`.
+  `GET /api/admin/ids/<id>/image/front|back` (**step-up**) streams the photo (audit-logged);
+  this is the only way to see one. `POST .../approve {dob}` (**step-up**; the reviewer re-enters
+  the date of birth; under age → `rejected_final`; ID number approved elsewhere →
+  `ID_ALREADY_USED` and the submission is flagged). `POST .../reject {reason}` (**step-up**;
+  the last attempt becomes `rejected_final`).
+- **Deposits** (`review_deposits`): `GET /api/admin/money/deposits?status=` (pending first) →
+  `{deposits: [{id, user, reference, amountRequested, amountReceived, status, paymentRef,
+  senderNumber, merchantSnapshot, createdAt, submittedAt, ageSeconds, firstApprovedBy,
+  reviewedBy, reviewedAt, rejectReason, note, own}], dualApproval}`; `GET .../<id>`.
+  `POST .../<id>/approve {receivedAmount, verifiedInAccount: true, note?}` (**step-up**): the
+  reviewer confirms they saw the payment in the receiving account; a different amount needs a
+  `note` and only `receivedAmount` is credited; a second approval is `INVALID_STATE`.
+  `POST .../<id>/reject {reason}` (**step-up**).
+- **Withdrawals** (`review_withdrawals`): `GET /api/admin/money/withdrawals?status=` →
+  `{withdrawals: [{id, user, idName, amount, status, payoutSnapshot (full number), createdAt,
+  eligibleAt, eligible, ...}]}`; `GET .../<id>`. `POST .../<id>/approve` (**step-up**, only once
+  `eligibleAt` has passed), `POST .../<id>/mark-paid {payoutReference}` (**step-up**, after paying
+  by hand; the held amount leaves), `POST .../<id>/reject {reason}` (**step-up**; funds return).
+- **Adjustments** (`adjust_balances`, **step-up**): `GET /api/admin/money/adjustments`;
+  `POST /api/admin/money/adjustments/propose {userId, amount (signed), reason}`;
+  `POST .../<id>/approve|reject`. Corrections post new entries between the player's account and
+  external (never escrow) and never edit existing ones.
+- **Merchant details**: `GET /api/admin/money/merchant` → `{active, versions, dualApproval}`;
+  `PUT` the same path `{method, network, number, accountName}` (`edit_merchant`, **step-up**)
+  creates a new version; `POST .../merchant/<id>/approve` (second approver). Open deposit requests
+  keep the details they were shown.
+- **Flags**: `GET /api/admin/money/flags` → `{flags, pending, updatedAt, dualApproval}`;
+  `POST` the same path `{field: depositsEnabled | withdrawalsEnabled | stakingEnabled, value}`
+  (`edit_flags`, **step-up**); `POST /api/admin/money/flags/approve` (second approver).
+- **Reconciliation** (`review_deposits`): `GET /api/admin/money/reconcile` → `{latest, history,
+  ledger}`; `POST {reportedBalance}` stores a report (`ok` is false when the real balance is
+  below the ledger liabilities).
+- `GET /api/admin/money/overview?range=` → `{liabilities, depositsTotal, withdrawalsTotal,
+  pending, latestReport, ledgerOk, warnings: ["report_stale" | "report_short" |
+  "ledger_mismatch"], lastMerchantChange, flags, dualApproval}`.
+- `GET /api/admin/money/users/<id>` → `{verification (review_ids), wallet: {balance, held,
+  active, exclusion} (any money permission), canRemoveExclusion}`;
+  `POST .../remove-exclusion` (`adjust_balances`, **step-up**) lifts a permanent break.
+- `GET /api/admin/money/audit` → the latest 100 admin-log rows about Nemesis records.
+
+**Account deletion** (by the player or staff) is refused with `HAS_FUNDS` while the account has a
+nonzero balance, held funds, or an open deposit or withdrawal.
+
+## 16. Solo games
+
+A registered player plays alone against a bot in a private **solo room**: one player seat and
+one bot seat. Today `tic_tac_toe`, `connect_four`, `dots_and_boxes` and `penalty_kick`. Solo games are never staked and never
+count toward the scoreboard, `PlayerStats`, analytics sessions, recent players, the guest
+free-games counter (11) or placement points; only the player's own solo record changes.
+
+**Requests**
+
+- `solo:start` `{gameId, variant?: {difficulty?, size?}}` → ack `{code, roomToken, playerId, room}`.
+  `difficulty` is one of `SOLO_DIFFICULTIES` (default `"medium"`); `size` only for
+  `dots_and_boxes`: 4, 5 or 6 (default 5). Guests (including an invalid
+  `authToken`): `REGISTERED_ONLY`. Another `gameId` or an unknown option: `INVALID_ACTION`; a game
+  staff turned off: `GAME_DISABLED`. Fails with `INVALID_ACTION` while this connection holds a
+  seat in a normal room. The account's previous solo room, if any, is closed first (its sockets
+  get `NOT_IN_ROOM`; nothing is recorded). The connection takes the player seat (seat 1) as with
+  `room:create`, and the game starts at once: no lobby or ready check. The first mover is random.
+- `solo:again` `{}` (the owner, after the game finished) → `{}`: a new game, same variant; the
+  first mover alternates. While a game runs: `GAME_IN_PROGRESS`.
+- `solo:quit` `{}` → `{}`: closes the room. Nothing is recorded. `room:leave` in a solo room
+  does the same.
+- In a solo room every other room request (`room:react`, `room:ready`, `game:quit`,
+  `invite:send`, by-player actions, ...) fails with `INVALID_ACTION`.
+
+**Privacy.** `room:peek` reports a solo room as `exists: false`; `room:join` returns
+`ROOM_NOT_FOUND` to everyone except the owner reclaiming the seat (by `roomToken` or account,
+4.2). It is never invited to, spectated or listed. Friends see the owner as `in_game` (9.2).
+
+**The bot** is the second player in `room:state`: `bot: true`, `type: "bot"`, nickname `"Bot"`,
+`avatar: null`; it has no account, tag or presence. It moves through the same validation and
+timers as a player, after a think time of `BOT_THINK_MS_MIN`..`BOT_THINK_MS_MAX` (never more
+than half the time left on the turn), and reads only what a player in its seat could see.
+
+**Dots and Boxes** (7.4) runs unchanged for two, with its own `game:view` shape; the first mover
+is random, then alternates with `solo:again`. Closing a box keeps the turn, so the bot may act
+several times in a row (after `BOT_CONTINUE_MS_MIN`..`BOT_CONTINUE_MS_MAX` each). Equal boxes is a
+draw. **Penalty Kick** (7.10) is 5 kicks each plus sudden death (no draws), keeper speed
+`normal`, with `diveGraceMs` = `SOLO_PENALTY_DIVE_GRACE_MS`. The bot shoots after
+`BOT_PENALTY_SHOOT_MS_MIN`..`BOT_PENALTY_SHOOT_MS_MAX` and, as keeper, dives after a reaction time
+from what a keeper sees at launch (the ball's real aim); a dive after the grace is ignored.
+
+**The other games** use the game's rules and `game:view` shape (7.7 to 7.9) as one best-of-1 match
+(`bestOf: 1`, match id `"solo"`): a draw ends the game as a draw (no replay or coin flip). Turn
+timers apply as in 7.7 (a timed-out move is random; `MATCH_AFK_TIMEOUTS_TO_FORFEIT` in a row
+lose). There is no offline forfeit: a solo room with no connected socket closes after
+`SOLO_IDLE_TTL_MS` and records nothing. When the game ends the room status becomes `finished`
+(no `gameOver` event, no scoreboard change) and every solo `game:view` carries:
+
+```ts
+type SoloResult = {
+  outcome: 'win' | 'lose' | 'draw';
+  record: { plays: number; wins: number; losses: number; draws: number } | null;  // null if saving failed
+};
+// game:view data.view.soloResult: SoloResult | null (null until the game ends)
+```
+
+`record` is the player's updated record for this game and difficulty.
+
+**HTTP.** `GET /api/solo/records` (Bearer, `Cache-Control: no-store`) →
+`[{gameId, variant, plays, wins, losses, draws, bestScore}]` for the signed-in account, by game
+then variant. For bot games `variant` is the difficulty (`"<difficulty>:<size>x<size>"` for Dots
+and Boxes, e.g. `"hard:5x5"`); `bestScore` is for future challenge
+games (0 here). Errors as in 8.5.
+
+### 16.1 Solo challenges
+
+A challenge has no bot: one player seat, one run, a personal best to beat. `solo:start` takes:
+
+| `gameId` | `variant` | SoloRecord `variant` | Running game id (`game:view` `gameId`) |
+| --- | --- | --- | --- |
+| `guess_race` | `{content: "scramble" \| "emoji" \| "mixed"}` (default mixed) | the content type | `solo_guess_run` |
+| `name_it` | `{topic: <topic id> \| "random"}` (default random) | the topic played | `solo_name_it` |
+| `hangman` | `{}` | `"classic"` | `solo_hangman` |
+
+`RoomPublic.selectedGame` is the `gameId`; `soloVariant` is the variant sent (with defaults).
+Topic ids and names are `SOLO_NAMEIT_TOPICS` in `shared/constants.json`. `solo:again` starts a new
+run with the same variant; `solo:quit` records nothing. Actions reuse the multiplayer names:
+
+- `guess_race`: `{type: "guess", text}` (1..`GUESS_TEXT_MAX` chars) and `{type: "skip"}`.
+- `name_it`: `{type: "submitAnswer", text}` (1..40 chars).
+- `hangman`: `{type: "guessLetter", letter}` (one letter a-z; a repeat is `INVALID_ACTION`).
+
+**Guess Race "Beat the clock"** (`solo_guess_run`). One clock of `SOLO_GUESS_RUN_MS`. Puzzles one
+at a time (mixed alternates scramble and emoji), easy first and one level harder every
+`SOLO_LEVEL_EVERY` solves; none repeats in a run. A correct guess (multiplayer checking, any
+listed anagram) scores `max(SOLO_GUESS_POINTS_MIN, SOLO_GUESS_POINTS_MAX -
+SOLO_GUESS_POINTS_PER_SECOND x whole seconds on the puzzle)`; wrong guesses cost nothing. `skip`
+costs `SOLO_GUESS_SKIP_PENALTY_MS` of run time; a puzzle unsolved after `SOLO_GUESS_PUZZLE_MS` is
+skipped for free. Clues at `GUESS_HINT1_MS` and `GUESS_HINT2_MS` as in 7.2. The run ends when the
+clock reaches zero. View:
+
+```ts
+type GuessRunView = {
+  phase: 'playing' | 'done'; content: 'scramble' | 'emoji' | 'mixed'; kind: 'scramble' | 'emoji';
+  prompt: string | null; hints: { type: 'category' | 'length' | 'firstLetter'; value: string | number }[];
+  score: number; solved: number; skipped: number; level: number;   // level 1..3
+  runEndsAt: number; puzzleStartedAt: number; puzzleEndsAt: number;
+  lastResult: { correct: boolean; points: number; answerIfSkipped: string | null } | null;
+  // answerIfSkipped: the skipped puzzle's answer, for SOLO_RESULT_MS. Never the current answer.
+};
+```
+
+**Name It "Streak"** (`solo_name_it`). One answer at a time, `NAMEIT_TURN_MS` each. A listed answer
+(name or alias; case, spaces, punctuation and accents ignored; no fuzzy matching) adds 1; a wrong
+or unlisted answer, a repeat (any name of an entry already given) or a timeout is a strike, and
+the timer restarts. `SOLO_NAMEIT_STRIKES` strikes end the run; naming every entry ends it with
+`detail.completed: true`. View: `{phase, topic: {id, name, emoji}, streak, strikes, maxStrikes,
+accepted: string[] (newest first), turnEndsAt, lastResult: {kind: "correct" | "wrong" | "repeat" |
+"timeout"} | null, completed}`. The unused entries are never sent.
+
+**Hangman "Word streak"** (`solo_hangman`). Words from `words.json` (5..9 letters a-z) by level as
+above, no repeats. `HANGMAN_MAX_WRONG` wrong letters lose the word: a strike, and the word is shown
+for `SOLO_HANGMAN_RESULT_MS` (phase `lost`) before the next. A solved word adds 1 and the next starts
+at once. `SOLO_HANGMAN_STRIKES` strikes end the run. No time limit. View: `{phase: "guessing" |
+"lost" | "done", mask: (string | null)[], guessed: {correct, wrong}, wrongCount, maxWrong, strikes,
+maxStrikes, solved, level, wordNumber, revealedWord: string | null (only once lost), revealUntil}`.
+
+**Finishing a run.** The SoloRecord gets `plays + 1` and `best_score = max(best, score)` (wins,
+losses and draws stay 0); events `solo_started` / `solo_finished` carry `{game_id, variant, score,
+duration}`. Every view then carries:
+
+```ts
+type ChallengeResult = {
+  outcome: 'run_over'; score: number;
+  detail: { solved, skipped, level } | { topic, strikes, completed } | { strikes, lastWord };
+  best: number | null; isNewBest: boolean;
+  record: { plays: number; bestScore: number } | null;   // null if saving failed
+};
+```
+
+## 17. Brag coins (play money)
+
+Brag coins are play money for registered accounts: they can never be bought, cashed out or sent
+between players, and they have nothing to do with the Nemesis wallet (14). Every account gets
+`BRAG_STARTER` (100) once, the first time its wallet is read or credited.
+
+**Earning.** Beating a solo bot (16) on **Hard** pays `BRAG_HARD_REWARDS` (tic-tac-toe 100, Connect
+Four 60, Penalty Kick 50, Dots and Boxes 40 / 70 / 100 on 4x4 / 5x5 / 6x6), at most `BRAG_WIN_CAP`
+(100) per win and `BRAG_DAILY_CAP` (150) per day from bots (server midnight). Easy, Medium, draws
+and challenges pay nothing. The Hard tic-tac-toe bot slips on its second move with probability
+`BOT_TTT_HARD_SLIP` (1 in 8), so it can be beaten. A solo `soloResult` gains
+`brag: {awarded, balance, dailyLeft, dailyCap} | null` (null unless a Hard win, or if saving failed;
+`awarded: 0` once the daily cap is reached).
+
+**HTTP.** `GET /api/brag` (Bearer, no-store) → `{balance, earnedToday, dailyCap, rewards,
+history: [{amount, balanceAfter, kind, gameId, at}]}` (the 20 latest; kinds `starter`, `bot_win`,
+`stake`, `pot_win`, `stake_refund`).
+
+**Stakes (games between friends, any game and any number of players).**
+
+- `room:setStake` `{amount}` (host, lobby) → `{}`: `amount` is 0 (no stake) or one of
+  `BRAG_STAKES` (10, 25, 50, 100). The host must be registered and able to pay; the host is in,
+  every other choice resets (with the ready flags), and everyone gets `room:event`
+  `stake_changed` `{amount}`.
+- `room:stakeChoice` `{join: boolean}` (registered players, lobby, a stake is set) → `{}`.
+  Joining needs the coins: else `NOT_ENOUGH_BRAG` `data: {balance, stake}`. Guests:
+  `REGISTERED_ONLY`.
+- `game:start` with a stake: more than half of the seated players (guests count) must have
+  joined, and at least the game's minimum: else `STAKE_NOT_AGREED` `data: {joined, needed}` (the
+  host can lower or remove the stake). Players who did not join sit the game out (`inGame:
+  false`, like 11). Each joiner's stake is taken then; anyone who can no longer pay sits out too
+  (if too few remain, every stake is returned and the start fails with `NOT_ENOUGH_BRAG`).
+- End: placement 1 takes the pot (`stake x players`, minus `BRAG_POT_FEE_PERCENT`, 0 today); a
+  tie for first splits it; a tie of everyone, a game the host ends, or a room that closes mid-game
+  returns every stake. Forfeiting players rank last (they lose their stake).
+- `RoomPublic` gains `stake` (0 = none), `staked` (player ids in the pot of the running game),
+  `pot`, and `stakeResult: {pot, refunded, winners, each} | null` (the last staked game, cleared
+  by `game:playAgain`); `Player` gains `stakeChoice: "in" | "out" | null`.
+

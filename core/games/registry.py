@@ -9,6 +9,10 @@ GAME_IDS: tuple[str, ...] = (
     "dots_and_boxes",
     "liars_dice",
     "name_it",
+    "tic_tac_toe",
+    "connect_four",
+    "penalty_kick",
+    "checkers",
 )
 
 _REGISTRY: dict[str, GameModule] = {}
@@ -36,12 +40,16 @@ def all_games() -> dict[str, GameModule]:
 
 def _register_builtin() -> None:
     """Register the shipped game modules."""
+    from games.checkers import Checkers
+    from games.connect_four import ConnectFour
     from games.dots_and_boxes import DotsAndBoxes
     from games.guess_race import GuessRace
     from games.hangman import Hangman
     from games.liars_dice import LiarsDice
     from games.name_it import NameIt
+    from games.penalty_kick import PenaltyKick
     from games.rps import RockPaperScissors
+    from games.tic_tac_toe import TicTacToe
 
     register(RockPaperScissors())
     register(GuessRace())
@@ -49,6 +57,10 @@ def _register_builtin() -> None:
     register(DotsAndBoxes())
     register(LiarsDice())
     register(NameIt())
+    register(TicTacToe())
+    register(ConnectFour())
+    register(PenaltyKick())
+    register(Checkers())
 
 
 _register_builtin()

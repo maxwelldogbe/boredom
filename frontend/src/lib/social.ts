@@ -63,7 +63,12 @@ export const unblockPlayer = (tag: string) => apiCall('DELETE', `/api/blocks/${e
 export const reportPlayer = (tag: string, reason: ReportReason, note: string) =>
   apiCall('POST', '/api/reports', { tag, reason, ...(note.trim() ? { note: note.trim() } : {}) }, token())
 
-export const fetchSettings = () => apiCall<{ presence: PresenceMode }>('GET', '/api/me/settings', undefined, token())
+export const fetchSettings = () =>
+  apiCall<{ presence: PresenceMode; discoverable?: boolean }>('GET', '/api/me/settings', undefined, token())
+
+/** Opt in or out of "People online" (PROTOCOL.md 9.6). */
+export const saveDiscoverable = (discoverable: boolean) =>
+  apiCall<{ presence: PresenceMode; discoverable: boolean }>('PATCH', '/api/me/settings', { discoverable }, token())
 
 export const savePresence = (presence: PresenceMode) =>
   apiCall<{ presence: PresenceMode }>('PATCH', '/api/me/settings', { presence }, token())

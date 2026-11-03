@@ -5,12 +5,14 @@ import { InviteBanners } from './components/Invites'
 import { RequireProfile } from './components/RequireProfile'
 import { ToastHost } from './components/ToastHost'
 import AboutPage from './pages/AboutPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import FriendsPage from './pages/FriendsPage'
 import HomePage from './pages/HomePage'
 import JoinPage from './pages/JoinPage'
 import ProfilePage from './pages/ProfilePage'
 import RoomPage from './pages/RoomPage'
 import SetupPage from './pages/SetupPage'
+import SoloPage from './pages/solo/SoloPage'
 import { GuestQuotaProvider } from './state/GuestQuotaProvider'
 import { RoomProvider } from './state/RoomProvider'
 import { SocialProvider } from './state/SocialProvider'
@@ -38,6 +40,15 @@ export function AppRoutes() {
         }
       />
       <Route path="/about" element={<AboutPage />} />
+      <Route path="/forgot" element={<ForgotPasswordPage />} />
+      <Route
+        path="/solo"
+        element={
+          <RequireProfile>
+            <SoloPage />
+          </RequireProfile>
+        }
+      />
       <Route
         path="/signup"
         element={

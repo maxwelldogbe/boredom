@@ -23,6 +23,16 @@ export function friendlyError(err: unknown, code?: string): string {
       return 'The server is taking too long. It may be waking up; try again in a moment.'
     case 'RATE_LIMITED':
       return 'Slow down a little.'
+    case 'REGISTERED_ONLY':
+      return 'This game is for registered players.'
+    case 'NOT_ENOUGH_BRAG':
+      return `You need ${String(err.data?.stake ?? '')} Brag coins (you have ${String(err.data?.balance ?? 0)}). Beat a Hard bot to earn more.`
+    case 'STAKE_NOT_AGREED':
+      return err.message || 'Not enough players joined the stake.'
+    case 'ALREADY_IN_GAME':
+      return `You're still in a game in room ${String(err.data?.code ?? '')}.`
+    case 'GAME_DISABLED':
+      return 'This game is turned off right now. Pick another one.'
     default:
       return err.message || 'Something went wrong. Please try again.'
   }

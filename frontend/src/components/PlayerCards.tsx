@@ -2,7 +2,9 @@ import type { ReactNode } from 'react'
 import { playerById } from '../lib/players'
 import { onSeatColor, seatColor } from '../lib/seatColors'
 import type { RoomPublic } from '../types/protocol'
+import { difficultyLabel } from '../lib/solo'
 import { Avatar } from './Avatar'
+import { BotIcon } from './BotIcon'
 
 export interface PlayerCardEntry {
   id: string
@@ -40,11 +42,17 @@ export function PlayerCards({ room, me, entries, activeId, label = 'Players' }: 
             style={active ? { background: seatColor(room, id), color: onSeatColor(room, id), transform: 'scale(1.04)' } : undefined}
           >
             <span className="player-card__ring" style={{ borderColor: active ? '#FFFFFF' : seatColor(room, id) }}>
-              <Avatar avatar={player.avatar} nickname={player.nickname} color="var(--border)" />
+              {player.bot ? (
+                <span className="chip__avatar player-card__bot">
+                  <BotIcon />
+                </span>
+              ) : (
+                <Avatar avatar={player.avatar} nickname={player.nickname} color="var(--border)" />
+              )}
             </span>
             <span className="player-card__info">
               <span className="player-card__name">
-                {player.nickname}
+                {player.bot ? `Bot (${difficultyLabel(room.soloVariant?.difficulty ?? 'medium')})` : player.nickname}
                 {id === me && <small className="player-card__you">You</small>}
               </span>
               {allNotes.length > 0 && (

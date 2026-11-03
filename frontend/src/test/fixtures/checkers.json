@@ -1,0 +1,2021 @@
+{
+  "myTurn": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "checkers",
+      "settings": {
+        "bestOf": 3,
+        "flyingKings": false,
+        "backwardCapture": false
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "checkers",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              [
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                }
+              ],
+              [
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                }
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                }
+              ],
+              [
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ]
+            ],
+            "seats": {
+              "p_7a1c00000002": 1,
+              "p_7a1c00000001": 2
+            },
+            "firstMover": "p_7a1c00000002",
+            "turn": "p_7a1c00000002",
+            "turnDeadline": 1792751345000.0,
+            "forcedPiece": null,
+            "lastMove": null,
+            "quietPlies": 0,
+            "drawPlies": 80,
+            "flyingKings": false,
+            "backwardCapture": false,
+            "winner": null,
+            "draw": false,
+            "isYourTurn": true,
+            "legalMoves": [
+              {
+                "from": [
+                  5,
+                  0
+                ],
+                "to": [
+                  4,
+                  1
+                ],
+                "captures": []
+              },
+              {
+                "from": [
+                  5,
+                  2
+                ],
+                "to": [
+                  4,
+                  1
+                ],
+                "captures": []
+              },
+              {
+                "from": [
+                  5,
+                  2
+                ],
+                "to": [
+                  4,
+                  3
+                ],
+                "captures": []
+              },
+              {
+                "from": [
+                  5,
+                  4
+                ],
+                "to": [
+                  4,
+                  3
+                ],
+                "captures": []
+              },
+              {
+                "from": [
+                  5,
+                  4
+                ],
+                "to": [
+                  4,
+                  5
+                ],
+                "captures": []
+              },
+              {
+                "from": [
+                  5,
+                  6
+                ],
+                "to": [
+                  4,
+                  5
+                ],
+                "captures": []
+              },
+              {
+                "from": [
+                  5,
+                  6
+                ],
+                "to": [
+                  4,
+                  7
+                ],
+                "captures": []
+              }
+            ]
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "othersTurn": {
+    "me": "p_7a1c00000001",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "checkers",
+      "settings": {
+        "bestOf": 3,
+        "flyingKings": false,
+        "backwardCapture": false
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "checkers",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              [
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                }
+              ],
+              [
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                }
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                }
+              ],
+              [
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ]
+            ],
+            "seats": {
+              "p_7a1c00000002": 1,
+              "p_7a1c00000001": 2
+            },
+            "firstMover": "p_7a1c00000002",
+            "turn": "p_7a1c00000002",
+            "turnDeadline": 1792751345000.0,
+            "forcedPiece": null,
+            "lastMove": null,
+            "quietPlies": 0,
+            "drawPlies": 80,
+            "flyingKings": false,
+            "backwardCapture": false,
+            "winner": null,
+            "draw": false,
+            "isYourTurn": false
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "mustCapture": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "checkers",
+      "settings": {
+        "bestOf": 3,
+        "flyingKings": false,
+        "backwardCapture": false
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "checkers",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              [
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                }
+              ],
+              [
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                null,
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                }
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                null,
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                }
+              ],
+              [
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ]
+            ],
+            "seats": {
+              "p_7a1c00000002": 1,
+              "p_7a1c00000001": 2
+            },
+            "firstMover": "p_7a1c00000002",
+            "turn": "p_7a1c00000002",
+            "turnDeadline": 1792751346000.0,
+            "forcedPiece": null,
+            "lastMove": {
+              "from": [
+                2,
+                5
+              ],
+              "to": [
+                3,
+                4
+              ],
+              "captures": [],
+              "playerId": "p_7a1c00000001",
+              "crowned": false
+            },
+            "quietPlies": 0,
+            "drawPlies": 80,
+            "flyingKings": false,
+            "backwardCapture": false,
+            "winner": null,
+            "draw": false,
+            "isYourTurn": true,
+            "legalMoves": [
+              {
+                "from": [
+                  4,
+                  3
+                ],
+                "to": [
+                  2,
+                  5
+                ],
+                "captures": [
+                  [
+                    3,
+                    4
+                  ]
+                ]
+              }
+            ]
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "multiJump": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "checkers",
+      "settings": {
+        "bestOf": 3,
+        "flyingKings": true,
+        "backwardCapture": false
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "checkers",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                {
+                  "seat": 2,
+                  "king": true
+                }
+              ],
+              [
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                null,
+                null,
+                {
+                  "seat": 1,
+                  "king": true
+                }
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ]
+            ],
+            "seats": {
+              "p_7a1c00000002": 1,
+              "p_7a1c00000001": 2
+            },
+            "firstMover": "p_7a1c00000002",
+            "turn": "p_7a1c00000002",
+            "turnDeadline": 1792751346000.0,
+            "forcedPiece": [
+              4,
+              3
+            ],
+            "lastMove": {
+              "from": [
+                6,
+                1
+              ],
+              "to": [
+                4,
+                3
+              ],
+              "captures": [
+                [
+                  5,
+                  2
+                ]
+              ],
+              "playerId": "p_7a1c00000002",
+              "crowned": false
+            },
+            "quietPlies": 0,
+            "drawPlies": 80,
+            "flyingKings": true,
+            "backwardCapture": false,
+            "winner": null,
+            "draw": false,
+            "isYourTurn": true,
+            "legalMoves": [
+              {
+                "from": [
+                  4,
+                  3
+                ],
+                "to": [
+                  2,
+                  5
+                ],
+                "captures": [
+                  [
+                    3,
+                    4
+                  ]
+                ]
+              }
+            ]
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "afterDraw": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "checkers",
+      "settings": {
+        "bestOf": 3,
+        "flyingKings": false,
+        "backwardCapture": false
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "checkers",
+      "view": {
+        "phase": "playing",
+        "role": "player",
+        "bestOf": 3,
+        "winsNeeded": 2,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000002",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000002": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 2,
+            "draws": 1,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": {
+              "gameNo": 1,
+              "result": "draw",
+              "winner": null,
+              "game": {
+                "board": [
+                  [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    {
+                      "seat": 2,
+                      "king": true
+                    }
+                  ],
+                  [
+                    {
+                      "seat": 2,
+                      "king": false
+                    },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                  ],
+                  [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                  ],
+                  [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                  ],
+                  [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                  ],
+                  [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                  ],
+                  [
+                    null,
+                    {
+                      "seat": 1,
+                      "king": true
+                    },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    {
+                      "seat": 1,
+                      "king": false
+                    }
+                  ],
+                  [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                  ]
+                ],
+                "seats": {
+                  "p_7a1c00000002": 1,
+                  "p_7a1c00000001": 2
+                },
+                "firstMover": "p_7a1c00000002",
+                "turn": null,
+                "turnDeadline": null,
+                "forcedPiece": null,
+                "lastMove": {
+                  "from": [
+                    7,
+                    0
+                  ],
+                  "to": [
+                    6,
+                    1
+                  ],
+                  "captures": [],
+                  "playerId": "p_7a1c00000002",
+                  "crowned": false
+                },
+                "quietPlies": 80,
+                "drawPlies": 80,
+                "flyingKings": false,
+                "backwardCapture": false,
+                "winner": null,
+                "draw": true
+              }
+            }
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000002",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000002": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 2,
+          "draws": 1,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": {
+            "gameNo": 1,
+            "result": "draw",
+            "winner": null,
+            "game": {
+              "board": [
+                [
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  {
+                    "seat": 2,
+                    "king": true
+                  }
+                ],
+                [
+                  {
+                    "seat": 2,
+                    "king": false
+                  },
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null
+                ],
+                [
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null
+                ],
+                [
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null
+                ],
+                [
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null
+                ],
+                [
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null
+                ],
+                [
+                  null,
+                  {
+                    "seat": 1,
+                    "king": true
+                  },
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  {
+                    "seat": 1,
+                    "king": false
+                  }
+                ],
+                [
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null
+                ]
+              ],
+              "seats": {
+                "p_7a1c00000002": 1,
+                "p_7a1c00000001": 2
+              },
+              "firstMover": "p_7a1c00000002",
+              "turn": null,
+              "turnDeadline": null,
+              "forcedPiece": null,
+              "lastMove": {
+                "from": [
+                  7,
+                  0
+                ],
+                "to": [
+                  6,
+                  1
+                ],
+                "captures": [],
+                "playerId": "p_7a1c00000002",
+                "crowned": false
+              },
+              "quietPlies": 80,
+              "drawPlies": 80,
+              "flyingKings": false,
+              "backwardCapture": false,
+              "winner": null,
+              "draw": true
+            }
+          },
+          "game": {
+            "board": [
+              [
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                }
+              ],
+              [
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                }
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                }
+              ],
+              [
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ]
+            ],
+            "seats": {
+              "p_7a1c00000002": 1,
+              "p_7a1c00000001": 2
+            },
+            "firstMover": "p_7a1c00000001",
+            "turn": "p_7a1c00000001",
+            "turnDeadline": 1792751346000.0,
+            "forcedPiece": null,
+            "lastMove": null,
+            "quietPlies": 0,
+            "drawPlies": 80,
+            "flyingKings": false,
+            "backwardCapture": false,
+            "winner": null,
+            "draw": false,
+            "isYourTurn": false
+          }
+        },
+        "watching": null,
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  },
+  "spectator": {
+    "me": "p_7a1c00000002",
+    "room": {
+      "code": "TTCF",
+      "hostId": "p_7a1c00000001",
+      "status": "playing",
+      "players": [
+        {
+          "id": "p_7a1c00000001",
+          "type": "guest",
+          "nickname": "Sam",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "cutouts",
+            "seed": "seed0"
+          },
+          "online": true,
+          "joinedAt": 1792751290000.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000002",
+          "type": "guest",
+          "nickname": "Ann",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "adventurer-neutral",
+            "seed": "seed1"
+          },
+          "online": true,
+          "joinedAt": 1792751290001.0,
+          "inGame": true
+        },
+        {
+          "id": "p_7a1c00000003",
+          "type": "guest",
+          "nickname": "Bob",
+          "color": "#E74C3C",
+          "avatar": {
+            "style": "voxel-art",
+            "seed": "seed2"
+          },
+          "online": true,
+          "joinedAt": 1792751290002.0,
+          "inGame": true
+        }
+      ],
+      "selectedGame": "checkers",
+      "settings": {
+        "bestOf": 1,
+        "flyingKings": false,
+        "backwardCapture": true
+      },
+      "scoreboard": {},
+      "wins": {},
+      "readyCheck": null
+    },
+    "push": {
+      "gameId": "checkers",
+      "view": {
+        "phase": "waiting",
+        "role": "spectator",
+        "bestOf": 1,
+        "winsNeeded": 1,
+        "bracketRound": 1,
+        "matches": [
+          {
+            "id": "r1m1",
+            "a": "p_7a1c00000003",
+            "b": "p_7a1c00000001",
+            "phase": "playing",
+            "wins": {
+              "p_7a1c00000003": 0,
+              "p_7a1c00000001": 0
+            },
+            "gameNo": 1,
+            "draws": 0,
+            "winner": null,
+            "reason": null,
+            "coinFlip": false,
+            "lastGame": null
+          },
+          {
+            "id": "r1m2",
+            "a": "p_7a1c00000002",
+            "b": null,
+            "phase": "over",
+            "wins": {
+              "p_7a1c00000002": 0
+            },
+            "gameNo": 0,
+            "draws": 0,
+            "winner": "p_7a1c00000002",
+            "reason": "bye",
+            "coinFlip": false,
+            "lastGame": null
+          }
+        ],
+        "liveMatches": [
+          "r1m1"
+        ],
+        "match": {
+          "id": "r1m1",
+          "a": "p_7a1c00000003",
+          "b": "p_7a1c00000001",
+          "phase": "playing",
+          "wins": {
+            "p_7a1c00000003": 0,
+            "p_7a1c00000001": 0
+          },
+          "gameNo": 1,
+          "draws": 0,
+          "winner": null,
+          "reason": null,
+          "coinFlip": false,
+          "lastGame": null,
+          "game": {
+            "board": [
+              [
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                }
+              ],
+              [
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 2,
+                  "king": false
+                }
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                null,
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                }
+              ],
+              [
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null,
+                {
+                  "seat": 1,
+                  "king": false
+                },
+                null
+              ]
+            ],
+            "seats": {
+              "p_7a1c00000003": 1,
+              "p_7a1c00000001": 2
+            },
+            "firstMover": "p_7a1c00000003",
+            "turn": "p_7a1c00000001",
+            "turnDeadline": 1792751346000.0,
+            "forcedPiece": null,
+            "lastMove": {
+              "from": [
+                5,
+                2
+              ],
+              "to": [
+                4,
+                3
+              ],
+              "captures": [],
+              "playerId": "p_7a1c00000003",
+              "crowned": false
+            },
+            "quietPlies": 0,
+            "drawPlies": 80,
+            "flyingKings": false,
+            "backwardCapture": true,
+            "winner": null,
+            "draw": false
+          }
+        },
+        "watching": "r1m1",
+        "alive": [
+          "p_7a1c00000001",
+          "p_7a1c00000002",
+          "p_7a1c00000003"
+        ],
+        "eliminated": [],
+        "champion": null
+      },
+      "serverNow": 1792751300000.0
+    }
+  }
+}

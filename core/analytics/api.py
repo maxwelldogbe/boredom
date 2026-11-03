@@ -1,7 +1,7 @@
 """Staff-only JSON API for the React admin dashboard (/admin in the frontend).
 
-Authentication is the Django admin session: staff log in at /<ADMIN_URL_PREFIX>login/ and the
-browser sends the session cookie (same origin). POST actions need the CSRF token from
+Authentication is Django's session: staff log in through POST /api/admin/login (the dashboard's
+own form) and the browser sends the session cookie (same origin). POST actions need the CSRF token from
 GET /api/admin/session in an X-CSRFToken header. Every error is {"error": {"code", "message"}}.
 
 The numbers come from the same functions as the server-rendered dashboard, so both agree.
@@ -16,7 +16,7 @@ from functools import wraps
 from typing import Any
 
 from django.conf import settings
-from django.contrib import admin
+from django.contrib import admin, auth
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.paginator import Paginator
@@ -30,8 +30,17 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 from accounts import admin as accounts_admin
 from analytics import dashboard, metrics, people
-from analytics.models import ActivityEvent, GameSession
-from games.constants import DASHBOARD_MIN_GAMES_FOR_RATES, DASHBOARD_PAGE_SIZE, REPORT_REASONS
+from analytics.lockout import admin_lockout
+from analytics.models import ActivityEvent, GameAvailability, GameSession
+from games import availability
+from games.constants import (
+    ADMIN_LOGIN_LOCK_MINUTES,
+    DASHBOARD_MIN_GAMES_FOR_RATES,
+    DASHBOARD_PAGE_SIZE,
+    REPORT_REASONS,
+)
+from nemesis import staff as nemesis_staff
+from nemesis import wallet as nemesis_wallet
 from social.errors import SocialError
 from social.models import RESOLVED_NOTE_MAX, Report
 from social.services import clean_note
@@ -152,8 +161,72 @@ def session(request: HttpRequest) -> JsonResponse:
             "timeZone": settings.TIME_ZONE,
             "minGamesForRates": DASHBOARD_MIN_GAMES_FOR_RATES,
             "openReports": open_reports() if staff else None,
+            "money": _money_session(request) if staff else None,
         }
     )
+
+
+def _money_session(request: HttpRequest) -> dict[str, Any]:
+    """Two-factor state, Nemesis permissions and sidebar badge counts for the dashboard."""
+    from nemesis import admin_api as nemesis_admin  # nemesis builds on analytics
+
+    user = request.user
+    verified = nemesis_staff.enrolled(user) and nemesis_staff.session_verified(request)
+    return {
+        "enrolled": nemesis_staff.enrolled(user),
+        "verified": verified,
+        "permissions": nemesis_staff.permissions_of(user),
+        "pending": nemesis_admin.pending_counts() if verified else None,
+    }
+
+
+def login(request: HttpRequest) -> JsonResponse:
+    """POST {username, password, code?}: log a staff account into the dashboard (CSRF required).
+
+    Staff enrolled in two-factor must also send a code from their app or a backup code
+    (CODE_REQUIRED / INVALID_CODE, both with needsCode: true).
+
+    Locked per IP + username after repeated failures, like the Django admin login.
+    """
+    if request.method != "POST":
+        return fail(405, "METHOD_NOT_ALLOWED", "Use POST.")
+    try:
+        body = json.loads(request.body or b"{}")
+    except ValueError:
+        body = None
+    body = body if isinstance(body, dict) else {}
+    username, password = body.get("username"), body.get("password")
+    if not isinstance(username, str) or not isinstance(password, str) or not username:
+        return fail(400, "INVALID_INPUT", "Enter a username and password.")
+    key = admin_lockout.key(request.META.get("REMOTE_ADDR") or "unknown", username)
+    if admin_lockout.locked(key):
+        minutes = ADMIN_LOGIN_LOCK_MINUTES
+        return fail(429, "LOCKED", f"Too many failed attempts. Try again in {minutes} minutes.")
+    user = auth.authenticate(request, username=username, password=password)
+    if user is None or not (user.is_active and user.is_staff):
+        admin_lockout.failed(key)
+        return fail(400, "INVALID_LOGIN", "Wrong username or password, or not a staff account.")
+    two_factor = nemesis_staff.enrolled(user)
+    if two_factor:
+        code = body.get("code")
+        if not isinstance(code, str) or not code.strip():
+            return fail(400, "CODE_REQUIRED", "Enter the code from your app.", needsCode=True)
+        if not nemesis_staff.check_code(user, code, allow_backup=True):
+            admin_lockout.failed(key)
+            return fail(400, "INVALID_CODE", "That code is not right.", needsCode=True)
+    admin_lockout.succeeded(key)
+    auth.login(request, user)
+    if two_factor:
+        nemesis_staff.mark_session(request, user)
+    return session(request)
+
+
+def logout(request: HttpRequest) -> JsonResponse:
+    """POST: end the dashboard session (CSRF required)."""
+    if request.method != "POST":
+        return fail(405, "METHOD_NOT_ALLOWED", "Use POST.")
+    auth.logout(request)
+    return session(request)
 
 
 # ----- Overview and Games ------------------------------------------------------------
@@ -191,13 +264,20 @@ def overview(request: HttpRequest) -> JsonResponse:
     )
 
 
+CHANGE_AVAILABILITY = "analytics.change_gameavailability"
+
+
 @staff_api()
 def games(request: HttpRequest) -> JsonResponse:
     rng, ctx = _range(request)
+    off = availability.load()
+    known = set(metrics.known_game_ids())
     rows = [
         {
             "id": g["id"],
             "name": g["name"],
+            "enabled": g["id"] not in off,
+            "known": g["id"] in known,
             "plays": g["plays"],
             "abandoned": g["abandoned"],
             "uniquePlayers": g["unique_players"],
@@ -207,7 +287,36 @@ def games(request: HttpRequest) -> JsonResponse:
         }
         for g in metrics.games_table(rng)
     ]
-    return ok({**ctx, "games": rows})
+    return ok(
+        {
+            **ctx,
+            "games": rows,
+            "permissions": {"toggle": request.user.has_perm(CHANGE_AVAILABILITY)},
+        }
+    )
+
+
+@staff_api("POST")
+def game_action(request: HttpRequest, game_id: str, action: str) -> JsonResponse:
+    """enable / disable one game for players (audit-logged). Live rooms update at once."""
+    if game_id not in metrics.known_game_ids():
+        return fail(404, "NOT_FOUND", "Unknown game.")
+    if action not in ("enable", "disable"):
+        return fail(404, "NOT_FOUND", "Unknown action.")
+    if not request.user.has_perm(CHANGE_AVAILABILITY):
+        return fail(403, "FORBIDDEN", "You may not turn games on or off.")
+    enabled = action == "enable"
+    if enabled != (game_id not in availability.load()):
+        availability.set_enabled(game_id, enabled, request.user)
+        row = GameAvailability.objects.get(game_id=game_id)
+        state = "on" if enabled else "off"
+        admin.ModelAdmin(GameAvailability, admin.site).log_change(
+            request, row, f"Turned {metrics.game_name(game_id)} {state}"
+        )
+        from rooms import manager as manager_module  # looked up at call time so tests can swap it
+
+        manager_module.manager.games_changed_soon()
+    return ok({"ok": True, "enabled": enabled})
 
 
 @staff_api()
@@ -402,6 +511,8 @@ def user_action(request: HttpRequest, user_id: int, action: str) -> JsonResponse
     if action == "delete":
         if not model_admin.has_delete_permission(request, user):
             return fail(403, "FORBIDDEN", "You may not delete accounts.")
+        if nemesis_wallet.open_money(user):
+            return fail(409, "HAS_FUNDS", "This account still has Nemesis funds or requests.")
         accounts_admin.delete_accounts(request, model_admin, users_qs)
         return ok({"ok": True, "deleted": True})
     if action in ("disable", "enable"):
@@ -637,3 +748,115 @@ def resolve_report(request: HttpRequest, report_id: int) -> JsonResponse:
         "reporter__profile", "reported_user__profile", "resolved_by"
     ).get(pk=report.pk)
     return _no_store(ok({"ok": True, "report": _report_row(report), "openReports": open_reports()}))
+
+
+# ----- account recovery requests (players without a recovery number) --------------------------
+
+
+def _recovery_facts(user: User | None) -> dict[str, Any] | None:
+    """What the account really looks like, to compare with the player's answers."""
+    from accounts.models import PlayerStats  # accounts builds on analytics' models only here
+    from social.services import friend_ids
+
+    if user is None:
+        return None
+    profile = getattr(user, "profile", None)
+    friends = []
+    if profile is not None:
+        from accounts.models import Profile
+
+        rows = Profile.objects.filter(user_id__in=list(friend_ids(user.pk))[:20])
+        friends = [{"nickname": p.nickname, "tag": p.tag} for p in rows[:10]]
+    games = [
+        {"gameId": s.game_id, "name": metrics.game_name(s.game_id), "played": s.played}
+        for s in PlayerStats.objects.filter(user=user).order_by("-played")[:5]
+    ]
+    return {
+        "userId": user.pk,
+        "username": user.username,
+        "active": user.is_active,
+        "nickname": profile.nickname if profile else None,
+        "tag": profile.tag if profile else None,
+        "joined": profile.created_at.date().isoformat() if profile else None,
+        "hasRecoveryNumber": bool(profile and profile.phone),
+        "friends": friends,
+        "games": games,
+    }
+
+
+def _recovery_row(r: Any) -> dict[str, Any]:
+    from accounts.recovery import mask_phone
+
+    return {
+        "id": r.id,
+        "createdAt": r.created_at.isoformat(),
+        "status": r.status,
+        "username": r.username,
+        "phone": mask_phone(r.phone),
+        "answers": dict(r.answers),
+        "account": _recovery_facts(r.user),
+        "reviewedBy": r.reviewed_by.username if r.reviewed_by else None,
+        "reviewedAt": r.reviewed_at.isoformat() if r.reviewed_at else None,
+        "reviewNote": r.review_note,
+    }
+
+
+@staff_api()
+def recovery_requests(request: HttpRequest) -> JsonResponse:
+    """Pending first, then newest first; ?status= filters."""
+    from accounts.models import RecoveryRequest
+
+    status = request.GET.get("status", "")
+    status = status if status in RecoveryRequest.Status.values else ""
+    rows = RecoveryRequest.objects.select_related("user__profile", "reviewed_by").annotate(
+        pending_first=Case(
+            When(status=RecoveryRequest.Status.PENDING, then=Value(0)),
+            default=Value(1),
+            output_field=IntegerField(),
+        )
+    )
+    if status:
+        rows = rows.filter(status=status)
+    page, meta = _page(request, rows.order_by("pending_first", "-created_at", "-id"))
+    pending = RecoveryRequest.objects.filter(status=RecoveryRequest.Status.PENDING).count()
+    return _no_store(
+        ok(
+            {
+                **meta,
+                "query": {"status": status},
+                "statuses": list(RecoveryRequest.Status.values),
+                "pending": pending,
+                "results": [_recovery_row(r) for r in page.object_list],
+            }
+        )
+    )
+
+
+@staff_api("POST")
+def recovery_decide(request: HttpRequest, request_id: int, action: str) -> JsonResponse:
+    """approve (texts the player a code) or reject one pending request, {note?}; audit-logged."""
+    from accounts import recovery
+    from accounts.models import RecoveryRequest
+
+    if action not in ("approve", "reject"):
+        return _no_store(fail(404, "NOT_FOUND", "Unknown action."))
+    req = RecoveryRequest.objects.filter(pk=request_id).first()
+    if req is None:
+        return _no_store(fail(404, "NOT_FOUND", "No such request."))
+    model_admin = admin.site._registry[RecoveryRequest]
+    if not model_admin.has_view_permission(request, req):
+        return _no_store(fail(403, "FORBIDDEN", "You may not handle recovery requests."))
+    try:
+        body = json.loads(request.body or b"{}")
+    except ValueError:
+        body = {}
+    note = body.get("note") if isinstance(body, dict) else ""
+    note = note.strip()[:200] if isinstance(note, str) else ""
+    decide = recovery.approve_request if action == "approve" else recovery.reject_request
+    problem = decide(req.pk, request.user, note)
+    if problem is not None:
+        return _no_store(fail(409, "NOT_DONE", problem))
+    verb = "Approved (code texted)" if action == "approve" else "Rejected"
+    model_admin.log_change(request, req, f"{verb} recovery request" + (f": {note}" if note else ""))
+    req = RecoveryRequest.objects.select_related("user__profile", "reviewed_by").get(pk=req.pk)
+    return _no_store(ok({"ok": True, "request": _recovery_row(req)}))

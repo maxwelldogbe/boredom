@@ -42,6 +42,13 @@ REQUEST_TYPES = frozenset(
         "friends:requestByPlayer",
         "player:block",
         "player:report",
+        "solo:start",
+        "solo:again",
+        "solo:quit",
+        "room:resume",
+        "room:setStake",
+        "room:stakeChoice",
+        "friends:discover",
     }
 )
 MAX_MESSAGE_CHARS = 8192

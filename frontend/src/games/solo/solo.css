@@ -1,0 +1,133 @@
+/* Solo challenge screens (PROTOCOL.md 16.1). */
+
+.solo-run__stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.solo-run__clock {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.solo-run__clock--low {
+  color: var(--danger);
+}
+
+.solo-run__flash {
+  margin: 0;
+  color: var(--success);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.solo-run__reveal,
+.solo-run__feedback {
+  min-height: 1.5em;
+  margin: 0;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.solo-run__topic {
+  margin: 0;
+  text-align: center;
+}
+
+.solo-run__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.solo-run__big {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.solo-run__strikes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.solo-run__strike {
+  color: var(--border);
+  font-weight: 700;
+  padding: 0 2px;
+}
+
+.solo-run__strike--on {
+  color: var(--danger);
+}
+
+.solo-run__answers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.solo-run__answers li {
+  min-width: 0;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.solo-run__score {
+  margin: 0;
+  font-size: 3.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.solo-run__best-banner {
+  margin: 0;
+  color: var(--success);
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.solo__topics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.solo__topic {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.solo__topic--on {
+  border-color: var(--primary);
+}

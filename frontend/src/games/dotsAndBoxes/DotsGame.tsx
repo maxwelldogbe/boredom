@@ -151,6 +151,9 @@ function TurnBanner({ view, me, room }: { view: DotsView; me: string; room: Room
   return (
     <div className="stack dots__banner" role="status">
       {view.phase === 'done' && <p className="dots__turn">All boxes are claimed! Results coming up…</p>}
+      {room.solo && view.phase === 'playing' && playerById(room, view.currentPlayerId).bot && (
+        <p className="muted dots__note">Bot is thinking…</p>
+      )}
       {visibleAutoMove && (
         <p className="muted dots__note">
           {visibleAutoMove.auto === 'timeout' ? '⌛ Time ran out' : '📴 Offline'}: a line was drawn for {autoWho === 'You' ? 'you' : autoWho}.

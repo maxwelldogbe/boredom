@@ -148,12 +148,33 @@ const requests = (path: string) => calls.filter((c) => c.path === path)
 // ----- tests -------------------------------------------------------------------------
 
 describe('staff gate', () => {
-  it('asks a non-staff visitor to log in, coming back to the same page', async () => {
-    routes['/api/admin/session'] = () => ({ body: { ...SESSION, staff: false, username: null } })
+  it('logs a staff account in right on the dashboard, staying on the same page', async () => {
+    let staff = false
+    routes['/api/admin/session'] = () => ({ body: { ...SESSION, staff, username: staff ? 'boss' : null } })
+    routes['POST /api/admin/login'] = () => {
+      staff = true
+      return { body: { ...SESSION, csrfToken: 'csrf-new' } }
+    }
+    routes['/api/admin/users'] = () => ({ body: { page: 1, numPages: 1, count: 0, pageSize: 50, query: { q: '', type: 'guest', sort: 'games', dir: 'desc' }, sorts: [], minGamesForRates: 5, results: [] } })
     open('/admin/users?type=guest')
-    const link = await screen.findByRole('link', { name: 'Log in as staff' })
-    expect(link).toHaveAttribute('href', '/manage/login/?next=%2Fadmin%2Fusers%3Ftype%3Dguest')
+    fireEvent.change(await screen.findByLabelText('Username'), { target: { value: 'boss' } })
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'secret' } })
     expect(requests('/api/admin/users')).toHaveLength(0)
+    fireEvent.click(screen.getByRole('button', { name: 'Log in' }))
+    expect(await screen.findByRole('heading', { name: 'Users' })).toBeInTheDocument()
+    const post = calls.find((c) => c.method === 'POST' && c.path === '/api/admin/login')
+    expect(post?.headers['X-CSRFToken']).toBe('csrf-123')
+    expect(calls.some((c) => c.path.startsWith('/manage'))).toBe(false)
+  })
+
+  it('shows a wrong login as an error', async () => {
+    routes['/api/admin/session'] = () => ({ body: { ...SESSION, staff: false, username: null } })
+    routes['POST /api/admin/login'] = () => ({ status: 400, body: { error: { code: 'INVALID_LOGIN', message: 'Wrong username or password, or not a staff account.' } } })
+    open('/admin')
+    fireEvent.change(await screen.findByLabelText('Username'), { target: { value: 'boss' } })
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'nope' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Log in' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Wrong username or password')
   })
 
   it('sends the session cookie with every request', async () => {
@@ -171,20 +192,20 @@ describe('staff gate', () => {
       return { status: 401, body: { error: { code: 'UNAUTHORIZED', message: 'Log in as staff.', loginUrl: '/manage/login/' } } }
     }
     open('/admin')
-    expect(await screen.findByRole('link', { name: 'Log in as staff' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'Log in' })).toBeInTheDocument()
   })
 
-  it('logs out through the Django admin and returns to the gate', async () => {
+  it('logs out and returns to the login form', async () => {
     let staff = true
     routes['/api/admin/session'] = () => ({ body: { ...SESSION, staff } })
-    routes['POST /manage/logout/'] = () => {
+    routes['POST /api/admin/logout'] = () => {
       staff = false
       return { body: {} }
     }
     open('/admin')
     fireEvent.click(await screen.findByRole('button', { name: 'Log out' }))
-    expect(await screen.findByRole('link', { name: 'Log in as staff' })).toBeInTheDocument()
-    expect(calls.some((c) => c.method === 'POST' && c.path === '/manage/logout/')).toBe(true)
+    expect(await screen.findByRole('button', { name: 'Log in' })).toBeInTheDocument()
+    expect(calls.some((c) => c.method === 'POST' && c.path === '/api/admin/logout')).toBe(true)
   })
 })
 
@@ -202,7 +223,7 @@ describe('overview', () => {
     for (const name of ['Overview', 'Games', 'Users', 'Leaderboards', 'Activity']) {
       expect(screen.getByRole('link', { name })).toBeInTheDocument()
     }
-    expect(screen.getByRole('link', { name: 'Django admin' })).toHaveAttribute('href', '/manage/')
+    expect(screen.queryByRole('link', { name: 'Django admin' })).not.toBeInTheDocument()
   })
 
   it('changing the range refetches and keeps the old numbers on screen meanwhile', async () => {
@@ -287,13 +308,63 @@ describe('user detail and actions', () => {
   })
 })
 
+describe('turning games on and off', () => {
+  const row = { name: 'Rock-Paper-Scissors', plays: 6, abandoned: 1, uniquePlayers: 2, avgPlayers: 2, avgDuration: 60, completionRate: 6 / 7 }
+  const gamesData = (enabled: boolean, toggle = true) => ({
+    range: RANGES[1],
+    ranges: RANGES,
+    games: [
+      { ...row, id: 'rps', enabled, known: true },
+      { ...row, id: 'old_game', name: 'old_game', enabled: true, known: false },
+    ],
+    permissions: { toggle },
+  })
+
+  it('turns a game off after confirming (with the CSRF token), then on again', async () => {
+    let enabled = true
+    routes['/api/admin/games'] = () => ({ body: gamesData(enabled) })
+    routes['POST /api/admin/games/rps/disable'] = () => {
+      enabled = false
+      return { body: { ok: true, enabled: false } }
+    }
+    routes['POST /api/admin/games/rps/enable'] = () => {
+      enabled = true
+      return { body: { ok: true, enabled: true } }
+    }
+    open('/admin/games')
+    const toggle = await screen.findByRole('switch', { name: 'Rock-Paper-Scissors visible to players' })
+    expect(toggle).toBeChecked()
+    expect(screen.getByText('Retired')).toBeInTheDocument()
+
+    fireEvent.click(toggle)
+    const dialog = screen.getByRole('dialog')
+    expect(calls.filter((c) => c.method === 'POST')).toHaveLength(0)
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Yes, turn it off' }))
+    expect(await screen.findByText("Rock-Paper-Scissors is off. Players can't see it.")).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByRole('switch', { name: /Rock-Paper-Scissors/ })).not.toBeChecked())
+    expect(calls.find((c) => c.method === 'POST')?.headers['X-CSRFToken']).toBe('csrf-123')
+    expect(screen.getAllByText('Off').some((el) => el.classList.contains('badge'))).toBe(true)
+
+    fireEvent.click(screen.getByRole('switch', { name: /Rock-Paper-Scissors/ }))
+    await waitFor(() => expect(screen.getByRole('switch', { name: /Rock-Paper-Scissors/ })).toBeChecked())
+    expect(calls.filter((c) => c.path.endsWith('/enable'))).toHaveLength(1)
+  })
+
+  it('the switch is read-only without permission', async () => {
+    routes['/api/admin/games'] = () => ({ body: gamesData(true, false) })
+    open('/admin/games')
+    expect(await screen.findByRole('switch', { name: /Rock-Paper-Scissors/ })).toBeDisabled()
+  })
+})
+
 describe('other pages', () => {
   it('games, leaderboards and activity load with their filters', async () => {
     routes['/api/admin/games'] = () => ({
       body: {
         range: RANGES[1],
         ranges: RANGES,
-        games: [{ id: 'rps', name: 'Rock-Paper-Scissors', plays: 6, abandoned: 1, uniquePlayers: 2, avgPlayers: 2, avgDuration: 60, completionRate: 6 / 7 }],
+        games: [{ id: 'rps', name: 'Rock-Paper-Scissors', enabled: true, known: true, plays: 6, abandoned: 1, uniquePlayers: 2, avgPlayers: 2, avgDuration: 60, completionRate: 6 / 7 }],
+        permissions: { toggle: true },
       },
     })
     routes['/api/admin/leaderboards'] = (c) => ({

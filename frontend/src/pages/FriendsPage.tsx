@@ -34,9 +34,10 @@ import { useSocial } from '../state/socialContext'
 import type { FriendRequestEntry, PlayerCard } from '../types/protocol'
 import { ByGameSection, LoadError, RingAvatar, StatsSection } from './profile/ProfileSections'
 import type { Load } from './profile/useLoad'
+import { PeopleOnline } from './friends/PeopleOnline'
 
-type Tab = 'friends' | 'requests' | 'blocked'
-const TABS: Tab[] = ['friends', 'requests', 'blocked']
+type Tab = 'friends' | 'requests' | 'find' | 'blocked'
+const TABS: Tab[] = ['friends', 'requests', 'find', 'blocked']
 
 export default function FriendsPage() {
   const social = useSocial()
@@ -90,7 +91,9 @@ function SignedInFriends() {
     overview.status === 'ready'
       ? { friends: overview.data.friends.length, requests: overview.data.incoming.length, blocked: overview.data.blocked.length }
       : null
-  const labels: Record<Tab, string> = { friends: 'Friends', requests: 'Requests', blocked: 'Blocked' }
+  const labels: Record<Tab, string> = { friends: 'Friends', requests: 'Requests', find: 'Find players', blocked: 'Blocked' }
+  // Phones show the short label (same words, fewer of them), so the bar never wraps.
+  const shortLabels: Record<Tab, string> = { friends: 'Friends', requests: 'Requests', find: 'Find', blocked: 'Blocked' }
 
   return (
     <>
@@ -109,7 +112,10 @@ function SignedInFriends() {
             tabIndex={tab === t ? 0 : -1}
             onClick={() => setTab(t)}
           >
-            {labels[t]}
+            <span className="tabs__label tabs__label--full">{labels[t]}</span>
+            <span className="tabs__label tabs__label--short" aria-hidden="true">
+              {shortLabels[t]}
+            </span>
             {t === 'requests' && counts && counts.requests > 0 && (
               <span className="count-badge" aria-label={`${counts.requests} waiting`}>
                 {counts.requests}
@@ -119,7 +125,9 @@ function SignedInFriends() {
         ))}
       </div>
       <div id={`${tabsId}-panel`} role="tabpanel" aria-labelledby={`${tabsId}-${tab}`} className="stack">
-        {overview.status === 'loading' || overview.status === 'idle' ? (
+        {tab === 'find' ? (
+          <PeopleOnline />
+        ) : overview.status === 'loading' || overview.status === 'idle' ? (
           <Loading label="Loading your friends…" />
         ) : overview.status === 'error' ? (
           <LoadError message={overview.message} onRetry={social.refresh} />
@@ -181,10 +189,12 @@ function PresenceControl() {
             }}
           >
             <span className="presence__label">{o.label}</span>
-            <span className="presence__hint">{o.hint}</span>
           </button>
         ))}
       </div>
+      <Link to="/about#statuses" className="presence__about">
+        What the statuses mean
+      </Link>
     </fieldset>
   )
 }

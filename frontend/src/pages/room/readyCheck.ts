@@ -5,9 +5,12 @@ export function readyCheck(room: RoomPublic): ReadyCheck | null {
   return room.selectedGame && room.readyCheck ? room.readyCheck : null
 }
 
-/** Online non-host players who have not tapped Ready, in seat order. */
+/** Online non-host players who have not tapped Ready, in seat order. Guests blocked from a
+ *  registered-only game can't get ready, so they are not waited for. */
 export function notReady(room: RoomPublic): Player[] {
-  return room.players.filter((p) => p.id !== room.hostId && p.online && p.ready !== true)
+  return room.players.filter(
+    (p) => p.id !== room.hostId && p.online && p.ready !== true && p.registeredOnlyBlocked !== true,
+  )
 }
 
 export function everyoneReady(check: ReadyCheck): boolean {

@@ -32,6 +32,7 @@ logger = logging.getLogger("analytics")
 
 QUEUE_MAX = 1000
 RETENTION_INTERVAL_S = 24 * 60 * 60
+NEMESIS_UPKEEP_INTERVAL_S = 5 * 60
 META_MAX_KEYS = 8
 
 
@@ -183,7 +184,11 @@ class Recorder:
         self.stop()
         self._loop = loop
         self._queue = asyncio.Queue(maxsize=self.maxsize)
-        self._tasks = [loop.create_task(self._consume()), loop.create_task(self._retention())]
+        self._tasks = [
+            loop.create_task(self._consume()),
+            loop.create_task(self._retention()),
+            loop.create_task(self._nemesis_upkeep()),
+        ]
 
     def stop(self) -> None:
         for task in self._tasks:
@@ -248,7 +253,23 @@ class Recorder:
                     logger.info("Pruned %s expired guest quotas", expired)
             except Exception:
                 logger.exception("Activity retention failed")
+            try:
+                from nemesis import tasks as nemesis_tasks  # nemesis records through this module
+
+                await database_sync_to_async(nemesis_tasks.daily)()
+            except Exception:
+                logger.exception("Nemesis daily upkeep failed")
             await asyncio.sleep(RETENTION_INTERVAL_S)
+
+    async def _nemesis_upkeep(self) -> None:
+        from nemesis import tasks as nemesis_tasks  # nemesis records through this module
+
+        while True:
+            try:
+                await database_sync_to_async(nemesis_tasks.frequent)()
+            except Exception:
+                logger.exception("Nemesis upkeep failed")
+            await asyncio.sleep(NEMESIS_UPKEEP_INTERVAL_S)
 
 
 recorder = Recorder()

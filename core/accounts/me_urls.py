@@ -9,4 +9,8 @@ urlpatterns = [
     path("stats", views.my_stats, name="me-stats"),
     path("recent-players", views.recent_players, name="me-recent-players"),
     path("settings", settings_view, name="me-settings"),
+    path(
+        "phone", views.by_method(post=views.add_phone, delete=views.remove_phone), name="me-phone"
+    ),
+    path("phone/verify", views.verify_phone, name="me-phone-verify"),
 ]

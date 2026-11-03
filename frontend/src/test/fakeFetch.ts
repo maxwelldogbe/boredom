@@ -18,8 +18,11 @@ const ME_DEFAULTS: Record<string, Reply> = {
     body: { totals: { played: 0, wins: 0, losses: 0, winRate: null }, favoriteGame: null, perGame: [], minGamesForRate: 5 },
   },
   '/api/me/recent-players': { status: 200, body: { players: [] } },
+  '/api/solo/records': { status: 200, body: [] },
+  '/api/brag': { status: 200, body: { balance: 100, earnedToday: 0, dailyCap: 150, rewards: {}, history: [] } },
   '/api/friends': { status: 200, body: { friends: [], incoming: [], outgoing: [], blocked: [] } },
   '/api/me/settings': { status: 200, body: { presence: 'online' } },
+  '/api/nemesis/status': { status: 200, body: { enabled: false } },
 }
 
 export function fakeFetch() {
@@ -39,7 +42,7 @@ export function fakeFetch() {
       headers: (init.headers ?? {}) as Record<string, string>,
       body: init.body ? JSON.parse(init.body as string) : undefined,
     }
-    if (url in ME_DEFAULTS) {
+    if (url in ME_DEFAULTS || routes[url]?.length) {
       meCalls.push(call)
       return answer(routes[url]?.shift() ?? ME_DEFAULTS[url], url)
     }
@@ -50,7 +53,7 @@ export function fakeFetch() {
   return {
     calls,
     meCalls,
-    /** Queue a reply for one /api/me/* URL (used once, then the default applies again). */
+    /** Queue a reply for one URL (used once; /api/me/* and status then use their default). */
     route(url: string, status: number | 'network', body?: unknown) {
       ;(routes[url] ??= []).push(status === 'network' ? 'network' : { status, body })
     },

@@ -6,6 +6,7 @@ import { useRoomActions } from '../../state/context'
 import { AdminApiError, userAction, type UserDetailData } from '../api'
 import { ActorLink, LoadState, Refreshing, StatTile, TypeBadge } from '../components'
 import { fmtDate, fmtDateTime, fmtInt, fmtNum, fmtPct } from '../format'
+import { UserMoneyPanel } from '../money/UserMoneyPanel'
 import { useAdminSession } from '../session'
 import { useAdminData } from '../useAdminData'
 
@@ -36,6 +37,9 @@ export default function UserDetailPage({ kind }: { kind: 'registered' | 'guest' 
             </p>
             {data.actor.kind === 'registered' && data.actor.userId !== null && (
               <AccountActions data={data} userId={data.actor.userId} onChanged={reload} />
+            )}
+            {data.actor.kind === 'registered' && data.actor.userId !== null && session.money?.verified && (
+              <UserMoneyPanel userId={data.actor.userId} />
             )}
 
             <section className="stats" aria-label="Totals">
